@@ -9,6 +9,7 @@
 var regula = {
     bind: function() {},
     custom: function(options) {},
+    override: function(options) {},
     validate: function() {},
     ConstraintType: {}
 };
@@ -111,7 +112,8 @@ regula = (function() {
         IsAlpha: 9,
         IsNumeric: 10,
         IsAlphaNumeric: 11,
-        CompletelyFilled: 12
+        CompletelyFilled: 12,
+        PasswordsMatch: 13
     };
 
     var ReverseConstraintType = {
@@ -127,7 +129,8 @@ regula = (function() {
         9: "IsAlpha",
         10: "IsNumeric",
         11: "IsAlphaNumeric",
-        12: "CompletelyFilled"
+        12: "CompletelyFilled",
+        13: "PasswordsMatch"
     };
 
     var friendlyInputNames = {
@@ -149,7 +152,7 @@ regula = (function() {
             type: ConstraintType.Checked,
             custom: false,
             params: [],
-            defaultMessage: "{name} needs to be checked."
+            defaultMessage: "{label} needs to be checked."
         },
 
         Selected: {
@@ -158,7 +161,7 @@ regula = (function() {
             type: ConstraintType.Selected,
             custom: false,
             params: [],
-            defaultMessage: "{name} needs to be selected."
+            defaultMessage: "{label} needs to be selected."
         },
 
         Max: {
@@ -167,7 +170,7 @@ regula = (function() {
             type: ConstraintType.Max,
             custom: false,
             params: ["max"],
-            defaultMessage: "{name} needs to be lesser than or equal to {max}."
+            defaultMessage: "{label} needs to be lesser than or equal to {max}."
         },
 
         Min: {
@@ -176,7 +179,7 @@ regula = (function() {
             type: ConstraintType.Min,
             custom: false,
             params: ["min"],
-            defaultMessage: "{name} needs to be greater than or equal to {min}"
+            defaultMessage: "{label} needs to be greater than or equal to {min}"
         },
 
         Range: {
@@ -185,7 +188,7 @@ regula = (function() {
             type: ConstraintType.Range,
             custom: false,
             params: ["max", "min"],
-            defaultMessage: "{name} needs to be between {max} and {min}"
+            defaultMessage: "{label} needs to be between {max} and {min}"
         },
 
         NotEmpty: {
@@ -194,7 +197,7 @@ regula = (function() {
             type: ConstraintType.NotEmpty,
             custom: false,
             params: [],
-            defaultMessage: "{name} cannot be empty"
+            defaultMessage: "{label} cannot be empty"
         },
 
         Empty: {
@@ -203,7 +206,7 @@ regula = (function() {
             type: ConstraintType.Empty,
             custom: false,
             params: [],
-            defaultMessage: "{name} needs to be empty"
+            defaultMessage: "{label} needs to be empty"
         },
 
         Pattern: {
@@ -212,7 +215,7 @@ regula = (function() {
             type: ConstraintType.Pattern,
             custom: false,
             params: ["pattern"],
-            defaultMessage: "{name} needs to match {pattern}"
+            defaultMessage: "{label} needs to match {pattern}"
         },
 
         Email: {
@@ -221,7 +224,7 @@ regula = (function() {
             type: ConstraintType.Email,
             custom: false,
             params: [],
-            defaultMessage: "{name} is not a valid email"
+            defaultMessage: "{label} is not a valid email"
         },
 
         IsAlpha: {
@@ -230,7 +233,7 @@ regula = (function() {
             type: ConstraintType.IsAlpha,
             custom: false,
             params: [],
-            defaultMessage: "{name} can only contain letters"
+            defaultMessage: "{label} can only contain letters"
         },
 
         IsNumeric: {
@@ -239,7 +242,7 @@ regula = (function() {
             type: ConstraintType.IsNumeric,
             custom: false,
             params: [],
-            defaultMessage: "{name} can only contain numbers"
+            defaultMessage: "{label} can only contain numbers"
         },
 
         IsAlphaNumeric: {
@@ -248,7 +251,7 @@ regula = (function() {
             type: ConstraintType.IsAlphaNumeric,
             custom: false,
             params: [],
-            defaultMessage: "{name} can only contain numbers and letters"
+            defaultMessage: "{label} can only contain numbers and letters"
         },
 
         CompletelyFilled: {
@@ -257,7 +260,16 @@ regula = (function() {
             type : ConstraintType.CompletelyFilled,
             custom: false,
             params: [],
-            defaultMessage: "{name} must be completely filled"
+            defaultMessage: "{label} must be completely filled"
+        },
+
+        PasswordsMatch: {
+            formSpecific: true,
+            validator: passwordsMatch,
+            type: ConstraintType.PasswordsMatch,
+            custom: false,
+            params: ["field1", "field2"],
+            defaultMessage: "Passwords do not match"
         }
     };
 
@@ -351,6 +363,19 @@ regula = (function() {
         }
 
         return unfilledElements;
+    }
+
+    function passwordsMatch(params) {
+        var failingElements = [];
+
+        var passwordField1 = document.getElementById(params["field1"]);
+        var passwordField2 = document.getElementById(params["field2"]);
+
+        if(passwordField1.value != passwordField2.value) {
+            failingElements = [passwordField1, passwordField2];
+        }
+
+        return failingElements;
     }
 
     /*
@@ -998,55 +1023,106 @@ regula = (function() {
         var params = options.params || [];
         var defaultMessage = options.defaultMessage || "";
 
-        /* handle parameters. throw exceptions if they are not sane */
+        /* handle attributes. throw exceptions if they are not sane */
 
-        /* name parameter */
+        /* name attribute*/
         if(!name) {
-            throw "regula.custom expects a name parameter in the options argument";
+            throw "regula.custom expects a name attribute in the options argument";
         }
 
         else if(typeof name != "string") {
-            throw "regula.custom expects the name parameter in the options argument to be a string";
+            throw "regula.custom expects the name attribute in the options argument to be a string";
         }
 
         else if(name.replace(/\s/g, "").length == 0) {
-            throw "regula.custom cannot accept an empty string for the name parameter in the options argument";
+            throw "regula.custom cannot accept an empty string for the name attribute in the options argument";
         }
 
-        /* formSpecific parameter */
+        /* formSpecific attribute */
         if(typeof formSpecific != "boolean") {
-            throw "regula.custom expects the formSpecific parameter in the options argument to be a boolean";
+            throw "regula.custom expects the formSpecific attribute in the options argument to be a boolean";
         }
 
-        /* validator parameter */
+        /* validator attribute */
         if(!validator) {
-            throw "regula.custom expects a validator parameter in the options argument";
+            throw "regula.custom expects a validator attribute in the options argument";
         }
 
         else if(typeof validator != "function") {
-            throw "regula.custom expects the validator parameter in the options argument to be a function";
+            throw "regula.custom expects the validator attribute in the options argument to be a function";
         }
 
-        /* params parameter */
-        if(typeof params.constructor.toString().indexOf("Array") < 0) {
-            throw "regula.custom expects the params parameter in the options argument to be an array";
+        /* params attribute */
+        if(params.constructor.toString().indexOf("Array") < 0) {
+            throw "regula.custom expects the params attribute in the options argument to be an array";
         }
 
-        /* defaultMessage parameter */
+        /* defaultMessage attribute */
         if(typeof defaultMessage != "string") {
-            throw "regula.custom expects the defaultMessage parameter in the options argument to be a string";
+            throw "regula.custom expects the defaultMessage attribute in the options argument to be a string";
         }
 
-        ConstraintType[name] = firstCustomIndex;
-        ReverseConstraintType[firstCustomIndex++] = name;
-        constraintsMap[name] = {
-            formSpecific: formSpecific,
-            validator: validator,
-            type: ConstraintType[name],
-            custom: true,
-            params: params,
-            defaultMessage: defaultMessage
-        };
+        if(constraintsMap[name]) {
+            throw "There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override";
+        }
+
+        else {
+            ConstraintType[name] = firstCustomIndex;
+            ReverseConstraintType[firstCustomIndex++] = name;
+            constraintsMap[name] = {
+                formSpecific: formSpecific,
+                validator: validator,
+                type: ConstraintType[name],
+                custom: true,
+                params: params,
+                defaultMessage: defaultMessage
+            };           
+        }
+    }
+
+    function override(options) {
+        var name = options.name;
+
+        if(!name) {
+            throw "regula.override() expects a name attribute in the options argument";
+        }
+
+        if(!ConstraintType[name]) {
+            throw "A constraint called " + name + " has not been defined, so I cannot override it";
+        }
+
+        else {
+            /* for custom constraints, you can override anything. for built-in constraints however, you can only override the default message */
+            var formSpecific = constraintsMap[name].custom ? options.formSpecific || constraintsMap[name].formSpecific : constraintsMap[name].formSpecific;
+            var validator = constraintsMap[name].custom ? options.validator || constraintsMap[name].validator : constraintsMap[name].validator;
+            var params = constraintsMap[name].custom ? options.params || constraintsMap[name].params : constraintsMap[name].params;
+            var defaultMessage = options.defaultMessage || constraintsMap[name].defaultMessage;
+
+            if(typeof formSpecific != "boolean") {
+                throw "regula.override() expects the formSpecific attribute in the options argument to be a boolean";
+            }
+
+            if(typeof validator != "function") {
+                throw "regula.override() expects the validator attribute in the options argument to be a function";
+            }
+
+            if(params.constructor.toString().indexOf("Array") < 0) {
+                throw "regula.override() expects the params attribute in the options argument to be an array";
+            }
+
+            if(typeof defaultMessage != "string") {
+                throw "regula.override() expects the defaultMessage attribute in the options argument to be a string";
+            }
+
+            constraintsMap[name] = {
+                formSpecific: formSpecific,
+                validator: validator,
+                type: ConstraintType[name],
+                custom: true,
+                params: params,
+                defaultMessage: defaultMessage
+            };
+        }
     }
 
     function bind() {
@@ -1193,14 +1269,14 @@ regula = (function() {
                         var re = new RegExp("{" + param + "}", "g");
                         errorMessage = errorMessage.replace(re, validatorParams[param]);
                     }
-                    if(/{name}/.test(errorMessage)) {
+                    if(/{label}/.test(errorMessage)) {
                         var friendlyInputName = friendlyInputNames[element.tagName.toLowerCase()];
 
                         if(!friendlyInputName) {
                             friendlyInputName = friendlyInputNames[element.type.toLowerCase()];
                         }
 
-                        errorMessage = errorMessage.replace(/{name}/, friendlyInputName);
+                        errorMessage = errorMessage.replace(/{label}/, friendlyInputName);
                     }
 
                     validationResult = {
@@ -1222,6 +1298,7 @@ regula = (function() {
         bind: bind,
         validate: validate,
         custom: custom,
+        override: override,
         ConstraintType: ConstraintType
     };
 })();
