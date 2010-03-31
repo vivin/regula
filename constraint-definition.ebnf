@@ -1,0 +1,20 @@
+constraints            ::= { constraint }
+constraint             ::= "@", constraint-def
+constraint-def         ::= constraint-name, param-def
+constraint-name        ::= valid-starting-char { valid-char }
+valid-starting-char    ::= [A-Za-z_]
+valid-char             ::= [0-9A-Za-z_]
+param-def              ::= [ "(", [ param | { ",", param } ], ")" ]
+param                  ::= param-name, "=", param-value
+param-name             ::= valid-starting-char { valid-char }
+param-value            ::= number | quoted-string | regular-expression
+number                 ::= positive | negative
+negative               ::= "-", positive
+positive               ::= digit { digit }
+quoted-string          ::= "\"", { char }, "\""
+char                   ::= .
+regular-expression     ::= "/", { char }, "/"
+
+
+
+
