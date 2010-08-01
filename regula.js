@@ -113,7 +113,8 @@ regula = (function() {
         IsNumeric: 10,
         IsAlphaNumeric: 11,
         CompletelyFilled: 12,
-        PasswordsMatch: 13
+        PasswordsMatch: 13,
+        Required: 14
     };
 
     var ReverseConstraintType = {
@@ -130,7 +131,8 @@ regula = (function() {
         10: "IsNumeric",
         11: "IsAlphaNumeric",
         12: "CompletelyFilled",
-        13: "PasswordsMatch"
+        13: "PasswordsMatch",
+        14: "Required"
     };
 
     var friendlyInputNames = {
@@ -143,7 +145,7 @@ regula = (function() {
         password: "The password"
     };
 
-    var firstCustomIndex = 13;
+    var firstCustomIndex = 15;
 
     var constraintsMap = {
         Checked: {
@@ -169,8 +171,8 @@ regula = (function() {
             validator: max,
             type: ConstraintType.Max,
             custom: false,
-            params: ["max"],
-            defaultMessage: "{label} needs to be lesser than or equal to {max}."
+            params: ["value"],
+            defaultMessage: "{label} needs to be lesser than or equal to {value}."
         },
 
         Min: {
@@ -178,8 +180,8 @@ regula = (function() {
             validator: min,
             type: ConstraintType.Min,
             custom: false,
-            params: ["min"],
-            defaultMessage: "{label} needs to be greater than or equal to {min}"
+            params: ["value"],
+            defaultMessage: "{label} needs to be greater than or equal to {value}."
         },
 
         Range: {
@@ -188,7 +190,7 @@ regula = (function() {
             type: ConstraintType.Range,
             custom: false,
             params: ["max", "min"],
-            defaultMessage: "{label} needs to be between {max} and {min}"
+            defaultMessage: "{label} needs to be between {max} and {min}."
         },
 
         NotEmpty: {
@@ -197,7 +199,7 @@ regula = (function() {
             type: ConstraintType.NotEmpty,
             custom: false,
             params: [],
-            defaultMessage: "{label} cannot be empty"
+            defaultMessage: "{label} cannot be empty."
         },
 
         Empty: {
@@ -206,7 +208,7 @@ regula = (function() {
             type: ConstraintType.Empty,
             custom: false,
             params: [],
-            defaultMessage: "{label} needs to be empty"
+            defaultMessage: "{label} needs to be empty."
         },
 
         Pattern: {
@@ -214,8 +216,8 @@ regula = (function() {
             validator: matches,
             type: ConstraintType.Pattern,
             custom: false,
-            params: ["pattern"],
-            defaultMessage: "{label} needs to match {pattern}"
+            params: ["regexp"],
+            defaultMessage: "{label} needs to match {regexp}{flags}."
         },
 
         Email: {
@@ -224,7 +226,7 @@ regula = (function() {
             type: ConstraintType.Email,
             custom: false,
             params: [],
-            defaultMessage: "{label} is not a valid email"
+            defaultMessage: "{label} is not a valid email."
         },
 
         IsAlpha: {
@@ -233,7 +235,7 @@ regula = (function() {
             type: ConstraintType.IsAlpha,
             custom: false,
             params: [],
-            defaultMessage: "{label} can only contain letters"
+            defaultMessage: "{label} can only contain letters."
         },
 
         IsNumeric: {
@@ -242,7 +244,7 @@ regula = (function() {
             type: ConstraintType.IsNumeric,
             custom: false,
             params: [],
-            defaultMessage: "{label} can only contain numbers"
+            defaultMessage: "{label} can only contain numbers."
         },
 
         IsAlphaNumeric: {
@@ -251,7 +253,7 @@ regula = (function() {
             type: ConstraintType.IsAlphaNumeric,
             custom: false,
             params: [],
-            defaultMessage: "{label} can only contain numbers and letters"
+            defaultMessage: "{label} can only contain numbers and letters."
         },
 
         CompletelyFilled: {
@@ -260,7 +262,7 @@ regula = (function() {
             type : ConstraintType.CompletelyFilled,
             custom: false,
             params: [],
-            defaultMessage: "{label} must be completely filled"
+            defaultMessage: "{label} must be completely filled."
         },
 
         PasswordsMatch: {
@@ -269,7 +271,16 @@ regula = (function() {
             type: ConstraintType.PasswordsMatch,
             custom: false,
             params: ["field1", "field2"],
-            defaultMessage: "Passwords do not match"
+            defaultMessage: "Passwords do not match."
+        },
+
+        Required: {
+            formSpecific: false,
+            validator: required,
+            type: ConstraintType.Required,
+            custom: false,
+            params: [],
+            defaultMessage: "{label} is required."
         }
     };
 
@@ -284,11 +295,11 @@ regula = (function() {
     }
 
     function max(params) {
-        return this.value <= params["max"];
+        return this.value <= params["value"];
     }
 
     function min(params) {
-        return this.value >= params["min"];
+        return this.value >= params["value"];
     }
 
     function range(params) {
@@ -306,12 +317,12 @@ regula = (function() {
     function matches(params) {
         var re;
 
-        if(params["flags"]) {
-            re = new RegExp(params["pattern"], params["flags"]);
+        if(typeof params["flags"] != undefined) {
+            re = new RegExp(params["regexp"].replace(/^\//, "").replace(/\/$/, ""), params["flags"]);
         }
 
         else {
-            re = new RegExp(params["pattern"]);
+            re = new RegExp(params["regexp"].replace(/^\//, "").replace(/\/$/, ""));
         }
 
         return re.test(this.value);
@@ -336,29 +347,11 @@ regula = (function() {
     function completelyFilled() {
         var unfilledElements = [];
 
-        for(var index in this.elements) {
-            var element = this.elements[index];
+        for(var i = 0; i < this.elements.length; i++) {
+            var element = this.elements[i];
 
-            if(element.tagName) {
-                if(element.tagName.toLowerCase() == "select") {
-                    if(element.selectedIndex == 0) {
-                        unfilledElements.push(element);
-                    }
-                }
-
-                else if(element.type.toLowerCase() == "checkbox" || element.type.toLowerCase() == "radio") {
-                    if(!element.checked) {
-                        unfilledElements.push(element);
-                    }
-                }
-
-                else if(element.tagName.toLowerCase() == "input" || element.tagName.toLowerCase() == "textarea") {
-                    if(element.type.toLowerCase() != "button") {
-                        if(empty.call(element)) {
-                            unfilledElements.push(element);
-                        }
-                    }
-                }
+            if(!required.call(element)) {
+                unfilledElements.push(element);
             }
         }
 
@@ -378,6 +371,28 @@ regula = (function() {
         return failingElements;
     }
 
+    function required() {
+        var result = true;
+
+        if(this.tagName) {
+            if(this.tagName.toLowerCase() == "select") {
+                result = selected.call(this);
+            }
+
+            else if(this.type.toLowerCase() == "checkbox" || this.type.toLowerCase() == "radio") {
+                result = checked.call(this);
+            }
+
+            else if(this.tagName.toLowerCase() == "input" || this.tagName.toLowerCase() == "textarea") {
+                if(this.type.toLowerCase() != "button") {
+                    result = notEmpty.call(this);
+                }
+            }
+        }
+
+        return result;
+    }
+
     /*
      * This is the parser that parses constraint definitions. The recursive-descent parser is actually defined inside
      * the 'parse' function (I've used inner functions to encapsulate the parsing logic).
@@ -388,8 +403,8 @@ regula = (function() {
     function parse(element, constraintDefinitionString) {
         var currentConstraintName = "";
         var tokens = tokenize({
-            str: constraintDefinitionString.replace(/\n/g, ""),
-            delimiters: "@()={},\"\\/-",
+            str: trim(constraintDefinitionString.replace(/\s*\n\s*/g, "")),
+            delimiters: "@()=,\"\\/-",
             returnDelimiters: true,
             returnEmptyTokens: false
         });
@@ -400,11 +415,15 @@ regula = (function() {
 
         /** utility functions. i.e., functions not directly related to parsing start here **/
 
+        function trim(str) {
+            return str.replace(/^\s+/, "").replace(/\s+$/, "");
+        }
+
         function peek(arr) {
             return arr[0];
         }
 
-        function parseErrorMessage(element, constraintName, message) {
+        function generateErrorMessage(element, constraintName, message) {
             var errorMessage = "";
 
             if(constraintName == "" || constraintName == null || constraintName == undefined) {
@@ -441,7 +460,7 @@ regula = (function() {
             for(var i = 0; i < str.length; i++) {
                 if(exists(delimiters, str[i])) {
                     var token = str.substring(lastTokenIndex, i);
-                    token = token.replace(/^\s+/, "").replace(/\s+$/, "");
+                    //token = token.replace(/^\s+/, "").replace(/\s+$/, "");
 
                     if(token.length == 0) {
                         if(returnEmptyTokens) {
@@ -463,7 +482,7 @@ regula = (function() {
 
             if(lastTokenIndex < str.length) {
                 var token = str.substring(lastTokenIndex, str.length);
-                token = token.replace(/^\s+/, "").replace(/\s+$/, "");
+                //token = token.replace(/^\s+/, "").replace(/\s+$/, "");
 
                 if(token.length == 0) {
                     if(returnEmptyTokens) {
@@ -547,11 +566,12 @@ regula = (function() {
             param-def              ::= [ "(", [ param | { ",", param } ], ")" ]
             param                  ::= param-name, "=", param-value
             param-name             ::= valid-starting-char { valid-char }
-            param-value            ::= number | quoted-string | regular-expression
+            param-value            ::= number | quoted-string | regular-expression | boolean
             number                 ::= positive | negative
             negative               ::= "-", positive
             positive               ::= digit { digit }
             quoted-string          ::= "\"", { char }, "\""
+            boolean                ::= true | false
             char                   ::= .
             regular-expression     ::= "/", { char }, "/"
          */
@@ -577,14 +597,21 @@ regula = (function() {
                 data: null
             };
 
-            if(tokens.shift() == "@") {
+            var token = tokens.shift();
+
+            //get rid of spaces if any
+            if(trim(token).length == 0) {
+                token = tokens.shift();
+            }
+
+            if(token == "@") {
                 result = constraintDef(tokens)
             }
 
             else {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid constraint. Constraint definitions need to start with '@'"),
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid constraint. Constraint definitions need to start with '@'") + " " + result.message,
                     data: null
                 };
             }
@@ -616,7 +643,7 @@ regula = (function() {
                 else {
                     result = {
                         successful: false,
-                        message: parseErrorMessage(element, currentConstraintName, "I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it"),
+                        message: generateErrorMessage(element, currentConstraintName, "I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it") + " " + result.message,
                         data: null
                     };
                 }
@@ -625,7 +652,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid constraintName in constraint definition") + "\n" + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid constraintName in constraint definition") + " " + result.message,
                     data: null
                 };
             }
@@ -634,7 +661,7 @@ regula = (function() {
         }
 
         function constraintName(tokens) {
-            var token = tokens.shift();
+            var token = trim(tokens.shift());
             var result = validStartingCharacter(token[0]);
 
             if(result.successful) {
@@ -652,7 +679,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, constraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + "\n" + result.message,
+                    message: generateErrorMessage(element, constraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + " " + result.message,
                     data: null
                 };
             }
@@ -671,7 +698,7 @@ regula = (function() {
             if(!/[A-Za-z_]/.test(character)) {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid starting character"),
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid starting character"),
                     data: null
                 };
             }
@@ -689,7 +716,7 @@ regula = (function() {
             if(!/[0-9A-Za-z_]/.test(character)) {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid character in identifier. Can only include 0-9, A-Z, a-z, and _"),
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid character in identifier. Can only include 0-9, A-Z, a-z, and _") + " " + result.message,
                     data: null
                 };
             }
@@ -709,15 +736,33 @@ regula = (function() {
 
                 result = param(tokens);
 
-                while(tokens.length > 0 && peek(tokens) == "," && result.successful) {
+                //get rid of spaces
+                if(trim(peek(tokens)).length == 0) {
                     tokens.shift();
-                    result = param(tokens);
                 }
 
-                if(tokens.shift() != ")") {
+                while(tokens.length > 0 && peek(tokens) == "," && result.successful) {
+
+                    tokens.shift();
+                    result = param(tokens);
+
+                    //get rid of spaces;
+                    if(trim(peek(tokens)).length == 0) {
+                        tokens.shift();
+                    }
+                }
+
+                var token = tokens.shift();
+
+                //get rid of spaces
+                if(trim(token).length == 0) {
+                    token = tokens.shift();
+                }
+
+                if(token != ")") {
                     result = {
                         successful: false,
-                        message: parseErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list"),
+                        message: generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
                         data: null
                     };
                 }
@@ -748,7 +793,7 @@ regula = (function() {
                     else {
                         result = {
                             successful: false,
-                            message: parseErrorMessage(element, currentConstraintName, "Invalid parameter value") + "\n" + result.message,
+                            message: generateErrorMessage(element, currentConstraintName, "Invalid parameter value") + " " + result.message,
                             data: null
                         };
                     }
@@ -758,7 +803,7 @@ regula = (function() {
                     tokens.unshift(token);
                     result = {
                         successful: false,
-                        message: parseErrorMessage(element, currentConstraintName, "'=' expected after parameter name"),
+                        message: generateErrorMessage(element, currentConstraintName, "'=' expected after parameter name" + " " + result.message),
                         data: null
                     };
                 }
@@ -767,7 +812,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid parameter name") + "\n" + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid parameter name") + " " + result.message,
                     data: null
                 };
             }
@@ -776,7 +821,13 @@ regula = (function() {
         }
 
         function paramName(tokens) {
-            var token = tokens.shift();
+            var token = trim(tokens.shift());
+
+            //get rid of space
+            if(token.length == 0) {
+                token = tokens.shift();
+            }
+
             var result = validStartingCharacter(token[0]);
 
             if(result.successful) {
@@ -794,7 +845,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + "\n" + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + " " + result.message,
                     data: null
                 };
             }
@@ -803,6 +854,12 @@ regula = (function() {
         }
 
         function paramValue(tokens) {
+
+            //get rid of spaces
+            if(trim(peek(tokens)).length == 0) {
+                tokens.shift();
+            }
+
             var result = number(tokens);
 
             if(!result.successful) {
@@ -812,11 +869,15 @@ regula = (function() {
                     result = regularExpression(tokens);
 
                     if(!result.successful) {
-                        result = {
-                            successful: false,
-                            message: parseErrorMessage(element, currentConstraintName, "Invalid parameter value. Must be a number, quoted string, or a regular expression") + "\n" + result.message,
-                            data: null
-                        };
+                        result = booleanValue(tokens);
+
+                        if(!result.successful) {
+                            result = {
+                                successful: false,
+                                message: generateErrorMessage(element, currentConstraintName, "Invalid parameter value. Must be a number, quoted string, regular expression, or a boolean") + " " + result.message,
+                                data: null
+                            };
+                        }
                     }
                 }
             }
@@ -833,7 +894,7 @@ regula = (function() {
                 if(!result.successful) {
                     result = {
                         successful: false,
-                        message: parseErrorMessage(element, currentConstraintName, "Parameter value is not a number") + "\n" + result.message,
+                        message: generateErrorMessage(element, currentConstraintName, "Parameter value is not a number") + " " + result.message,
                         data: null
                     };
                 }
@@ -861,7 +922,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Not a negative number"),
+                    message: generateErrorMessage(element, currentConstraintName, "Not a negative number") + " " + result.message,
                     data: null
                 };
             }
@@ -870,7 +931,7 @@ regula = (function() {
         }
 
         function positive(tokens) {
-            var token = tokens.shift();
+            var token = trim(tokens.shift());
             var result = digit(token[0]);
 
             if(result.successful) {
@@ -889,7 +950,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Not a positive number"),
+                    message: generateErrorMessage(element, currentConstraintName, "Not a positive number") + " " + result.message,
                     data: null
                 };
             }
@@ -907,7 +968,7 @@ regula = (function() {
             if(!/[0-9]/.test(character)) {
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Not a valid digit"),
+                    message: generateErrorMessage(element, currentConstraintName, "Not a valid digit") + " " + result.message,
                     data: null
                 };
             }
@@ -944,7 +1005,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Invalid quoted string"),
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid quoted string") + " " + result.message,
                     data: null
                 };
             }
@@ -1005,13 +1066,42 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: parseErrorMessage(element, currentConstraintName, "Not a regular expression"),
+                    message: generateErrorMessage(element, currentConstraintName, "Not a regular expression") + " " + result.message,
                     data: null
                 };
             }
 
             result.successful = result.successful && done;
             result.data = data;
+            return result;
+        }
+       
+        function booleanValue(tokens) {
+            var data = "";
+            var token = tokens.shift();
+            var result = {
+                successful: true,
+                message: "",
+                data: null
+            };
+
+            if(trim(token) == "true" || trim(token) == "false") {
+                result = {
+                    successful: true,
+                    message: "",
+                    data: token
+                };
+            }
+
+            else {
+                tokens.unshift(token);
+                result = {
+                    successful: false,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a boolean") + " " + result.message,
+                    data: null
+                };
+            }
+
             return result;
         }
     }
@@ -1128,8 +1218,8 @@ regula = (function() {
     function bind() {
         var elementsWithConstraints = getElementsByClassName("regula-validation");
 
-        for(var index in elementsWithConstraints) {
-            var element = elementsWithConstraints[index];
+        for(var i = 0; i < elementsWithConstraints.length; i++) {
+            var element = elementsWithConstraints[i];
             var tagName = element.tagName.toLowerCase();
 
             if(tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
@@ -1179,10 +1269,12 @@ regula = (function() {
                 var elementConstraints = elementsWithTheirConstraints[elementId];
 
                 for(var elementConstraint in elementConstraints) {
-                    var validationResult = validateElementWithConstraint(elementId, elementConstraint);
+                    if(elementConstraints.hasOwnProperty(elementConstraint)) {
+                        var validationResult = validateElementWithConstraint(elementId, elementConstraint);
 
-                    if(validationResult) {
-                        validationResults.push(validationResult);
+                        if(validationResult) {
+                            validationResults.push(validationResult);
+                        }
                     }
                 }
             }
@@ -1201,10 +1293,12 @@ regula = (function() {
 
         else {
             for(var elementConstraint in elementConstraints) {
-                var validationResult = validateElementWithConstraint(elementId, elementConstraint);
+                if(elementConstraints.hasOwnProperty(elementConstraint)) {
+                    var validationResult = validateElementWithConstraint(elementId, elementConstraint);
 
-                if(validationResult) {
-                    validationResults.push(validationResult);
+                    if(validationResult) {
+                        validationResults.push(validationResult);
+                    }
                 }
             }
         }
@@ -1233,8 +1327,8 @@ regula = (function() {
                 var failingElements = new Array();
                 var element = document.getElementById(elementId);
 
-                for(var index in params) {
-                    validatorParams[params[index].name] = params[index].value;
+                for(var i = 0; i < params.length; i++) {
+                    validatorParams[params[i].name] = params[i].value;
                 }
 
                 if(constraintsMap[elementConstraint].formSpecific) {
@@ -1266,9 +1360,12 @@ regula = (function() {
                     }
 
                     for(var param in validatorParams) {
-                        var re = new RegExp("{" + param + "}", "g");
-                        errorMessage = errorMessage.replace(re, validatorParams[param]);
+                        if(validatorParams.hasOwnProperty(param)) {
+                            var re = new RegExp("{" + param + "}", "g");
+                            errorMessage = errorMessage.replace(re, validatorParams[param]);
+                        }
                     }
+
                     if(/{label}/.test(errorMessage)) {
                         var friendlyInputName = friendlyInputNames[element.tagName.toLowerCase()];
 
@@ -1278,6 +1375,11 @@ regula = (function() {
 
                         errorMessage = errorMessage.replace(/{label}/, friendlyInputName);
                     }
+
+                    //not sure if this is just a hack or not. But I'm trying to replace doubly-escaped quotes. This
+                    //usually happens if the data-constraints attribute is surrounded by double quotes instead of
+                    //single quotes
+                    errorMessage = errorMessage.replace(/\\\"/g, "\"");
 
                     validationResult = {
                         constraintName: elementConstraint,
