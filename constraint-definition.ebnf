@@ -7,14 +7,11 @@ valid-char             ::= [0-9A-Za-z_]
 param-def              ::= [ "(", [ param | { ",", param } ], ")" ]
 param                  ::= param-name, "=", param-value
 param-name             ::= valid-starting-char { valid-char }
-param-value            ::= number | quoted-string | regular-expression
+param-value            ::= number | quoted-string | regular-expression | boolean
 number                 ::= positive | negative
 negative               ::= "-", positive
 positive               ::= digit { digit }
 quoted-string          ::= "\"", { char }, "\""
 char                   ::= .
 regular-expression     ::= "/", { char }, "/"
-
-
-
-
+boolean                ::= true | false
