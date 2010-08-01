@@ -14,4 +14,4 @@ positive               ::= digit { digit }
 quoted-string          ::= "\"", { char }, "\""
 char                   ::= .
 regular-expression     ::= "/", { char }, "/"
-boolean                ::= true | false
+boolean                ::= "true" | "false"
