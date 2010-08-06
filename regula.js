@@ -15,6 +15,7 @@ var regula = {
     Group: {}
 };
 
+
 regula = (function() {
     /*
         getElementsByClassName
@@ -408,7 +409,6 @@ regula = (function() {
     /* this function validates a constraint definition to ensure that parameters match up */
 
     function validateConstraintDefinition(element, constraintName, constraintDefinition) {
-        var matchingParams = 0;
         var result = {
             successful: true,
             message: "",
@@ -441,15 +441,10 @@ regula = (function() {
         }
 
         else {
-            var groupParamValue = "";
-
+            var matchingParams = 0;
             for(var i = 0; i < constraintDefinition.length; i++) {
                 if(exists(constraintsMap[constraintName].params, constraintDefinition[i].name)) {
                     matchingParams++;
-                }
-
-                if(constraintDefinition[i].name == "groups") {
-                    groupParamValue = constraintDefinition[i].value.replace(/\s/g, "");
                 }
             }
 
@@ -464,34 +459,59 @@ regula = (function() {
                 };
             }
 
-            if(groupParamValue == "") {
-                groupParamValue = "Default";
-            }
-
-            else if(!/^Default,|,Default|,Default$/.test(groupParamValue)) {
-                groupParamValue = "Default," + groupParamValue;
-            }
-
-            var groups = groupParamValue.split(/,/);
-
-            for(var i = 0; i < groups.length; i++) {
-                var group = groups[i];
-
-                if(!boundConstraints[group]) {
-                    Group[group] = firstCustomIndex;
-                    ReverseGroup[firstCustomIndex++] = group;
-                    boundConstraints[group] = {};
-                }
-
-                if(!boundConstraints[group][element.id]) {
-                    boundConstraints[group][element.id] = {};
-                }
-
-                boundConstraints[group][element.id][constraintName] = constraintDefinition;
+            else {
+                result.data = constraintDefinition;
             }
         }
 
         return result;
+    }
+
+    function createConstraintFromDefinition(element, constraintName, constraintDefinition) {
+        var groupParamValue = "";
+
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
+
+        var i = 0;
+        var found = false;
+        while(i < constraintDefinition.length && !found) {
+            if(constraintDefinition[i].name == "groups") {
+                groupParamValue = constraintDefinition[i].value.replace(/\s/g, "");
+                found = true;
+            }
+
+            i++;
+        }
+
+        if(groupParamValue == "") {
+            groupParamValue = "Default";
+        }
+
+        else if(!/^Default,|,Default|,Default$/.test(groupParamValue)) {
+            groupParamValue = "Default," + groupParamValue;
+        }
+
+        var groups = groupParamValue.split(/,/);
+
+        for (var i = 0; i < groups.length; i++) {
+            var group = groups[i];
+
+            if (!boundConstraints[group]) {
+                Group[group] = firstCustomIndex;
+                ReverseGroup[firstCustomIndex++] = group;
+                boundConstraints[group] = {};
+            }
+
+            if (!boundConstraints[group][element.id]) {
+                boundConstraints[group][element.id] = {};
+            }
+
+            boundConstraints[group][element.id][constraintName] = constraintDefinition;
+        }
     }
 
     function exists(array, value) {
@@ -695,6 +715,10 @@ regula = (function() {
 
                     if(result.successful) {
                         result = validateConstraintDefinition(element, currentConstraintName, result.data);
+
+                        if(result.successful) {
+                            createConstraintFromDefinition(element, currentConstraintName, result.data);
+                        }
                     }
                 }
 
@@ -1400,50 +1424,159 @@ regula = (function() {
     }
 
     function bind(options) {
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
 
         if(typeof options == undefined || !options) {
-            var elementsWithRegulaValidation = getElementsByClassName("regula-validation");
-
-            for(var i = 0; i < elementsWithRegulaValidation.length; i++) {
-                var element = elementsWithRegulaValidation[i];
-                var tagName = element.tagName.toLowerCase();
-
-                if(tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
-                    throw tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements.";
-                }
-
-                var dataConstraintsAttribute = element.getAttribute("data-constraints");
-                var result = parse(element, dataConstraintsAttribute);
-
-                if(!result.successful) {
-                    throw result.message;
-                }
-            }
+            result = bindAfterParsing();
         }
 
         else {
-            var element = options.element;
-            var overwrite = options.overwrite || false;
-            var constraints = options.constraints || [];
-            var tagName = (element) ? element.tagName.toLowerCase() : null;
+            result = bindFromOptions(options);
+        }
 
-            if(!element) {
-                throw "regula.bind(options) expects a non-null element attribute in the options argument";
+        if(!result.successful) {
+            throw result.message;
+        }
+    }
+
+    function bindAfterParsing() {
+        var elementsWithRegulaValidation = getElementsByClassName("regula-validation");
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
+
+        var i = 0;
+        while(i < elementsWithRegulaValidation.length && result.successful) {
+            var element = elementsWithRegulaValidation[i];
+            var tagName = element.tagName.toLowerCase();
+
+            if(tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
+                result = {
+                    successful: false,
+                    message: tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements.",
+                    data: null
+                };
             }
 
-            if(typeof element != "object") {
-                throw "regula.bind(options): element attribute is of unexpected type: " + typeof element;
-            }
+            var dataConstraintsAttribute = element.getAttribute("data-constraints");
+            result = parse(element, dataConstraintsAttribute);
+        }
 
-            if(constraints.length == 0) {
-                throw "regula.bind(options) expects the constraint attribute in the options argument to be a non-empty array of constraint definitions";
-            }
+        return result;
+    }
 
-            if(tagName != "form" && tagName != "select" && tagName !="textArea" && tagName !="input") {
-                throw tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements"
+    function bindFromOptions(options) {
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
+
+        var element = options.element;
+        var overwriteConstraint = options.overwriteConstraint || false;
+        var overwriteParameter = options.overwriteParameter || false;
+        var constraints = options.constraints || [];
+        var tagName = (element) ? element.tagName.toLowerCase() : null;
+
+        if(!element) {
+            result = {
+                successful: false,
+                message: "regula.bind(options) expects a non-null element attribute in the options argument " + explodeParameters(options),
+                data: null
+            };
+        }
+
+        else if(typeof element != "object") {
+            result = {
+                successful: false,
+                message: "regula.bind(options): element attribute is of unexpected type: " + typeof element + " " + explodeParameters(options),
+                data: null
+            };
+        }
+
+        else if(constraints.length == 0) {
+            result = {
+                successful: false,
+                message: "regula.bind(options) expects the constraint attribute in the options argument to be a non-empty array of constraint definitions " + explodeParameters(options),
+                data: null
+            };
+        }
+
+        else if(tagName != "form" && tagName != "select" && tagName !="textArea" && tagName !="input") {
+            result = {
+                successful: false,
+                message: tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements " + explodeParameters(options),
+                data: null
+            };
+        }
+
+        else {
+            var i = 0;
+            while(i < constraints.length && result.successful) {
+                var constraint = constraints[i];
+                var constraintType = constraint.constraintType;
+                var constraintDefinition = new Array();
+
+                if(!constraintType) {
+                    /* We checked to see if this was a valid/defined constraint. It wasn't so we need to return an error message */
+                    result = {
+                        successful:false,
+                        message: "regula.bind(options) expects a valid constraint type for each constraint in constraints attribute of the options argument. " + explodeParameters(options),
+                        data:null
+                    };
+                }
+
+
+                else if(!boundConstraints[ReverseGroup[Group.Default]][element.id] || !boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]]) {
+                     /*
+                     Then, we checked and saw if this element-constraint combination did NOT exist. We can say that the combination does NOT exist if
+                       o The element's id does not exist as a key within the Default group (every element is added to the default group regardless)
+                         OR IF
+                       o The element's id exists within the Default group, but this particular constraint has not been bound to it
+                     If either of these conditions were met, we can simply proceed to validate the constraint definition
+                    */
+
+                    for(var param in params) {
+                        constraintDefinition.push({name: param, value: params[param]});
+                    }
+
+                    result = validateConstraintDefinition(element, ReverseConstraint[constraintType], constraintDefinition);
+
+                    if(result.successful) {
+                        createConstraintFromDefinition(element, ReverseConstraint[constraintType], constraintDefinition);
+                    }
+                }
+
+                else if(overwriteConstraint) {
+                    /* We are sure that this element-constraint combination exists, and we are sure that we ARE overwriting it. */
+                }
+
+                else {
+                    /* We are sure that this element-constraint combination exists, and we are sure that we a ARE NOT overwriting it. 
+                       BUT, we need to check if the overwriteParameter flag is set as well. If that is the case, and the user has
+                       specified an [optional] parameter that already exists within the parameter list for the constraint, we will
+                       overwrite its value with the new one. Otherwise, we will NOT overwrite it and we will maintain the old value
+                     */
+
+                    if(overwriteParameter) {
+
+                    }
+
+                    else {
+
+                    }
+
+                }
             }
 
             //If we're overwriting previously defined constraints then we need to empty out the map
+            /*
             if(overwrite) {
                 boundConstraints[element.id] = {};
             }
@@ -1454,13 +1587,13 @@ regula = (function() {
                 var params = constraint.params || [];
 
                 if(!constraintType) {
-                    throw "regula.bind(options) expects a constraint type for each constraint in constraints attribute of the options argument";
+
                 }
 
                 //If we're overwriting, it means that the constraint definition has no parameters defined so we need to define a new array
                 //Otherwise, we'll work with the existing array. What this means is that if the user specifies a parameter that was previously
                 //defined, that value will get overwritten regardless of the 'overwrite' flag. If a new parameter is defined (i.e., one that
-                //previously did not exist), it is simply added to the array of parameters
+                //previously did not exist), it is simply added to the array of parameters. We have to do this for every group
 
                 if(overwrite) {
                     boundConstraints[element.id][ReverseConstraint[constraintType]] = new Array();
@@ -1469,22 +1602,30 @@ regula = (function() {
                 for(var param in params) {
                     boundConstraints[element.id][ReverseConstraint[constraintType]].push({name: param, value: params[param]});
                 }
-                
-                var result = validateConstraintDefinition(element, ReverseConstraint[constraintType], boundConstraints[element.id][ReverseConstraint[constraintType]]);
 
-                if(!result.successful) {
-                    throw result.message;
-                }
-            }
+                result = validateConstraintDefinition(element, ReverseConstraint[constraintType], boundConstraints[element.id][ReverseConstraint[constraintType]]);
+            } */
         }
+
+        return result;
     }
 
     function explodeParameters(options) {
-        //TODO: a better way to explode this is to iterate over each attribute
-        return "validate() received: {" +
-               "constraintType: " + (options.constraintType ? options.constraintType : "undefined") + ", " +
-               "elementId: " + (options.elementId ? options.elementId : "undefined") + ", " +
-               "groups: [" + (options.groups ? explode(options.groups, ", ") : "undefined") + "]}";
+        var str = "function received: {";
+        for(var argument in options) {
+            if(options.hasOwnProperty(argument)) {
+                if(typeof options[argument] == "string") {
+                    str += argument + ": " + options[argument] + ", ";
+                }
+
+                else if(options[argument].length) { //we need this to be an array
+                    str += argument + ": [" + explode(options[argument], ", ") + "], "
+                }
+            }
+        }
+        
+        str = str.replace(/, $/, "") + "}";
+        return str;
     }
 
     function validate(options) {
@@ -1522,6 +1663,13 @@ regula = (function() {
         //if no arguments were passed in, we initialize options to an empty map
         if(!options) {
             options = {};
+        }
+
+        /* default to independent validation for groups i.e., groups are validated independent of each other and will not
+           fail early
+         */
+        if(typeof options.independent == undefined) {
+            options.independent = true;
         }
 
         //Get the actual constraint name
@@ -1681,7 +1829,9 @@ regula = (function() {
     function validateGroups(options) {
         var validationResults = new Array();
 
-        for(var i = 0; i < options.groups.length; i++) {
+        var i = 0;
+        var failed = false;
+        while(i < options.groups.length && !failed) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -1709,6 +1859,9 @@ regula = (function() {
             else {
                 throw "Undefined group in group list. " + explodeParameters(options);
             }
+
+            i++;
+            failed = (!option.independent && validationResults.length > 0);
         }
 
         return validationResults;
@@ -1717,7 +1870,9 @@ regula = (function() {
     function validateGroupsWithConstraint(options) {
         var validationResults = new Array();
 
-        for(var i = 0; i < options.groups.length; i++) {
+        var i = 0;
+        var failed = false;
+        while(i < options.groups.length && !failed) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -1749,8 +1904,11 @@ regula = (function() {
             }
 
             else {
-                throw "Undefined group in group list";
+                throw "Undefined group in group list. " + explodeParameters(options);
             }
+
+            i++;
+            failed = (!option.independent && validationResults.length > 0);
         }
 
         return validationResults;
@@ -1760,7 +1918,9 @@ regula = (function() {
         var validationResults = new Array();
         var elementFound = false;
 
-        for(var i = 0; i < options.groups.length; i++) {
+        var i = 0;
+        var failed = false;
+        while(i < options.groups.length && !failed) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -1784,8 +1944,11 @@ regula = (function() {
             }
 
             else {
-                throw "Undefined group in group list";
+                throw "Undefined group in group list. " + explodeParameters(options);
             }
+
+            i++;
+            failed = (!option.independent && validationResults.length > 0);
         }
 
         if(!elementFound) {
@@ -1798,13 +1961,18 @@ regula = (function() {
     function validateGroupsElementWithConstraint(options) {
         var validationResults = new Array();
 
-        for(var i = 0; i < options.groups.length; i++) {
+        var i = 0;
+        var failed = false;
+        while(i < options.groups.length && !failed) {
             var group = options.groups[i];
             var validationResult = validateGroupElementConstraintCombination(group, options.elementId, options.elementConstraint);
 
             if(validationResult) {
                 validationResults.push(validationResult);
             }
+
+            i++;
+            failed = (!option.independent && validationResults.length > 0);
         }
 
         return validationResults;
