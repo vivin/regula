@@ -16,6 +16,7 @@ var regula = {
 };
 
 
+
 regula = (function() {
     /*
         getElementsByClassName
@@ -23,7 +24,7 @@ regula = (function() {
         Code/licensing: http://code.google.com/p/getelementsbyclassname/
     */
     var getElementsByClassName = function (className, tag, elm){
-        if (document.getElementsByClassName) {
+        if(document.getElementsByClassName) {
             getElementsByClassName = function (className, tag, elm) {
                 elm = elm || document;
                 var elements = elm.getElementsByClassName(className),
@@ -39,7 +40,7 @@ regula = (function() {
                 return returnElements;
             };
         }
-        else if (document.evaluate) {
+        else if(document.evaluate) {
             getElementsByClassName = function (className, tag, elm) {
                 tag = tag || "*";
                 elm = elm || document;
@@ -59,7 +60,7 @@ regula = (function() {
                 catch (e) {
                     elements = document.evaluate(".//" + tag + classesToCheck, elm, null, 0, null);
                 }
-                while ((node = elements.iterateNext())) {
+                while((node = elements.iterateNext())) {
                     returnElements.push(node);
                 }
                 return returnElements;
@@ -83,11 +84,11 @@ regula = (function() {
                     match = false;
                     for(var m=0, ml=classesToCheck.length; m<ml; m+=1){
                         match = classesToCheck[m].test(current.className);
-                        if (!match) {
+                        if(!match) {
                             break;
                         }
                     }
-                    if (match) {
+                    if(match) {
                         returnElements.push(current);
                     }
                 }
@@ -106,6 +107,21 @@ regula = (function() {
     var ReverseGroup = {
         0: "Default"
     };
+
+    /* New groups are added to our 'enum' sequentially with the help of an explicit index that is maintained separately
+       (see firstCustomGroupIndex). When groups are deleted, we need to remove them from the Group 'enum'. Simply
+       removing them would be fine. But what we end up with are "gaps" in the indices. For example, assume that added
+       a new group called "New". Then regula.Group.New is mapped to 1 in regula.ReverseGroup, 1 is mapped back to "New".
+       Assume that we add another group called "Newer". So now what you have Newer -> 2 -> "Newer". Let's say we delete
+       the "New" group. The existing indices are 0 and 2. As you can see, there is a gap. Now although the indices
+       themselves don't mean anything (and we don't rely on their actual numerical values in anyway) when you now add
+       another group, the index for that group will be 3. So repeated additions and deletions of groups will keep
+       incrementing the index. I am uncomfortable with this (what if it increments past MAX_INT? Unlikely, but possible
+       -- it doesn't hurt to be paranoid) and so I'd like to reuse deleted indices. For this reason I'm going to maintain
+       a stack of deleted-group indices. When I go to add a new group, I'll first check this stack to see if there are
+       any indices there. If there are, I'll use one. Conversely, when I delete a group, I'll add its index to this stack
+     */
+    var deletedGroupIndices = [];
 
     var Constraint = {
         Checked: 0,
@@ -443,19 +459,13 @@ regula = (function() {
         else {
             var matchingParams = 0;
 
-            for(var i = 0; i < constraintsMap[constraintName].params; i++) {
+            for(var i = 0; i < constraintsMap[constraintName].params.length; i++) {
                 var param = constraintsMap[constraintName].params[i];
 
                 if(definedParameters[param]) {
                     matchingParams++;
                 }
             }
-
-            /*for(var i = 0; i < constraintDefinition.length; i++) {
-                if(exists(constraintsMap[constraintName].params, constraintDefinition[i].name)) {
-                    matchingParams++;
-                }
-            }*/
 
             if(matchingParams < constraintsMap[constraintName].params.length) {
                 var missingParams = constraintsMap[constraintName].params.length - matchingParams;
@@ -481,45 +491,54 @@ regula = (function() {
     function createConstraintFromDefinition(element, constraintName, definedParameters) {
         var groupParamValue = "";
 
+        //Regex that checks to see if Default is explicitly defined in the groups parameter
+        var re = new RegExp("^" + ReverseGroup[Group.Default] + "$|" + "^" + ReverseGroup[Group.Default] + ",|," + ReverseGroup[Group.Default] + ",|," + ReverseGroup[Group.Default] + "$");
+
         var result = {
             successful: true,
             message: "",
             data: null
         };
 
-        if(definedParameters["groups"]) {
-            groupParamValue = definedParameters["groups"].replace(/\s/g, "");
-        }
-/*
-        while(i < constraintDefinition.length && !found) {
-            if(constraintDefinition[i].name == "groups") {
-                groupParamValue = constraintDefinition[i].value.replace(/\s/g, "");
-                found = true;
-            }
-
-            i++;
-        } */
-
-        if(groupParamValue == "") {
-            groupParamValue = "Default";
+        //If a "groups" parameter has not been specified, we'll create one and add "Default" to it since all elements
+        //belong to the "Default" group implicitly
+        if(!definedParameters["groups"]) {
+            put(definedParameters, "groups", ReverseGroup[Group.Default]);
         }
 
-        else if(!/^Default,|,Default|,Default$/.test(groupParamValue)) {
-            groupParamValue = "Default," + groupParamValue;
+        groupParamValue = definedParameters["groups"].replace(/\s/g, "");
+        
+        //If a "groups" parameter was defined, but it doesn't contain the "Default" group, we add it to groupParamValue
+        //explicitly and also update the "groups" parameter for this constraint
+        if(!re.test(groupParamValue)) {
+            groupParamValue = ReverseGroup[Group.Default] + "," + groupParamValue;
+            definedParameters["groups"] = groupParamValue;
         }
 
         var groups = groupParamValue.split(/,/);
 
-        for (var i = 0; i < groups.length; i++) {
+        for(var i = 0; i < groups.length; i++) {
+
             var group = groups[i];
 
-            if (!boundConstraints[group]) {
-                Group[group] = firstCustomIndex;
-                ReverseGroup[firstCustomIndex++] = group;
+            if(!boundConstraints[group]) {
+
+                var newIndex = -1;
+
+                if(deletedGroupIndices.length > 0) {
+                    newIndex = deletedGroupIndices.pop();
+                }
+
+                else {
+                    newIndex = firstCustomGroupIndex++;
+                }
+
+                Group[group] = newIndex;
+                ReverseGroup[newIndex] = group;
                 boundConstraints[group] = {};
             }
 
-            if (!boundConstraints[group][element.id]) {
+            if(!boundConstraints[group][element.id]) {
                 boundConstraints[group][element.id] = {};
             }
 
@@ -681,8 +700,6 @@ regula = (function() {
 
             return tokens;
         }
-
-
 
         /** the recursive-descent parser starts here **/
         /** it parses according to the following EBNF **/
@@ -941,12 +958,10 @@ regula = (function() {
                     result = paramValue(tokens);
 
                     if(result.successful) {
-                        var param = {
+                        result.data = {
                             name: parameterName,
                             value: result.data
                         };
-
-                        result.data = param;
                     }
 
                     else {
@@ -1240,7 +1255,6 @@ regula = (function() {
         }
        
         function booleanValue(tokens) {
-            var data = "";
             var token = tokens.shift();
             var result = {
                 successful: true,
@@ -1524,77 +1538,13 @@ regula = (function() {
 
             var dataConstraintsAttribute = element.getAttribute("data-constraints");
             result = parse(element, dataConstraintsAttribute);
+            i++;
         }
 
         return result;
     }
 
     function bindFromOptions(options) {
-
-        //returns union of first and second array
-        function union(first, second) {
-            var inserted  = {};
-            var union = new Array();
-
-            for(var i = 0; i < first.length; i++) {
-                union.push(first[i]);
-                inserted[first[i]] =  true;
-            }
-
-            for(var j = 0; j < second.length; j++) {
-                if(!inserted[second[j]]) {
-                    union.push(second[j]);
-                }
-            }
-
-            return union;
-        }
-
-        //substract second from first
-        function subtract(second, first) {
-            var difference = new Array();
-
-            for(var i = 0; i < first; i++) {
-                if(!exists(second, first[i])) {
-                    difference.push(first[i]);
-                }
-            }
-
-            return difference;
-        }
-
-        //handles the overwriting of groups which needs some special logic
-        function overwriteGroups(element, constraintType, definedParameters) {
-            var oldGroups = boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]]["groups"];
-
-            /* Since the new groups are passed in as an array of 'enum' values, we have to translate them to actual strings */
-            var newGroups = [];
-
-            for(var j = 0; j < definedParameters["groups"].length; j++) {
-                newGroups[j] = ReverseGroup[definedParameters["groups"][j]];
-            }
-
-            /* If the list of groups does not contain the "Default" group, let's add it because we don't want to delete it if
-               the user did not specify it
-             */
-            if(!exists(newGroups, ReverseGroup[Group.Default])) {
-                newGroups.push(ReverseGroup[Group.Default]);
-            }
-
-            var groupsToRemoveConstraintFrom = subtract(newGroups, union(oldGroups, newGroups));
-
-            for(var group in groupsToRemoveConstraintFrom) {
-                delete boundConstraints[group][element.id][ReverseConstraint[constraintType]];
-
-                if(isMapEmpty(boundConstraints[group][element.id])) {
-                    delete boundConstraints[group][element.id];
-
-                    if(isMapEmpty(boundConstraints[group])) {
-                        delete boundConstraints[group];
-                    }
-                }
-            }
-        }
 
         var result = {
             successful: true,
@@ -1603,8 +1553,6 @@ regula = (function() {
         };
 
         var element = options.element;
-        var overwriteConstraint = options.overwriteConstraint || false;
-        var overwriteParameter = options.overwriteParameter || false;
         var constraints = options.constraints || [];
         var tagName = (element) ? element.tagName.toLowerCase() : null;
 
@@ -1640,126 +1588,280 @@ regula = (function() {
             };
         }
 
+
         else {
             var i = 0;
             while(i < constraints.length && result.successful) {
-                var constraint = constraints[i];
-                var constraintType = constraint.constraintType;
-                var definedParameters = constraint.params || {};
-                var newParameters = {size: 0};
+                result = bindFromConstraintDefinition(constraints[i], options);
+                i++;
+            }
+        }
 
-                /* We check to see if this was a valid/defined constraint. It wasn't so we need to return an error message */
-                if(!constraintType) {
-                    result = {
-                        successful:false,
-                        message: "regula.bind(options) expects a valid constraint type for each constraint in constraints attribute of the options argument. " + explodeParameters(options),
-                        data:null
-                    };
+        return result;
+    }
+
+    function bindFromConstraintDefinition(constraint, options) {
+
+        //a few inner utility-functions
+
+        //returns union of first and second set
+        function union(first, second) {
+            var inserted  = {};
+            var union = new Array();
+
+            for(var i = 0; i < first.length; i++) {
+                union.push(first[i]);
+                inserted[first[i]] =  true;
+            }
+
+            for(var j = 0; j < second.length; j++) {
+                if(!inserted[second[j]]) {
+                    union.push(second[j]);
                 }
+            }
 
-                else {
-                     /*
-                      We check and see if this element-constraint combination does NOT exist. We can say that the combination does NOT exist if
-                        o The element's id does not exist as a key within the Default group (every element is added to the default group regardless)
-                          OR IF
-                        o The element's id exists within the Default group, but this particular constraint has not been bound to it
-                      If either of these conditions were met, we can simply proceed to validate the constraint definition and then add it if it is valid
+            return union;
+        }
 
-                      We also have to do one more thing. definedParameters has no 'size' property. So we need to essentially copy that information
-                      into newParameters using the put function so that can have a 'size' property (we will need it when we validate this constraint
-                      definition)
-                    */
+        //substract second set from first
+        function subtract(second, first) {
+            var difference = new Array();
 
-                    if(!boundConstraints[ReverseGroup[Group.Default]][element.id] || !boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]]) {
-                        for(var param in definedParameters) {
-                            put(newParameters, param, definedParameters[param]);
-                        }
+            for(var i = 0; i < first.length; i++) {
+                if(!exists(second, first[i])) {
+                    difference.push(first[i]);
+                }
+            }
 
-                        result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
+            return difference;
+        }
+
+        //handles the overwriting of groups which needs some special logic
+        function overwriteGroups(element, constraintType, definedParameters) {
+            var oldGroups = boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]]["groups"].split(/,/);
+
+            var newGroups = [];
+
+            if(definedParameters["groups"]) {
+                newGroups = definedParameters["groups"].split(/,/);
+            }
+
+            else {
+                newGroups.push(ReverseGroup[Group.Default]);
+            }
+
+            /* If the list of groups does not contain the "Default" group, let's add it because we don't want to delete it if
+               the user did not specify it
+             */
+            if(!exists(newGroups, ReverseGroup[Group.Default])) {
+                newGroups.push(ReverseGroup[Group.Default]);
+            }
+
+            var groupsToRemoveConstraintFrom = subtract(newGroups, union(oldGroups, newGroups));
+
+            for(var i = 0; i < groupsToRemoveConstraintFrom.length; i++) {
+                var group = groupsToRemoveConstraintFrom[i];
+
+                delete boundConstraints[group][element.id][ReverseConstraint[constraintType]];
+
+                if(isMapEmpty(boundConstraints[group][element.id])) {
+                    delete boundConstraints[group][element.id];
+
+                    if(isMapEmpty(boundConstraints[group])) {
+                        delete boundConstraints[group];
+
+                        /* delete from 'enum' */
+                        var groupIndex = Group[group];
+                        delete Group[group];
+                        delete ReverseGroup[groupIndex];
+
+                        deletedGroupIndices.push(groupIndex);
+                    }
+                }
+            }
+        }
+
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
+
+        var element = options.element;
+        var overwriteConstraint = constraint.overwriteConstraint || false;
+        var overwriteParameters = constraint.overwriteParameters || false;
+        var constraintType = constraint.constraintType;
+        var definedParameters = constraint.params || {};
+        var newParameters = {size: 0};
+
+        /* We check to see if this was a valid/defined constraint. It wasn't so we need to return an error message */
+        if(!constraintType) {
+            result = {
+                successful: false,
+                message: "regula.bind(options) expects a valid constraint type for each constraint in constraints attribute of the options argument. " + explodeParameters(options),
+                data: null
+            };
+        }
+
+        /* we also need to make sure groups make sense (if we got any) */
+        else if(definedParameters && definedParameters["groups"]) {
+
+            if(typeof definedParameters["groups"] == "object" && definedParameters["groups"].length != undefined) {
+
+                /* We need to normalize the "groups" parameter that the user sends in. The user sends in the groups parameter as an array of 'enum'
+                   values, or if it is a new constraint, a string. We need to normalize this into a string of comma-separated values. While we're
+                   doing this, we'll also check to see if we have any invalid groups
+                */
+                var definedGroups = "";
+                var j = 0;
+
+                while(j < definedParameters["groups"].length && result.successful) {
+
+                    if(typeof definedParameters["groups"][j] == "string") {
+                        definedGroups += definedParameters["groups"][j] + ","
+                    }
+
+                    else if(ReverseGroup[definedParameters["groups"][j]]) {
+                        definedGroups += ReverseGroup[definedParameters["groups"][j]] + ","
                     }
 
                     else {
-
-
-                        if(overwriteConstraint) {
-                            /* We are sure that this element-constraint combination exists, and we are sure that we ARE overwriting it. */
-
-                            for(var param in definedParameters) {
-                                put(newParameters, param, definedParameters[param]);
-                            }
-
-                            result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
-
-                            if(result.successful) {
-                                 /* We could delete this element-constraint combination out of all the old groups. But let's be smart about it
-                                   and only delete it from the groups it no longer exists in (according to the new groups parameter). Since
-                                   this is a destructive operation we only want to do this if the validation was successful
-                                 */
-
-                                overwriteGroups(element, constraintType, definedParameters);
-                            }
-                        }
-
-                        else {
-                            /* We are sure that this element-constraint combination exists, and we are sure that we ARE NOT overwriting it.
-                               BUT, we need to check if the overwriteParameter flag is set as well. If that is the case, and the user has
-                               specified a parameter that already exists within the parameter list for the constraint, we will overwrite its
-                               value with the new one. Otherwise, we will NOT overwrite it and we will maintain the old value
-                             */
-
-                            //Let's get the existing parameters for this constraint
-                            var oldParameters = boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]];
-
-                            /* Let's copy our existing parameters into the new parameter map. We'll decide later if we're going to overwrite
-                               the existing values or not, based on the overwriteParameter flag
-                             */
-
-                            for(var param in oldParameters) {
-                                put(newParameters, param, oldParameters[param]);
-                            }
-
-                            if(overwriteParameter) {
-                                //Since overwriteParameter is true, if we find a parameter in definedParameters that already
-                                //exists in oldParameters, we'll overwrite the old value with the new one. All this really
-                                //entails is iterating over definedParameters and inserting the values into newParameters
-
-                                for(var param in definedParameters) {
-                                    put(newParameters, param, definedParameters[param]);
-                                }
-
-                                result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
-
-                                if(result.successful) {
-                                    /* Because we're overwriting, we need to take groups into account. We basically need to see if
-                                       we need to remove this constraint-element combination from any group(s). For example, assume
-                                       that we originally had the groups "First" and "Second" and then the user sent in "Second"
-                                       and "Third". This means that we have to remove this constraint from the "First" group.
-                                       So basically, the groups we need to remove the element-constraint combination from can be
-                                       found by performing (Go union Gn) - Gn where Go is the old group set and Gn is the new group
-                                       set. Since this is a destructive operation, we only want to do it if the constraint definition
-                                       validated successfully.
-                                     */
-                                    overwriteGroups(element, constraintType, definedParameters);
-                                }
-                            }
-
-                            else {
-                                //Since overwriteParameter is false, we will only insert a parameter from definedParameters
-                                //if it doesn't exist in oldParameters
-
-                                for(var param in definedParameters) {
-                                    if(!oldParameters[param]) {
-                                        put(newParameters, param, definedParameters[param]);
-                                    }
-                                }
-                            }
-                        }
+                        result = {
+                            successful: false,
+                            message: "Invalid group " + definedParameters["groups"][j] + " " + explodeParameters(options),
+                            data: null
+                        };
                     }
 
-                    if(result.successful) {
-                        createConstraintFromDefinition(element, ReverseConstraint[constraintType], newParameters);
+                    j++;
+                }
+
+                if(result.successful) {
+                    definedGroups = definedGroups.replace(/,$/, "");
+                    definedParameters["groups"] = definedGroups;
+                }
+
+            }
+
+            else {
+                result = {
+                    successful: false,
+                    message: "The groups parameter must be an array of enums or strings " + explodeParameters(options),
+                    data: null
+                };
+            }
+        }
+
+        if(result.successful) {
+            /*
+             We check and see if this element-constraint combination does NOT exist. We can say that the combination does NOT exist if
+             o The element's id does not exist as a key within the Default group (every element is added to the default group regardless)
+             OR IF
+             o The element's id exists within the Default group, but this particular constraint has not been bound to it
+             If either of these conditions were met, we can simply proceed to validate the constraint definition and then add it if it is valid
+
+             We also have to do one more thing. definedParameters has no 'size' property. So we need to essentially copy that information
+             into newParameters using the put function so that can have a 'size' property (we will need it when we validate this constraint
+             definition)
+             */
+
+            if(!boundConstraints[ReverseGroup[Group.Default]][element.id] || !boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]]) {
+                for(var param in definedParameters) {
+                    if(definedParameters.hasOwnProperty(param)) {
+                        put(newParameters, param, definedParameters[param]);
                     }
                 }
+
+                result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
+            }
+
+            else {
+
+                if(overwriteConstraint) {
+                    /* We are sure that this element-constraint combination exists, and we are sure that we ARE overwriting it. */
+
+                    for(var param in definedParameters) {
+                        if(definedParameters.hasOwnProperty(param)) {
+                            put(newParameters, param, definedParameters[param]);
+                        }
+                    }
+
+                    result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
+
+                    if(result.successful) {
+                        /* We could delete this element-constraint combination out of all the old groups. But let's be smart about it
+                         and only delete it from the groups it no longer exists in (according to the new groups parameter). Since
+                         this is a destructive operation we only want to do this if the validation was successful
+                         */
+
+                        overwriteGroups(element, constraintType, definedParameters);
+                    }
+                }
+
+                else {
+                    /* We are sure that this element-constraint combination exists, and we are sure that we ARE NOT overwriting it.
+                       BUT, we need to check if the overwriteParameter flag is set as well. If that is the case, and the user has
+                       specified a parameter that already exists within the parameter list for the constraint, we will overwrite its
+                       value with the new one. Otherwise, we will NOT overwrite it and we will maintain the old value
+                     */
+
+                    //Let's get the existing parameters for this constraint
+                    var oldParameters = boundConstraints[ReverseGroup[Group.Default]][element.id][ReverseConstraint[constraintType]];
+
+                    /* Let's copy our existing parameters into the new parameter map. We'll decide later if we're going to overwrite
+                     the existing values or not, based on the overwriteParameter flag
+                     */
+
+                    for(var param in oldParameters) {
+                        if(oldParameters.hasOwnProperty(param)) {
+                            put(newParameters, param, oldParameters[param]);
+                        }
+                    }
+
+                    if(overwriteParameters) {
+                        //Since overwriteParameter is true, if we find a parameter in definedParameters that already
+                        //exists in oldParameters, we'll overwrite the old value with the new one. All this really
+                        //entails is iterating over definedParameters and inserting the values into newParameters
+
+                        for(var param in definedParameters) {
+                            if(definedParameters.hasOwnProperty(param)) {
+                                put(newParameters, param, definedParameters[param]);
+                            }
+                        }
+
+                        result = validateConstraintDefinition(element, ReverseConstraint[constraintType], newParameters);
+
+                        if(result.successful) {
+                            /* Because we're overwriting, we need to take groups into account. We basically need to see if
+                             we need to remove this constraint-element combination from any group(s). For example, assume
+                             that we originally had the groups "First" and "Second" and then the user sent in "Second"
+                             and "Third". This means that we have to remove this constraint from the "First" group.
+                             So basically, the groups we need to remove the element-constraint combination from can be
+                             found by performing (Go union Gn) - Gn where Go is the old group set and Gn is the new group
+                             set. Since this is a destructive operation, we only want to do it if the constraint definition
+                             validated successfully.
+                             */
+                            overwriteGroups(element, constraintType, newParameters);
+                        }
+                    }
+
+                    else {
+                        //Since overwriteParameter is false, we will only insert a parameter from definedParameters
+                        //if it doesn't exist in oldParameters
+
+                        for(var param in definedParameters) {
+                            if(definedParameters.hasOwnProperty(param)) {
+                                if(!oldParameters[param]) {
+                                    put(newParameters, param, definedParameters[param]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(result.successful) {
+                createConstraintFromDefinition(element, ReverseConstraint[constraintType], newParameters);
             }
         }
 
@@ -1806,7 +1908,7 @@ regula = (function() {
         /* default to independent validation for groups i.e., groups are validated independent of each other and will not
            fail early
          */
-        if(typeof options.independent == undefined) {
+        if(options.independent == undefined) {
             options.independent = true;
         }
 
@@ -1870,9 +1972,9 @@ regula = (function() {
 
                         var elementConstraints = groupElements[elementId];
 
-                        if(elementConstraints[options.elementConstraint]) {
+                        if(elementConstraints[options.constraintType]) {
                             constraintFound = true;
-                            var validationResult = validateGroupElementConstraintCombination(group, elementId, options.elementConstraint);
+                            var validationResult = validateGroupElementConstraintCombination(group, elementId, options.constraintType);
 
                             if(validationResult) {
                                 validationResults.push(validationResult);
@@ -1944,10 +2046,10 @@ regula = (function() {
                 if(elementConstraints) {
                     elementFound = true;
 
-                    if(elementConstraints[options.elementConstraint]) {
+                    if(elementConstraints[options.constraintType]) {
                         constraintFound = true;
 
-                        var validationResult = validateGroupElementConstraintCombination(group, options.elementId, options.elementConstraint);
+                        var validationResult = validateGroupElementConstraintCombination(group, options.elementId, options.constraintType);
 
                         if(validationResult) {
                             validationResults.push(validationResult);
@@ -1958,7 +2060,7 @@ regula = (function() {
         }
 
         if(!elementFound || !constraintFound) {
-            throw "No element with id " + options.elementId + " was found with the constraint " + options.elementConstraint + ". " + explodeParameters(options);
+            throw "No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + explodeParameters(options);
         }
 
         return validationResults;
@@ -1968,8 +2070,8 @@ regula = (function() {
         var validationResults = new Array();
 
         var i = 0;
-        var failed = false;
-        while(i < options.groups.length && !failed) {
+        var successful = true;
+        while(i < options.groups.length && successful) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -1999,7 +2101,7 @@ regula = (function() {
             }
 
             i++;
-            failed = (!option.independent && validationResults.length > 0);
+            successful = (validationResults.length == 0) || (options.independent && validationResults.length != 0);
         }
 
         return validationResults;
@@ -2009,8 +2111,8 @@ regula = (function() {
         var validationResults = new Array();
 
         var i = 0;
-        var failed = false;
-        while(i < options.groups.length && !failed) {
+        var successful = true;
+        while(i < options.groups.length && successful) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -2022,9 +2124,9 @@ regula = (function() {
 
                         var elementConstraints = groupElements[elementId];
 
-                        if(elementConstraints[options.elementConstraint]) {
+                        if(elementConstraints[options.constraintType]) {
                             constraintFound = true;
-                            var validationResult = validateGroupElementConstraintCombination(group, elementId, options.elementConstraint);
+                            var validationResult = validateGroupElementConstraintCombination(group, elementId, options.constraintType);
 
                             if(validationResult) {
                                 validationResults.push(validationResult);
@@ -2037,7 +2139,7 @@ regula = (function() {
                 //function can return zero validation results, which can be (incorrectly) interpreted as a successful validation
 
                 if(!constraintFound) {
-                    throw "Constraint " + options.elementConstraint + " has not been bound to any element under group " + group + ". " + explodeParameters(options);
+                    throw "Constraint " + options.constraintType + " has not been bound to any element under group " + group + ". " + explodeParameters(options);
                 }
             }
 
@@ -2046,7 +2148,7 @@ regula = (function() {
             }
 
             i++;
-            failed = (!option.independent && validationResults.length > 0);
+            successful = (validationResults.length == 0) || (options.independent && validationResults.length != 0);
         }
 
         return validationResults;
@@ -2057,8 +2159,8 @@ regula = (function() {
         var elementFound = false;
 
         var i = 0;
-        var failed = false;
-        while(i < options.groups.length && !failed) {
+        var successful = true;
+        while(i < options.groups.length && successful) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
@@ -2086,7 +2188,7 @@ regula = (function() {
             }
 
             i++;
-            failed = (!option.independent && validationResults.length > 0);
+            successful = (validationResults.length == 0) || (options.independent && validationResults.length != 0);
         }
 
         if(!elementFound) {
@@ -2100,17 +2202,17 @@ regula = (function() {
         var validationResults = new Array();
 
         var i = 0;
-        var failed = false;
-        while(i < options.groups.length && !failed) {
+        var successful = true;
+        while(i < options.groups.length && successful) {
             var group = options.groups[i];
-            var validationResult = validateGroupElementConstraintCombination(group, options.elementId, options.elementConstraint);
+            var validationResult = validateGroupElementConstraintCombination(group, options.elementId, options.constraintType);
 
             if(validationResult) {
                 validationResults.push(validationResult);
             }
 
             i++;
-            failed = (!option.independent && validationResults.length > 0);
+            successful = (validationResults.length == 0) || (options.independent && validationResults.length != 0);
         }
 
         return validationResults;
@@ -2133,25 +2235,20 @@ regula = (function() {
         //Validate this constraint only if we haven't already validated it during this validation run
         if(!validatedConstraints[elementId][elementConstraint]) {
             if(!elementConstraints) {
-                throw "No constraints have been defined for the element with id: " + elementId;
+                throw "No constraints have been defined for the element with id: " + elementId + " in group " + group;
             }
 
             else {
                 var params = elementConstraints[elementConstraint];
 
                 if(!params) {
-                    throw elementConstraint + " hasn't been bound to the element with id " + elementId;
+                    throw elementConstraint + " in group " + group + " hasn't been bound to the element with id " + elementId;
                 }
 
                 else {
-                    //var validatorParams = {};
                     var constraintPassed = false;
                     var failingElements = new Array();
                     var element = document.getElementById(elementId);
-
-                    /*for(var i = 0; i < params.length; i++) {
-                        validatorParams[params[i].name] = params[i].value;
-                    }*/
 
                     if(constraintsMap[elementConstraint].formSpecific) {
                         failingElements = constraintsMap[elementConstraint].validator.call(element, params);
@@ -2208,7 +2305,6 @@ regula = (function() {
                             constraintName: elementConstraint,
                             custom: constraintsMap[elementConstraint].custom,
                             constraintParameters: params,
-                            definedParameterValueMap: params,
                             failingElements: failingElements,
                             message: errorMessage
                         };
