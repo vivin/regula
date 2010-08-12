@@ -2157,6 +2157,7 @@ regula = (function() {
     function validateGroupsWithElement(options) {
         var validationResults = new Array();
         var elementFound = false;
+        var notFound = new Array();
 
         var i = 0;
         var successful = true;
@@ -2168,7 +2169,7 @@ regula = (function() {
 
                 var elementConstraints = groupElements[options.elementId];
                 if(elementConstraints) {
-                    elementFound = true;
+                    elementFound &= true;
 
                     for(var elementConstraint in elementConstraints) {
                         if(elementConstraints.hasOwnProperty(elementConstraint)) {
@@ -2181,6 +2182,11 @@ regula = (function() {
                         }
                     }
                 }
+
+                else {
+                    elementFound = false;
+                    notFound.push(group);
+                }
             }
 
             else {
@@ -2192,7 +2198,7 @@ regula = (function() {
         }
 
         if(!elementFound) {
-            throw "No element with id " + options.elementId + " was found in any of the groups in: [" + explode(options.groups, ",").replace(/,/g, ", ") + "]. " + explodeParameters(options);
+            throw "No element with id " + options.elementId + " was found in the following group(s): [" + explode(notFound, ",").replace(/,/g, ", ") + "]. " + explodeParameters(options);
         }
 
         return validationResults;
