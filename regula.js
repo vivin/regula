@@ -130,8 +130,9 @@ regula = (function() {
         Min: 3,
         Range: 4,
         Between: 4,
-        NotEmpty: 5,
         NotBlank: 5,
+        NotEmpty: 5,
+        Blank: 6,
         Empty: 6,
         Pattern: 7,
         Matches: 7,
@@ -151,7 +152,7 @@ regula = (function() {
         3: "Min",
         4: "Range",
         5: "NotBlank",
-        6: "Empty",
+        6: "Blank",
         7: "Pattern",
         8: "Email",
         9: "IsAlpha",
@@ -223,20 +224,20 @@ regula = (function() {
 
         NotBlank: {
             formSpecific: false,
-            validator: notEmpty,
+            validator: notBlank,
             type: Constraint.NotBlank,
             custom: false,
             params: [],
             defaultMessage: "{label} cannot be blank."
         },
 
-        Empty: {
+        Blank: {
             formSpecific: false,
-            validator: empty,
-            type: Constraint.Empty,
+            validator: blank,
+            type: Constraint.Blank,
             custom: false,
             params: [],
-            defaultMessage: "{label} needs to be empty."
+            defaultMessage: "{label} needs to be blank."
         },
 
         Pattern: {
@@ -335,11 +336,11 @@ regula = (function() {
         return this.value <= params["max"] && this.value >= params["min"];
     }
 
-    function notEmpty() {
+    function notBlank() {
         return this.value.replace(/\s/g, "") != "";
     }
 
-    function empty() {
+    function blank() {
         return this.value.replace(/\s/g, "") == "";
     }
 
@@ -414,7 +415,7 @@ regula = (function() {
 
             else if(this.tagName.toLowerCase() == "input" || this.tagName.toLowerCase() == "textarea") {
                 if(this.type.toLowerCase() != "button") {
-                    result = notEmpty.call(this);
+                    result = notBlank.call(this);
                 }
             }
         }
