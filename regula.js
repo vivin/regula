@@ -131,6 +131,7 @@ regula = (function() {
         Range: 4,
         Between: 4,
         NotEmpty: 5,
+        NotBlank: 5,
         Empty: 6,
         Pattern: 7,
         Matches: 7,
@@ -149,7 +150,7 @@ regula = (function() {
         2: "Max",
         3: "Min",
         4: "Range",
-        5: "NotEmpty",
+        5: "NotBlank",
         6: "Empty",
         7: "Pattern",
         8: "Email",
@@ -220,13 +221,13 @@ regula = (function() {
             defaultMessage: "{label} needs to be between {max} and {min}."
         },
 
-        NotEmpty: {
+        NotBlank: {
             formSpecific: false,
             validator: notEmpty,
-            type: Constraint.NotEmpty,
+            type: Constraint.NotBlank,
             custom: false,
             params: [],
-            defaultMessage: "{label} cannot be empty."
+            defaultMessage: "{label} cannot be blank."
         },
 
         Empty: {
