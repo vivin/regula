@@ -773,17 +773,20 @@ regula = (function() {
         }
 
         function constraintDef(tokens) {
+            var alias = {
+                Between: "Range",
+                Matches: "Pattern",
+                Empty: "Blank",
+                NotEmpty: "NotBlank"
+            };
+
             var result = constraintName(tokens);
 
             if(result.successful) {
                 currentConstraintName = result.data;
-                currentConstraintName = currentConstraintName == "Between" ?
-                                                                 "Range"
-                                                                 :
-                                                                 currentConstraintName == "Matches" ?
-                                                                                          "Pattern"
-                                                                                          :
-                                                                                          currentConstraintName;
+
+                currentConstraintName = alias[currentConstraintName] ? alias[currentConstraintName] : currentConstraintName;
+
                 if(constraintsMap[currentConstraintName]) {
                     result = paramDef(tokens);
 
