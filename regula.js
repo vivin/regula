@@ -724,7 +724,7 @@ regula = (function() {
             boolean                ::= true | false
             char                   ::= .
             regular-expression     ::= "/", { char }, "/"
-            group-definition       ::= "[", group { ",", group } "]"
+            group-definition       ::= "[", [ group { ",", group } ] "]"
             group                  ::= valid-starting-char { valid-char }
             
          */
@@ -894,13 +894,12 @@ regula = (function() {
                 tokens.shift(); // get rid of the (
 
                 var data = {};
-                //var data = new Array();
 
                 result = param(tokens);
-                put(data, result.data.name, result.data.value);
-                //data.push(result.data);
 
                 if(result.successful) {
+                    put(data, result.data.name, result.data.value);
+                    
                     //get rid of spaces
                     if(trim(peek(tokens)).length == 0) {
                         tokens.shift();
@@ -1297,7 +1296,23 @@ regula = (function() {
             };
 
             if(token == "[") {
-                result = group(tokens);
+
+                //get rid of spaces
+                if(trim(peek(tokens)).length == 0) {
+                    tokens.shift();
+                }
+
+                if(peek(tokens) == "]") {
+                    result = {
+                        successful: true,
+                        message: "",
+                        data: ""
+                    };
+                }
+
+                else {
+                    result = group(tokens);
+                }
 
                 if(result.successful) {
                     data = result.data;
@@ -1321,7 +1336,7 @@ regula = (function() {
                     result.data = data;
 
                     token = tokens.shift();
-                    
+
                     //get rid of spaces
                     if(trim(token).length == 0) {
                         tokens.shift();
@@ -1358,6 +1373,12 @@ regula = (function() {
         }
 
         function group(tokens) {
+            var result = {
+                successful: true,
+                message: "",
+                data: ""
+            };
+
             var token = trim(tokens.shift());
 
             //get rid of space
@@ -1365,7 +1386,7 @@ regula = (function() {
                 token = tokens.shift();
             }
 
-            var result = validStartingCharacter(token[0]);
+            result = validStartingCharacter(token[0]);
 
             if(result.successful) {
                 var i = 1;
