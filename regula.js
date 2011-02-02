@@ -2,7 +2,8 @@
  Regula: An annotation-based form-validation framework in Javascript
  Written By Vivin Paliath (http://vivin.net)
  License: BSD License
- Copyright (C) 2010
+ Copyright (C) 2010-2011
+ Version 1.2.2
  */
 
 /* for code completion */
@@ -23,7 +24,8 @@ regula = (function() {
         Code/licensing: http://code.google.com/p/getelementsbyclassname/
     */
     var getElementsByClassName = function (className, tag, elm){
-        if(document.getElementsByClassName) {
+
+        if(document.getElementsByClassName && Object.prototype.getElementsByClassName === document.getElementsByClassName) {
             getElementsByClassName = function (className, tag, elm) {
                 elm = elm || document;
                 var elements = elm.getElementsByClassName(className),
