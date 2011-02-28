@@ -14,7 +14,8 @@ var regula = {
     override: function(options) {},
     validate: function(options) {},
     Constraint: {},
-    Group: {}
+    Group: {},
+    DateFormat: {},
 };
 
 regula = (function() {
@@ -109,6 +110,19 @@ regula = (function() {
         0: "Default"
     };
 
+    var DateFormat = {
+        YMD: 0,
+        MDY: 1,
+        DMY: 2
+    };
+
+    /* Keys here match up to values in DateFormat */
+    var DateFormatIndices = {
+        0: {Year: 0, Month: 1, Day: 2},
+        1: {Month: 0, Day: 1, Year: 2},
+        2: {Day: 0, Month: 1, Year: 2}
+    };
+
     /* New groups are added to our 'enum' sequentially with the help of an explicit index that is maintained separately
        (see firstCustomGroupIndex). When groups are deleted, we need to remove them from the Group 'enum'. Simply
        removing them would be fine. But what we end up with are "gaps" in the indices. For example, assume that we added
@@ -143,7 +157,11 @@ regula = (function() {
         IsAlphaNumeric: 11,
         CompletelyFilled: 12,
         PasswordsMatch: 13,
-        Required: 14
+        Required: 14,
+        Length: 15,
+        Digits: 16,
+        Past: 17,
+        Future: 18
     };
 
     var ReverseConstraint = {
@@ -161,7 +179,11 @@ regula = (function() {
         11: "IsAlphaNumeric",
         12: "CompletelyFilled",
         13: "PasswordsMatch",
-        14: "Required"
+        14: "Required",
+        15: "Length",
+        16: "Digits",
+        17: "Past",
+        18: "Future"
     };
 
     var friendlyInputNames = {
@@ -326,6 +348,46 @@ regula = (function() {
             compound: false,
             params: [],
             defaultMessage: "{label} is required."
+        },
+
+        Length: {
+            formSpecific: false,
+            validator: length,
+            constraintType: Constraint.Length,
+            custom: false,
+            compound: false,
+            params: ["min", "max"],
+            defaultMessage: "{label} length must be between {max} and {min}."
+        },
+
+        Digits: {
+            formSpecific: false,
+            validator: digits,
+            constraintType: Constraint.Digits,
+            custom: false,
+            compound: false,
+            params: ["integer", "fraction"],
+            defaultMessage: "{label} must have up to {integer} digits and {fraction} fractional digits."
+        },
+
+        Past: {
+            formSpecific: false,
+            validator: past,
+            constraintType: Constraint.Past,
+            custom: false,
+            compound: false,
+            params: ["format", "separator"],
+            defaultMessage: "{label} must be in the past."
+        },
+
+        Future: {
+            formSpecific: false,
+            validator: future,
+            constraintType: Constraint.Today,
+            custom: false,
+            compound: false,
+            params: ["format", "separator"],
+            defaultMessage: "{label} must be in the future."
         }
     };
 
@@ -479,15 +541,15 @@ regula = (function() {
     }
 
     function isAlpha() {
-        return /[A-Za-z]+/.test(this.value);
+        return /^[A-Za-z]+$/.test(this.value);
     }
 
     function isNumeric() {
-        return /-?[0-9]+/.test(this.value);
+        return /^-?[0-9]+$/.test(this.value);
     }
 
     function isAlphaNumeric() {
-        return /-?[0-9]+|[0-9A-Za-z]+/.test(this.value);
+        return /^[0-9]+|[0-9A-Za-z]+$/.test(this.value);
     }
 
     function completelyFilled() {
@@ -537,6 +599,28 @@ regula = (function() {
         }
 
         return result;
+    }
+
+    function length(params) {
+        return (this.value.length >= params["min"] && this.value.length <= params["max"]);
+    }
+
+    function digits(params) {
+        var parts = this.value.split(/\./);
+        var result = false;
+
+        if(parts.length == 1) {
+           result = (parts[0].length <= params["integer"]);
+        }
+
+        else if(parts.length == 2) {
+           result = (parts[0].length <= params["integer"] && parts[1].length <= params["fraction"]);
+        }
+       
+        return result;
+    }
+
+    function past(params) {
     }
 
     /* a meta-validator that validates member constraints of a composing constraint */
@@ -2676,6 +2760,7 @@ regula = (function() {
         compound: compound,
         override: override,
         Constraint: Constraint,
-        Group: Group
+        Group: Group,
+        DateFormat: DateFormat
     };
 })();
