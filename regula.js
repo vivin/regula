@@ -14,8 +14,7 @@ var regula = {
     override: function(options) {},
     validate: function(options) {},
     Constraint: {},
-    Group: {},
-    DateFormat: {},
+    Group: {}
 };
 
 regula = (function() {
@@ -108,19 +107,6 @@ regula = (function() {
 
     var ReverseGroup = {
         0: "Default"
-    };
-
-    var DateFormat = {
-        YMD: 0,
-        MDY: 1,
-        DMY: 2
-    };
-
-    /* Keys here match up to values in DateFormat */
-    var DateFormatIndices = {
-        0: {Year: 0, Month: 1, Day: 2},
-        1: {Month: 0, Day: 1, Year: 2},
-        2: {Day: 0, Month: 1, Year: 2}
     };
 
     /* New groups are added to our 'enum' sequentially with the help of an explicit index that is maintained separately
@@ -620,7 +606,42 @@ regula = (function() {
         return result;
     }
 
+    function parseDates(params) {
+       var DateFormatIndices = {
+           YMD: {Year: 0, Month: 1, Day: 2},
+           MDY: {Month: 0, Day: 1, Year: 2},
+           DMY: {Day: 0, Month: 1, Year: 2}
+       };
+
+       var dateFormatIndices = DateFormatIndices[params["format"]];
+
+       var separator = params["separator"];
+       if(typeof params["separator"] === "undefined") {
+           separator = /\//.test(this.value) ? "/" :
+                                               /\./.test(this.value) ? "." :
+                                                                       / /.test(this.value) ? " " : "";
+       }
+
+       var parts = this.value.split(separator);
+       var dateToValidate = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
+
+       var dateToTestAgainst = new Date();
+       if(typeof params["date"] !== "undefined") {
+          parts = params["date"].split(separator);
+          dateToTestAgainst = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
+       }
+
+       return {dateToValidate: dateToValidate, dateToTestAgainst: dateToTestAgainst};
+    }
+
     function past(params) {
+       var dates = parseDates.call(this, params);
+       return (dates.dateToValidate < dates.dateToTestAgainst);
+    }
+
+    function future(params) {
+       var dates = parseDates.call(this, params);
+       return (dates.dateToValidate > dates.dateToTestAgainst);
     }
 
     /* a meta-validator that validates member constraints of a composing constraint */
@@ -2760,7 +2781,6 @@ regula = (function() {
         compound: compound,
         override: override,
         Constraint: Constraint,
-        Group: Group,
-        DateFormat: DateFormat
+        Group: Group
     };
 })();
