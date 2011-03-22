@@ -14,7 +14,8 @@ var regula = {
     override: function(options) {},
     validate: function(options) {},
     Constraint: {},
-    Group: {}
+    Group: {},
+	DateFormat: {}
 };
 
 regula = (function() {
@@ -171,6 +172,12 @@ regula = (function() {
         17: "Past",
         18: "Future"
     };
+	
+	var DateFormat = {
+		DMY: "DMY",
+		MDY: "MDY",
+		YMD: "YMD"
+	};
 
     var friendlyInputNames = {
         form: "The form",
@@ -1093,7 +1100,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Invalid constraintName in constraint definition") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid constraint name in constraint definition") + " " + result.message,
                     data: null
                 };
             }
@@ -1120,7 +1127,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, constraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + " " + result.message,
                     data: null
                 };
             }
@@ -1136,7 +1143,7 @@ regula = (function() {
                 data: null
             };
 
-            if(!/[A-Za-z_]/.test(character)) {
+            if(!/[A-Za-z_]/.test(character) || typeof character === "undefined" || character == null) {
                 result = {
                     successful: false,
                     message: generateErrorMessage(element, currentConstraintName, "Invalid starting character"),
@@ -1230,6 +1237,15 @@ regula = (function() {
 
             }
 
+            else if(peek(tokens) != "@") {
+                //The next token MUST be a @ if we are expecting further constraints
+                result = {
+                    successful: false,
+                    message: generateErrorMessage(element, currentConstraintName, "Unexpected character '" + peek(tokens) + "'" + " after constraint definition") + " " + result.message,
+                    data: null
+                };
+            }
+
             return result;
         }
 
@@ -1272,7 +1288,7 @@ regula = (function() {
             else {
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Invalid parameter name") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid parameter name. You might have unmatched parentheses") + " " + result.message,
                     data: null
                 };
             }
@@ -1288,26 +1304,35 @@ regula = (function() {
                 token = tokens.shift();
             }
 
-            var result = validStartingCharacter(token[0]);
+            var result = {
+                successful: false,
+                message: generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _"),
+                data: null
+            };
 
-            if(result.successful) {
-                var i = 1;
-                while(i < token.length && result.successful) {
-                    result = validCharacter(token[i]);
-                    i++;
-                }
+            if(typeof tokens != "undefined" && tokens == null) {
+
+                result = validStartingCharacter(token[0]);
 
                 if(result.successful) {
-                    result.data = token;
-                }
-            }
+                    var i = 1;
+                    while(i < token.length && result.successful) {
+                        result = validCharacter(token[i]);
+                        i++;
+                    }
 
-            else {
-                result = {
-                    successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + " " + result.message,
-                    data: null
-                };
+                    if(result.successful) {
+                        result.data = token;
+                    }
+                }
+
+                else {
+                    result = {
+                        successful: false,
+                        message: generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + " " + result.message,
+                        data: null
+                    };
+                }
             }
 
             return result;
