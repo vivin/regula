@@ -1184,57 +1184,62 @@ regula = (function() {
 
                 var data = {};
 
-                result = param(tokens);
-
-                if(result.successful) {
-                    put(data, result.data.name, result.data.value);
-                    
-                    //get rid of spaces
-                    if(trim(peek(tokens)).length == 0) {
-                        tokens.shift();
-                    }
-
-                    while(tokens.length > 0 && peek(tokens) == "," && result.successful) {
-
-                        tokens.shift();
-                        result = param(tokens);
-                        put(data, result.data.name, result.data.value);
-                        //data.push(result.data);
-
-                        //get rid of spaces;
-                        if(trim(peek(tokens)).length == 0) {
-                            tokens.shift();
-                        }
-                    }
-
-                    var token = tokens.shift();
-
-                    //get rid of spaces
-                    if(trim(token).length == 0) {
-                        token = tokens.shift();
-                    }
-
-                    if(token != ")") {
-                        result = {
-                            successful: false,
-                            message: generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
-                            data: null
-                        };
-                    }
-
-                    else {
-                        result.data = data;
-                    }
+                if(peek(tokens) == ")") {
+                    tokens.shift(); //get rid of the )
                 }
 
                 else {
-                    result = {
-                        successful: false,
-                        message: generateErrorMessage(element, currentConstraintName, "Invalid parameter definition") + " " + result.message,
-                        data: null
-                    };
-                }
+                    result = param(tokens);
 
+                    if(result.successful) {
+                        put(data, result.data.name, result.data.value);
+
+                        //get rid of spaces
+                        if(trim(peek(tokens)).length == 0) {
+                            tokens.shift();
+                        }
+
+                        while(tokens.length > 0 && peek(tokens) == "," && result.successful) {
+
+                            tokens.shift();
+                            result = param(tokens);
+                            put(data, result.data.name, result.data.value);
+                            //data.push(result.data);
+
+                            //get rid of spaces;
+                            if(trim(peek(tokens)).length == 0) {
+                                tokens.shift();
+                            }
+                        }
+
+                        var token = tokens.shift();
+
+                        //get rid of spaces
+                        if(trim(token).length == 0) {
+                            token = tokens.shift();
+                        }
+
+                        if(token != ")") {
+                            result = {
+                                successful: false,
+                                message: generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
+                                data: null
+                            };
+                        }
+
+                        else {
+                            result.data = data;
+                        }
+                    }
+
+                    else {
+                        result = {
+                            successful: false,
+                            message: generateErrorMessage(element, currentConstraintName, "Invalid parameter definition") + " " + result.message,
+                            data: null
+                        };
+                    }
+                }
             }
 
             else if(peek(tokens) != "@") {
@@ -1310,8 +1315,7 @@ regula = (function() {
                 data: null
             };
 
-            if(typeof tokens != "undefined" && tokens == null) {
-
+            if(typeof token != "undefined") {
                 result = validStartingCharacter(token[0]);
 
                 if(result.successful) {
@@ -1345,26 +1349,56 @@ regula = (function() {
                 tokens.shift();
             }
 
-            var result = number(tokens);
+            var result = {
+                successful: true,
+                message: "",
+                data: []
+            };
 
-            if(!result.successful) {
-                result = quotedString(tokens);
+            if(peek(tokens) == ")") {
+                result = {
+                    successful: false,
+                    message: generateErrorMessage(element, currentConstraintName, "Parameter value expected") + " " + result.message,
+                    data: null
+                };
+            }
+
+            else {
+                result = number(tokens);
+
+                var message = result.message;
 
                 if(!result.successful) {
-                    result = regularExpression(tokens);
+                    result = quotedString(tokens);
+
+                    result.message = result.message + " " + message;
+                    message = result.message;
 
                     if(!result.successful) {
-                        result = booleanValue(tokens);
+                        result = regularExpression(tokens);
+
+                        result.message = result.message + " " + message;
+                        message = result.message;
 
                         if(!result.successful) {
-                            result = groupDefinition(tokens);
+                            result = booleanValue(tokens);
+
+                            result.message = result.message + " " + message;
+                            message = result.message;
 
                             if(!result.successful) {
-                                result = {
-                                    successful: false,
-                                    message: generateErrorMessage(element, currentConstraintName, "Parameter value must be a number, quoted string, regular expression, or a boolean") + " " + result.message,
-                                    data: null
-                                };
+                                result = groupDefinition(tokens);
+
+                                result.message = result.message + " " + message;
+                                message = result.message;
+
+                                if(!result.successful) {
+                                    result = {
+                                        successful: false,
+                                        message: generateErrorMessage(element, currentConstraintName, "Parameter value must be a number, quoted string, regular expression, or a boolean") + " " + message,
+                                        data: null
+                                    };
+                                }
                             }
                         }
                     }
@@ -1411,7 +1445,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a negative number") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a negative number"),
                     data: null
                 };
             }
@@ -1457,7 +1491,7 @@ regula = (function() {
             if(!/[0-9]/.test(character)) {
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a valid digit") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a valid digit"),
                     data: null
                 };
             }
@@ -1494,7 +1528,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Invalid quoted string") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Invalid quoted string"),
                     data: null
                 };
             }
@@ -1555,7 +1589,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a regular expression") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a regular expression"),
                     data: null
                 };
             }
@@ -1585,7 +1619,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a boolean") + " " + result.message,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a boolean"),
                     data: null
                 };
             }
@@ -1671,7 +1705,7 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a valid group definition") + " " + result. message,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a valid group definition"),
                     data: null
                 };
             }
