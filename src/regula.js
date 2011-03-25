@@ -1008,7 +1008,9 @@ regula = (function() {
             param-value            ::= number | quoted-string | regular-expression | boolean | group-definition
             number                 ::= positive | negative
             negative               ::= "-", positive
-            positive               ::= digit { digit }
+            positive               ::= integer, [ fractional ] | fractional
+            integer                ::= digit { digit }
+            fractional             ::= ".", integer
             quoted-string          ::= "\"", { char }, "\""
             boolean                ::= true | false
             char                   ::= .
@@ -1203,32 +1205,36 @@ regula = (function() {
 
                             tokens.shift();
                             result = param(tokens);
-                            put(data, result.data.name, result.data.value);
-                            //data.push(result.data);
 
-                            //get rid of spaces;
-                            if(trim(peek(tokens)).length == 0) {
-                                tokens.shift();
+                            if(result.successful) {
+                                put(data, result.data.name, result.data.value);
+
+                                 //get rid of spaces;
+                                if(trim(peek(tokens)).length == 0) {
+                                    tokens.shift();
+                                }
                             }
                         }
 
-                        var token = tokens.shift();
+                        if(result.successful) {
+                            var token = tokens.shift();
 
-                        //get rid of spaces
-                        if(trim(token).length == 0) {
-                            token = tokens.shift();
-                        }
+                            //get rid of spaces
+                            if(trim(token).length == 0) {
+                                token = tokens.shift();
+                            }
 
-                        if(token != ")") {
-                            result = {
-                                successful: false,
-                                message: generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
-                                data: null
-                            };
-                        }
+                            if(token != ")") {
+                                result = {
+                                    successful: false,
+                                    message: generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
+                                    data: null
+                                };
+                            }
 
-                        else {
-                            result.data = data;
+                            else {
+                                result.data = data;
+                            }
                         }
                     }
 
@@ -1454,6 +1460,60 @@ regula = (function() {
         }
 
         function positive(tokens) {
+
+            var result = null;
+
+            if(peek(tokens) != ".") {
+                result = integer(tokens);
+
+                if(peek(tokens) == ".") {
+                    var integerPart = result.data;
+
+                    result = fractional(tokens);
+
+                    if(result.successful) {
+                        result.data = integerPart + result.data;
+                    }
+
+                }
+            }
+
+            else {
+                result = fractional(tokens);
+            }
+
+            if(!result.successful) {
+                result = {
+                    successful: false,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a positive number") + " " + result.message,
+                    data: null
+                };
+            }
+
+            return result;
+        }
+
+        function fractional(tokens) {
+
+            var token = tokens.shift(); //get rid of the .
+            var result = integer(tokens);
+
+            if(result.successful) {
+                result.data = token + result.data;
+            }
+
+            else {
+                result = {
+                    successful: false,
+                    message: generateErrorMessage(element, currentConstraintName, "Not a valid fraction"),
+                    data: null
+                };
+            }
+
+            return result;
+        }
+
+        function integer(tokens) {
             var token = trim(tokens.shift());
             var result = digit(token[0]);
 
@@ -1473,8 +1533,8 @@ regula = (function() {
                 tokens.unshift(token);
                 result = {
                     successful: false,
-                    message: generateErrorMessage(element, currentConstraintName, "Not a positive number") + " " + result.message,
-                    data: null
+                    message: generateErrorMessage(element, currentConstraintName, "Not a valid integer") + " " + result.message,
+                    data: []
                 };
             }
 
@@ -1512,6 +1572,7 @@ regula = (function() {
                 var done = false;
 
                 while(tokens.length > 0 && result.successful && !done) {
+
                     if(peek(tokens) == "\"") {
                         done = true;
                         tokens.shift(); //get rid of "
@@ -1521,6 +1582,14 @@ regula = (function() {
                         result = character(tokens);
                         data += result.data;
                     }
+                }
+
+                if(!done) {
+                    result = {
+                        successful: false,
+                        message: generateErrorMessage(element, currentConstraintName, "Unterminated string literal"),
+                        data: null
+                    };
                 }
             }
 
@@ -1539,6 +1608,7 @@ regula = (function() {
             // 1 | 1 | 1 << what we need
             // 0 | 0 | 0
             // 0 | 1 | 0
+
             result.successful = result.successful && done;
             result.data = data;
             return result;
@@ -1573,6 +1643,7 @@ regula = (function() {
                 var done = false;
 
                 while(tokens.length > 0 && result.successful && !done) {
+
                     if(peek(tokens) == "/") {
                         data += tokens.shift();
                         done = true;
@@ -1582,6 +1653,14 @@ regula = (function() {
                         result = character(tokens);
                         data += result.data;
                     }
+                }
+
+                if(!done) {
+                    result = {
+                        successful: false,
+                        message: generateErrorMessage(element, currentConstraintName, "Unterminated regex literal"),
+                        data: null
+                    };
                 }
             }
 
