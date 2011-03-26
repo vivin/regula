@@ -201,6 +201,7 @@ test('Test definition with malformed parameters (3)', function() {
                                               inputElementId + ".NotBlank: Invalid quoted string " +
                                               inputElementId + ".NotBlank: Parameter value is not a number " +
                                               inputElementId + ".NotBlank: Not a positive number " +
+                                              inputElementId + ".NotBlank: Not a valid integer " +
                                               inputElementId + ".NotBlank: Not a valid digit");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=value) should not be a valid definition");
 
@@ -211,15 +212,7 @@ test('Test definition with malformed parameters (4)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=12a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Parameter value is not a number");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12a) should not be a valid definition");
 
     deleteInputElement(inputElementId);
@@ -229,16 +222,7 @@ test('Test definition with malformed parameters (5)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-12a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a positive number " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Parameter value is not a number");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=-12a) should not be a valid definition");
 
     deleteInputElement(inputElementId);
@@ -258,6 +242,7 @@ test('Test definition with malformed parameters (6)', function() {
                                               inputElementId + ".NotBlank: Invalid quoted string " +
                                               inputElementId + ".NotBlank: Parameter value is not a number " +
                                               inputElementId + ".NotBlank: Not a positive number " +
+                                              inputElementId + ".NotBlank: Not a valid integer " +
                                               inputElementId + ".NotBlank: Not a valid digit");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=-a) should not be a valid definition");
 
@@ -297,6 +282,7 @@ test('Test definition with malformed parameters (9)', function() {
                                               inputElementId + ".NotBlank: Invalid quoted string " +
                                               inputElementId + ".NotBlank: Parameter value is not a number " +
                                               inputElementId + ".NotBlank: Not a positive number " +
+                                              inputElementId + ".NotBlank: Not a valid integer " +
                                               inputElementId + ".NotBlank: Not a valid digit");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\\\") should not be a valid definition");
 
@@ -337,6 +323,7 @@ test('Test definition with malformed parameters (12)', function() {
                                               inputElementId + ".NotBlank: Invalid quoted string " +
                                               inputElementId + ".NotBlank: Parameter value is not a number " +
                                               inputElementId + ".NotBlank: Not a positive number " +
+                                              inputElementId + ".NotBlank: Not a valid integer " +
                                               inputElementId + ".NotBlank: Not a valid digit");
     raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\\/) should not be a valid definition");
 
@@ -464,6 +451,36 @@ test('Test definition with malformed parameters (22)', function() {
     deleteInputElement(inputElementId);
 });
 
+
+test('Test definition with malformed parameters (23)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=12.)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Not a valid fraction");
+    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.) should not be a valid definition");
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test definition with malformed parameters (24)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=12.a)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Not a valid fraction");
+    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.a) should not be a valid definition");
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test definition with malformed parameters (25)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[10])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid starting character for group name");
+    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.a) should not be a valid definition");
+    deleteInputElement(inputElementId);
+});
+
 test('Test definition with valid boolean parameter-value (true)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=true)");
@@ -482,11 +499,139 @@ test('Test definition with valid boolean parameter-value (false)', function() {
     deleteInputElement(inputElementId);
 });
 
-test('Test definition with positive number as a parameter', function() {
+test('Test definition with positive integer as a parameter', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(param=false)");
+    var $input = createInputElement(inputElementId, "@NotBlank(param=2)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=false) should be a valid definition");
+    equals(regula.bind(), undefined, "@NotBlank(param=2) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with negative integer as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=-2)");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=-2) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with positive real number as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=2.5)");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=2.5) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with negative real number as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=-2.5)");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=-2.5) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with positive real number (with only fractional part) as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=.5)");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=.5) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test definition with negative real number (with only fractional part) as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=-.5)");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=-.5) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with empty string as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=\"\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=\"\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with non-empty string as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=\"some text here\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=\"some text here\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with string containing escaped quotes as a parameter (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=\"\\\"\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=\"\\\"\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with string containing escaped quotes as a parameter (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param=\"this is a\\\"test\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(param=\"this is a\\\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with empty group-definition as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[])");
+
+    equals(regula.bind(), undefined, "@NotBlank(groups=[]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test definition with group-definition (with one group) as a parameter', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup])");
+
+    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with group-definition (with more than one group) as a parameter (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup])");
+
+    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with group-definition (with more than one group) as a parameter (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
+
+    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test definition with multiple valid parameters', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
+
+    equals(regula.bind(), undefined, "@NotBlank(@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
 
     deleteInputElement(inputElementId);
 });

@@ -914,7 +914,7 @@ regula = (function() {
         var currentConstraintName = "";
         var tokens = tokenize({
             str: trim(constraintDefinitionString.replace(/\s*\n\s*/g, "")),
-            delimiters: "@()[]=,\"\\/-",
+            delimiters: "@()[]=,\"\\/-\\.",
             returnDelimiters: true,
             returnEmptyTokens: false
         });
