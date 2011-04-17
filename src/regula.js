@@ -376,7 +376,7 @@ regula = (function() {
         Future: {
             formSpecific: false,
             validator: future,
-            constraintType: Constraint.Today,
+            constraintType: Constraint.Future,
             custom: false,
             compound: false,
             params: ["format", "separator"],
@@ -716,7 +716,7 @@ regula = (function() {
         if(element.tagName.toLowerCase() == "form" && !constraintsMap[constraintName].formSpecific) {
             result = {
                 successful : false,
-                message: constraintName + " is not a form constraint, but you are trying to bind it to a form",
+                message: generateErrorMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
                 data: null
             };
         }
@@ -724,13 +724,29 @@ regula = (function() {
         else if(element.tagName.toLowerCase() != "form" && constraintsMap[constraintName].formSpecific) {
             result = {
                 successful: false,
-                message: constraintName + " is a form constraint, but you are trying to bind it to a non-form element",
+                message: generateErrorMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
+                data: null
+            };
+        }
+
+        else if(element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio" && constraintName == "Checked") {
+            result = {
+                successful: false,
+                message: generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
+                data: null
+            };
+        }
+
+        else if(element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
+            result = {
+                successful: false,
+                message: generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
                 data: null
             };
         }
 
         else {
-            var parameterResult = ensureAllRequiredParametersPresent(constraintsMap[constraintName], definedParameters);
+            var parameterResult = ensureAllRequiredParametersPresent(element, constraintsMap[constraintName], definedParameters);
 
             if(parameterResult.error) {
                 result = {
@@ -748,7 +764,7 @@ regula = (function() {
         return result;
     }
 
-    function ensureAllRequiredParametersPresent(constraint, receivedParameters) {
+    function ensureAllRequiredParametersPresent(element, constraint, receivedParameters) {
         var result = {
             error: false,
             message: ""
@@ -757,8 +773,9 @@ regula = (function() {
         if(receivedParameters.__size__ < constraint.params.length) {
             result = {
                 error: true,
-                message: ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length +
-                         " parameter(s). However, you have provided only " + receivedParameters.__size__
+                message: generateErrorMessage(element, ReverseConstraint[constraint.constraintType], "@" + ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length +
+                         " parameter(s). However, you have provided only " + receivedParameters.__size__),
+                data: null
             };
         }
 
@@ -774,8 +791,9 @@ regula = (function() {
         if(missingParams.length > 0) {
             result = {
                 error: true,
-                message: "You seem to have provided some optional or required parameters for " + ReverseConstraint[constraint.constraintType] +
-                         ", but you are still missing the following " + missingParams.length + " required parameters(s): " + explode(missingParams, ", ")
+                message: generateErrorMessage(element, ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ReverseConstraint[constraint.constraintType] +
+                         ", but you are still missing the following " + missingParams.length + " required parameters(s): " + explode(missingParams, ", ")),
+                data: null
             };
         }
 
@@ -903,6 +921,30 @@ regula = (function() {
         return str;
     }
 
+    function generateErrorMessage(element, constraintName, message) {
+        var errorMessage = "";
+
+        if(element != null) {
+            errorMessage = element.id;
+
+            if(constraintName == "" || constraintName == null || constraintName == undefined) {
+                errorMessage += ": ";
+            }
+
+            else {
+                errorMessage += "." + constraintName + ": ";
+            }
+        }
+
+        else {
+            if(constraintName != "" && constraintName != null && constraintName != undefined) {
+                errorMessage = "@" + constraintName + ": "
+            }
+        }
+
+        return errorMessage + message;
+    }
+
     /*
      * This is the parser that parses constraint definitions. The recursive-descent parser is actually defined inside
      * the 'parse' function (I've used inner functions to encapsulate the parsing logic).
@@ -929,20 +971,6 @@ regula = (function() {
 
         function peek(arr) {
             return arr[0];
-        }
-
-        function generateErrorMessage(element, constraintName, message) {
-            var errorMessage = "";
-
-            if(constraintName == "" || constraintName == null || constraintName == undefined) {
-                errorMessage = element.id + ": ";
-            }
-
-            else {
-                errorMessage = element.id + "." + constraintName + ": "
-            }
-
-            return errorMessage + message;
         }
 
         function tokenize(options) {
@@ -1248,7 +1276,7 @@ regula = (function() {
                 }
             }
 
-            else if(peek(tokens) != "@") {
+            else if(peek(tokens) !== undefined && peek(tokens) != "@") {
                 //The next token MUST be a @ if we are expecting further constraints
                 result = {
                     successful: false,
@@ -2010,7 +2038,7 @@ regula = (function() {
                 put(definedParameters, params[j], null);
             }
 
-            var result = ensureAllRequiredParametersPresent(constraintsMap[constraintName], definedParameters);
+            var result = ensureAllRequiredParametersPresent(null, constraintsMap[constraintName], definedParameters);
 
             if(result.error) {
                 throw "In compound constraint " + name + ": " + result.message;
