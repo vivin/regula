@@ -646,7 +646,7 @@ test('Test definition with multiple valid parameters', function() {
     deleteInputElement(inputElementId);
 });
 
-module("Test binding constraints to elements, via HTML");
+module("Test binding pre-defined constraints to elements, via HTML");
 
 test('Test binding @Checked through markup to a non-checkbox/non-radio-button element', function() {
     var inputElementId = "hiddenInput";
@@ -864,3 +864,143 @@ test('Test binding @Max (with required parameter and optional label and message 
 
     deleteInputElement(inputElementId);
 });
+
+test('Test binding @Min (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(label=\"test\", message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(value=10)");
+
+    equals(regula.bind(), undefined, "@Min(value=10) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test binding @Min (with required parameter and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test binding @Min (with required parameter and optional label and message parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\", message=\"This is a test\")");
+
+    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\", message=\"This is a test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannnot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(label=\"test\", message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with one required parameter) through markup (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(max=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test binding @Range (with one required parameter) through markup (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(min=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
