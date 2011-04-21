@@ -694,12 +694,20 @@ test('Test binding @Checked (with message parameter) through markup', function()
     deleteInputElement(inputElementId);
 });
 
-
-test('Test binding @Checked (with message and label parameters) through markup', function() {
+test('Test binding @Checked (with groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Checked(label=\"test\", message=\"This is a test\")", "checkbox");
+    var $input = createInputElement(inputElementId, "@Checked(groups=[Test])", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checkbox(label=\"test\", message=\"This is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Checkbox(groups=[Test]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Checked (with groups, message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Checked(label=\"test\", message=\"This is a test\", groups=[Test])", "checkbox");
+
+    equals(regula.bind(), undefined, "@Checkbox(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteInputElement(inputElementId);
 });
@@ -741,12 +749,20 @@ test('Test binding @Selected (with message parameter) through markup', function(
     deleteInputElement(inputElementId);
 });
 
-
-test('Test binding @Selected (with message and label parameters) through markup', function() {
+test('Test binding @Selected (with groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Selected(label=\"test\", message=\"This is a test\")", "select");
+    var $input = createInputElement(inputElementId, "@Selected(groups=[Test])", "select");
 
-    equals(regula.bind(), undefined, "@Selected(label=\"test\", message=\"This is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Selected(groups=[Test]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Selected (with groups, message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test])", "select");
+
+    equals(regula.bind(), undefined, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteInputElement(inputElementId);
 });
@@ -817,9 +833,19 @@ test('Test binding @Max (with optional message parameter) through markup', funct
     deleteInputElement(inputElementId);
 });
 
-test('Test binding @Max (with optional label and message parameter) through markup', function() {
+test('Test binding @Max (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Max(label=\"test\", message=\"this is a test\")");
+    var $input = createInputElement(inputElementId, "@Max(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Max (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Max(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
@@ -836,7 +862,6 @@ test('Test binding @Max (with required parameter) through markup', function() {
     deleteInputElement(inputElementId);
 });
 
-
 test('Test binding @Max (with required parameter and optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\")");
@@ -846,21 +871,29 @@ test('Test binding @Max (with required parameter and optional label parameter) t
     deleteInputElement(inputElementId);
 });
 
-test('Test binding @Max (with required parameter and optional label parameter) through markup', function() {
+test('Test binding @Max (with required parameter and optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\")");
+    var $input = createInputElement(inputElementId, "@Max(value=10, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Max(value=10, label=\"test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Max(value=10, message=\"this is a test\") should be a valid definition");
 
     deleteInputElement(inputElementId);
 });
 
-
-test('Test binding @Max (with required parameter and optional label and message parameters) through markup', function() {
+test('Test binding @Max (with required parameter and optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\", message=\"This is a test\")");
+    var $input = createInputElement(inputElementId, "@Max(value=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Max(value=10, groups=[Test]) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter and optional groups, label and message parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteInputElement(inputElementId);
 });
@@ -895,9 +928,19 @@ test('Test binding @Min (with optional message parameter) through markup', funct
     deleteInputElement(inputElementId);
 });
 
-test('Test binding @Min (with optional label and message parameter) through markup', function() {
+test('Test binding @Min (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Min(label=\"test\", message=\"this is a test\")");
+    var $input = createInputElement(inputElementId, "@Min(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Min (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Min(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
@@ -924,11 +967,11 @@ test('Test binding @Min (with required parameter and optional label parameter) t
     deleteInputElement(inputElementId);
 });
 
-test('Test binding @Min (with required parameter and optional label parameter) through markup', function() {
+test('Test binding @Min (with required parameter and optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\")");
+    var $input = createInputElement(inputElementId, "@Min(value=10, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Min(value=10, message=\"test\") should be a valid definition");
 
     deleteInputElement(inputElementId);
 });
@@ -1004,3 +1047,279 @@ test('Test binding @Range (with one required parameter) through markup (2)', fun
     deleteInputElement(inputElementId);
 });
 
+test('Test binding @Range (with both required parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(min=5, max=10)");
+
+    equals(regula.bind(), undefined, "@Range(min=5, max=10) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(min=5, max=10, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(min=5, max=10, message=\"test message\")");
+
+    equals(regula.bind(), undefined, "@Range(min=5, max=10, message=\"test message\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Range(min=5, max=10, label=\"test\", message=\"test message\")");
+
+    equals(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\", message=\"test message\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannnot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(label=\"test\", message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): max, min");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with one required parameter) through markup (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(max=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+
+test('Test binding @Between (with one required parameter) through markup (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(min=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(min=5, max=10)");
+
+    equals(regula.bind(), undefined, "@Between(min=5, max=10) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(min=5, max=10, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(min=5, max=10, message=\"test message\")");
+
+    equals(regula.bind(), undefined, "@Between(min=5, max=10, message=\"test message\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Between(min=5, max=10, label=\"test\", message=\"test message\")");
+
+    equals(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @NotBlank (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank");
+
+    equals(regula.bind(), undefined, "@NotBlank should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotBlank (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotBlank (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotBlank (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @NotEmpty (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotEmpty");
+
+    equals(regula.bind(), undefined, "@NotEmpty should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotEmpty (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotEmpty (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotEmpty(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@NotEmpty(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test bind()ing @NotEmpty (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Empty (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty");
+
+    equals(regula.bind(), undefined, "@Empty should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Empty(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Empty(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(label=\"test\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Empty(label=\"test\", message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Blank (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank");
+
+    equals(regula.bind(), undefined, "@Blank should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Blank(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Blank(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(label=\"test\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
