@@ -729,7 +729,7 @@ regula = (function() {
             };
         }
 
-        else if(element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio" && constraintName == "Checked") {
+        else if((typeof element.type == "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful: false,
                 message: generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
