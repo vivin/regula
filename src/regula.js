@@ -729,7 +729,7 @@ regula = (function() {
             };
         }
 
-        else if(element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio" && constraintName == "Checked") {
+        else if((typeof element.type == "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful: false,
                 message: generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
@@ -2052,13 +2052,13 @@ regula = (function() {
             throw "regula.override expects options";
         }
 
-        if(!options.constraintType) {
+        if(typeof options.constraintType == "undefined") {
             throw "regula.override expects a constraintType attribute in the options argument";
         }
 
         var name = ReverseConstraint[options.constraintType];
 
-        if(!Constraint[name]) {
+        if(typeof Constraint[name] == "undefined") {
             throw "regula.override: A constraint called " + name + " has not been defined, so I cannot override it";
         }
 
@@ -2154,6 +2154,11 @@ regula = (function() {
                     message: tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements.",
                     data: null
                 };
+            }
+            
+            // automatically assign an id if the element has not one
+            if(! element.id) {
+               element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
             }
 
             var dataConstraintsAttribute = element.getAttribute("data-constraints");
