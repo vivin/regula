@@ -2155,6 +2155,11 @@ regula = (function() {
                     data: null
                 };
             }
+            
+            // automatically assign an id if the element has not one
+            if(! element.id) {
+               element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
+            }
 
             var dataConstraintsAttribute = element.getAttribute("data-constraints");
             result = parse(element, dataConstraintsAttribute);
