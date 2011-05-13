@@ -2052,13 +2052,13 @@ regula = (function() {
             throw "regula.override expects options";
         }
 
-        if(!options.constraintType) {
+        if(typeof options.constraintType == "undefined") {
             throw "regula.override expects a constraintType attribute in the options argument";
         }
 
         var name = ReverseConstraint[options.constraintType];
 
-        if(!Constraint[name]) {
+        if(typeof Constraint[name] == "undefined") {
             throw "regula.override: A constraint called " + name + " has not been defined, so I cannot override it";
         }
 
