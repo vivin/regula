@@ -269,8 +269,8 @@ regula = (function() {
             constraintType: Constraint.Pattern,
             custom: false,
             compound: false,
-            params: ["regexp"],
-            defaultMessage: "{label} needs to match {regexp}{flags}."
+            params: ["regex"],
+            defaultMessage: "{label} needs to match {regex}{flags}."
         },
 
         Email: {
@@ -519,11 +519,11 @@ regula = (function() {
         var re;
 
         if(typeof params["flags"] != "undefined") {
-            re = new RegExp(params["regexp"].replace(/^\//, "").replace(/\/$/, ""), params["flags"]);
+            re = new RegExp(params["regex"].replace(/^\//, "").replace(/\/$/, ""), params["flags"]);
         }
 
         else {
-            re = new RegExp(params["regexp"].replace(/^\//, "").replace(/\/$/, ""));
+            re = new RegExp(params["regex"].replace(/^\//, "").replace(/\/$/, ""));
         }
 
         return re.test(this.value);

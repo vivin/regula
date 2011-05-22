@@ -1226,7 +1226,7 @@ test('Test binding @NotBlank (without parameters) through markup', function() {
     deleteInputElement(inputElementId);
 });
 
-test('Test bind()ing @NotBlank (with optional label parameter) through markup', function() {
+test('Test binding @NotBlank (with optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
 
@@ -1235,7 +1235,7 @@ test('Test bind()ing @NotBlank (with optional label parameter) through markup', 
     deleteInputElement(inputElementId);
 });
 
-test('Test bind()ing @NotBlank (with optional message parameter) through markup', function() {
+test('Test binding @NotBlank (with optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
 
@@ -1244,7 +1244,7 @@ test('Test bind()ing @NotBlank (with optional message parameter) through markup'
     deleteInputElement(inputElementId);
 });
 
-test('Test bind()ing @NotBlank (with optional groups parameter) through markup', function() {
+test('Test binding @NotBlank (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
 
@@ -1253,7 +1253,7 @@ test('Test bind()ing @NotBlank (with optional groups parameter) through markup',
     deleteInputElement(inputElementId);
 });
 
-test('Test bind()ing @NotBlank (with optional label, message, and groups parameter) through markup', function() {
+test('Test binding @NotBlank (with optional label, message, and groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
@@ -1396,3 +1396,564 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
 
     deleteInputElement(inputElementId);
 });
+
+test('Test binding @Pattern (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/)");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional label, message, and groups parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags, groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\")");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags, label, message, and groups parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/)");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/) should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional label, message, and groups parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags, groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\")");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags, label, message, and groups parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Email (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Email");
+
+    equals(regula.bind(), undefined, "@Email should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Email (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Email(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Email(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Email (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Email(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Email(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Email (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Email(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Email(groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @Email (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlpha (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlpha");
+
+    equals(regula.bind(), undefined, "@IsAlpha should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlpha (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlpha (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlpha(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@IsAlpha(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlpha (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlpha(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsAlpha(groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlpha (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsNumeric (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsNumeric");
+
+    equals(regula.bind(), undefined, "@IsNumeric should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsNumeric (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsNumeric(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsNumeric (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsNumeric(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@IsNumeric(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsNumeric (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsNumeric(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsNumeric(groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsNumeric (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlphaNumeric");
+
+    equals(regula.bind(), undefined, "@IsAlphaNumeric should be a valid definition");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(message=\"this is a test\")");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteInputElement(inputElementId);
+});
+
