@@ -660,6 +660,16 @@ test('Test definition with multiple valid parameters', function() {
 
 module("Test binding pre-defined constraints to elements, via HTML");
 
+test('Test binding @Checked through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Checked");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Checked: @Checked is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Checked cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Checked through markup to a non-checkbox/non-radio-button element', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked");
@@ -724,6 +734,16 @@ test('Test binding @Checked (with groups, message and label parameters) through 
     deleteElement(inputElementId);
 });
 
+test('Test binding @Selected through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Selected");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Selected: @Selected is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Selected cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Selected through markup to a non-select element', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected");
@@ -779,6 +799,16 @@ test('Test binding @Selected (with groups, message and label parameters) through
     deleteElement(inputElementId);
 });
 
+test('Test binding @Required through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Required");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Required: @Required is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Required cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Required (without parameters) through markup to an input element', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required");
@@ -813,6 +843,16 @@ test('Test binding @Required (without parameters) through markup to a select', f
     equals(regula.bind(), undefined, "@Required should be a valid definition");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @Max through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Max");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Max: @Max is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @Max (without parameters) through markup', function() {
@@ -910,6 +950,16 @@ test('Test binding @Max (with required parameter and optional groups, label and 
     deleteElement(inputElementId);
 });
 
+test('Test binding @Min through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Min");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Min: @Min is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Min (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min");
@@ -969,7 +1019,6 @@ test('Test binding @Min (with required parameter) through markup', function() {
     deleteElement(inputElementId);
 });
 
-
 test('Test binding @Min (with required parameter and optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\")");
@@ -1004,6 +1053,16 @@ test('Test binding @Min (with required parameter and optional label, message, an
     equals(regula.bind(), undefined, "@Min(value=10, label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @Range through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Range");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @Range (without parameters) through markup', function() {
@@ -1122,6 +1181,16 @@ test('Test binding @Range (with both required parameters and optional message, l
     deleteElement(inputElementId);
 });
 
+test('Test binding @Between through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Between");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Between (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between");
@@ -1229,6 +1298,16 @@ test('Test binding @Between (with both required parameters and optional message,
     deleteElement(inputElementId);
 });
 
+test('Test binding @NotBlank through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@NotBlank");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @NotBlank (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank");
@@ -1272,6 +1351,16 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
     equals(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @NotEmpty through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@NotEmpty");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@NotEmpty cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @NotEmpty (without parameters) through markup', function() {
@@ -1319,6 +1408,16 @@ test('Test binding @NotEmpty (with optional label, message, groups parameter) th
     deleteElement(inputElementId);
 });
 
+test('Test binding @Empty through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Empty");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Empty cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Empty (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty");
@@ -1364,6 +1463,16 @@ test('Test binding @Empty (with optional label, message, and groups parameter) t
     deleteElement(inputElementId);
 });
 
+test('Test binding @Blank through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Blank");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Blank cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Blank (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank");
@@ -1407,6 +1516,16 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
     equals(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Pattern");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @Pattern (without parameters) through markup', function() {
@@ -1599,6 +1718,16 @@ test('Test binding @Pattern (with required parameter and optional flags, label, 
     deleteElement(inputElementId);
 });
 
+test('Test binding @Matches through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Matches");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Matches (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches");
@@ -1789,6 +1918,16 @@ test('Test binding @Matches (with required parameter and optional flags, label, 
     deleteElement(inputElementId);
 });
 
+test('Test binding @Email through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Email");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Email: @Email is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Email cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @Email (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email");
@@ -1832,6 +1971,16 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     equals(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @IsAlpha through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@IsAlpha");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlpha: @IsAlpha is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@IsAlpha cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @IsAlpha (without parameters) through markup', function() {
@@ -1879,6 +2028,16 @@ test('Test binding @IsAlpha (with optional label, message, and groups parameter)
     deleteElement(inputElementId);
 });
 
+test('Test binding @IsNumeric through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@IsNumeric");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".IsNumeric: @IsNumeric is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@IsNumeric cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
 test('Test binding @IsNumeric (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsNumeric");
@@ -1922,6 +2081,16 @@ test('Test binding @IsNumeric (with optional label, message, and groups paramete
     equals(regula.bind(), undefined, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElement(inputElementId);
+});
+
+test('Test binding @IsAlphaNumeric through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@IsAlphaNumeric");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlphaNumeric: @IsAlphaNumeric is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@IsAlphaNumeric cannot be bound to a form element");
+
+    deleteElement(formElementId);
 });
 
 test('Test binding @IsAlphaNumeric (without parameters) through markup', function() {
@@ -2068,4 +2237,5 @@ test('Test binding @CompletelyFilled to a non-form element through markup', func
 
     deleteElement(inputElementId);
 });
+
 
