@@ -1863,7 +1863,7 @@ regula = (function() {
     function custom(options) {
 
         if(!options) {
-            throw "regula.custom expects options);"
+            throw "regula.custom expects options";
         }
 
         var name = options.name;
