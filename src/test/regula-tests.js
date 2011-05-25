@@ -2438,5 +2438,19 @@ test('Call regula.custom with valid name and undefined validator', function() {
     }, "The validator attribute passed to regula.custom cannot be undefined");
 });
 
+test('Call regula.custom with valid name and non-function validator', function() {
+    raises(function() {
+        regula.custom({
+            name: "CustomConstraint",
+            validator: false
+        });
+    }, "regula.custom expects the validator attribute in the options argument to be a function");
+});
 
-
+test('Call regula.custom with valid name and validator', function() {
+   equals(regula.custom({
+       name: "CustomConstraint",
+       validator: function() {
+       }
+   }), undefined, "regula.custom with valid name and validator must not return any errors.")
+});
