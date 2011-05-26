@@ -2363,13 +2363,13 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
 });
 
 test('Call regula.custom without any arguments', function() {
-    raises(regula.custom, "regula.custom expects options", "regula.custom requires options");
+    raises(regula.custom, /regula\.custom expects options/, "regula.custom requires options");
 });
 
 test('Call regula.custom with empty object-literal', function() {
     raises(function() {
         regula.custom({});
-    }, "regula.custom expects options", "regula.custom requires options");
+    }, /regula\.custom expects a name attribute in the options argument/, "regula.custom requires options");
 });
 
 test('Call regula.custom with null name', function() {
@@ -2377,7 +2377,7 @@ test('Call regula.custom with null name', function() {
         regula.custom({
             name: null
         });
-    }, "regula.custom expects a name attribute in the options argument", "name attribute cannot be null");
+    }, /regula\.custom expects a name attribute in the options argument/, "name attribute cannot be null");
 });
 
 test('Call regula.custom with undefined name', function() {
@@ -2385,7 +2385,7 @@ test('Call regula.custom with undefined name', function() {
         regula.custom({
             name: undefined
         });
-    }, "regula.custom expects a name attribute in the options argument", "name attribute cannot be undefined");
+    }, /regula\.custom expects a name attribute in the options argument/, "name attribute cannot be undefined");
 });
 
 test('Call regula.custom with empty string as name', function() {
@@ -2393,7 +2393,7 @@ test('Call regula.custom with empty string as name', function() {
         regula.custom({
             name: ""
         });
-    }, "regula.custom cannot accept an empty string for the name attribute in the options argument", "name attribute cannot be an empty string");
+    }, /regula\.custom expects a name attribute in the options argument/, "name attribute cannot be an empty string");
 });
 
 test('Call regula.custom with only spaces as name', function() {
@@ -2401,7 +2401,7 @@ test('Call regula.custom with only spaces as name', function() {
         regula.custom({
             name: "       "
         });
-    }, "regula.custom cannot accept an empty string for the name attribute in the options argument", "name attribute cannot be string that only consists of spaces");
+    }, /regula\.custom cannot accept an empty string for the name attribute in the options argument/, "name attribute cannot be string that only consists of spaces");
 });
 
 test('Call regula.custom with non-string as value for name', function() {
@@ -2409,48 +2409,59 @@ test('Call regula.custom with non-string as value for name', function() {
         regula.custom({
             name: true
         });
-    }, "regula.custom expects the name attribute in the options argument to be a string", "name attribute must be a string");
+    }, /regula\.custom expects the name attribute in the options argument to be a string/, "name attribute must be a string");
 });
 
 test('Call regula.custom with valid name and no validator', function() {
     raises(function() {
         regula.custom({
-            name: "CustomConstraint"
+            name: "CustomConstraint" + new Date().getTime()
         });
-    }, "regula.custom expects a validator attribute in the options argument");
+    }, /regula\.custom expects a validator attribute in the options argument/, "validator must be provided");
 });
 
 test('Call regula.custom with valid name and null validator', function() {
     raises(function() {
         regula.custom({
-            name: "CustomConstraint",
+            name: "CustomConstraint" + new Date().getTime(),
             validator: null
         });
-    }, "The validator attribute passed to regula.custom cannot be null");
+    }, /regula\.custom expects a validator attribute in the options argument/, "validator cannot be null");
 });
 
 test('Call regula.custom with valid name and undefined validator', function() {
     raises(function() {
         regula.custom({
-            name: "CustomConstraint",
+            name: "CustomConstraint" + new Date().getTime(),
             validator: undefined
         });
-    }, "The validator attribute passed to regula.custom cannot be undefined");
+    }, /regula\.custom expects a validator attribute in the options argument/, "validator cannot be undefined");
 });
 
 test('Call regula.custom with valid name and non-function validator', function() {
     raises(function() {
         regula.custom({
-            name: "CustomConstraint",
+            name: "CustomConstraint" + new Date().getTime(),
             validator: false
         });
-    }, "regula.custom expects the validator attribute in the options argument to be a function");
+    }, /regula\.custom expects a validator attribute in the options argument/, "validator must be a function");
 });
 
 test('Call regula.custom with valid name and validator', function() {
    equals(regula.custom({
-       name: "CustomConstraint",
+       name: "CustomConstraint" + new Date().getTime(),
        validator: function() {
        }
    }), undefined, "regula.custom with valid name and validator must not return any errors.")
+});
+
+test('Call regula.custom with required parameters and formSpecific attribute of non-boolean type', function() {
+    raises(function() {
+       regula.custom({
+           name: "CustomConstraint" + new Date().getTime(),
+           formSpecific: "true",
+           validator: function() {
+           }
+       });
+    }, /regula\.custom expects the formSpecific attribute in the options argument to be a boolean/, "formSpecific attribute must be non-null if provided")
 });
