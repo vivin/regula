@@ -2463,5 +2463,68 @@ test('Call regula.custom with required parameters and formSpecific attribute of 
            validator: function() {
            }
        });
-    }, /regula\.custom expects the formSpecific attribute in the options argument to be a boolean/, "formSpecific attribute must be non-null if provided")
+    }, /regula\.custom expects the formSpecific attribute in the options argument to be a boolean/, "formSpecific attribute must be a boolean")
+});
+
+test('Call regula.custom with required parameters and null formSpecific attribute', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        formSpecific: null,
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and null formSpecific attributes must not generate any errors"));
+/*
+
+    TODO: Add code like the following to the rest of the tests
+    Right now we have issues when we try to validate because we've deleted elements but regula still maintains references to them
+    We probably need an unbind() or something
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind(); console.log(time);
+    console.log(regula.validate());
+
+    deleteElement(inputElementId); */
+});
+
+test('Call regula.custom with required parameters and valid formSpecific attribute', function() {
+    equals(regula.custom({
+        name: "CustomConstraint" + new Date().getTime(),
+        formSpecific: true,
+        validator: function() {
+        }
+    }, undefined, "regula.custom called with required parameters and valid formSpecific attributes must not generate any errors"));
+});
+
+test('Call regula.custom with required parameters and params attribute of non-array type', function() {
+    raises(function() {
+        regula.custom({
+            name: "CustomConstraint" + new Date().getTime(),
+            params: "params",
+            validator: function() {
+            }
+        });
+    }, /regula.custom expects the params attribute in the options argument to be an array/, "params attribute must be an array");
+});
+
+test('Call regula.custom with required parameters and empty params attribute', function() {
+    equals(regula.custom({
+        name: "CustomConstraint" + new Date().getTime(),
+        params: [],
+        validator: function() {
+        }
+    }, undefined, "regula.custom called with required parameters and an empty params array must not generate any errors"));
+});
+
+test('Call regula.custom with required parameters and valid params attribute', function() {
+    equals(regula.custom({
+        name: "CustomConstraint" + new Date().getTime(),
+        params: ["myParam"],
+        validator: function() {
+        }
+    }, undefined, "regula.custom called with required parameters and an valid params array must not generate any errors"));
 });
