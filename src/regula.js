@@ -9,6 +9,7 @@
 /* for code completion */
 var regula = {
     bind: function(options) {},
+    unbind: function(options) {},
     custom: function(options) {},
     compound: function(options) {},
     override: function(options) {},
@@ -943,6 +944,22 @@ regula = (function() {
         }
 
         return errorMessage + message;
+    }
+
+    function removeElementFromGroupIfGroupIsEmpty(id, group) {
+       if(isMapEmpty(boundConstraints[group][id])) {
+          delete boundConstraints[group][id];
+
+          if(isMapEmpty(boundConstraints[group])) {
+              delete boundConstraints[group];
+
+              var groupIndex = Group[group];
+              delete Group[group];
+              delete ReverseGroup[groupIndex];
+
+              deletedGroupIndices.push(groupIndex);
+          }
+       }
     }
 
     /*
@@ -2114,6 +2131,40 @@ regula = (function() {
         }
     }
 
+    function unbind(options) {
+
+        if(typeof options == "undefined" || !options) {
+            boundConstraints = {Default: {}};
+        }
+
+        else {
+            if(typeof options.id == "undefined") {
+                throw "regula.unbind requires an id if options are provided";
+            }
+
+            var id = options.id;
+            var constraints = options.constraints || [];
+
+            if(constraints.length == 0) {
+                for(var group in boundConstraints) if(boundConstraints.hasOwnProperty(group)) {
+                    removeElementFromGroupIfGroupIsEmpty(id, group);
+                }
+            }
+
+            else {
+                for(var i = 0; i < constraints.length; i++) {
+                    var constraint = constraints[i];
+
+                    delete boundConstraints[group][element.id][ReverseConstraint[constraint]];
+
+                    for(var group in boundConstraints) if(boundConstraints.hasOwnProperty(group)) {
+                        removeElementFromGroupIfGroupIsEmpty(id, group);
+                    }
+                }
+            }
+        }
+    }
+
     function bind(options) {
 
         var result = {
@@ -2288,21 +2339,7 @@ regula = (function() {
                 var group = groupsToRemoveConstraintFrom[i];
 
                 delete boundConstraints[group][element.id][ReverseConstraint[constraintType]];
-
-                if(isMapEmpty(boundConstraints[group][element.id])) {
-                    delete boundConstraints[group][element.id];
-
-                    if(isMapEmpty(boundConstraints[group])) {
-                        delete boundConstraints[group];
-
-                        /* delete from 'enum' */
-                        var groupIndex = Group[group];
-                        delete Group[group];
-                        delete ReverseGroup[groupIndex];
-
-                        deletedGroupIndices.push(groupIndex);
-                    }
-                }
+                removeElementFromGroupIfGroupIsEmpty(element.id, group);
             }
         }
 
@@ -2947,6 +2984,7 @@ regula = (function() {
 
     return {
         bind: bind,
+        unbind: unbind,
         validate: validate,
         custom: custom,
         compound: compound,

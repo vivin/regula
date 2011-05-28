@@ -31,6 +31,7 @@ function createFormElement(id, definition) {
 
 function deleteElement(id) {
     jQuery("#" + id).remove();
+    regula.unbind();
 }
 
 /*
@@ -2476,19 +2477,23 @@ test('Call regula.custom with required parameters and null formSpecific attribut
             return false;
         }
     }, undefined, "regula.custom called with required parameters and null formSpecific attributes must not generate any errors"));
-/*
-
-    TODO: Add code like the following to the rest of the tests
-    Right now we have issues when we try to validate because we've deleted elements but regula still maintains references to them
-    We probably need an unbind() or something
 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
 
-    regula.bind(); console.log(time);
-    console.log(regula.validate());
+    /*
+     So it's not possible to see if the form-specific attribute persisted - I guess we can test that in a separate test?
+     Do we even need to send back formSpecific in the validation attribute? Maybe it wouldn't hurt... anyway:
 
-    deleteElement(inputElementId); */
+     TODO:
+
+     Add code like this to the rest of the tests to make sure that optional parameters are getting proper default values
+     That is, when you actually finish writing this properly
+     */
+    regula.bind();
+    console.log(regula.validate()[0]);
+
+    deleteElement(inputElementId);
 });
 
 test('Call regula.custom with required parameters and valid formSpecific attribute', function() {
