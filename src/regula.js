@@ -240,7 +240,7 @@ regula = (function() {
             constraintType: Constraint.Range,
             custom: false,
             compound: false,
-            params: ["max", "min"],
+            params: ["min", "max"],
             defaultMessage: "{label} needs to be between {min} and {max}."
         },
 
@@ -370,7 +370,7 @@ regula = (function() {
             constraintType: Constraint.Past,
             custom: false,
             compound: false,
-            params: ["format", "separator"],
+            params: ["format"],
             defaultMessage: "{label} must be in the past."
         },
 
@@ -380,7 +380,7 @@ regula = (function() {
             constraintType: Constraint.Future,
             custom: false,
             compound: false,
-            params: ["format", "separator"],
+            params: ["format"],
             defaultMessage: "{label} must be in the future."
         }
     };
@@ -1223,7 +1223,7 @@ regula = (function() {
             var result = {
                 successful: true,
                 message: "",
-                data: []
+                data: {}
             };
 
             if(peek(tokens) == "(") {
@@ -2208,7 +2208,7 @@ regula = (function() {
             }
             
             // automatically assign an id if the element has not one
-            if(! element.id) {
+            if(!element.id) {
                element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
             }
 
@@ -2885,6 +2885,7 @@ regula = (function() {
                         constraintViolation = {
                             group: group,
                             constraintName: elementConstraint,
+                            formSpecific: constraintsMap[elementConstraint].formSpecific,
                             custom: constraintsMap[elementConstraint].custom,
                             compound: constraintsMap[elementConstraint].compound,
                             composingConstraintViolations: validationResult.composingConstraintViolations || [],
