@@ -2184,6 +2184,13 @@ regula = (function() {
         if(!result.successful) {
             throw result.message;
         }
+
+        else {
+            //Add regula-validation class if it doesn't already exist
+            if(options && !/regula-validation/.test(options.element.className)) {
+                options.element.className += " regula-validation";
+            }
+        }
     }
 
     function bindAfterParsing() {
@@ -2357,7 +2364,7 @@ regula = (function() {
         var newParameters = {__size__: 0};
 
         /* We check to see if this was a valid/defined constraint. It wasn't so we need to return an error message */
-        if(!constraintType) {
+        if(typeof constraintType == "undefined") {
             result = {
                 successful: false,
                 message: "regula.bind expects a valid constraint type for each constraint in constraints attribute of the options argument. " + explodeParameters(options),

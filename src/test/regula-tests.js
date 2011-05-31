@@ -8,8 +8,12 @@ function createInputElement(id, definition, type) {
     }
 
     $input.attr("id", id);
-    $input.attr("class", "regula-validation");
-    $input.attr("data-constraints", definition);
+
+    if(typeof definition != "undefined") {
+       $input.attr("class", "regula-validation");
+       $input.attr("data-constraints", definition);
+    }
+
     $input.hide();
 
     jQuery("body").append($input);
@@ -659,6 +663,26 @@ test('Test definition with multiple valid parameters', function() {
     deleteElement(inputElementId);
 });
 
+test('Test definition with multiple constraints, with one malformed constraint', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank @NotBlank(");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " + inputElementId + ".NotBlank: Invalid parameter name. You might have unmatched parentheses hiddenInput.NotBlank: Invalid starting character for parameter name. Can only include A-Z, a-z, and _");
+
+    raises(regula.bind, expectedExceptionMessage, "@NotBlank @NotBlank( is not a valid definition");
+
+    deleteElement(inputElementId)
+});
+
+test('Test definition with multiple valid constraints', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
+
+    equals(regula.bind(), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
 module("Test binding pre-defined constraints to elements, via HTML");
 
 test('Test binding @Checked through markup to a form element', function() {
@@ -830,7 +854,7 @@ test('Test binding @Required (without parameters) through markup to a checkbox',
 
 test('Test binding @Required (without parameters) through markup to a radio', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Required", "checkbox");
+    var $input = createInputElement(inputElementId, "@Required", "radio");
 
     equals(regula.bind(), undefined, "@Required should be a valid definition");
 
@@ -842,6 +866,42 @@ test('Test binding @Required (without parameters) through markup to a select', f
     var $input = createInputElement(inputElementId, "@Required", "select");
 
     equals(regula.bind(), undefined, "@Required should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Required(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Required(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Required(message=\"This is a test\")");
+
+    equals(regula.bind(), undefined, "@Required(message=\"This is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Required(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Required(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with groups, message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Required(label=\"test\", message=\"This is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Required(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -3267,6 +3327,431 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
 
     deleteElement(formElementId);
 });
+
+module("Test binding pre-defined constraints to elements, via regula.bind");
+
+test('Test binding @Checked through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Checked: @Checked is not a form constraint, but you are trying to bind it to a form");
+
+    raises(function() {
+       regula.bind({
+           element: $form.get(0),
+           constraints: [
+               {constraintType: regula.Constraint.Checked}
+           ]
+       });
+    }, expectedExceptionMessage, "@Checked cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Checked through regula.bind to a non-checkbox/non-radio-button element', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Checked: @Checked is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button");
+
+    raises(function() {
+       regula.bind({
+           element: $input.get(0),
+           constraints: [
+               {constraintType: regula.Constraint.Checked}
+           ]
+       });
+    }, expectedExceptionMessage, "@Checked should not be bound to a non-checkbox/non-radio-button element");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (without parameters) through regula.bind to a checkbox', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    }), undefined, "@Checked should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (without parameters) through regula.bind to a radio', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "radio");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    }), undefined, "@Checked should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (with label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Checked,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Checked(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (with message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Checked,
+                params: {
+                    message: "This is a test"
+                }
+            }
+        ]
+    }), undefined, "@Checkbox(message=\"This is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (with groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Checked,
+                params: {
+                    groups:["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Checkbox(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Checked (with groups, message and label parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Checked,
+                params: {
+                    label: "test",
+                    message: "This is a test",
+                    groups:["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Checkbox(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Selected: @Selected is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Selected}
+            ]
+        });
+    }, expectedExceptionMessage, "@Selected cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Selected through regula.bind to a non-select element', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Selected: @Selected is only applicable to select boxes. You are trying to bind it to an input element that is not a select box");
+
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Selected}
+            ]
+        });
+    }, expectedExceptionMessage, "@Selected should not be bound to a non-select-box element");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Selected}
+        ]
+    }), undefined, "@Selected should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected (with label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Selected,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Selected(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected (with message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Selected,
+                params: {
+                    message: "This is a test"
+                }
+            }
+        ]
+    }), undefined, "@Selected(message=\"This is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected (with groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Selected,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Selected(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Selected (with groups, message and label parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Selected,
+                params: {
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Required: @Required is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Required}
+            ]
+        })
+    }, expectedExceptionMessage, "@Required cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Required (without parameters) through regula.bind to an input element', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    }), undefined, "@Required should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (without parameters) through regula.bind to a checkbox', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "checkbox");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    }), undefined, "@Required should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (without parameters) through regula.bind to a radio', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "radio");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    }), undefined, "@Required should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (without parameters) through regula.bind to a select', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, undefined, "select");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    }), undefined, "@Required should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+
+test('Test binding @Required (with label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Required,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Required(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Required,
+                params: {
+                    message: "This is a test"
+                }
+            }
+        ]
+    }), undefined, "@Required(message=\"This is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Required,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Required(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Required (with groups, message and label parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Required,
+                params: {
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Required(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+module("Test regula.custom (definition only)");
 
 test('Call regula.custom without any arguments', function() {
     raises(regula.custom, /regula\.custom expects options/, "regula.custom requires options");
