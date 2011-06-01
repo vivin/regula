@@ -1,4 +1,4 @@
-
+/** TODO: Test binding through markup and regula.bind with multiple, valid constraints **/
 function createInputElement(id, definition, type) {
     var $input = (type != "select") ? jQuery("<input />") : jQuery("<select />");
     var _type = type || "hidden";
@@ -3747,6 +3747,1004 @@ test('Test binding @Required (with groups, message and label parameters) through
             }
         ]
     }), undefined, "@Required(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Max: @Max is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Max}
+            ]
+        });
+    }, expectedExceptionMessage, "@Max cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Max (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Max}
+            ]
+        });
+    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Max,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Max,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Max,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with optional groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Max,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: 10
+                }
+            }
+        ]
+    }), undefined, "@Max(value=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: 10,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Max(value=10, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: 10,
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Max(value=10, message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: 10,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Max(value=10, groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Max (with required parameter and optional groups, label and message parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: 10,
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Min: @Min is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Min}
+            ]
+        });
+    }, expectedExceptionMessage, "@Min cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Min (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Min}
+            ]
+        });
+    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Min,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Min,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Min,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with optional groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Min,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10
+                }
+            }
+        ]
+    }), undefined, "@Min(value=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10,
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Min(value=10, message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Min(value=10, groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Min (with required parameter and optional groups, label and message parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10,
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Min(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Range}
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Range (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Range}
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        })
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with one required parameter) through regula.bind (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        max: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with one required parameter) through regula.bind (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        min: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    }), undefined, "@Range(min=5, max=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max:10,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Range(min=5, max=10, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max:10,
+                    message: "test message"
+                }
+            }
+        ]
+    }), undefined, "@Range(min=5, max=10, message=\"test message\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max:10,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Range(min=5, max=10, message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Range (with both required parameters and optional message, label, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max:10,
+                    label: "test",
+                    message: "test message",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Range(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Between}
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Between (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Between}
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        })
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with one required parameter) through regula.bind (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        max: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with one required parameter) through regula.bind (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Between,
+                    params: {
+                        min: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Between,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    }), undefined, "@Between(min=5, max=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Between,
+                params: {
+                    min: 5,
+                    max:10,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Between(min=5, max=10, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Between,
+                params: {
+                    min: 5,
+                    max:10,
+                    message: "test message"
+                }
+            }
+        ]
+    }), undefined, "@Between(min=5, max=10, message=\"test message\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Between,
+                params: {
+                    min: 5,
+                    max:10,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Between(min=5, max=10, message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Between (with both required parameters and optional message, label, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Between,
+                params: {
+                    min: 5,
+                    max:10,
+                    label: "test",
+                    message: "test message",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
