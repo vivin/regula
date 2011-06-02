@@ -1381,7 +1381,7 @@ test('Test binding @NotBlank (with optional label parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(label=\"test\")");
+    equals(regula.bind(), undefined, "@NotBlank(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1390,7 +1390,7 @@ test('Test binding @NotBlank (with optional message parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@NotBlank(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1399,7 +1399,7 @@ test('Test binding @NotBlank (with optional groups parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[Test])");
+    equals(regula.bind(), undefined, "@NotBlank(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1408,7 +1408,7 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1436,7 +1436,7 @@ test('Test binding @NotEmpty (with optional label parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\")");
+    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1445,7 +1445,7 @@ test('Test binding @NotEmpty (with optional message parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@NotEmpty(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@NotEmpty(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1454,7 +1454,7 @@ test('Test binding @NotEmpty (with optional groups parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotEmpty(groups=[Test])");
+    equals(regula.bind(), undefined, "@NotEmpty(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1463,7 +1463,7 @@ test('Test binding @NotEmpty (with optional label, message, groups parameter) th
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1491,7 +1491,7 @@ test('Test binding @Empty (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Empty(label=\"test\")");
+    equals(regula.bind(), undefined, "@Empty(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1500,7 +1500,7 @@ test('Test binding @Empty (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Empty(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@Empty(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1509,7 +1509,7 @@ test('Test binding @Empty (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Empty(groups=[Test])");
+    equals(regula.bind(), undefined, "@Empty(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1518,7 +1518,7 @@ test('Test binding @Empty (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1546,7 +1546,7 @@ test('Test binding @Blank (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Blank(label=\"test\")");
+    equals(regula.bind(), undefined, "@Blank(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1555,7 +1555,7 @@ test('Test binding @Blank (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Blank(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@Blank(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1564,7 +1564,7 @@ test('Test binding @Blank (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Blank(groups=[Test])");
+    equals(regula.bind(), undefined, "@Blank(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -1573,7 +1573,7 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2001,7 +2001,7 @@ test('Test binding @Email (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Email(label=\"test\")");
+    equals(regula.bind(), undefined, "@Email(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2010,7 +2010,7 @@ test('Test binding @Email (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Email(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@Email(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2019,7 +2019,7 @@ test('Test binding @Email (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Email(groups=[Test])");
+    equals(regula.bind(), undefined, "@Email(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2028,7 +2028,7 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2056,7 +2056,7 @@ test('Test binding @IsAlpha (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\")");
+    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2065,7 +2065,7 @@ test('Test binding @IsAlpha (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlpha(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsAlpha(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@IsAlpha(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2074,7 +2074,7 @@ test('Test binding @IsAlpha (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlpha(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlpha(groups=[Test])");
+    equals(regula.bind(), undefined, "@IsAlpha(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2083,7 +2083,7 @@ test('Test binding @IsAlpha (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2111,7 +2111,7 @@ test('Test binding @IsNumeric (with optional label parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsNumeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\")");
+    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2120,7 +2120,7 @@ test('Test binding @IsNumeric (with optional message parameter) through markup',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsNumeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsNumeric(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@IsNumeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2129,7 +2129,7 @@ test('Test binding @IsNumeric (with optional groups parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsNumeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsNumeric(groups=[Test])");
+    equals(regula.bind(), undefined, "@IsNumeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2166,7 +2166,7 @@ test('Test binding @IsAlphaNumeric (with optional label parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\")");
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2175,7 +2175,7 @@ test('Test binding @IsAlphaNumeric (with optional message parameter) through mar
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlphaNumeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2184,7 +2184,7 @@ test('Test binding @IsAlphaNumeric (with optional groups parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlphaNumeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(groups=[Test])");
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2193,7 +2193,7 @@ test('Test binding @IsAlphaNumeric (with optional label, message, and groups par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -3126,7 +3126,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through mar
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\")");
+    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3135,7 +3135,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3144,7 +3144,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through ma
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test])");
+    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3153,7 +3153,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3171,7 +3171,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through mar
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\")");
+    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3180,7 +3180,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\")");
+    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3189,7 +3189,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through ma
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test])");
+    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -3198,7 +3198,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -4745,6 +4745,466 @@ test('Test binding @Between (with both required parameters and optional message,
             }
         ]
     }), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotBlank through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@NotBlank");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
+
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.NotBlank}
+            ]
+        });
+    }, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @NotBlank through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@NotBlank");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
+
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.NotBlank}
+            ]
+        });
+    }, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @NotBlank (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank}
+        ]
+    }), undefined, "@NotBlank should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotBlank (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    length: "test"
+                }
+            }
+        ]
+    }), undefined, "@NotBlank(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotBlank (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@NotBlank(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotBlank (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@NotBlank(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotBlank (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+
+
+test('Test binding @NotEmpty through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
+
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.NotBlank}
+            ]
+        });
+    }, expectedExceptionMessage, "@NotEmpty cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @NotEmpty (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotEmpty}
+        ]
+    }), undefined, "@NotEmpty should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotEmpty (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotEmpty,
+                params: {
+                    length: "test"
+                }
+            }
+        ]
+    }), undefined, "@NotEmpty(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotEmpty (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotEmpty,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@NotEmpty(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotEmpty (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotEmpty,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@NotEmpty(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @NotEmpty (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotEmpty,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Empty through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Empty");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Empty}
+            ]
+        });
+    });
+    raises(regula.bind, expectedExceptionMessage, "@Empty cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Empty (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Empty}
+        ]
+    }), undefined, "@Empty should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(label=\"test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Empty,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Empty(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(message=\"this is a test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Empty,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Empty(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Empty,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Empty(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Empty (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Empty,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Blank through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Blank");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Blank}
+            ]
+        });
+    });
+    raises(regula.bind, expectedExceptionMessage, "@Blank cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Blank (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Blank}
+        ]
+    }), undefined, "@Blank should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(label=\"test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Blank,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Blank(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(message=\"this is a test\")");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Blank,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Blank(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Blank,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Blank(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Blank (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Blank,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
