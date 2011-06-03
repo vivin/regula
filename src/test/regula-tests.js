@@ -4751,7 +4751,7 @@ test('Test binding @Between (with both required parameters and optional message,
 
 test('Test binding @NotBlank through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@NotBlank");
+    var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
 
@@ -4769,7 +4769,7 @@ test('Test binding @NotBlank through regula.bind to a form element', function() 
 
 test('Test binding @NotBlank through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@NotBlank");
+    var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
 
@@ -4787,7 +4787,7 @@ test('Test binding @NotBlank through regula.bind to a form element', function() 
 
 test('Test binding @NotBlank (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4801,7 +4801,7 @@ test('Test binding @NotBlank (without parameters) through regula.bind', function
 
 test('Test binding @NotBlank (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4820,7 +4820,7 @@ test('Test binding @NotBlank (with optional label parameter) through regula.bind
 
 test('Test binding @NotBlank (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4839,7 +4839,7 @@ test('Test binding @NotBlank (with optional message parameter) through regula.bi
 
 test('Test binding @NotBlank (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4858,7 +4858,7 @@ test('Test binding @NotBlank (with optional groups parameter) through regula.bin
 
 test('Test binding @NotBlank (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4932,7 +4932,7 @@ test('Test binding @NotEmpty (with optional label parameter) through regula.bind
 
 test('Test binding @NotEmpty (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4951,7 +4951,7 @@ test('Test binding @NotEmpty (with optional message parameter) through regula.bi
 
 test('Test binding @NotEmpty (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4970,7 +4970,7 @@ test('Test binding @NotEmpty (with optional groups parameter) through regula.bin
 
 test('Test binding @NotEmpty (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -4989,9 +4989,9 @@ test('Test binding @NotEmpty (with optional label, message, and groups parameter
     deleteElement(inputElementId);
 });
 
-test('Test binding @Empty through markup to a form element', function() {
+test('Test binding @Empty through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@Empty");
+    var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
     raises(function() {
@@ -5002,14 +5002,13 @@ test('Test binding @Empty through markup to a form element', function() {
             ]
         });
     });
-    raises(regula.bind, expectedExceptionMessage, "@Empty cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
 test('Test binding @Empty (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Empty");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5023,7 +5022,7 @@ test('Test binding @Empty (without parameters) through regula.bind', function() 
 
 test('Test binding @Empty (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Empty(label=\"test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5042,7 +5041,7 @@ test('Test binding @Empty (with optional label parameter) through regula.bind', 
 
 test('Test binding @Empty (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Empty(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5061,7 +5060,7 @@ test('Test binding @Empty (with optional message parameter) through regula.bind'
 
 test('Test binding @Empty (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Empty(groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5080,7 +5079,7 @@ test('Test binding @Empty (with optional groups parameter) through regula.bind',
 
 test('Test binding @Empty (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5101,7 +5100,7 @@ test('Test binding @Empty (with optional label, message, and groups parameter) t
 
 test('Test binding @Blank through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@Blank");
+    var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
     raises(function() {
@@ -5112,14 +5111,13 @@ test('Test binding @Blank through regula.bind to a form element', function() {
             ]
         });
     });
-    raises(regula.bind, expectedExceptionMessage, "@Blank cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
 test('Test binding @Blank (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Blank");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5133,7 +5131,7 @@ test('Test binding @Blank (without parameters) through regula.bind', function() 
 
 test('Test binding @Blank (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Blank(label=\"test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5152,7 +5150,7 @@ test('Test binding @Blank (with optional label parameter) through regula.bind', 
 
 test('Test binding @Blank (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Blank(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5171,7 +5169,7 @@ test('Test binding @Blank (with optional message parameter) through regula.bind'
 
 test('Test binding @Blank (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Blank(groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5190,7 +5188,7 @@ test('Test binding @Blank (with optional groups parameter) through regula.bind',
 
 test('Test binding @Blank (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -5208,6 +5206,907 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
 
     deleteElement(inputElementId);
 });
+
+test('Test binding @Pattern through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Pattern}
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Pattern (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Pattern}
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        })
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    label: "test",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    message: "test",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]/,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, groups=[\"Test\"]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional label, message, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]/,
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        flags: "ig"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        flags: "ig",
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        flags: "ig",
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        flags: "ig",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with optional flags, groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        flags: "ig",
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    message: "test"
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Pattern (with required parameter and optional flags, label, message, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+
+
+
+
+test('Test binding @Matches through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Matches}
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Matches (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Matches}
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        })
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    label: "test",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    message: "test",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    regex: /[a-z]/,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, groups=[\"Test\"]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional label, message, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    regex: /[a-z]/,
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        flags: "ig"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        flags: "ig",
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        flags: "ig",
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        flags: "ig",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with optional flags, groups, label and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Matches,
+                    params: {
+                        flags: "ig",
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    message: "test"
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Matches (with required parameter and optional flags, label, message, and groups parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Matches,
+                params: {
+                    flags: "ig",
+                    regex: /[a-z]/,
+                    label: "test",
+                    message: "This is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+
+
 
 module("Test regula.custom (definition only)");
 
