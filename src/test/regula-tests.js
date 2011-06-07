@@ -2323,6 +2323,211 @@ test('Test binding @Length (with both required parameters and optional message, 
     deleteElement(inputElementId);
 });
 
+test('Test binding @Digits through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Digits");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Digits: @Digits is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Digits (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(fraction=5)");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(fraction=5, message=\"this is a test\")");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(fraction=5, groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5)");
+
+    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5) must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\") must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, message=\"this is a test\") must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, groups=[Test]) must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
 test('Test binding @Past through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Past");

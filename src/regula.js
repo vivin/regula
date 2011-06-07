@@ -604,13 +604,17 @@ regula = (function() {
         var result = false;
 
         if(parts.length == 1) {
-           result = (parts[0].length <= params["integer"]);
+            parts[1] = "";
         }
 
-        else if(parts.length == 2) {
-           result = (parts[0].length <= params["integer"] && parts[1].length <= params["fraction"]);
+        if(params["integer"] > 0) {
+            result = params[0].length <= params["integer"];
         }
-       
+
+        if(params["fraction"] > 0) {
+            result = result && params[1].length <= params["fraction"];
+        }
+
         return result;
     }
 
