@@ -2309,7 +2309,7 @@ test('Test binding @Length (with both required parameters and optional groups pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10, message=\"test message\", groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@Length(min=5, max=10, groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -5859,10 +5859,6 @@ test('Test binding @Pattern (with required parameter and optional flags, label, 
     deleteElement(inputElementId);
 });
 
-
-
-
-
 test('Test binding @Matches through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
@@ -6740,6 +6736,280 @@ test('Test binding @IsAlphaNumeric (with optional label, message, and groups par
     deleteElement(inputElementId);
 });
 
+test('Test binding @Length through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Length: @Length is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Length}
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Length (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Length}
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElement(inputElementId);
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Length(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        groups:["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElement(inputElementId);
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Length(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElement(inputElementId);
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with one required parameter) through markup (1)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): min");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        max: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with one required parameter) through markup (2)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): max");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Length,
+                    params: {
+                        min: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with both required parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    }), undefined, "@Length(min=5, max=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with both required parameters and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Length(min=5, max=10, label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with both required parameters and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10,
+                    message: "test message"
+                }
+            }
+        ]
+    }), undefined, "@Length(min=5, max=10, message=\"test message\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with both required parameters and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Length(min=5, max=10, groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Length (with both required parameters and optional message, label, and groups parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test])");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10,
+                    label: "test",
+                    message: "test message",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
 module("Test regula.custom (definition only)");
 
 test('Call regula.custom without any arguments', function() {
@@ -6828,11 +7098,26 @@ test('Call regula.custom with valid name and non-function validator', function()
 });
 
 test('Call regula.custom with valid name and validator', function() {
-   equals(regula.custom({
-       name: "CustomConstraint" + new Date().getTime(),
-       validator: function() {
-       }
-   }), undefined, "regula.custom with valid name and validator must not return any errors.")
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        validator: function() {
+            return false;
+        }
+    }), undefined, "regula.custom with valid name and validator must not return any errors.");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
 });
 
 test('Call regula.custom with required parameters and formSpecific attribute of non-boolean type', function() {
@@ -6961,6 +7246,7 @@ test('Call regula.custom with required parameters and empty params attribute', f
         name: "CustomConstraint" + time,
         params: [],
         validator: function() {
+            return false;
         }
     }, undefined, "regula.custom called with required parameters and an empty params array must not generate any errors"));
 
@@ -6983,6 +7269,7 @@ test('Call regula.custom with required parameters and valid params attribute', f
         name: "CustomConstraint" + time,
         params: ["myParam"],
         validator: function() {
+            return false;
         }
     }, undefined, "regula.custom called with required parameters and an valid params array must not generate any errors"));
 
@@ -6999,5 +7286,90 @@ test('Call regula.custom with required parameters and valid params attribute', f
     deleteElement(inputElementId);
 });
 
-//TODO test defaultMessage parameter
-//TODO test @Digits
+test('Call regula.custom with required parameters and null defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        defaultMessage: null,
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and null defaultMessage attribute must not generate any errors`"));
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        defaultMessage: undefined,
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and undefined defaultMessage attribute must not generate any errors`"));
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        defaultMessage: undefined,
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and undefined defaultMessage attribute must not generate any errors`"));
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and valid defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        defaultMessage: "This is a test",
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and valid defaultMessage attribute must not generate any errors`"));
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+
+    deleteElement(inputElementId);
+});
