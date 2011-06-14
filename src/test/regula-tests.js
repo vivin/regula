@@ -2338,7 +2338,7 @@ test('Test binding @Digits (without parameters) through markup', function() {
     var $input = createInputElement(inputElementId, "@Digits");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
 });
@@ -6838,7 +6838,7 @@ test('Test binding @Length (with optional groups parameter) through markup', fun
 
 test('Test binding @Length (with optional label, message, and groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Length(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
     raises(function() {
@@ -6989,7 +6989,7 @@ test('Test binding @Length (with both required parameters and optional groups pa
 
 test('Test binding @Length (with both required parameters and optional message, label, and groups parameters) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test])");
+    var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
@@ -7006,6 +7006,469 @@ test('Test binding @Length (with both required parameters and optional message, 
             }
         ]
     }), undefined, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Digits: @Digits is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Digits}
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Digits (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Digits}
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        groups:["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        integer: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        integer: 5,
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        integer: 5,
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(function () {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        integer: 5,
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        integer: 5,
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        fraction: 5
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        fraction: 5,
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        fraction: 5,
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        fraction: 5,
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with fraction and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Digits,
+                    params: {
+                        fraction: 5,
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 5,
+                    fraction: 5
+                }
+            }
+        ]
+    }), undefined, "@Digits(integer=5, fraction=5) must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 5,
+                    fraction: 5,
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Digits(integer=5, fraction=5, label=\"test\") must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 5,
+                    fraction: 5,
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Digits(integer=5, fraction=5, message=\"this is a test\") must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 5,
+                    fraction: 5,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Digits(integer=5, fraction=5, groups=[Test]) must be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Digits (with integer and fraction and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 5,
+                    fraction: 5,
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
 
     deleteElement(inputElementId);
 });
