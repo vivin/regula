@@ -3002,6 +3002,7 @@ regula = (function() {
         compound: compound,
         override: override,
         Constraint: Constraint,
-        Group: Group
+        Group: Group,
+        DateFormat: DateFormat
     };
 })();
