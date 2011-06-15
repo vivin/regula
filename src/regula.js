@@ -1161,12 +1161,12 @@ regula = (function() {
 
         function constraintName(tokens) {
             var token = trim(tokens.shift());
-            var result = validStartingCharacter(token[0]);
+            var result = validStartingCharacter(token.charAt(0));
 
             if(result.successful) {
                 var i = 1;
                 while(i < token.length && result.successful) {
-                    result = validCharacter(token[i]);
+                    result = validCharacter(token.charAt(i));
                     i++;
                 }
 
@@ -1371,12 +1371,12 @@ regula = (function() {
             };
 
             if(typeof token != "undefined") {
-                result = validStartingCharacter(token[0]);
+                result = validStartingCharacter(token.charAt(0));
 
                 if(result.successful) {
                     var i = 1;
                     while(i < token.length && result.successful) {
-                        result = validCharacter(token[i]);
+                        result = validCharacter(token.charAt(i));
                         i++;
                     }
 
@@ -1564,12 +1564,12 @@ regula = (function() {
 
         function integer(tokens) {
             var token = trim(tokens.shift());
-            var result = digit(token[0]);
+            var result = digit(token.charAt(0));
 
             if(result.successful) {
                 var i = 1;
                 while(i < token.length && result.successful) {
-                    result = digit(token[i]);
+                    result = digit(token.charAt(i));
                     i++;
                 }
 
@@ -1855,12 +1855,12 @@ regula = (function() {
                 token = tokens.shift();
             }
 
-            result = validStartingCharacter(token[0]);
+            result = validStartingCharacter(token.charAt(0));
 
             if(result.successful) {
                 var i = 1;
                 while(i < token.length && result.successful) {
-                    result = validCharacter(token[i]);
+                    result = validCharacter(token.charAt(i));
                     i++;
                 }
 
