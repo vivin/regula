@@ -1,4 +1,3 @@
-/** TODO: Test binding through markup and regula.bind with multiple, valid constraints **/
 function createInputElement(id, definition, type) {
     var $input = (type != "select") ? jQuery("<input />") : jQuery("<select />");
     var _type = type || "hidden";
@@ -674,11 +673,33 @@ test('Test definition with multiple constraints, with one malformed constraint',
     deleteElement(inputElementId)
 });
 
-test('Test definition with multiple valid constraints', function() {
+test('Test definition with multiple valid constraints (markup)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
     equals(regula.bind(), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test definition with multiple valid constraints (programmatic)', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Required},
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    }), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -3363,51 +3384,6 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     deleteElement(formElementId);
 });
 
-test('Test binding @CompletelyFilled (without parameters) through markup', function() {
-    var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@CompletelyFilled");
-
-    equals(regula.bind(), undefined, "@CompletelyFilled should be a valid definition");
-
-    deleteElement(formElementId);
-});
-
-test('Test binding @CompletelyFilled (with optional label parameter) through markup', function() {
-    var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\")");
-
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
-
-    deleteElement(formElementId);
-});
-
-test('Test binding @CompletelyFilled (with optional message parameter) through markup', function() {
-    var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@CompletelyFilled(message=\"this is a test\")");
-
-    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
-
-    deleteElement(formElementId);
-});
-
-test('Test binding @CompletelyFilled (with optional groups parameter) through markup', function() {
-    var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@CompletelyFilled(groups=[Test])");
-
-    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
-
-    deleteElement(formElementId);
-});
-
-test('Test binding @CompletelyFilled (with optional label, message, and groups parameter) through markup', function() {
-    var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
-
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
-
-    deleteElement(formElementId);
-});
-
 test('Test binding @PasswordsMatch through markup to a non-form element', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@PasswordsMatch");
@@ -3519,7 +3495,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional g
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\", groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -9275,6 +9251,389 @@ test('Test binding @Future (with required parameter and optional date, separator
     deleteElement(inputElementId);
 });
 
+test('Test binding @CompletelyFilled to a non-form element through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".CompletelyFilled: @CompletelyFilled is a form constraint, but you are trying to bind it to a non-form element");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.CompletelyFilled}
+            ]
+        });
+    }, expectedExceptionMessage, "@CompletelyFilled cannot be bound to a non-form element");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @CompletelyFilled (without parameters) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.CompletelyFilled}
+        ]
+    }), undefined, "@CompletelyFilled should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @CompletelyFilled (with optional label parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.CompletelyFilled,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @CompletelyFilled (with optional message parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.CompletelyFilled,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @CompletelyFilled (with optional groups parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.CompletelyFilled,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @CompletelyFilled (with optional label, message, and groups parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.CompletelyFilled,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch through regula.bind to a non-form element', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    var expectedExceptionMessage = new RegExp(inputElementId + ".PasswordsMatch: @PasswordsMatch is a form constraint, but you are trying to bind it to a non-form element");
+    raises(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.PasswordsMatch}
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound to a input element");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @PasswordsMatch (without parameters) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.PasswordsMatch}
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with optional label parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with optional message parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        message: "this is a test"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with optional groups parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with optional label, message, and groups parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        label: "test",
+                        message: "this is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with one required parameter) through regula.bind (1)', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field2");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        field1: "field1"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with one required parameter) through regula.bind (2)', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field1");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.PasswordsMatch,
+                    params: {
+                        field2: "field2"
+                    }
+                }
+            ]
+        });
+    }, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with both required parameters) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.PasswordsMatch,
+                params: {
+                    field1: "field1",
+                    field2: "field2"
+                }
+            }
+        ]
+    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\") should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with both required parameters and optional label parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.PasswordsMatch,
+                params: {
+                    field1: "field1",
+                    field2: "field2",
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\") should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with both required parameters and optional message parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.PasswordsMatch,
+                params: {
+                    field1: "field1",
+                    field2: "field2",
+                    message: "test message"
+                }
+            }
+        ]
+    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\") should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with both required parameters and optional groups parameter) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.PasswordsMatch,
+                params: {
+                    field1: "field1",
+                    field2: "field2",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @PasswordsMatch (with both required parameters and optional message, label, and groups parameters) through regula.bind', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    equals(regula.bind({
+        element: $form.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.PasswordsMatch,
+                params: {
+                    field1: "field1",
+                    field2: "field2",
+                    label: "test",
+                    message: "test message",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElement(formElementId);
+});
+
 module("Test regula.custom (definition only)");
 
 test('Call regula.custom without any arguments', function() {
@@ -9638,3 +9997,5 @@ test('Call regula.custom with required parameters and valid defaultMessage attri
 
     deleteElement(inputElementId);
 });
+
+/* TODO: Test the validation behavior of each pre-defined constraint, then do the same thing for compound */
