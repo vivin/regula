@@ -1,8 +1,8 @@
 function createInputElement(id, definition, type) {
-    var $input = (type != "select") ? jQuery("<input />") : jQuery("<select />");
+    var $input = (type != "select" && type != "textarea") ? jQuery("<input />") : jQuery("<" + type + "/>");
     var _type = type || "hidden";
 
-    if(type != "select") {
+    if(type != "select" && type != "textarea") {
        $input.attr("type", _type);
     }
 
@@ -9998,4 +9998,624 @@ test('Call regula.custom with required parameters and valid defaultMessage attri
     deleteElement(inputElementId);
 });
 
-/* TODO: Test the validation behavior of each pre-defined constraint, then do the same thing for compound */
+/*TODO: Test custom label, message, groups, and interpolation when you test regula.validate() */
+
+module("Test validation with @Checked");
+
+function testConstraintViolationsForDefaultConstraints(constraintViolation, params) {
+    equals(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equals(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
+    equals(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
+    equals(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
+    equals(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
+    equals(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equals(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
+    equals(constraintViolation.group, params.validatedGroups, "The following groups must have been validated: " + params.validatedGroups);
+    equals(constraintViolation.message, params.errorMessage, "Wrong error message");
+}
+
+test('Test @Checked against unchecked radio button (markup)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, "@Checked", "radio");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Checked",
+        groups: "Default",
+        elementId: "myRadio",
+        validatedGroups: "Default",
+        errorMessage: "The radio button needs to be checked."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against unchecked radio button (regula.bind)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, undefined, "radio");
+
+    regula.bind({
+        element: $radio.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Checked",
+        groups: "Default",
+        elementId: "myRadio",
+        validatedGroups: "Default",
+        errorMessage: "The radio button needs to be checked."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against checked radio button (markup)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, "@Checked", "radio");
+    $radio.attr("checked", "true");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against checked radio button (regula.bind)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, undefined, "radio");
+    $radio.attr("checked", "true");
+
+    regula.bind({
+        element: $radio.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against unchecked checkbox (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, "@Checked", "checkbox");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Checked",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The checkbox needs to be checked."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against unchecked checkbox (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, undefined, "checkbox");
+
+    regula.bind({
+        element: $checkbox.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Checked",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The checkbox needs to be checked."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Checked against checked checkbox (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, "@Checked", "checkbox");
+    $checkbox.attr("checked", "true");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
+
+    deleteElement(inputElementId)
+});
+
+test('Test @Checked against checked checkbox (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, undefined, "checkbox");
+    $checkbox.attr("checked", "true");
+
+    regula.bind({
+        element: $checkbox.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Checked}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Selected");
+
+test('Test @Selected against unselected dropdown (markup)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Selected", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(0);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Selected",
+        groups: "Default",
+        elementId: "mySelect",
+        validatedGroups: "Default",
+        errorMessage: "The select box needs to be selected."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Selected against unselected dropdown (regula.bind)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, undefined, "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(0);
+
+    regula.bind({
+        element: $select.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Selected}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Selected",
+        groups: "Default",
+        elementId: "mySelect",
+        validatedGroups: "Default",
+        errorMessage: "The select box needs to be selected."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Selected against selected dropdown (markup)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Selected", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(1);
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Selected against selected dropdown (regula.bind)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Selected", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(1);
+
+    regula.bind({
+        element: $select.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Selected}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Required");
+
+test('Test @Required against unchecked radio button (markup)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, "@Required", "radio");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myRadio",
+        validatedGroups: "Default",
+        errorMessage: "The radio button is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against unchecked radio button (regula.bind)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, undefined, "radio");
+
+    regula.bind({
+        element: $radio.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myRadio",
+        validatedGroups: "Default",
+        errorMessage: "The radio button is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against checked radio button (markup)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, "@Required", "radio");
+    $radio.attr("checked", "true");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against checked radio button (regula.bind)', function() {
+    var inputElementId = "myRadio";
+    var $radio = createInputElement(inputElementId, undefined, "radio");
+    $radio.attr("checked", "true");
+
+    regula.bind({
+        element: $radio.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against unchecked checkbox (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, "@Required", "checkbox");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The checkbox is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against unchecked checkbox (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, undefined, "checkbox");
+
+    regula.bind({
+        element: $checkbox.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The checkbox is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against checked checkbox (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, "@Required", "checkbox");
+    $checkbox.attr("checked", "true");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
+
+    deleteElement(inputElementId)
+});
+
+test('Test @Required against checked checkbox (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $checkbox = createInputElement(inputElementId, undefined, "checkbox");
+    $checkbox.attr("checked", "true");
+
+    regula.bind({
+        element: $checkbox.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against unselected dropdown (markup)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Required", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(0);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "mySelect",
+        validatedGroups: "Default",
+        errorMessage: "The select box is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against unselected dropdown (regula.bind)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, undefined, "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(0);
+
+    regula.bind({
+        element: $select.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "mySelect",
+        validatedGroups: "Default",
+        errorMessage: "The select box is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against selected dropdown (markup)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Required", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(1);
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against selected dropdown (regula.bind)', function() {
+    var inputElementId = "mySelect";
+    var $select = createInputElement(inputElementId, "@Required", "select");
+
+    var $option1 = jQuery("<option value = 0>Please select an option</option>");
+    var $option2 = jQuery("<option value =1>One</option>");
+
+    $select.append($option1);
+    $select.append($option2);
+    $select.val(1);
+
+    regula.bind({
+        element: $select.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against a non-empty text field (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $text = createInputElement(inputElementId, "@Required", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The text field is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against a non-empty text field (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myCheckbox",
+        validatedGroups: "Default",
+        errorMessage: "The text field is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against non-empty text field (markup)', function() {
+    var inputElementId = "myCheckbox";
+    var $text = createInputElement(inputElementId, "@Required", "text");
+    $text.val("test");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against non-empty text field (regula.bind)', function() {
+    var inputElementId = "myCheckbox";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("test");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
+
+    deleteElement(inputElementId);
+});
+
+
+
+
+
+
+
+test('Test @Required against a non-empty textarea (markup)', function() {
+    var inputElementId = "myTextarea";
+    var $textarea = createInputElement(inputElementId, "@Required", "textarea");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myTextarea",
+        validatedGroups: "Default",
+        errorMessage: "The text area is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against a non-empty textarea (regula.bind)', function() {
+    var inputElementId = "myTextarea";
+    var $textarea = createInputElement(inputElementId, undefined, "textarea");
+
+    regula.bind({
+        element: $textarea.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Required",
+        groups: "Default",
+        elementId: "myTextarea",
+        validatedGroups: "Default",
+        errorMessage: "The text area is required."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against non-empty textarea (markup)', function() {
+    var inputElementId = "myTextarea";
+    var $textarea = createInputElement(inputElementId, "@Required", "textarea");
+    $textarea.val("test");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
+
+    deleteElement(inputElementId);
+});
+
+test('Test @Required against non-empty textarea (regula.bind)', function() {
+    var inputElementId = "myTextarea";
+    var $textarea = createInputElement(inputElementId, undefined, "textarea");
+    $textarea.val("test");
+
+    regula.bind({
+        element: $textarea.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Required}
+        ]
+    });
+    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
+
+    deleteElement(inputElementId);
+});

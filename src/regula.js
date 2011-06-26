@@ -2267,14 +2267,13 @@ regula = (function() {
             };
         }
 
-        else if(tagName != "form" && tagName != "select" && tagName !="textArea" && tagName !="input") {
+        else if(tagName != "form" && tagName != "select" && tagName !="textarea" && tagName !="input") {
             result = {
                 successful: false,
                 message: tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements " + explodeParameters(options),
                 data: null
             };
         }
-
 
         else {
             var i = 0;
@@ -2427,7 +2426,7 @@ regula = (function() {
 
         if(result.successful) {
             /*
-             We check and see if this element-constraint combination does NOT exist. We can say that the combination does NOT exist if
+             We check to see if this element-constraint combination does NOT exist. We can say that the combination does NOT exist if
              o The element's id does not exist as a key within the Default group (every element is added to the default group regardless)
              OR IF
              o The element's id exists within the Default group, but this particular constraint has not been bound to it
