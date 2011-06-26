@@ -10546,12 +10546,6 @@ test('Test @Required against non-empty text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
-
-
-
-
-
-
 test('Test @Required against a non-empty textarea (markup)', function() {
     var inputElementId = "myTextarea";
     var $textarea = createInputElement(inputElementId, "@Required", "textarea");
@@ -10619,3 +10613,419 @@ test('Test @Required against non-empty textarea (regula.bind)', function() {
 
     deleteElement(inputElementId);
 });
+
+module("Test validation with @Max");
+
+test('Test failing @Max against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
+    $text.val(6);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Max",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be lesser than or equal to 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Max against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(0);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: -2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Max",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be lesser than or equal to -2."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Max against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
+    $text.val(5);
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Max must not fail when value=5 and textbox value is 5");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Max against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(-5);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Max,
+                params: {
+                    value: -2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+    equals(regula.validate().length, 0, "@Max must not fail when value=-2 and textbox value is -5");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Min");
+
+test('Test failing @Min against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Min(value=5)", "text");
+    $text.val(4);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Min",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be greater than or equal to 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Min against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(-1);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 0
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Min",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be greater than or equal to 0."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Min against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Min(value=5)", "text");
+    $text.val(5);
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Min must not fail when value=5 and textbox value is 5");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Min against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(0);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: -2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+    equals(regula.validate().length, 0, "@Min must not fail when value=-2 and textbox value is 0");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Range");
+
+test('Test failing @Range against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Range(min=0, max=5)", "text");
+    $text.val(-1);
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Range",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be between 0 and 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Range against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(6);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 0,
+                    max: 5
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Range",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be between 0 and 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Range against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Range(min=0, max=5)", "text");
+    $text.val(0);
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=0");
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Range against text field (regula.bind)(1)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(5);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 0,
+                    max: 5
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=5");
+
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Range against text field (regula.bind)(2)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(3);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 0,
+                    max: 5
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=3");
+
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @NotBlank");
+
+test('Test failing @NotBlank against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@NotBlank", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "NotBlank",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field cannot be blank."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @NotBlank against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "NotBlank",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field cannot be blank."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @NotBlank against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@NotBlank", "text");
+    $text.val("test");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @NotBlank against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("test");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank}
+        ]
+    });
+    equals(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Blank");
+
+test('Test failing @Blank against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Blank", "text");
+    $text.val("test");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Blank",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be blank."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Blank against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("test");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Blank}
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Blank",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be blank."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Blank against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Blank", "text");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Blank should not fail on an empty text field");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Blank against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Blank}
+        ]
+    });
+    equals(regula.validate().length, 0, "@Blank should not fail on an empty text field");
+
+    deleteElement(inputElementId);
+});
+
+
