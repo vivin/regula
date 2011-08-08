@@ -497,15 +497,15 @@ regula = (function() {
     }
 
     function max(params) {
-        return this.value <= params["value"];
+        return parseFloat(this.value) <= parseFloat(params["value"]);
     }
 
     function min(params) {
-        return this.value >= params["value"];
+        return parseFloat(this.value) >= parseFloat(params["value"]);
     }
 
     function range(params) {
-        return this.value.replace(/\s/g, "") != "" && this.value <= params["max"] && this.value >= params["min"];
+        return this.value.replace(/\s/g, "") != "" && parseFloat(this.value) <= parseFloat(params["max"]) && parseFloat(this.value) >= parseFloat(params["min"]);
     }
 
     function notBlank() {

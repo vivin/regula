@@ -10619,7 +10619,7 @@ module("Test validation with @Max");
 test('Test failing @Max against text field (markup)', function() {
     var inputElementId = "myText";
     var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
-    $text.val(6);
+    $text.val(10);
 
     regula.bind();
     var constraintViolation = regula.validate()[0];
