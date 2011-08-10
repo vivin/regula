@@ -2188,13 +2188,6 @@ regula = (function() {
         if(!result.successful) {
             throw result.message;
         }
-
-        else {
-            //Add regula-validation class if it doesn't already exist
-            if(options && !/regula-validation/.test(options.element.className)) {
-                options.element.className += " regula-validation";
-            }
-        }
     }
 
     function bindAfterParsing() {
