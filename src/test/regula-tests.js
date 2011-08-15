@@ -9,7 +9,6 @@ function createInputElement(id, definition, type) {
     $input.attr("id", id);
 
     if(typeof definition != "undefined") {
-       $input.attr("class", "regula-validation");
        $input.attr("data-constraints", definition);
     }
 
@@ -23,7 +22,6 @@ function createInputElement(id, definition, type) {
 function createFormElement(id, definition) {
     var $form = jQuery("<form />");
     $form.attr("id", id);
-    $form.attr("class", "regula-validation");
     $form.attr("data-constraints", definition);
     $form.hide();
 
