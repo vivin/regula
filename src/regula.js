@@ -87,8 +87,11 @@ regula = (function() {
         Matches: 7,
         Email: 8,
         Alpha: 9,
+        IsAlpha: 9,
         Numeric: 10,
+        IsNumeric: 12,
         AlphaNumeric: 11,
+        IsAlphaNumeric: 11,
         Integer: 12,
         Real: 13,
         CompletelyFilled: 14,
@@ -1099,7 +1102,10 @@ regula = (function() {
                 Between: "Range",
                 Matches: "Pattern",
                 Empty: "Blank",
-                NotEmpty: "NotBlank"
+                NotEmpty: "NotBlank",
+                IsAlpha: "Alpha",
+                IsNumeric: "Integer",
+                IsAlphaNumeric: "AlphaNumeric"
             };
 
             var result = constraintName(tokens);
