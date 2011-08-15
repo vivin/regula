@@ -86,16 +86,18 @@ regula = (function() {
         Pattern: 7,
         Matches: 7,
         Email: 8,
-        IsAlpha: 9,
-        IsNumeric: 10,
-        IsAlphaNumeric: 11,
-        CompletelyFilled: 12,
-        PasswordsMatch: 13,
-        Required: 14,
-        Length: 15,
-        Digits: 16,
-        Past: 17,
-        Future: 18
+        Alpha: 9,
+        Numeric: 10,
+        AlphaNumeric: 11,
+        Integer: 12,
+        Real: 13,
+        CompletelyFilled: 14,
+        PasswordsMatch: 15,
+        Required: 16,
+        Length: 17,
+        Digits: 18,
+        Past: 19,
+        Future:20
     };
 
     var ReverseConstraint = {
@@ -108,16 +110,18 @@ regula = (function() {
         6: "Blank",
         7: "Pattern",
         8: "Email",
-        9: "IsAlpha",
-        10: "IsNumeric",
-        11: "IsAlphaNumeric",
-        12: "CompletelyFilled",
-        13: "PasswordsMatch",
-        14: "Required",
-        15: "Length",
-        16: "Digits",
-        17: "Past",
-        18: "Future"
+        9: "Alpha",
+        10: "Numeric",
+        11: "AlphaNumeric",
+        12: "Integer",
+        13: "Real",
+        14: "CompletelyFilled",
+        15: "PasswordsMatch",
+        16: "Required",
+        17: "Length",
+        18: "Digits",
+        19: "Past",
+        20: "Future"
     };
 	
 	var DateFormat = {
@@ -230,34 +234,54 @@ regula = (function() {
             defaultMessage: "{label} is not a valid email."
         },
 
-        IsAlpha: {
+        Alpha: {
             formSpecific: false,
-            validator: isAlpha,
-            constraintType: Constraint.IsAlpha,
+            validator: alpha,
+            constraintType: Constraint.Alpha,
             custom: false,
             compound: false,
             params: [],
             defaultMessage: "{label} can only contain letters."
         },
 
-        IsNumeric: {
+        Numeric: {
             formSpecific: false,
-            validator: isNumeric,
-            constraintType: Constraint.IsNumeric,
+            validator: numeric,
+            constraintType: Constraint.Numeric,
             custom: false,
             compound: false,
             params: [],
             defaultMessage: "{label} can only contain numbers."
         },
 
-        IsAlphaNumeric: {
+        AlphaNumeric: {
             formSpecific: false,
-            validator: isAlphaNumeric,
-            constraintType: Constraint.IsAlphaNumeric,
+            validator: alphaNumeric,
+            constraintType: Constraint.AlphaNumeric,
             custom: false,
             compound: false,
             params: [],
             defaultMessage: "{label} can only contain numbers and letters."
+        },
+
+        Integer: {
+            formSpecific: false,
+            validator: integer,
+            constraintType: Constraint.Integer,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} must be an integer."
+        },
+
+        Real: {
+            formSpecific: false,
+            validator: real,
+            constraintType: Constraint.Real,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} must be a real number."
         },
 
         CompletelyFilled: {
@@ -484,15 +508,23 @@ regula = (function() {
         return /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/i.test(this.value);
     }
 
-    function isAlpha() {
+    function alpha() {
         return /^[A-Za-z]+$/.test(this.value);
     }
 
-    function isNumeric() {
+    function numeric() {
+        return /^[0-9]+$/.test(this.value);
+    }
+
+    function integer() {
         return /^-?[0-9]+$/.test(this.value);
     }
 
-    function isAlphaNumeric() {
+    function real() {
+        return /^-?([0-9]+(\.[0-9]+)?|\.[0-9]+)$/.test(this.value);
+    }
+
+    function alphaNumeric() {
         return /^[0-9]+|[0-9A-Za-z]+$/.test(this.value);
     }
 

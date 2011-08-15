@@ -2062,167 +2062,167 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha through markup to a form element', function() {
+test('Test binding @Alpha through markup to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@IsAlpha");
+    var $form = createFormElement(formElementId, "@Alpha");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlpha: @IsAlpha is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@IsAlpha cannot be bound to a form element");
+    var expectedExceptionMessage = new RegExp(formElementId + ".Alpha: @Alpha is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Alpha cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsAlpha (without parameters) through markup', function() {
+test('Test binding @Alpha (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlpha");
+    var $input = createInputElement(inputElementId, "@Alpha");
 
-    equals(regula.bind(), undefined, "@IsAlpha should be a valid definition");
+    equals(regula.bind(), undefined, "@Alpha should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional label parameter) through markup', function() {
+test('Test binding @Alpha (with optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\")");
+    var $input = createInputElement(inputElementId, "@Alpha(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Alpha(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional message parameter) through markup', function() {
+test('Test binding @Alpha (with optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlpha(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId, "@Alpha(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsAlpha(message=\"this is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Alpha(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional groups parameter) through markup', function() {
+test('Test binding @Alpha (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlpha(groups=[Test])");
+    var $input = createInputElement(inputElementId, "@Alpha(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlpha(groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@Alpha(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional label, message, and groups parameter) through markup', function() {
+test('Test binding @Alpha (with optional label, message, and groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric through markup to a form element', function() {
+test('Test binding @Numeric through markup to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@IsNumeric");
+    var $form = createFormElement(formElementId, "@Numeric");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsNumeric: @IsNumeric is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@IsNumeric cannot be bound to a form element");
+    var expectedExceptionMessage = new RegExp(formElementId + ".Numeric: @Numeric is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Numeric cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsNumeric (without parameters) through markup', function() {
+test('Test binding @Numeric (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsNumeric");
+    var $input = createInputElement(inputElementId, "@Numeric");
 
-    equals(regula.bind(), undefined, "@IsNumeric should be a valid definition");
+    equals(regula.bind(), undefined, "@Numeric should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional label parameter) through markup', function() {
+test('Test binding @Numeric (with optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsNumeric(label=\"test\")");
+    var $input = createInputElement(inputElementId, "@Numeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Numeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional message parameter) through markup', function() {
+test('Test binding @Numeric (with optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsNumeric(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId, "@Numeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsNumeric(message=\"this is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@Numeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional groups parameter) through markup', function() {
+test('Test binding @Numeric (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsNumeric(groups=[Test])");
+    var $input = createInputElement(inputElementId, "@Numeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsNumeric(groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@Numeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional label, message, and groups parameter) through markup', function() {
+test('Test binding @Numeric (with optional label, message, and groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equals(regula.bind(), undefined, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric through markup to a form element', function() {
+test('Test binding @AlphaNumeric through markup to a form element', function() {
     var formElementId = "hiddenForm";
-    var $form = createFormElement(formElementId, "@IsAlphaNumeric");
+    var $form = createFormElement(formElementId, "@AlphaNumeric");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlphaNumeric: @IsAlphaNumeric is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@IsAlphaNumeric cannot be bound to a form element");
+    var expectedExceptionMessage = new RegExp(formElementId + ".AlphaNumeric: @AlphaNumeric is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@AlphaNumeric cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsAlphaNumeric (without parameters) through markup', function() {
+test('Test binding @AlphaNumeric (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlphaNumeric");
+    var $input = createInputElement(inputElementId, "@AlphaNumeric");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric should be a valid definition");
+    equals(regula.bind(), undefined, "@AlphaNumeric should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional label parameter) through markup', function() {
+test('Test binding @AlphaNumeric (with optional label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\")");
+    var $input = createInputElement(inputElementId, "@AlphaNumeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@AlphaNumeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional message parameter) through markup', function() {
+test('Test binding @AlphaNumeric (with optional message parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(message=\"this is a test\")");
+    var $input = createInputElement(inputElementId, "@AlphaNumeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(message=\"this is a test\") should be a valid definition");
+    equals(regula.bind(), undefined, "@AlphaNumeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional groups parameter) through markup', function() {
+test('Test binding @AlphaNumeric (with optional groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(groups=[Test])");
+    var $input = createInputElement(inputElementId, "@AlphaNumeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@AlphaNumeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional label, message, and groups parameter) through markup', function() {
+test('Test binding @AlphaNumeric (with optional label, message, and groups parameter) through markup', function() {
     var inputElementId = "hiddenInput";
-    var $input = createInputElement(inputElementId, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+    var $input = createInputElement(inputElementId, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equals(regula.bind(), undefined, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -2235,6 +2235,116 @@ test('Test binding @Length through markup to a form element', function() {
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound to a form element");
 
     deleteElement(formElementId);
+});
+
+test('Test binding @Integer through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Integer");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Integer: @Integer is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Integer cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Integer (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Integer");
+
+    equals(regula.bind(), undefined, "@Integer should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Integer(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Integer(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Integer(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Integer(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Integer(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Integer(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Real");
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Real: @Real is not a form constraint, but you are trying to bind it to a form");
+    raises(regula.bind, expectedExceptionMessage, "@Real cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Real (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Real");
+
+    equals(regula.bind(), undefined, "@Real should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Real(label=\"test\")");
+
+    equals(regula.bind(), undefined, "@Real(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Real(message=\"this is a test\")");
+
+    equals(regula.bind(), undefined, "@Real(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Real(groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Real(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Real(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equals(regula.bind(), undefined, "@Real(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    deleteElement(inputElementId);
 });
 
 test('Test binding @Length (without parameters) through markup', function() {
@@ -6393,38 +6503,38 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha through regula.bind to a form element', function() {
+test('Test binding @Alpha through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlpha: @IsAlpha is not a form constraint, but you are trying to bind it to a form");
+    var expectedExceptionMessage = new RegExp(formElementId + ".Alpha: @Alpha is not a form constraint, but you are trying to bind it to a form");
     raises(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
-                {constraintType: regula.Constraint.IsAlpha}
+                {constraintType: regula.Constraint.Alpha}
             ]
         });
-    }, expectedExceptionMessage, "@IsAlpha cannot be bound to a form element");
+    }, expectedExceptionMessage, "@Alpha cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsAlpha (without parameters) through regula.bind', function() {
+test('Test binding @Alpha (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
         constraints: [
-            {constraintType: regula.Constraint.IsAlpha}
+            {constraintType: regula.Constraint.Alpha}
         ]
-    }), undefined, "@IsAlpha should be a valid definition");
+    }), undefined, "@Alpha should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional label parameter) through regula.bind', function() {
+test('Test binding @Alpha (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6432,18 +6542,18 @@ test('Test binding @IsAlpha (with optional label parameter) through regula.bind'
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlpha,
+                constraintType: regula.Constraint.Alpha,
                 params: {
                     label: "test"
                 }
             }
         ]
-    }), undefined, "@IsAlpha(label=\"test\") should be a valid definition");
+    }), undefined, "@Alpha(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional message parameter) through regula.bind', function() {
+test('Test binding @Alpha (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6451,18 +6561,18 @@ test('Test binding @IsAlpha (with optional message parameter) through regula.bin
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlpha,
+                constraintType: regula.Constraint.Alpha,
                 params: {
                     message: "this is a test"
                 }
             }
         ]
-    }), undefined, "@IsAlpha(message=\"this is a test\") should be a valid definition");
+    }), undefined, "@Alpha(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional groups parameter) through regula.bind', function() {
+test('Test binding @Alpha (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6470,18 +6580,18 @@ test('Test binding @IsAlpha (with optional groups parameter) through regula.bind
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlpha,
+                constraintType: regula.Constraint.Alpha,
                 params: {
                     groups: ["Test"]
                 }
             }
         ]
-    }), undefined, "@IsAlpha(groups=[Test]) should be a valid definition");
+    }), undefined, "@Alpha(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlpha (with optional label, message, and groups parameter) through regula.bind', function() {
+test('Test binding @Alpha (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6489,7 +6599,7 @@ test('Test binding @IsAlpha (with optional label, message, and groups parameter)
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlpha,
+                constraintType: regula.Constraint.Alpha,
                 params: {
                     label: "test",
                     message: "this is a test",
@@ -6497,43 +6607,43 @@ test('Test binding @IsAlpha (with optional label, message, and groups parameter)
                 }
             }
         ]
-    }), undefined, "@IsAlpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), undefined, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric through regula.bind to a form element', function() {
+test('Test binding @Numeric through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsNumeric: @IsNumeric is not a form constraint, but you are trying to bind it to a form");
+    var expectedExceptionMessage = new RegExp(formElementId + ".Numeric: @Numeric is not a form constraint, but you are trying to bind it to a form");
     raises(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
-                {constraintType: regula.Constraint.IsNumeric}
+                {constraintType: regula.Constraint.Numeric}
             ]
         });
-    }, expectedExceptionMessage, "@IsNumeric cannot be bound to a form element");
+    }, expectedExceptionMessage, "@Numeric cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsNumeric (without parameters) through regula.bind', function() {
+test('Test binding @Numeric (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
         constraints: [
-            {constraintType: regula.Constraint.IsNumeric}
+            {constraintType: regula.Constraint.Numeric}
         ]
-    }), undefined, "@IsNumeric should be a valid definition");
+    }), undefined, "@Numeric should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional label parameter) through regula.bind', function() {
+test('Test binding @Numeric (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6541,18 +6651,18 @@ test('Test binding @IsNumeric (with optional label parameter) through regula.bin
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsNumeric,
+                constraintType: regula.Constraint.Numeric,
                 params: {
                     label: "test"
                 }
             }
         ]
-    }), undefined, "@IsNumeric(label=\"test\") should be a valid definition");
+    }), undefined, "@Numeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional message parameter) through regula.bind', function() {
+test('Test binding @Numeric (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6560,18 +6670,18 @@ test('Test binding @IsNumeric (with optional message parameter) through regula.b
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsNumeric,
+                constraintType: regula.Constraint.Numeric,
                 params: {
                     message: "this is a test"
                 }
             }
         ]
-    }), undefined, "@IsNumeric(message=\"this is a test\") should be a valid definition");
+    }), undefined, "@Numeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional groups parameter) through regula.bind', function() {
+test('Test binding @Numeric (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6579,18 +6689,18 @@ test('Test binding @IsNumeric (with optional groups parameter) through regula.bi
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsNumeric,
+                constraintType: regula.Constraint.Numeric,
                 params: {
                     groups: ["Test"]
                 }
             }
         ]
-    }), undefined, "@IsNumeric(groups=[Test]) should be a valid definition");
+    }), undefined, "@Numeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsNumeric (with optional label, message, and groups parameter) through regula.bind', function() {
+test('Test binding @Numeric (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6598,7 +6708,7 @@ test('Test binding @IsNumeric (with optional label, message, and groups paramete
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsNumeric,
+                constraintType: regula.Constraint.Numeric,
                 params: {
                     label: "test",
                     message: "this is a test",
@@ -6606,43 +6716,43 @@ test('Test binding @IsNumeric (with optional label, message, and groups paramete
                 }
             }
         ]
-    }), undefined, "@IsNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), undefined, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric through regula.bind to a form element', function() {
+test('Test binding @AlphaNumeric through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".IsAlphaNumeric: @IsAlphaNumeric is not a form constraint, but you are trying to bind it to a form");
+    var expectedExceptionMessage = new RegExp(formElementId + ".AlphaNumeric: @AlphaNumeric is not a form constraint, but you are trying to bind it to a form");
     raises(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
-                {constraintType: regula.Constraint.IsAlphaNumeric}
+                {constraintType: regula.Constraint.AlphaNumeric}
             ]
         });
-    }, expectedExceptionMessage, "@IsAlphaNumeric cannot be bound to a form element");
+    }, expectedExceptionMessage, "@AlphaNumeric cannot be bound to a form element");
 
     deleteElement(formElementId);
 });
 
-test('Test binding @IsAlphaNumeric (without parameters) through regula.bind', function() {
+test('Test binding @AlphaNumeric (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
     equals(regula.bind({
         element: $input.get(0),
         constraints: [
-            {constraintType: regula.Constraint.IsAlphaNumeric}
+            {constraintType: regula.Constraint.AlphaNumeric}
         ]
-    }), undefined, "@IsAlphaNumeric should be a valid definition");
+    }), undefined, "@AlphaNumeric should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional label parameter) through regula.bind', function() {
+test('Test binding @AlphaNumeric (with optional label parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6650,18 +6760,18 @@ test('Test binding @IsAlphaNumeric (with optional label parameter) through regul
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlphaNumeric,
+                constraintType: regula.Constraint.AlphaNumeric,
                 params: {
                     label: "test"
                 }
             }
         ]
-    }), undefined, "@IsAlphaNumeric(label=\"test\") should be a valid definition");
+    }), undefined, "@AlphaNumeric(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional message parameter) through regula.bind', function() {
+test('Test binding @AlphaNumeric (with optional message parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6669,18 +6779,18 @@ test('Test binding @IsAlphaNumeric (with optional message parameter) through reg
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlphaNumeric,
+                constraintType: regula.Constraint.AlphaNumeric,
                 params: {
                     message: "this is a test"
                 }
             }
         ]
-    }), undefined, "@IsAlphaNumeric(message=\"this is a test\") should be a valid definition");
+    }), undefined, "@AlphaNumeric(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional groups parameter) through regula.bind', function() {
+test('Test binding @AlphaNumeric (with optional groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6688,18 +6798,18 @@ test('Test binding @IsAlphaNumeric (with optional groups parameter) through regu
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlphaNumeric,
+                constraintType: regula.Constraint.AlphaNumeric,
                 params: {
                     groups: ["Test"]
                 }
             }
         ]
-    }), undefined, "@IsAlphaNumeric(groups=[Test]) should be a valid definition");
+    }), undefined, "@AlphaNumeric(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
 
-test('Test binding @IsAlphaNumeric (with optional label, message, and groups parameter) through regula.bind', function() {
+test('Test binding @AlphaNumeric (with optional label, message, and groups parameter) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
@@ -6707,7 +6817,7 @@ test('Test binding @IsAlphaNumeric (with optional label, message, and groups par
         element: $input.get(0),
         constraints: [
             {
-                constraintType: regula.Constraint.IsAlphaNumeric,
+                constraintType: regula.Constraint.AlphaNumeric,
                 params: {
                     label: "test",
                     message: "this is a test",
@@ -6715,7 +6825,225 @@ test('Test binding @IsAlphaNumeric (with optional label, message, and groups par
                 }
             }
         ]
-    }), undefined, "@IsAlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), undefined, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Integer: @Integer is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Integer}
+            ]
+        });
+    }, expectedExceptionMessage, "@Integer cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Integer (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Integer}
+        ]
+    }), undefined, "@Integer should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Integer(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Integer(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Integer(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Integer (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    var expectedExceptionMessage = new RegExp(formElementId + ".Real: @Real is not a form constraint, but you are trying to bind it to a form");
+    raises(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Real}
+            ]
+        });
+    }, expectedExceptionMessage, "@Real cannot be bound to a form element");
+
+    deleteElement(formElementId);
+});
+
+test('Test binding @Real (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.Real}
+        ]
+    }), undefined, "@Real should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@Real(label=\"test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real,
+                params: {
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), undefined, "@Real(message=\"this is a test\") should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real,
+                params: {
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Real(groups=[Test]) should be a valid definition");
+
+    deleteElement(inputElementId);
+});
+
+test('Test binding @Real (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equals(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real,
+                params: {
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), undefined, "@Real(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
