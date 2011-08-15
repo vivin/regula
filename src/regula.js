@@ -20,85 +20,31 @@ var regula = {
 };
 
 regula = (function() {
+    
     /*
-        getElementsByClassName
-        Developed by Robert Nyman, http://www.robertnyman.com
-        Code/licensing: http://code.google.com/p/getelementsbyclassname/
+    	Copyright Robert Nyman, http://www.robertnyman.com
+    	Free to use if this text is included
     */
-    var getElementsByClassName = function (className, tag, elm){
-
-        if(document.getElementsByClassName && Object.prototype.getElementsByClassName === document.getElementsByClassName) {
-            getElementsByClassName = function (className, tag, elm) {
-                elm = elm || document;
-                var elements = elm.getElementsByClassName(className),
-                    nodeName = (tag)? new RegExp("\\b" + tag + "\\b", "i") : null,
-                    returnElements = [],
-                    current;
-                for(var i=0, il=elements.length; i<il; i+=1){
-                    current = elements[i];
-                    if(!nodeName || nodeName.test(current.nodeName)) {
-                        returnElements.push(current);
-                    }
+    var getElementsByAttribute = function (oElm, strTagName, strAttributeName, strAttributeValue)
+    {
+        var arrElements = (strTagName == "*" && oElm.all)? oElm.all : oElm.getElementsByTagName(strTagName);
+        var arrReturnElements = new Array();
+        var oAttributeValue = (typeof strAttributeValue != "undefined")? new RegExp("(^|\\s)" + strAttributeValue + "(\\s|$)") : null;
+        var oCurrent;
+        var oAttribute;
+        for(var i=0; i<arrElements.length; i++)
+        {
+            oCurrent = arrElements[i];
+            oAttribute = oCurrent.getAttribute && oCurrent.getAttribute(strAttributeName);
+            if(typeof oAttribute == "string" && oAttribute.length > 0)
+            {
+                if(typeof strAttributeValue == "undefined" || (oAttributeValue && oAttributeValue.test(oAttribute)))
+                {
+                    arrReturnElements.push(oCurrent);
                 }
-                return returnElements;
-            };
+            }
         }
-        else if(document.evaluate) {
-            getElementsByClassName = function (className, tag, elm) {
-                tag = tag || "*";
-                elm = elm || document;
-                var classes = className.split(" "),
-                    classesToCheck = "",
-                    xhtmlNamespace = "http://www.w3.org/1999/xhtml",
-                    namespaceResolver = (document.documentElement.namespaceURI === xhtmlNamespace)? xhtmlNamespace : null,
-                    returnElements = [],
-                    elements,
-                    node;
-                for(var j=0, jl=classes.length; j<jl; j+=1){
-                    classesToCheck += "[contains(concat(' ', @class, ' '), ' " + classes[j] + " ')]";
-                }
-                try	{
-                    elements = document.evaluate(".//" + tag + classesToCheck, elm, namespaceResolver, 0, null);
-                }
-                catch (e) {
-                    elements = document.evaluate(".//" + tag + classesToCheck, elm, null, 0, null);
-                }
-                while((node = elements.iterateNext())) {
-                    returnElements.push(node);
-                }
-                return returnElements;
-            };
-        }
-        else {
-            getElementsByClassName = function (className, tag, elm) {
-                tag = tag || "*";
-                elm = elm || document;
-                var classes = className.split(" "),
-                    classesToCheck = [],
-                    elements = (tag === "*" && elm.all)? elm.all : elm.getElementsByTagName(tag),
-                    current,
-                    returnElements = [],
-                    match;
-                for(var k=0, kl=classes.length; k<kl; k+=1){
-                    classesToCheck.push(new RegExp("(^|\\s)" + classes[k] + "(\\s|$)"));
-                }
-                for(var l=0, ll=elements.length; l<ll; l+=1){
-                    current = elements[l];
-                    match = false;
-                    for(var m=0, ml=classesToCheck.length; m<ml; m+=1){
-                        match = classesToCheck[m].test(current.className);
-                        if(!match) {
-                            break;
-                        }
-                    }
-                    if(match) {
-                        returnElements.push(current);
-                    }
-                }
-                return returnElements;
-            };
-        }
-        return getElementsByClassName(className, tag, elm);
+        return arrReturnElements;
     };
 
     /* regula code starts here */
@@ -485,9 +431,14 @@ regula = (function() {
         };
     })();
 
-    var boundConstraints = {Default: {}}; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
+    var boundConstraints = null; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
     var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
 
+    function initializeBinding()
+    {
+        boundConstraints = {Default: {}};
+    }
+    
     function checked() {
         return this.checked;
     }
@@ -2138,7 +2089,7 @@ regula = (function() {
     function unbind(options) {
 
         if(typeof options == "undefined" || !options) {
-            boundConstraints = {Default: {}};
+            initializeBinding();
         }
 
         else {
@@ -2178,6 +2129,7 @@ regula = (function() {
         };
 
         if(typeof options == "undefined" || !options) {
+            initializeBinding();
             result = bindAfterParsing();
         }
 
@@ -2191,7 +2143,7 @@ regula = (function() {
     }
 
     function bindAfterParsing() {
-        var elementsWithRegulaValidation = getElementsByClassName("regula-validation", null, null);
+        var elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
         var result = {
             successful: true,
             message: "",
@@ -2591,16 +2543,24 @@ regula = (function() {
 
             for(var elementId in groupElements) if(groupElements.hasOwnProperty(elementId)) {
 
-                var elementConstraints = groupElements[elementId];
+		if(!document.getElementById(elementId))
+		{
+                    //if the element no longer exists, remove it from the bindings and continue
+                    delete groupElements[elementId];
+		}
+		else
+		{
+                    var elementConstraints = groupElements[elementId];
 
-                for(var elementConstraint in elementConstraints) if(elementConstraints.hasOwnProperty(elementConstraint)) {
+                    for(var elementConstraint in elementConstraints) if(elementConstraints.hasOwnProperty(elementConstraint)) {
 
-                    var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
+                        var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
 
-                    if(constraintViolation) {
-                        constraintViolations.push(constraintViolation);
+                        if(constraintViolation) {
+                            constraintViolations.push(constraintViolation);
+                        }
                     }
-                }
+		}
             }
         }
 

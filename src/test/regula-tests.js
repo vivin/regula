@@ -9,7 +9,6 @@ function createInputElement(id, definition, type) {
     $input.attr("id", id);
 
     if(typeof definition != "undefined") {
-       $input.attr("class", "regula-validation");
        $input.attr("data-constraints", definition);
     }
 
@@ -23,7 +22,6 @@ function createInputElement(id, definition, type) {
 function createFormElement(id, definition) {
     var $form = jQuery("<form />");
     $form.attr("id", id);
-    $form.attr("class", "regula-validation");
     $form.attr("data-constraints", definition);
     $form.hide();
 
@@ -43,6 +41,16 @@ function deleteElement(id) {
  any error during binding, an exception is raised.
  */
 module("Constraint-definition parsing tests");
+
+test('Test validate() after a bound element has been deleted', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Required");
+
+    regula.bind();
+    deleteElement(inputElementId);
+
+    equals(regula.validate().length, 0, "Calling validate() should succeed even if a bound element has been deleted");
+});
 
 test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
