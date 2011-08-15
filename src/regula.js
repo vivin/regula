@@ -72,6 +72,12 @@ regula = (function() {
      */
     var deletedGroupIndices = [];
 
+    /*
+     !!!!
+     Make sure you change the value of firstCustomIndex when you add new constraints!!
+     !!!!
+    */
+
     var Constraint = {
         Checked: 0,
         Selected: 1,
@@ -143,7 +149,7 @@ regula = (function() {
         password: "The password"
     };
 
-    var firstCustomIndex = 15;
+    var firstCustomIndex = 21;
     var firstCustomGroupIndex = 1;
 
     var constraintsMap = {

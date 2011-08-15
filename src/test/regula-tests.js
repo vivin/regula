@@ -9970,7 +9970,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     deleteElement(formElementId);
 });
 
-module("Test definition of custom constraints using regula.bind");
+module("Test regula.custom (definition only)");
 
 test('Call regula.custom without any arguments', function() {
     raises(regula.custom, /regula\.custom expects options/, "regula.custom requires options");
