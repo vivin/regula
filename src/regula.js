@@ -431,9 +431,14 @@ regula = (function() {
         };
     })();
 
-    var boundConstraints = {Default: {}}; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
+    var boundConstraints = null; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
     var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
 
+    function initializeBinding()
+    {
+        boundConstraints = {Default: {}};
+    }
+    
     function checked() {
         return this.checked;
     }
@@ -2084,7 +2089,7 @@ regula = (function() {
     function unbind(options) {
 
         if(typeof options == "undefined" || !options) {
-            boundConstraints = {Default: {}};
+            initializeBinding();
         }
 
         else {
@@ -2124,6 +2129,7 @@ regula = (function() {
         };
 
         if(typeof options == "undefined" || !options) {
+            initializeBinding();
             result = bindAfterParsing();
         }
 
@@ -2537,16 +2543,24 @@ regula = (function() {
 
             for(var elementId in groupElements) if(groupElements.hasOwnProperty(elementId)) {
 
-                var elementConstraints = groupElements[elementId];
+		if(!document.getElementById(elementId))
+		{
+                    //if the element no longer exists, remove it from the bindings and continue
+                    delete groupElements[elementId];
+		}
+		else
+		{
+                    var elementConstraints = groupElements[elementId];
 
-                for(var elementConstraint in elementConstraints) if(elementConstraints.hasOwnProperty(elementConstraint)) {
+                    for(var elementConstraint in elementConstraints) if(elementConstraints.hasOwnProperty(elementConstraint)) {
 
-                    var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
+                        var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
 
-                    if(constraintViolation) {
-                        constraintViolations.push(constraintViolation);
+                        if(constraintViolation) {
+                            constraintViolations.push(constraintViolation);
+                        }
                     }
-                }
+		}
             }
         }
 

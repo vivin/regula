@@ -42,6 +42,16 @@ function deleteElement(id) {
  */
 module("Constraint-definition parsing tests");
 
+test('Test validate() after a bound element has been deleted', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Required");
+
+    regula.bind();
+    deleteElement(inputElementId);
+
+    equals(regula.validate().length, 0, "Calling validate() should succeed even if a bound element has been deleted");
+});
+
 test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "");
