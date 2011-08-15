@@ -434,8 +434,7 @@ regula = (function() {
     var boundConstraints = null; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
     var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
 
-    function initializeBinding()
-    {
+    function initializeBinding() {
         boundConstraints = {Default: {}};
     }
     
@@ -2537,30 +2536,29 @@ regula = (function() {
     function validateAll() {
         var constraintViolations = [];
 
-        for(var group in boundConstraints) if(boundConstraints.hasOwnProperty(group)) {
+        for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
             var groupElements = boundConstraints[group];
 
-            for(var elementId in groupElements) if(groupElements.hasOwnProperty(elementId)) {
+            for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
 
-		if(!document.getElementById(elementId))
-		{
+                if (!document.getElementById(elementId)) {
                     //if the element no longer exists, remove it from the bindings and continue
                     delete groupElements[elementId];
-		}
-		else
-		{
+                }
+
+                else {
                     var elementConstraints = groupElements[elementId];
 
-                    for(var elementConstraint in elementConstraints) if(elementConstraints.hasOwnProperty(elementConstraint)) {
+                    for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
 
                         var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
 
-                        if(constraintViolation) {
+                        if (constraintViolation) {
                             constraintViolations.push(constraintViolation);
                         }
                     }
-		}
+                }
             }
         }
 
