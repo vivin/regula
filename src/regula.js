@@ -534,7 +534,7 @@ regula = (function() {
     }
 
     function alphaNumeric() {
-        return /^[0-9]+|[0-9A-Za-z]+$/.test(this.value);
+        return /^[0-9A-Za-z]+$/.test(this.value);
     }
 
     function completelyFilled() {

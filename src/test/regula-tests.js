@@ -11830,7 +11830,7 @@ test('Test failing @Email against text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
-test('Test failing @Email against text field (markup)', function() {
+test('Test passing @Email against text field (markup)', function() {
     var inputElementId = "myText";
     var $text = createInputElement(inputElementId, "@Email", "text");
     $text.val("abc@example.com");
@@ -11855,6 +11855,703 @@ test('Test passing @Email against text field (regula.bind)', function() {
         ]
     });
     equals(regula.validate().length, 0, "@Email should not fail on abc@example.com");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Alpha");
+
+test('Test failing @Alpha against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Alpha",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Alpha against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Alpha
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Alpha",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Alpha against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha", "text");
+    $text.val("123a45");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Alpha",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Alpha against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("123a45");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Alpha
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Alpha",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test padding @Alpha against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha", "text");
+    $text.val("abc");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Alpha should not fail on 'abc'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Alpha against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abc");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Alpha
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Alpha should not fail 'abc'");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Numeric");
+
+test('Test failing @Numeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Numeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Numeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Numeric
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Numeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Numeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric", "text");
+    $text.val("123a45");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Numeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Numeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("123a45");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Numeric
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Numeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Numeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric", "text");
+    $text.val("123");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Numeric should not fail on '123'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Numeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("123");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Numeric
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Numeric should not fail on '123'");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @AlphaNumeric");
+
+test('Test failing @AlphaNumeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "AlphaNumeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers and letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @AlphaNumeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.AlphaNumeric
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "AlphaNumeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers and letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @AlphaNumeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric", "text");
+    $text.val("+ab-d");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "AlphaNumeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers and letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @AlphaNumeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("+ab-d");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.AlphaNumeric
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "AlphaNumeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers and letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @AlphaNumeric against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric", "text");
+    $text.val("1a2b3c");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @AlphaNumeric against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1a2b3c");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.AlphaNumeric
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Integer");
+
+test('Test failing @Integer against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Integer against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Integer against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer", "text");
+    $text.val("a");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Integer against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-d");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Integer against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1.5");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Integer against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer", "text");
+    $text.val("0");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Integer should not fail on '0'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Integer against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-1");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Integer should not fail on '-1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Integer against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Integer
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Integer should not fail on '100'");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Real");
+
+test('Test failing @Real against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Real",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be a real number."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Real against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Real",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be a real number."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Real against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val("a");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Real",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be a real number."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Real against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-a");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Real",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be a real number."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val("0");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Real should not fail on '0'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-1");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Real should not fail on '-1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val("0.1");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Real should not fail on '0.1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-1.34");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Real should not fail on '-1.34'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val(".1");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Real should not fail on '.1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("-.34");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Real
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Real should not fail on '-.34'");
 
     deleteElement(inputElementId);
 });
