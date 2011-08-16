@@ -2978,6 +2978,9 @@ regula = (function() {
             }
 
             errorMessage = errorMessage.replace(/{label}/, friendlyInputName);
+
+            //Some optional parameters appear in the error messages of default constraints. These need to be replaced
+            errorMessage = errorMessage.replace(/{flags}/g, "");
         }
 
         //not sure if this is just a hack or not. But I'm trying to replace doubly-escaped quotes. This

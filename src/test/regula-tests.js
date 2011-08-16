@@ -11364,4 +11364,497 @@ test('Test passing @Blank against text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
+module("Test validation with @Pattern");
 
+test('Test failing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Za-z]+$/)", "text");
+    $text.val("42");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("42");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Za-z]+$/"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Za-z]+$/, flags=\"i\")", "text");
+    $text.val("42");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/i."
+    });
+
+    deleteElement(inputElementId);
+});
+
+
+
+test('Test failing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("42");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Za-z]+$/",
+                    flags: "i"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/i."
+    });
+
+    deleteElement(inputElementId);
+});
+
+
+test('Test failing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Za-z]+$/, flags=\"g\")", "text");
+    $text.val("42");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/g."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("42");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Za-z]+$/",
+                    flags: "g"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/g."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Za-z]+$/, flags=\"ig\")", "text");
+    $text.val("42");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/ig."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("42");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Za-z]+$/",
+                    flags: "ig"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /^[A-Za-z]+$/ig."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Z]{3}-[0-9]{4}(-[A-Z])?$/)", "text");
+    $text.val("NCC-1701");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("NCC-1701");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Z]{3}-[0-9]{4}(-[A-Z])?$/"
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/^[A-Z]{3}-[0-9]{4}(-[A-Z])?$/, flags=\"i\")", "text");
+    $text.val("ncc-1701-D");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Pattern should not fail on ncc-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("ncc-1701-D");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/^[A-Z]{3}-[0-9]{4}(-[A-Z])?$/",
+                    flags: "i"
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Pattern should not fail on ncc-1701-D");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[A-Z]{3}-[0-9]{4}(-[A-Z])?/, flags=\"g\")", "text");
+    $text.val("NCC-1701-D NCC-1701");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("NCC-1701-D NCC-1701");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/[A-Z]{3}-[0-9]{4}(-[A-Z])?/",
+                    flags: "g"
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[A-Z]{3}-[0-9]{4}(-[A-Z])?/, flags=\"ig\")", "text");
+    $text.val("Ncc-1701-d ncc-1701");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("Ncc-1701-D Ncc-1701");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: "/[A-Z]{3}-[0-9]{4}(-[A-Z])?/",
+                    flags: "ig"
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-D Ncc-1701");
+
+    deleteElement(inputElementId);
+});
+
+module("Test validation with @Email");
+
+test('Test failing @Email against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Email
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+    $text.val("abc");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abc");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Email
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+    $text.val("abc@example");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abc@example");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Email
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+    $text.val("abc@example.com");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Email should not fail on abc@example.com");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Email against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abc@example.com");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Email
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Email should not fail on abc@example.com");
+
+    deleteElement(inputElementId);
+});
