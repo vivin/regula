@@ -12555,3 +12555,249 @@ test('Test passing @Real against text field (regula.bind)', function() {
 
     deleteElement(inputElementId);
 });
+
+module("Test validation with @Length");
+
+test('Test failing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+    $text.val("abcd");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abcd");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+    $text.val("abcdefghijk");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abcdefghijk");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+    $text.val("abcde");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abcde");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+    $text.val("abcdefgh");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abcdefgh");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=10)", "text");
+    $text.val("abcdefghij");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Length against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abcdefghij");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Length,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+
+    deleteElement(inputElementId);
+});

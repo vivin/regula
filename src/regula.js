@@ -330,7 +330,7 @@ regula = (function() {
             custom: false,
             compound: false,
             params: ["min", "max"],
-            defaultMessage: "{label} length must be between {max} and {min}."
+            defaultMessage: "{label} length must be between {min} and {max}."
         },
 
         Digits: {
@@ -599,11 +599,11 @@ regula = (function() {
         }
 
         if(params["integer"] > 0) {
-            result = params[0].length <= params["integer"];
+            result = parts[0].length <= params["integer"];
         }
 
         if(params["fraction"] > 0) {
-            result = result && params[1].length <= params["fraction"];
+            result = result && parts[1].length <= params["fraction"];
         }
 
         return result;
