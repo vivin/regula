@@ -2518,7 +2518,23 @@ regula = (function() {
         return result;
     }
 
-    function validate(options) {
+    function validateEach(elements, options) {
+	var results = new Array();
+	if(options == undefined) options = {};
+	for(var i = 0; i < elements.length; i++) {
+	    options.elementId = elements[i].id;
+	    var result = validate(options);
+	    results = results.concat(result);
+	}	    
+	return results;
+    }
+
+    function validate(param1, param2) {
+	//if we were passed an array of elements in param1, redirect the call to validateEach
+	if(param1 instanceof Array) return validateEach(param1, param2);
+
+	var options = param1;
+
         //generates a key that can be used with the function table to call the correct auxiliary validator function
         //(see below for more details)
         function generateKey(options) {
