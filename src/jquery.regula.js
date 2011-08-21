@@ -5,11 +5,17 @@
   //using jQuery suggested namespace practice
   var methods =
   {
+    bind: function(options) {
+      if(this.length > 0)
+	regula.bind(this.get(), options);
+      else
+	regula.bind(options);
+    },
     validate: function(options) {
       if(this.length > 0)
-	return regula.validate(this.get(), options);
+        return regula.validate(this.get(), options);
       else
-	return this.validate(options);
+        return regula.validate(options);
     }
   };
 
