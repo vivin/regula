@@ -2163,7 +2163,33 @@ regula = (function() {
         }
     }
 
-    function bind(options) {
+    function bindEachFromOptions(elements, options) {
+        var result;
+        for(var i = 0; i < elements.length; i++) {
+	    options.element = element[i];
+	    result = bindFromOptions(options);
+	    if(!result.success) {
+	        result.message = "Bind element " + i + " failed: " + result.message;
+	        return result;
+	    }
+	}
+	return result;
+    }
+
+    function bind(param1, param2) {
+	var elements;
+	var options;
+
+	if(!boundConstraints) initializeBinding();
+
+	//check to see if param1 is an array of elements to bind or just options
+	if(param1 instanceof Array) {
+	    elements = param1;
+	    options = param2; 
+	}
+	else {
+            options = param1;
+	}
 
         var result = {
             successful: true,
@@ -2172,12 +2198,14 @@ regula = (function() {
         };
 
         if(typeof options == "undefined" || !options) {
-            initializeBinding();
-            result = bindAfterParsing();
+            if(!elements) initializeBinding();
+            result = bindAfterParsing(elements);
         }
-
         else {
-            result = bindFromOptions(options);
+	    if(!elements)
+	        result = bindFromOptions(options);
+	    else
+	        result = bindEachFromOptions(elements, options);
         }
 
         if(!result.successful) {
@@ -2185,8 +2213,10 @@ regula = (function() {
         }
     }
 
-    function bindAfterParsing() {
-        var elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
+    function bindAfterParsing(elements) {
+        var elementsWithRegulaValidation;
+        if(!elements) elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
+        else elementsWithRegulaValidation = elements;
         var result = {
             successful: true,
             message: "",
@@ -2518,7 +2548,23 @@ regula = (function() {
         return result;
     }
 
-    function validate(options) {
+    function validateEach(elements, options) {
+	var results = new Array();
+	if(options == undefined) options = {};
+	for(var i = 0; i < elements.length; i++) {
+	    options.elementId = elements[i].id;
+	    var result = validate(options);
+	    results = results.concat(result);
+	}	    
+	return results;
+    }
+
+    function validate(param1, param2) {
+	//if we were passed an array of elements in param1, redirect the call to validateEach
+	if(param1 instanceof Array) return validateEach(param1, param2);
+
+	var options = param1;
+
         //generates a key that can be used with the function table to call the correct auxiliary validator function
         //(see below for more details)
         function generateKey(options) {
