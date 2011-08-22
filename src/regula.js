@@ -2163,33 +2163,11 @@ regula = (function() {
         }
     }
 
-    function bindEachFromOptions(elements, options) {
-        var result;
-        for(var i = 0; i < elements.length; i++) {
-	    options.element = element[i];
-	    result = bindFromOptions(options);
-	    if(!result.success) {
-	        result.message = "Bind element " + i + " failed: " + result.message;
-	        return result;
-	    }
-	}
-	return result;
-    }
+    function bind(options) {
 
-    function bind(param1, param2) {
-	var elements;
-	var options;
-
-	if(!boundConstraints) initializeBinding();
-
-	//check to see if param1 is an array of elements to bind or just options
-	if(param1 instanceof Array) {
-	    elements = param1;
-	    options = param2; 
-	}
-	else {
-            options = param1;
-	}
+        if(!boundConstraints) {
+            initializeBinding();
+        }
 
         var result = {
             successful: true,
@@ -2198,14 +2176,20 @@ regula = (function() {
         };
 
         if(typeof options == "undefined" || !options) {
-            if(!elements) initializeBinding();
-            result = bindAfterParsing(elements);
+            initializeBinding();
+            result = bindAfterParsing([]);
         }
+
         else {
-	    if(!elements)
-	        result = bindFromOptions(options);
-	    else
-	        result = bindEachFromOptions(elements, options);
+            var elements = options.elements;
+
+            if(typeof elements == "undefined" || !elements) {
+                result = bindFromOptions(options);
+            }
+
+            else {
+                result = bindFromOptionsWithElements(options, elements);
+            }
         }
 
         if(!result.successful) {
@@ -2213,10 +2197,39 @@ regula = (function() {
         }
     }
 
+    function bindFromOptionsWithElements(options, elements) {
+        var result = {
+            success: true
+        };
+
+        var i = 0;
+        while(result.success && i < elements.length) {
+            options.element = elements[i];
+
+            result = bindFromOptions(options);
+
+            if(!result.success) {
+                result.message = "regula.bind: Element " + i + " of " + elements.length + " failed: " + result.message;
+            }
+
+            i++;
+        }
+
+        return result;
+    }
+
+
     function bindAfterParsing(elements) {
         var elementsWithRegulaValidation;
-        if(!elements) elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
-        else elementsWithRegulaValidation = elements;
+
+        if(typeof elements == "undefined" || !elements || elements.length == 0) {
+           elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
+        }
+
+        else {
+           elementsWithRegulaValidation = elements;
+        }
+
         var result = {
             successful: true,
             message: "",
@@ -2548,22 +2561,34 @@ regula = (function() {
         return result;
     }
 
-    function validateEach(elements, options) {
-	var results = new Array();
-	if(options == undefined) options = {};
-	for(var i = 0; i < elements.length; i++) {
-	    options.elementId = elements[i].id;
-	    var result = validate(options);
-	    results = results.concat(result);
-	}	    
-	return results;
+    function validate(options) {
+
+        var result = null;
+
+        if(typeof options != "undefined" && typeof options.elements != "undefined") {
+
+            if(options.elements instanceof Array) {
+
+                result = [];
+                for(var i = 0; i < options.elements.length; i++) {
+                    options.elementId = options.elements[i].id;
+                    result = result.concat(_validate(options));
+                }
+            }
+
+            else {
+                throw "regula.bind: If an elements attribute is provided, it must be an array.";
+            }
+        }
+
+        else {
+            result = _validate(options);
+        }
+
+        return result;
     }
 
-    function validate(param1, param2) {
-	//if we were passed an array of elements in param1, redirect the call to validateEach
-	if(param1 instanceof Array) return validateEach(param1, param2);
-
-	var options = param1;
+    function _validate(options) {
 
         //generates a key that can be used with the function table to call the correct auxiliary validator function
         //(see below for more details)
@@ -2597,7 +2622,7 @@ regula = (function() {
         validatedConstraints = {}; //clear this out on every run
 
         //if no arguments were passed in, we initialize options to an empty map
-        if(!options) {
+        if(!options || typeof options == "undefined") {
             options = {};
         }
 
