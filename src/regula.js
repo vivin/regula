@@ -2198,17 +2198,19 @@ regula = (function() {
     }
 
     function bindFromOptionsWithElements(options, elements) {
+
         var result = {
-            success: true
+            successful: true
         };
 
         var i = 0;
-        while(result.success && i < elements.length) {
+        while(result.successful && i < elements.length) {
+
             options.element = elements[i];
 
             result = bindFromOptions(options);
 
-            if(!result.success) {
+            if(!result.successful) {
                 result.message = "regula.bind: Element " + i + " of " + elements.length + " failed: " + result.message;
             }
 
@@ -2249,7 +2251,7 @@ regula = (function() {
                 };
             }
             
-            // automatically assign an id if the element has not one
+            // automatically assign an id if the element does not have one
             if(!element.id) {
                element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
             }
@@ -2290,14 +2292,6 @@ regula = (function() {
             };
         }
 
-        else if(constraints.length == 0) {
-            result = {
-                successful: false,
-                message: "regula.bind expects the constraint attribute in the options argument to be a non-empty array of constraint definitions " + explodeParameters(options),
-                data: null
-            };
-        }
-
         else if(tagName != "form" && tagName != "select" && tagName !="textarea" && tagName !="input") {
             result = {
                 successful: false,
@@ -2307,10 +2301,16 @@ regula = (function() {
         }
 
         else {
-            var i = 0;
-            while(i < constraints.length && result.successful) {
-                result = bindFromConstraintDefinition(constraints[i], options);
-                i++;
+            if(constraints.length > 0) {
+                var i = 0;
+                while(i < constraints.length && result.successful) {
+                    result = bindFromConstraintDefinition(constraints[i], options);
+                    i++;
+                }
+            }
+
+            else {
+                result = bindAfterParsing([element]);
             }
         }
 

@@ -505,7 +505,6 @@ test('Test definition with malformed parameters (24)', function() {
     deleteElement(inputElementId);
 });
 
-
 test('Test definition with malformed parameters (25)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[10])");
@@ -577,7 +576,6 @@ test('Test definition with positive real number (with only fractional part) as a
 
     deleteElement(inputElementId);
 });
-
 
 test('Test definition with negative real number (with only fractional part) as a parameter', function() {
     var inputElementId = "hiddenInput";
@@ -12801,3 +12799,8 @@ test('Test passing @Length against text field (regula.bind)', function() {
 
     deleteElement(inputElementId);
 });
+
+/** todo: regula.bind() tests - make sure that the various options can get sent through and that they only error out when they
+ *  are supposed to.
+ *  Ensuring that we get proper constraint violations from regula.validate() can be checked in the tests for regula.validate()
+ */
