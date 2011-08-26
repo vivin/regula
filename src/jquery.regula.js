@@ -7,16 +7,22 @@
     var methods =
     {
         bind: function(options) {
-            if (this.length > 0)
-                regula.bind(this.get(), options);
-            else
+            if (this.length > 0) {
+                var options = { elements: this.get() };
                 regula.bind(options);
+            }
+            else {
+                regula.bind(options);
+            }
         },
         validate: function(options) {
-            if (this.length > 0)
-                return regula.validate(this.get(), options);
-            else
+            if (this.length > 0) {
+                var options = { elements: this.get() };
                 return regula.validate(options);
+            }
+            else {
+                return regula.validate(options);
+            }
         }
     };
 
