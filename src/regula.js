@@ -591,19 +591,27 @@ regula = (function() {
     }
 
     function digits(params) {
-        var parts = this.value.split(/\./);
+        var value = this.value.replace(/\s/g, "");
+        var parts = value.split(/\./);
         var result = false;
 
-        if(parts.length == 1) {
-            parts[1] = "";
-        }
+        if(value.length > 0) {
 
-        if(params["integer"] > 0) {
-            result = parts[0].length <= params["integer"];
-        }
+           if(parts.length == 1) {
+               parts[1] = "";
+           }
 
-        if(params["fraction"] > 0) {
-            result = result && parts[1].length <= params["fraction"];
+           if(params["integer"] > 0) {
+               result = parts[0].length <= params["integer"];
+           }
+
+           else {
+               result = true; //we don't care about the number of digits in the integer part
+           }
+
+           if(params["fraction"] > 0) {
+               result = result && parts[1].length <= params["fraction"];
+           }
         }
 
         return result;

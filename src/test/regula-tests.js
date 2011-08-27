@@ -12800,6 +12800,713 @@ test('Test passing @Length against text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
+module("Test validation with @Digits");
+
+test('Test failing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=3, fraction=2)", "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 3 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1234.123");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 3,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 3 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=3, fraction=2)", "text");
+    $text.val("2434.12");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 3 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("231.122");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 3,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 3 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=0, fraction=2)", "text");
+    $text.val("25.123");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 0 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(".102");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 0,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 0 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val("123.123");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 2 digits and 0 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("255.12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 2 digits and 0 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("1.1");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1.1");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("1.12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1.12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("12.1");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("12.1");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("12.12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("12.12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val(".12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(".12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val(".12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(".12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val("2");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val("2.0");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2.0");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val("2.013");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2.013");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val("22.013");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("22.013");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=0)", "text");
+    $text.val(".013");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(".013");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 2,
+                    fraction: 0
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=0, fraction=2)", "text");
+    $text.val(".12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val(".12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 0,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=0, fraction=2)", "text");
+    $text.val("1.12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("1.12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 0,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=0, fraction=2)", "text");
+    $text.val("123.12");
+
+    regula.bind();
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
+
+    deleteElement(inputElementId);
+
+});
+
+test('Test passing @Digits against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("123.12");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Digits,
+                params: {
+                    integer: 0,
+                    fraction: 2
+                }
+            }
+        ]
+    });
+    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
+
+    deleteElement(inputElementId);
+});
+
 /** todo: regula.bind() tests - make sure that the various options can get sent through and that they only error out when they
  *  are supposed to.
  *  Ensuring that we get proper constraint violations from regula.validate() can be checked in the tests for regula.validate()
