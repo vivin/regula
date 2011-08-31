@@ -8,7 +8,7 @@
     {
         bind: function(options) {
             if (this.length > 0) {
-                var options = { elements: this.get() };
+                $.extend(true, options,  { elements: this.get() });
                 regula.bind(options);
             }
             else {
@@ -17,7 +17,7 @@
         },
         validate: function(options) {
             if (this.length > 0) {
-                var options = { elements: this.get() };
+                $.extend(true, options,  { elements: this.get() });
                 return regula.validate(options);
             }
             else {
