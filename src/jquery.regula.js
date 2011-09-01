@@ -9,24 +9,34 @@
         bind: function(options) {
             if (this.length > 0) {
                 $.extend(true, options,  { elements: this.get() });
-                regula.bind(options);
             }
-            else {
-                regula.bind(options);
-            }
+            regula.bind(options);
+            return this; //make chainable
         },
         validate: function(options) {
             if (this.length > 0) {
                 $.extend(true, options,  { elements: this.get() });
-                return regula.validate(options);
             }
-            else {
-                return regula.validate(options);
-            }
+            return regula.validate(options);
+        },
+        custom: function(options) {
+            regula.custom(options);
+            return this; //make chainable
+        },
+        compound: function(options) {
+            regula.compound(options);
+            return this; //make chainable
+        },
+        override: function(options) {
+            regula.override(options);
+            return this; //make chainable
         }
     };
 
-    $.fn.regula = function(method) {
+    $.fn.regula = CallMethod;
+    $.regula = CallMethod;
+      
+    function CallMethod(method) {
 
         // Method calling logic
         if (methods[method]) {
@@ -38,4 +48,7 @@
         }
 
     };
+
+
+
 })(jQuery);

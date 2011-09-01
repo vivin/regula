@@ -56,7 +56,7 @@ test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "");
 
-    equals($input.regula('bind'), undefined, "Calling bind() on an element with no constraints must not return anything");
+    equals($input.regula('bind'), $input, "Calling bind() on an element with no constraints must not return anything");
 
     deleteElement(inputElementId);
 });
@@ -87,7 +87,7 @@ test('Test definition with group-definition (with one group) as a parameter', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup])");
 
-    equals($input.regula('bind'), undefined, "@NotBlank(groups=[MyGroup]) should be a valid definition");
+    equals($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -96,7 +96,7 @@ test('Test definition with group-definition (with more than one group) as a para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup])");
 
-    equals($input.regula('bind'), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
+    equals($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -105,7 +105,7 @@ test('Test definition with multiple valid parameters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
 
-    equals($input.regula('bind'), undefined, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
+    equals($input.regula('bind'), $input, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -125,7 +125,7 @@ test('Test definition with multiple valid constraints (markup)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
-    equals($input.regula('bind'), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+    equals($input.regula('bind'), $input, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -146,7 +146,7 @@ test('Test definition with multiple valid constraints (programmatic)', function(
                 }
             }
         ]
-    }), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+    }), $input, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -237,7 +237,7 @@ test('Test binding @Max (with required parameter and optional groups, label and 
                 }
             }
         ]
-    }), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    }), $input, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -259,7 +259,7 @@ test('Test binding @Between (with both required parameters and optional message,
                 }
             }
         ]
-    }), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    }), $input, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -306,7 +306,7 @@ test('Test binding @NotBlank (without parameters) through regula.bind', function
         constraints: [
             {constraintType: regula.Constraint.NotBlank}
         ]
-    }), undefined, "@NotBlank should be a valid definition");
+    }), $input, "@NotBlank should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -324,7 +324,7 @@ test('Test binding @NotBlank (with optional label parameter) through regula.bind
                 }
             }
         ]
-    }), undefined, "@NotBlank(label=\"test\") should be a valid definition");
+    }), $input, "@NotBlank(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -342,7 +342,7 @@ test('Test binding @NotBlank (with optional message parameter) through regula.bi
                 }
             }
         ]
-    }), undefined, "@NotBlank(message=\"this is a test\") should be a valid definition");
+    }), $input, "@NotBlank(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -360,7 +360,7 @@ test('Test binding @NotBlank (with optional groups parameter) through regula.bin
                 }
             }
         ]
-    }), undefined, "@NotBlank(groups=[Test]) should be a valid definition");
+    }), $input, "@NotBlank(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -380,7 +380,7 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
                 }
             }
         ]
-    }), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), $input, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -409,7 +409,7 @@ test('Test binding @Blank (without parameters) through regula.bind', function() 
         constraints: [
             {constraintType: regula.Constraint.Blank}
         ]
-    }), undefined, "@Blank should be a valid definition");
+    }), $input, "@Blank should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -427,7 +427,7 @@ test('Test binding @Blank (with optional label parameter) through regula.bind', 
                 }
             }
         ]
-    }), undefined, "@Blank(label=\"test\") should be a valid definition");
+    }), $input, "@Blank(label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -445,7 +445,7 @@ test('Test binding @Blank (with optional message parameter) through regula.bind'
                 }
             }
         ]
-    }), undefined, "@Blank(message=\"this is a test\") should be a valid definition");
+    }), $input, "@Blank(message=\"this is a test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -463,7 +463,7 @@ test('Test binding @Blank (with optional groups parameter) through regula.bind',
                 }
             }
         ]
-    }), undefined, "@Blank(groups=[Test]) should be a valid definition");
+    }), $input, "@Blank(groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -483,7 +483,7 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
                 }
             }
         ]
-    }), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), $input, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -619,7 +619,7 @@ test('Test binding @Pattern (with required parameter) through regula.bind', func
                 }
             }
         ]
-    }), undefined, "@Pattern(regex=/[a-z]/) should be a valid definition");
+    }), $input, "@Pattern(regex=/[a-z]/) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -638,7 +638,7 @@ test('Test binding @Pattern (with required parameter and optional label paramete
                 }
             }
         ]
-    }), undefined, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
+    }), $input, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -657,7 +657,7 @@ test('Test binding @Pattern (with required parameter and optional message parame
                 }
             }
         ]
-    }), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+    }), $input, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -676,7 +676,7 @@ test('Test binding @Pattern (with required parameter and optional groups paramet
                 }
             }
         ]
-    }), undefined, "@Pattern(regex=/[a-z]/, groups=[\"Test\"]) should be a valid definition");
+    }), $input, "@Pattern(regex=/[a-z]/, groups=[\"Test\"]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -697,7 +697,7 @@ test('Test binding @Pattern (with required parameter and optional label, message
                 }
             }
         ]
-    }), undefined, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    }), $input, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -769,7 +769,7 @@ test('Test binding @CompletelyFilled (without parameters) through regula.bind', 
         constraints: [
             {constraintType: regula.Constraint.CompletelyFilled}
         ]
-    }), undefined, "@CompletelyFilled should be a valid definition");
+    }), $form, "@CompletelyFilled should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -787,7 +787,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through reg
                 }
             }
         ]
-    }), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
+    }), $form, "@CompletelyFilled(label=\"test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -805,7 +805,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through r
                 }
             }
         ]
-    }), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
+    }), $form, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -823,7 +823,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through re
                 }
             }
         ]
-    }), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
+    }), $form, "@CompletelyFilled(groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -843,7 +843,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
                 }
             }
         ]
-    }), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    }), $form, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1022,7 +1022,7 @@ test('Test binding @PasswordsMatch (with both required parameters) through regul
                 }
             }
         ]
-    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\") should be a valid definition");
+    }), $form, "@PasswordsMatch(field2=\"field2\", field1=\"field1\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1042,7 +1042,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional l
                 }
             }
         ]
-    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\") should be a valid definition");
+    }), $form, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1062,7 +1062,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
                 }
             }
         ]
-    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\") should be a valid definition");
+    }), $form, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\") should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1082,7 +1082,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional g
                 }
             }
         ]
-    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
+    }), $form, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1104,7 +1104,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
                 }
             }
         ]
-    }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    }), $form, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElement(formElementId);
 });
@@ -1713,3 +1713,323 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
+module("jQuery Regula Custom Tests");
+
+test('Call regula.custom without any arguments', function() {
+    raises(function() { $.regula('custom') }, /regula\.custom expects options/, "regula.custom requires options");
+});
+
+test('Call regula.custom with empty object-literal', function() {
+    raises(function() {
+        $.regula('custom', {});
+    }, /regula\.custom expects a name attribute in the options argument/, "regula.custom requires options");
+});
+
+test('Call regula.custom with valid name and validator', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom with valid name and validator must not return any errors.");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and formSpecific attribute of non-boolean type', function() {
+    raises(function() {
+       $.regula('custom',{
+           name: "CustomConstraint" + new Date().getTime(),
+           formSpecific: "true",
+           validator: function() {
+           }
+       });
+    }, /regula\.custom expects the formSpecific attribute in the options argument to be a boolean/, "formSpecific attribute must be a boolean")
+});
+
+test('Call regula.custom with required parameters and null formSpecific attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        formSpecific: null,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and null formSpecific attribute must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined formSpecific attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        formSpecific: undefined,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and undefined formSpecific attribute must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and valid formSpecific attribute', function() {
+    equals($.regula('custom',{
+        name: "CustomConstraint" + new Date().getTime(),
+        formSpecific: true,
+        validator: function() {
+        }
+    }), $, "regula.custom called with required parameters and valid formSpecific attribute must not generate any errors");
+});
+
+test('Call regula.custom with required parameters and null params attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        params: [],
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and undefined params attribute must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined params attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        params: null,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and null params attribute must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and params attribute of non-array type', function() {
+    raises(function() {
+        $.regula('custom',{
+            name: "CustomConstraint" + new Date().getTime(),
+            params: "params",
+            validator: function() {
+            }
+        });
+    }, /regula.custom expects the params attribute in the options argument to be an array/, "params attribute must be an array");
+});
+
+test('Call regula.custom with required parameters and empty params attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        params: [],
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and an empty params array must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and valid params attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        params: ["myParam"],
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and an valid params array must not generate any errors");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time + "(myParam=9)");
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equals 1");
+    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equals(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equals 9");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and null defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        defaultMessage: null,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and null defaultMessage attribute must not generate any errors`");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        defaultMessage: undefined,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and undefined defaultMessage attribute must not generate any errors`");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        defaultMessage: undefined,
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and undefined defaultMessage attribute must not generate any errors`");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and valid defaultMessage attribute', function() {
+    var time = new Date().getTime();
+
+    equals($.regula('custom',{
+        name: "CustomConstraint" + time,
+        defaultMessage: "This is a test",
+        validator: function() {
+            return false;
+        }
+    }), $, "regula.custom called with required parameters and valid defaultMessage attribute must not generate any errors`");
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    $.regula('bind');
+
+    var constraintViolation = $.regula('validate')[0];
+    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+
+    deleteElement(inputElementId);
+});
+
+module("jQuery Regula Chainable Tests");
+
+test("Call $.regula('custom').regula('bind').regula('validate')  and valid defaultMessage attribute", function() {
+    var time = new Date().getTime();
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    var constraintViolation = 
+        $.regula('custom',{
+            name: "CustomConstraint" + time,
+            defaultMessage: "This is a test",
+            validator: function() {
+                return false;}})
+        .regula('bind')
+        .regula('validate')[0];
+
+    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+
+    deleteElement(inputElementId);
+});
+
+test("Call $(selector).regula('bind').regula('validate'); with a @Pattern text field (markup)", function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[A-Z]{3}-[0-9]{4}(-[A-Z])?/, flags=\"ig\")", "text");
+    $text.val("Ncc-1701-d ncc-1701");
+
+    var result = $text.regula('bind').regula('validate');
+    equals(result.length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
+
+    deleteElement(inputElementId);
+});
