@@ -13507,6 +13507,879 @@ test('Test passing @Digits against text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
+module("Test validation with @Past");
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="MDY")', "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="MDY")', "text");
+    $text.val("07/03/2100");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("07/03/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="MDY")', "text");
+    $text.val("7/3/2100");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("7/3/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="DMY")', "text");
+    $text.val("03/07/2100");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("03/07/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="DMY")', "text");
+    $text.val("3/7/2100");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("3/7/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2100/07/03");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/07/03");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2100/7/3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2100-7-3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100-7-3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2100 7 3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100 7 3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD", separator=":")', "text");
+    $text.val("2100:7:3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100:7:3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    separator: ":"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD", date="2011/9/5")', "text");
+    $text.val("2100/7/3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    date: "2011/9/5"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="MDY")', "text");
+    $text.val("07/03/2009");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("07/03/2009");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="MDY")', "text");
+    $text.val("7/3/2009");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("7/3/2009");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="DMY")', "text");
+    $text.val("03/07/2009");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("03/07/2009");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="DMY")', "text");
+    $text.val("3/7/2009");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("3/7/2009");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2009/07/03");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009/07/03");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2009/7/3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2009-7-3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009-7-3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD")', "text");
+    $text.val("2009 7 3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009 7 3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD", separator=":")', "text");
+    $text.val("2009:7:3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009:7:3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    separator: ":"
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Past(format="YMD", date="2011/9/5")', "text");
+    $text.val("2009/7/3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2009/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Past,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    date: "2011/9/5"
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
 /** todo: regula.bind() tests - make sure that the various options can get sent through and that they only error out when they
  *  are supposed to.
  *  Ensuring that we get proper constraint violations from regula.validate() can be checked in the tests for regula.validate()

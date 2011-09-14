@@ -630,7 +630,7 @@ regula = (function() {
        if(typeof params["separator"] === "undefined") {
            separator = /\//.test(this.value) ? "/" :
                                                /\./.test(this.value) ? "." :
-                                                                       / /.test(this.value) ? " " : "";
+                                                                       / /.test(this.value) ? " " : /[^0-9]+/;
        }
 
        var parts = this.value.split(separator);
