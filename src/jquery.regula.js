@@ -7,14 +7,16 @@
     var methods =
     {
         bind: function(options) {
-            if (this.length > 0) {
+            if (this instanceof jQuery) {
+                if(!options) options = {};
                 $.extend(true, options,  { elements: this.get() });
             }
             regula.bind(options);
             return this; //make chainable
         },
         validate: function(options) {
-            if (this.length > 0) {
+            if (this instanceof jQuery) {
+                if(!options) options = {};
                 $.extend(true, options,  { elements: this.get() });
             }
             return regula.validate(options);
