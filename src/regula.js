@@ -2585,7 +2585,7 @@ regula = (function() {
             }
 
             else {
-                throw "regula.bind: If an elements attribute is provided, it must be an array.";
+                throw "regula.validate: If an elements attribute is provided, it must be an array.";
             }
         }
 
