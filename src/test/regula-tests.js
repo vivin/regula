@@ -3,7 +3,8 @@ function createInputElement(id, definition, type) {
     var _type = type || "hidden";
 
     if(type != "select" && type != "textarea") {
-       $input.attr("type", _type);
+        $input.attr("type", _type);
+        $input.val("");
     }
 
     $input.attr("id", id);
@@ -10812,7 +10813,7 @@ test('Test @Required against selected dropdown (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
-test('Test @Required against a non-empty text field (markup)', function() {
+test('Test @Required against an empty text field (markup)', function() {
     var inputElementId = "myCheckbox";
     var $text = createInputElement(inputElementId, "@Required", "text");
 
@@ -10830,7 +10831,7 @@ test('Test @Required against a non-empty text field (markup)', function() {
     deleteElement(inputElementId);
 });
 
-test('Test @Required against a non-empty text field (regula.bind)', function() {
+test('Test @Required against an empty text field (regula.bind)', function() {
     var inputElementId = "myCheckbox";
     var $text = createInputElement(inputElementId, undefined, "text");
 
@@ -10880,7 +10881,7 @@ test('Test @Required against non-empty text field (regula.bind)', function() {
     deleteElement(inputElementId);
 });
 
-test('Test @Required against a non-empty textarea (markup)', function() {
+test('Test @Required against an empty textarea (markup)', function() {
     var inputElementId = "myTextarea";
     var $textarea = createInputElement(inputElementId, "@Required", "textarea");
 
@@ -10898,7 +10899,7 @@ test('Test @Required against a non-empty textarea (markup)', function() {
     deleteElement(inputElementId);
 });
 
-test('Test @Required against a non-empty textarea (regula.bind)', function() {
+test('Test @Required against an empty textarea (regula.bind)', function() {
     var inputElementId = "myTextarea";
     var $textarea = createInputElement(inputElementId, undefined, "textarea");
 
@@ -14377,6 +14378,970 @@ test('Test passing @Past against text field (regula.bind)', function() {
 
     equals(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
 
+    deleteElement(inputElementId);
+});
+
+
+
+
+
+module("Test validation with @Future");
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="MDY")', "text");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="MDY")', "text");
+    $text.val("07/03/2001");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("07/03/2001");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="MDY")', "text");
+    $text.val("7/3/2001");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("7/3/2001");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="DMY")', "text");
+    $text.val("03/07/2001");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("03/07/2001");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="DMY")', "text");
+    $text.val("3/7/2001");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("3/7/2001");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2001/07/03");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001/07/03");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2001/7/3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2001-7-3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001-7-3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2001 7 3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001 7 3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD", separator=":")', "text");
+    $text.val("2001:7:3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001:7:3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    separator: ":"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD", date="2011/9/5")', "text");
+    $text.val("2001/7/3");
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2001/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    date: "2011/9/5"
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="MDY")', "text");
+    $text.val("07/03/2100");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("07/03/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="MDY")', "text");
+    $text.val("7/3/2100");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("7/3/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.MDY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="DMY")', "text");
+    $text.val("03/07/2100");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("03/07/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="DMY")', "text");
+    $text.val("3/7/2100");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("3/7/2100");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.DMY
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2100/07/03");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/07/03");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2100/7/3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2100-7-3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100-7-3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD")', "text");
+    $text.val("2100 7 3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100 7 3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD
+                }
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD", separator=":")', "text");
+    $text.val("2100:7:3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100:7:3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    separator: ":"
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (markup)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, '@Future(format="YMD", date="2011/9/5")', "text");
+    $text.val("2100/7/3");
+
+    regula.bind();
+
+    equals(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against text field (regula.bind)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("2100/7/3");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Future,
+                params: {
+                    format: regula.DateFormat.YMD,
+                    date: "2011/9/5"
+                }
+            }
+        ]
+    });
+
+    equals(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+
+    deleteElement(inputElementId);
+});
+
+/**
+ * The following tests will test the behavior of validation when using the validateEmptyFields configuration option
+ * todo: finish the tests for validateEmptyFields
+ */
+
+module("Test validation behavior against the validateEmptyFields configuration option");
+
+test('Test failing @Max against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Max",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be lesser than or equal to 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Max against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    console.log(constraintViolation);
+
+    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false")
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Min against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Min(value=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Min",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be greater than or equal to 5."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Min against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Min(value=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    console.log(constraintViolation);
+
+    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to false")
     deleteElement(inputElementId);
 });
 
