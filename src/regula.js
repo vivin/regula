@@ -472,7 +472,7 @@ regula = (function () {
     var boundConstraints = null; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
     var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
 
-    function initializeBinding() {
+    function initializeBoundConstraints() {
         boundConstraints = {Default:{}};
     }
 
@@ -480,7 +480,7 @@ regula = (function () {
         var validateEmptyFields = config.validateEmptyFields;
 
         if(typeof params["ignoreEmpty"] !== "undefined") {
-            validateEmptyFields = params["ignoreEmpty"];
+            validateEmptyFields = !params["ignoreEmpty"];
         }
 
         return !(blank.call(element) && !validateEmptyFields);
@@ -751,7 +751,7 @@ regula = (function () {
         var index = 0;
         for (var property in map) if (map.hasOwnProperty(property) && property !== "__size__") {
 
-            //the callback recieves as arguments key, value, index. this is set to
+            //the callback receives as arguments key, value, index. this is set to
             //the map that you are iterating over
             callback.call(map, property, map[property], index);
             index++;
@@ -1012,7 +1012,7 @@ regula = (function () {
     }
 
     function explodeParameters(options) {
-        var str = "function received: {";
+        var str = "Function received: {";
         for (var argument in options) if (options.hasOwnProperty(argument)) {
 
             if (typeof options[argument] == "string") {
@@ -1844,7 +1844,7 @@ regula = (function () {
                 result = {
                     successful:true,
                     message:"",
-                    data:token
+                    data:!!(token === "true")
                 };
             }
 
@@ -2243,7 +2243,7 @@ regula = (function () {
     function unbind(options) {
 
         if (typeof options == "undefined" || !options) {
-            initializeBinding();
+            initializeBoundConstraints();
         }
 
         else {
@@ -2285,7 +2285,7 @@ regula = (function () {
     function bind(options) {
 
         if (!boundConstraints) {
-            initializeBinding();
+            initializeBoundConstraints();
         }
 
         var result = {
@@ -2295,7 +2295,7 @@ regula = (function () {
         };
 
         if (typeof options == "undefined" || !options) {
-            initializeBinding();
+            initializeBoundConstraints();
             result = bindAfterParsing([]);
         }
 
@@ -2365,7 +2365,7 @@ regula = (function () {
             if (tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
                 result = {
                     successful:false,
-                    message:tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements.",
+                    message:tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements.",
                     data:null
                 };
             }
@@ -2393,20 +2393,20 @@ regula = (function () {
 
         var element = options.element;
         var constraints = options.constraints || [];
-        var tagName = (element) ? element.tagName.toLowerCase() : null;
+        var tagName = (element && element.tagName) ? element.tagName.toLowerCase() : null;
 
         if (!element) {
             result = {
                 successful:false,
-                message:"regula.bind expects a non-null element attribute in the options argument " + explodeParameters(options),
+                message:"regula.bind expects a non-null element attribute in the options argument. " + explodeParameters(options),
                 data:null
             };
         }
 
-        else if (typeof element != "object") {
+        else if (element.nodeType !== 1) { //Must be an HTMLElement
             result = {
                 successful:false,
-                message:"regula.bind: element attribute is of unexpected type: " + typeof element + " " + explodeParameters(options),
+                message:"regula.bind: element attribute is expected to be an HTMLElement, but was of unexpected type: " + typeof element + ". " + explodeParameters(options),
                 data:null
             };
         }
@@ -2414,7 +2414,7 @@ regula = (function () {
         else if (tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
             result = {
                 successful:false,
-                message:tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements " + explodeParameters(options),
+                message:tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements. " + explodeParameters(options),
                 data:null
             };
         }
@@ -2459,7 +2459,7 @@ regula = (function () {
             return union;
         }
 
-        //substract second set from first
+        //subtract second set from first
         function subtract(second, first) {
             var difference = [];
 

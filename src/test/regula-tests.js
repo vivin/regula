@@ -43,14 +43,14 @@ function deleteElement(id) {
  */
 module("Constraint-definition parsing tests");
 
-test('Test validate() after a bound element has been deleted', function() {
+test('Test that validate() doesn\'t error out after a bound element has been deleted', function() {
     var inputElementId = "myText";
     var $text = createInputElement(inputElementId, "@Required");
 
     regula.bind();
     deleteElement(inputElementId);
 
-    equals(regula.validate().length, 0, "Calling validate() should succeed even if a bound element has been deleted");
+    equals(regula.validate().length, 0, "Calling validate() should succeed (i.e., not error out) even if a bound element has been deleted");
 });
 
 test('Test empty definition', function() {
@@ -15260,7 +15260,6 @@ test('Test passing @Future against text field (regula.bind)', function() {
 
 /**
  * The following tests will test the behavior of validation when using the validateEmptyFields configuration option
- * todo: finish the tests for validateEmptyFields
  */
 
 module("Test validation behavior against the validateEmptyFields configuration option");
@@ -15299,9 +15298,23 @@ test('Test passing @Max against empty field (validateEmptyFields set to false)',
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    console.log(constraintViolation);
+    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
 
-    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false")
+test('Test passing @Max against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Max(value=5, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElement(inputElementId);
 });
 
@@ -15339,13 +15352,650 @@ test('Test passing @Min against empty field (validateEmptyFields set to false)',
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    console.log(constraintViolation);
-
-    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to false")
+    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to false");
     deleteElement(inputElementId);
 });
 
-/** todo: regula.bind() tests - make sure that the various options can get sent through and that they only error out when they
- *  are supposed to.
+test('Test passing @Min against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Min(value=5, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Range against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Range(min=5, max=10)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Range",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to be between 5 and 10."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Range against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Range(min=5, max=10)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Range against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Range(min=5, max=10, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Pattern against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[a-z]+/)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Pattern",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field needs to match /[a-z]+/."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[a-z]+/)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Pattern against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Pattern(regex=/[a-z]+/, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Email against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Email against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Email against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Email(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Alpha against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Alpha",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Alpha against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Alpha against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Alpha(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Numeric against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Numeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Numeric against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Numeric against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Numeric(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to true, ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @AlphaNumeric against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "AlphaNumeric",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field can only contain numbers and letters."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @AlphaNumeric against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @AlphaNumeric against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@AlphaNumeric(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Integer against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Integer",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be an integer."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Integer against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Integer against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Integer(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Real against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Real",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be a real number."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Real against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Real(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Digits against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Digits",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must have up to 2 digits and 2 fractional digits."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Digits against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Digits(integer=2, fraction=2, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Past against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Past(format=\"MDY\")", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Past",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the past."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Past(format=\"MDY\")", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Past against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Past(format=\"MDY\", ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+test('Test failing @Future against empty field', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Future(format=\"MDY\")", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Future",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field must be in the future."
+    });
+
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Future(format=\"MDY\")", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false");
+    deleteElement(inputElementId);
+});
+
+test('Test passing @Future against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Future(format=\"MDY\", ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equals(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false and ignoreEmpty is set to true");
+    deleteElement(inputElementId);
+});
+
+/** The following tests test regula.bind() when we call it with options. You can bind constraints to specific elements or groups of elements. These tests make sure that
+ *  the calls error out if proper options haven't been supplied, and also ensures that some of the more complex binding-behaviors also happen.
  *  Ensuring that we get proper constraint violations from regula.validate() can be checked in the tests for regula.validate()
+ *
+ *  todo: testing more complex stuff like overwriting behavior, especially groups, and other stuff
  */
+
+module("Test validation behavior against the validateEmptyFields configuration option");
+
+test('Test calling regula.bind() with an empty object-literal', function() {
+    raises(function() {
+        regula.bind({});
+    }, new RegExp("regula.bind expects a non-null element attribute in the options argument. Function received: {}"), "regula.bind({}) must error out.");
+});
+
+test('Test calling regula.bind() with element attribute set to non-HTMLElement type', function() {
+    raises(function() {
+        regula.bind({
+            element: "I swear I am an HTML element"
+        });
+    }, new RegExp("regula.bind: element attribute is expected to be an HTMLElement, but was of unexpected type: string. Function received: {element: I swear I am an HTML element}"), "regula.bind() with element set to non-HTMLElement must error out.");
+});
+
+test('Test calling regula.bind() with HTMLElement of wrong type', function() {
+    var div = jQuery("<div />").get(0);
+
+    raises(function() {
+        regula.bind({
+            element: div
+        });
+    }, new RegExp("div# is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements. Function received: {}"), "regula.bind() with element sent to invalid HTMLElement must error out");;
+});
+
