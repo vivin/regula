@@ -29,7 +29,7 @@ regula = (function () {
     var getElementsByAttribute = function (oElm, strTagName, strAttributeName, strAttributeValue) {
         var arrElements = (strTagName == "*" && oElm.all) ? oElm.all : oElm.getElementsByTagName(strTagName);
         var arrReturnElements = new Array();
-        var oAttributeValue = (typeof strAttributeValue != "undefined") ? new RegExp("(^|\\s)" + strAttributeValue + "(\\s|$)") : null;
+        var oAttributeValue = (typeof strAttributeValue !== "undefined") ? new RegExp("(^|\\s)" + strAttributeValue + "(\\s|$)") : null;
         var oCurrent;
         var oAttribute;
         for (var i = 0; i < arrElements.length; i++) {
@@ -538,12 +538,19 @@ regula = (function () {
         if (shouldValidate(this, params)) {
             var re;
 
-            if (typeof params["flags"] != "undefined") {
-                re = new RegExp(params["regex"].replace(/^\//, "").replace(/\/$/, ""), params["flags"]);
+            var regex;
+            if(typeof params["regex"] === "string") {
+                regex = params["regex"].replace(/^\//, "").replace(/\/$/, "")
+            } else {
+                regex = params["regex"];
+            }
+
+            if (typeof params["flags"] !== "undefined") {
+                re = new RegExp(regex.toString().replace(/^\//, "").replace(/\/[^\/]*$/, ""), params["flags"]);
             }
 
             else {
-                re = new RegExp(params["regex"].replace(/^\//, "").replace(/\/$/, ""));
+                re = new RegExp(regex);
             }
 
             result = re.test(this.value);
@@ -1475,7 +1482,7 @@ regula = (function () {
                 data:null
             };
 
-            if (typeof token != "undefined") {
+            if (typeof token !== "undefined") {
                 result = validStartingCharacter(token.charAt(0));
 
                 if (result.successful) {
@@ -2684,7 +2691,11 @@ regula = (function () {
 
         var result = null;
 
-        if (typeof options != "undefined" && typeof options.elements != "undefined") {
+        if(typeof options !== "undefined" && typeof options.groups !== "undefined" && !(options.groups instanceof Array)) {
+            throw "regula.validate: If a groups attribute is provided, it must be an array.";
+        }
+
+        if (typeof options !== "undefined" && typeof options.elements !== "undefined") {
 
             if (options.elements instanceof Array) {
 

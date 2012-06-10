@@ -711,6 +711,31 @@ test('Test definition with multiple valid constraints (programmatic)', function(
     deleteElement(inputElementId);
 });
 
+test('Test definition with multiple valid constraints being bound to multiple elements', function() {
+    var $input0 = createInputElement("input0", "@NotBlank @Required @Range(min=5, max=10)");
+    var $input1 = createInputElement("input1", "@NotBlank @Required @Range(min=5, max=10)");
+    var $input2 = createInputElement("input2", "@NotBlank @Required @Range(min=5, max=10)");
+
+    equals(regula.bind({
+        elements: [$input0.get(0), $input1.get(0), $input2.get(0)],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Required},
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    }), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+
+    deleteElement("input0");
+    deleteElement("input1");
+    deleteElement("input2");
+});
+
 module("Test binding pre-defined constraints to elements, via HTML");
 
 test('Test binding @Checked through markup to a form element', function() {
@@ -10333,8 +10358,6 @@ test('Call regula.custom with required parameters and valid defaultMessage attri
     deleteElement(inputElementId);
 });
 
-/*TODO: Test custom label, message, groups, and interpolation when you test regula.validate() */
-
 module("Test validation with @Checked");
 
 function testConstraintViolationsForDefaultConstraints(constraintViolation, params) {
@@ -15969,11 +15992,9 @@ test('Test passing @Future against empty field (validateEmptyFields set to true,
 /** The following tests test regula.bind() when we call it with options. You can bind constraints to specific elements or groups of elements. These tests make sure that
  *  the calls error out if proper options haven't been supplied, and also ensures that some of the more complex binding-behaviors also happen.
  *  Ensuring that we get proper constraint violations from regula.validate() can be checked in the tests for regula.validate()
- *
- *  todo: testing more complex stuff like overwriting behavior, especially groups, and other stuff
  */
 
-module("Test validation behavior against the validateEmptyFields configuration option");
+module("Test regula.bind() to make sure it returns the expected errors and that it binds properly");
 
 test('Test calling regula.bind() with an empty object-literal', function() {
     raises(function() {
@@ -15999,3 +16020,409 @@ test('Test calling regula.bind() with HTMLElement of wrong type', function() {
     }, new RegExp("div# is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements. Function received: {}"), "regula.bind() with element sent to invalid HTMLElement must error out");;
 });
 
+test('Test that element has been bound to the groups specified (markup)', function() {
+    var $text = createInputElement("myText", "@NotBlank(groups=[First, Second, Third])", "text");
+    $text.val("");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate({groups: [regula.Group.First]})[0];
+    equals(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
+
+    constraintViolation = regula.validate({groups: [regula.Group.Second]})[0];
+    equals(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+
+    constraintViolation = regula.validate({groups: [regula.Group.Third]})[0];
+    equals(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+
+    deleteElement("myText");
+});
+
+test('Test that element has been bound to the groups specified (programmatic)', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank,
+             params: {groups: ["First", "Second", "Third"]}
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate({groups: [regula.Group.First]})[0];
+    equals(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
+
+    constraintViolation = regula.validate({groups: [regula.Group.Second]})[0];
+    equals(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+
+    constraintViolation = regula.validate({groups: [regula.Group.Third]})[0];
+    equals(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+
+    deleteElement("myText");
+});
+
+test('Test that original constraints do not get overwritten when binding to element again', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val(0);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 5
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Range,
+                params: {
+                    min: 5,
+                    max: 10
+                }
+            }
+        ]
+    });
+
+    var constraintViolations = regula.validate();
+    equals(constraintViolations.length, 2, "There must be two constraints bound to this element");
+    equals(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
+    equals(constraintViolations[1].constraintName, "Range", "Range must be bound to this element");
+
+    deleteElement("myText");
+});
+
+test('Test that original constraint gets completely overwritten (overwriteConstraint set to true)', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val(0);
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 5
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteConstraint: true,
+                constraintType: regula.Constraint.Min,
+                params: {
+                    value: 10,
+                    message: "unicorns rule"
+                }
+            }
+        ]
+    });
+
+    var constraintViolations = regula.validate();
+    equals(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
+    equals(constraintViolations[0].constraintParameters.value, 10, "The value parameter must be equal to 10");
+    equals(constraintViolations[0].constraintParameters.message, "unicorns rule", "The value of the message parameter does not match");
+
+    deleteElement("myText");
+});
+
+test('Test that the original constraint\'s parameters are constructively overwritten', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]+/,
+                    flags: "ig"
+                }
+            }
+        ]
+    });
+
+    constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must remain /[a-z]/");
+    equals(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
+
+
+    deleteElement("myText");
+});
+
+test('Test that the original constraint\'s parameters are destructively overwritten (overwriteParameters set to true)', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]/
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteParameters: true,
+                constraintType: regula.Constraint.Pattern,
+                params: {
+                    regex: /[a-z]+/,
+                    flags: "ig"
+                }
+            }
+        ]
+    });
+
+    constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]+/", "regex parameter must remain /[a-z]/+");
+    equals(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
+
+    deleteElement("myText");
+});
+
+test('Test group-overwriting behavior when overwriteConstraint is set to true (1)', function() {
+    var $text = createInputElement("myText", null, "text");
+    $text.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteConstraint: true,
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Fourth", "Fifth"]
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    equals(regula.Group.Second, undefined, "Group Second must not exist");
+    equals(regula.Group.Third, undefined, "Group Third must not exist");
+    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+
+    deleteElement("myText");
+});
+
+test('Test group-overwriting behavior when overwriteConstraint is set to true (2)', function() {
+    var $text = createInputElement("myText", null, "text");
+    var $anotherText = createInputElement("myOtherText", null, "text");
+    $text.val("");
+    $anotherText.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $anotherText.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteConstraint: true,
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Fourth", "Fifth"]
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equals(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    raises(function() {
+        regula.validate({elementId: "myText", groups: [regula.Group.Second]})
+    }, /No element with id myText was found in the following group\(s\): \[Second\]. Function received: {elementId: myText, groups: \[Second\]}/, "Constraint must not belong to group Second");
+    raises(function() {
+        regula.validate({elementId: "myText", groups: [regula.Group.Third]})
+    }, /No element with id myText was found in the following group\(s\): \[Third\]. Function received: {elementId: myText, groups: \[Third\]}/, "Constraint must not belong to group Third");
+    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+
+    deleteElement("myText");
+    deleteElement("myOtherText");
+});
+
+test('Test group-overwriting behavior when overwriteParameters is set to true (1)', function() {
+   var $text = createInputElement("myText", null, "text");
+    $text.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteParameters: true,
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Fourth", "Fifth"]
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    equals(regula.Group.Second, undefined, "Group Second must not exist");
+    equals(regula.Group.Third, undefined, "Group Third must not exist");
+    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+
+    deleteElement("myText");
+});
+
+test('Test group-overwriting behavior when overwriteParameters is set to true (2)', function() {
+    var $text = createInputElement("myText", null, "text");
+    var $anotherText = createInputElement("myOtherText", null, "text");
+    $text.val("");
+    $anotherText.val("");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $anotherText.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Second", "Third"]
+                }
+            }
+        ]
+    });
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                overwriteParameters: true,
+                constraintType: regula.Constraint.NotBlank,
+                params: {
+                    groups: ["First", "Fourth", "Fifth"]
+                }
+            }
+        ]
+    });
+
+    var constraintViolation = regula.validate()[0];
+    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equals(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    raises(function() {
+        regula.validate({elementId: "myText", groups: [regula.Group.Second]})
+    }, /No element with id myText was found in the following group\(s\): \[Second\]. Function received: {elementId: myText, groups: \[Second\]}/, "Constraint must not belong to group Second");
+    raises(function() {
+        regula.validate({elementId: "myText", groups: [regula.Group.Third]})
+    }, /No element with id myText was found in the following group\(s\): \[Third\]. Function received: {elementId: myText, groups: \[Third\]}/, "Constraint must not belong to group Third");
+    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+
+    deleteElement("myText");
+    deleteElement("myOtherText");
+});
+
+/* TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override()
+ * TODO: Test regula.unbind
+ * TODO: Test regula.override
+ * TODO: Test regula.custom (param test done - the rest can probably be done in the validate() tests so it might be ok to ignore this
+ * TODO: Test regula.compound
+ * */
