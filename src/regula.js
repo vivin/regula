@@ -1059,7 +1059,7 @@ regula = (function () {
         return errorMessage + message;
     }
 
-    function removeElementFromGroupIfGroupIsEmpty(id, group) {
+    function removeElementAndGroupFromConstraintsIfEmpty(id, group) {
         if (isMapEmpty(boundConstraints[group][id])) {
             delete boundConstraints[group][id];
 
@@ -2254,16 +2254,26 @@ regula = (function () {
         }
 
         else {
-            if (typeof options.id == "undefined") {
+            if (typeof options.elementId == "undefined") {
                 throw "regula.unbind requires an id if options are provided";
             }
 
-            var id = options.id;
+            var id = options.elementId;
             var constraints = options.constraints || [];
 
             if (constraints.length == 0) {
                 for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
-                    removeElementFromGroupIfGroupIsEmpty(id, group);
+
+                    if(typeof boundConstraints[group][id] !== "undefined") {
+                        delete boundConstraints[group][id];
+
+                        if(group !== "Default") {
+                            removeElementAndGroupFromConstraintsIfEmpty(id, group);
+                        }
+                    } else {
+                        throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                    }
+
                 }
             }
 
@@ -2271,10 +2281,18 @@ regula = (function () {
                 for (var i = 0; i < constraints.length; i++) {
                     var constraint = constraints[i];
 
-                    delete boundConstraints[group][element.id][ReverseConstraint[constraint]];
-
                     for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
-                        removeElementFromGroupIfGroupIsEmpty(id, group);
+
+                        if(typeof boundConstraints[group][id] !== "undefined") {
+                            delete boundConstraints[group][id][ReverseConstraint[constraint]];
+
+                            if(group !== "Default") {
+                                removeElementAndGroupFromConstraintsIfEmpty(id, group);
+                            }
+
+                        } else {
+                            throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                        }
                     }
                 }
             }
@@ -2506,7 +2524,7 @@ regula = (function () {
                 var group = groupsToRemoveConstraintFrom[i];
 
                 delete boundConstraints[group][element.id][ReverseConstraint[constraintType]];
-                removeElementFromGroupIfGroupIsEmpty(element.id, group);
+                removeElementAndGroupFromConstraintsIfEmpty(element.id, group);
             }
         }
 

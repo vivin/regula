@@ -16420,9 +16420,150 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (2
     deleteElement("myOtherText");
 });
 
+module("Test regula.unbind() to make sure it returns the expected errors and that it unbinds properly");
+
+test('Test regula.unbind() without any parameters unbinds everything', function() {
+    var $text0 = createInputElement("myText0", "@NotBlank", "text");
+    $text0.val("");
+
+    var $text1 = createInputElement("myText1", "@Max(value=5)", "text");
+    $text1.val(10);
+
+    var $text2 = createInputElement("myText2", "@Min(value=5)", "text");
+    $text2.val(0);
+
+    regula.bind();
+    regula.unbind();
+
+    equals(regula.validate().length, 0, "There must not be any constraint violations since all bound constraints should have been unbound");
+    deleteElement("myText0");
+    deleteElement("myText1");
+    deleteElement("myText2");
+});
+
+test('Test regula.unbind() with empty options parameter', function() {
+    raises(function() {
+        regula.unbind({});
+    }, /regula.unbind requires an id if options are provided/, "Calling regula.unbind() with empty options parameter must error out");
+});
+
+test('Test regula.unbind() with id parameter (1)', function() {
+    var $text = createInputElement("myText", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText"
+    });
+
+    equals(regula.validate().length, 0, "There must not be any constraint violations since all constraints bound to this element have been removed");
+    deleteElement("myText");
+});
+
+test('Test regula.unbind() with id parameter (2)', function() {
+    var $text0 = createInputElement("myText0", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+    var $text1 = createInputElement("myText1", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText0"
+    });
+
+    equals(regula.validate().length, 3, "Other bound elements must not have been unbound");
+    raises(function() {
+        regula.validate({elementId: "myText0"})
+    }, /No constraints have been bound to element with id myText0. Function received: {elementId: myText0}/, "Calling regula.validate with an unbound element's id must result in an error");
+
+    deleteElement("myText0");
+    deleteElement("myText1");
+});
+
+test('Test regula.unbind() with id parameter (3)', function() {
+    var $text0 = createInputElement("myText0", "@NotBlank(groups=[Zeroth]) @Max(value=5, groups=[First]) @Min(value=10, groups=[Second])", "text");
+    var $text1 = createInputElement("myText1", "@NotBlank @Max(value=5, groups=[First]) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText0"
+    });
+
+    equals(regula.validate().length, 3, "Other bound elements must not have been unbound");
+    raises(function() {
+        regula.validate({groups : [regula.Group.Zeroth]});
+    }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
+    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Even though element associated with this group has been unbound, there are still other elements associated with this group");
+    raises(function() {
+        regula.validate({groups : [regula.Group.Second]});
+    }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
+
+    deleteElement("myText0");
+    deleteElement("myText1");
+});
+
+test('Test regula.unbind() with id and constraints parameter (1)', function() {
+    var $text = createInputElement("myText", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText",
+        constraints: [regula.Constraint.NotBlank]
+    });
+
+    equals(regula.validate().length, 2, "There should only be two constraints bound to this element");
+
+    deleteElement("myText");
+});
+
+test('Test regula.unbind() with id and constraints parameter (2)', function() {
+    var $text = createInputElement("myText", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText",
+        constraints: [regula.Constraint.NotBlank, regula.Constraint.Min]
+    });
+
+    equals(regula.validate().length, 1, "There should only be one constraint bound to this element");
+
+    deleteElement("myText");
+});
+
+test('Test regula.unbind() with id and constraints parameter (3)', function() {
+    var $text = createInputElement("myText", "@NotBlank(groups=[Zeroth]) @Max(value=5, groups=[First]) @Min(value=10, groups=[Second])", "text");
+
+    regula.bind();
+    regula.unbind({
+        elementId: "myText",
+        constraints: [regula.Constraint.NotBlank]
+    });
+
+    equals(regula.validate().length, 2, "There should only be two constraints bound to this element");
+    raises(function() {
+        regula.validate({groups : [regula.Group.Zeroth]});
+    }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
+
+    deleteElement("myText");
+});
+
+test('Test regula.unbind() with unbound id', function() {
+    raises(function() {
+        regula.unbind({
+            elementId: "myText"
+        });
+    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText}/, "regula.unbind() must fail if provided an unbound element's id");;
+});
+
+module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
+
+test('Test calling regula.compound() without options', function() {
+    raises(function() {
+        regula.compound();
+    }, /regula.compound expects options/, "regula.compound() must fail if no options are provided");
+});
+
+
 /* TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override()
  * TODO: Test regula.unbind
  * TODO: Test regula.override
  * TODO: Test regula.custom (param test done - the rest can probably be done in the validate() tests so it might be ok to ignore this
- * TODO: Test regula.compound
+ * TODO: Test regula.compound - finish regula.compound() tests
  * */
