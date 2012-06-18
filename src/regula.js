@@ -906,7 +906,7 @@ regula = (function () {
             result = {
                 error:true,
                 message:generateErrorMessage(element, ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ReverseConstraint[constraint.constraintType] +
-                    ", but you are still missing the following " + missingParams.length + " required parameters(s): " + explode(missingParams, ", ")),
+                    ", but you are still missing the following " + missingParams.length + " required parameter(s): " + explode(missingParams, ", ")),
                 data:null
             };
         }
@@ -2139,7 +2139,7 @@ regula = (function () {
         var constraintList = [];
 
         for (var i = 0; i < constraints.length; i++) {
-            if (!constraints[i].constraintType) {
+            if (typeof constraints[i].constraintType === "undefined") {
                 throw "In compound constraint " + name + ": A composing constraint has no constraint type specified."
             }
 
@@ -2151,13 +2151,21 @@ regula = (function () {
         for (var i = 0; i < constraints.length; i++) {
             var constraint = constraints[i];
             var constraintName = ReverseConstraint[constraint.constraintType];
-            var definedParameters = {};
+            var definedParameters = {__size__:0};
 
-            constraint.params = constraint.params || {__size__:0};
+            constraint.params = constraint.params || {};
 
             for (var paramName in constraint.params) if (constraint.params.hasOwnProperty(paramName)) {
                 put(definedParameters, paramName, constraint.params[paramName]);
             }
+
+            /* We need a __size__ property for the params object in constraint, so let's add it */
+            var size = 0;
+            for(var param in constraint.params) if(constraint.params.hasOwnProperty(param)) {
+                size++;
+            }
+
+            constraint.params["__size__"] = size;
 
             /*
              Now we will combine the parameters from the compound-constraint parameter-definition into the params map
@@ -3187,6 +3195,19 @@ regula = (function () {
 
             var re = new RegExp("{" + param + "}", "g");
             errorMessage = errorMessage.replace(re, params[param]);
+        }
+
+        //If this is a compound constraint, we need to look at the parameters on each composing constraint so that we can interpolate their values
+        if(constraintsMap[elementConstraint].compound && typeof constraintsMap[elementConstraint].composingConstraints !== "undefined") {
+            for(var i = 0; i < constraintsMap[elementConstraint].composingConstraints.length; i++) {
+                var composingConstraint = constraintsMap[elementConstraint].composingConstraints[i];
+
+                for(var param in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(param)) {
+
+                    var re = new RegExp("{" + param + "}", "g");
+                    errorMessage = errorMessage.replace(re, composingConstraint.params[param]);
+                }
+            }
         }
 
         if (/{label}/.test(errorMessage)) {

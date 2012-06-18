@@ -973,7 +973,7 @@ test('Test binding @Max (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -983,7 +983,7 @@ test('Test binding @Max (with optional label parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -993,7 +993,7 @@ test('Test binding @Max (with optional message parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1003,7 +1003,7 @@ test('Test binding @Max (with optional groups parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1013,7 +1013,7 @@ test('Test binding @Max (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1078,7 +1078,7 @@ test('Test binding @Min (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1088,7 +1088,7 @@ test('Test binding @Min (with optional label parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1098,7 +1098,7 @@ test('Test binding @Min (with optional message parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1108,7 +1108,7 @@ test('Test binding @Min (with optional groups parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1118,7 +1118,7 @@ test('Test binding @Min (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1183,7 +1183,7 @@ test('Test binding @Range (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1193,7 +1193,7 @@ test('Test binding @Range (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1203,7 +1203,7 @@ test('Test binding @Range (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1213,7 +1213,7 @@ test('Test binding @Range (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1223,7 +1223,7 @@ test('Test binding @Range (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1233,7 +1233,7 @@ test('Test binding @Range (with one required parameter) through markup (1)', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1243,7 +1243,7 @@ test('Test binding @Range (with one required parameter) through markup (2)', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1308,7 +1308,7 @@ test('Test binding @Between (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1318,7 +1318,7 @@ test('Test binding @Between (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1328,7 +1328,7 @@ test('Test binding @Between (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1338,7 +1338,7 @@ test('Test binding @Between (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1348,7 +1348,7 @@ test('Test binding @Between (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1358,7 +1358,7 @@ test('Test binding @Between (with one required parameter) through markup (1)', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1369,7 +1369,7 @@ test('Test binding @Between (with one required parameter) through markup (2)', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1645,7 +1645,7 @@ test('Test binding @Pattern (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1655,7 +1655,7 @@ test('Test binding @Pattern (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1665,7 +1665,7 @@ test('Test binding @Pattern (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1675,7 +1675,7 @@ test('Test binding @Pattern (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1685,7 +1685,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1740,7 +1740,7 @@ test('Test binding @Pattern (with optional flags parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1750,7 +1750,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1760,7 +1760,7 @@ test('Test binding @Pattern (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1770,7 +1770,7 @@ test('Test binding @Pattern (with optional flags and groups parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1780,7 +1780,7 @@ test('Test binding @Pattern (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1845,7 +1845,7 @@ test('Test binding @Matches (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1855,7 +1855,7 @@ test('Test binding @Matches (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1865,7 +1865,7 @@ test('Test binding @Matches (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1875,7 +1875,7 @@ test('Test binding @Matches (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1885,7 +1885,7 @@ test('Test binding @Matches (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1940,7 +1940,7 @@ test('Test binding @Matches (with optional flags parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1950,7 +1950,7 @@ test('Test binding @Matches (with optional flags and label parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1960,7 +1960,7 @@ test('Test binding @Matches (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1970,7 +1970,7 @@ test('Test binding @Matches (with optional flags and groups parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -1980,7 +1980,7 @@ test('Test binding @Matches (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2375,7 +2375,7 @@ test('Test binding @Length (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2385,7 +2385,7 @@ test('Test binding @Length (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2395,7 +2395,7 @@ test('Test binding @Length (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2405,7 +2405,7 @@ test('Test binding @Length (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2415,7 +2415,7 @@ test('Test binding @Length (with optional label, message, and groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2425,7 +2425,7 @@ test('Test binding @Length (with one required parameter) through markup (1)', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2435,7 +2435,7 @@ test('Test binding @Length (with one required parameter) through markup (2)', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2500,7 +2500,7 @@ test('Test binding @Digits (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2510,7 +2510,7 @@ test('Test binding @Digits (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2520,7 +2520,7 @@ test('Test binding @Digits (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2530,7 +2530,7 @@ test('Test binding @Digits (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2540,7 +2540,7 @@ test('Test binding @Digits (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2550,7 +2550,7 @@ test('Test binding @Digits (with integer parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2560,7 +2560,7 @@ test('Test binding @Digits (with integer and optional label parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2570,7 +2570,7 @@ test('Test binding @Digits (with integer and optional message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2580,7 +2580,7 @@ test('Test binding @Digits (with integer and optional groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2590,7 +2590,7 @@ test('Test binding @Digits (with integer and optional groups, label and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
 
     deleteElement(inputElementId);
@@ -2600,7 +2600,7 @@ test('Test binding @Digits (with fraction parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
 
     deleteElement(inputElementId);
@@ -2610,7 +2610,7 @@ test('Test binding @Digits (with fraction and optional label parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2620,7 +2620,7 @@ test('Test binding @Digits (with fraction and optional message parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2630,7 +2630,7 @@ test('Test binding @Digits (with fraction and optional groups parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2640,7 +2640,7 @@ test('Test binding @Digits (with fraction and optional groups, label and message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2705,7 +2705,7 @@ test('Test binding @Past (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2715,7 +2715,7 @@ test('Test binding @Past (with optional label parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2725,7 +2725,7 @@ test('Test binding @Past (with optional message parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2735,7 +2735,7 @@ test('Test binding @Past (with optional groups parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2745,7 +2745,7 @@ test('Test binding @Past (with optional groups, label and message parameter) thr
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2800,7 +2800,7 @@ test('Test binding @Past (with optional separator parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2810,7 +2810,7 @@ test('Test binding @Past (with optional separator and label parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2820,7 +2820,7 @@ test('Test binding @Past (with optional separator and message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2830,7 +2830,7 @@ test('Test binding @Past (with optional separator and groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2840,7 +2840,7 @@ test('Test binding @Past (with optional separator, groups, label and message par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2895,7 +2895,7 @@ test('Test binding @Past (with optional date parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2905,7 +2905,7 @@ test('Test binding @Past (with optional date and label parameter) through markup
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2915,7 +2915,7 @@ test('Test binding @Past (with optional date and message parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2925,7 +2925,7 @@ test('Test binding @Past (with optional date and groups parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2935,7 +2935,7 @@ test('Test binding @Past (with optional date, groups, label and message paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -2990,7 +2990,7 @@ test('Test binding @Past (with optional date parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3000,7 +3000,7 @@ test('Test binding @Past (with optional date and label parameter) through markup
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3010,7 +3010,7 @@ test('Test binding @Past (with optional date and message parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3020,7 +3020,7 @@ test('Test binding @Past (with optional date and groups parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3030,7 +3030,7 @@ test('Test binding @Past (with optional date, separator, groups, label and messa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3095,7 +3095,7 @@ test('Test binding @Future (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3105,7 +3105,7 @@ test('Test binding @Future (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3115,7 +3115,7 @@ test('Test binding @Future (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3125,7 +3125,7 @@ test('Test binding @Future (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3135,7 +3135,7 @@ test('Test binding @Future (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3190,7 +3190,7 @@ test('Test binding @Future (with optional separator parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3200,7 +3200,7 @@ test('Test binding @Future (with optional separator and label parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3210,7 +3210,7 @@ test('Test binding @Future (with optional separator and message parameter) throu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3220,7 +3220,7 @@ test('Test binding @Future (with optional separator and groups parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3230,7 +3230,7 @@ test('Test binding @Future (with optional separator, groups, label and message p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3285,7 +3285,7 @@ test('Test binding @Future (with optional date parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3295,7 +3295,7 @@ test('Test binding @Future (with optional date and label parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3305,7 +3305,7 @@ test('Test binding @Future (with optional date and message parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3315,7 +3315,7 @@ test('Test binding @Future (with optional date and groups parameter) through mar
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3325,7 +3325,7 @@ test('Test binding @Future (with optional date, groups, label and message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3380,7 +3380,7 @@ test('Test binding @Future (with optional date parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3390,7 +3390,7 @@ test('Test binding @Future (with optional date and label parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3400,7 +3400,7 @@ test('Test binding @Future (with optional date and message parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3410,7 +3410,7 @@ test('Test binding @Future (with optional date and groups parameter) through mar
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3420,7 +3420,7 @@ test('Test binding @Future (with optional date, separator, groups, label and mes
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
 
     deleteElement(inputElementId);
@@ -3540,7 +3540,7 @@ test('Test binding @PasswordsMatch (without parameters) through markup', functio
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3550,7 +3550,7 @@ test('Test binding @PasswordsMatch (with optional label parameter) through marku
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3560,7 +3560,7 @@ test('Test binding @PasswordsMatch (with optional message parameter) through mar
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3570,7 +3570,7 @@ test('Test binding @PasswordsMatch (with optional groups parameter) through mark
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3580,7 +3580,7 @@ test('Test binding @PasswordsMatch (with optional label, message, and groups par
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3590,7 +3590,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through markup 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field1=\"field1\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field2");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -3600,7 +3600,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through markup 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field1");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field1");
     raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElement(formElementId);
@@ -4095,7 +4095,7 @@ test('Test binding @Max (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4112,7 +4112,7 @@ test('Test binding @Max (with optional label parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4134,7 +4134,7 @@ test('Test binding @Max (with optional message parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4156,7 +4156,7 @@ test('Test binding @Max (with optional groups parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4178,7 +4178,7 @@ test('Test binding @Max (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4320,7 +4320,7 @@ test('Test binding @Min (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4337,7 +4337,7 @@ test('Test binding @Min (with optional label parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4359,7 +4359,7 @@ test('Test binding @Min (with optional message parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4381,7 +4381,7 @@ test('Test binding @Min (with optional groups parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4403,7 +4403,7 @@ test('Test binding @Min (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameters\\(s\\): value");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4545,7 +4545,7 @@ test('Test binding @Range (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4562,7 +4562,7 @@ test('Test binding @Range (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4584,7 +4584,7 @@ test('Test binding @Range (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4606,7 +4606,7 @@ test('Test binding @Range (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4628,7 +4628,7 @@ test('Test binding @Range (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4652,7 +4652,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (1)'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4674,7 +4674,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (2)'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4819,7 +4819,7 @@ test('Test binding @Between (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4836,7 +4836,7 @@ test('Test binding @Between (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4858,7 +4858,7 @@ test('Test binding @Between (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4880,7 +4880,7 @@ test('Test binding @Between (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4902,7 +4902,7 @@ test('Test binding @Between (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4926,7 +4926,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (1
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -4948,7 +4948,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (2
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5551,7 +5551,7 @@ test('Test binding @Pattern (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5568,7 +5568,7 @@ test('Test binding @Pattern (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5590,7 +5590,7 @@ test('Test binding @Pattern (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5612,7 +5612,7 @@ test('Test binding @Pattern (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5634,7 +5634,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5759,7 +5759,7 @@ test('Test binding @Pattern (with optional flags parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5781,7 +5781,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5804,7 +5804,7 @@ test('Test binding @Pattern (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5827,7 +5827,7 @@ test('Test binding @Pattern (with optional flags and groups parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5850,7 +5850,7 @@ test('Test binding @Pattern (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -5998,7 +5998,7 @@ test('Test binding @Matches (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6015,7 +6015,7 @@ test('Test binding @Matches (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6037,7 +6037,7 @@ test('Test binding @Matches (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6059,7 +6059,7 @@ test('Test binding @Matches (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6081,7 +6081,7 @@ test('Test binding @Matches (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6206,7 +6206,7 @@ test('Test binding @Matches (with optional flags parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6228,7 +6228,7 @@ test('Test binding @Matches (with optional flags and label parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6251,7 +6251,7 @@ test('Test binding @Matches (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6274,7 +6274,7 @@ test('Test binding @Matches (with optional flags and groups parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -6297,7 +6297,7 @@ test('Test binding @Matches (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7093,7 +7093,7 @@ test('Test binding @Length (without parameters) through regula.bind', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7110,7 +7110,7 @@ test('Test binding @Length (with optional label parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7132,7 +7132,7 @@ test('Test binding @Length (with optional message parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7154,7 +7154,7 @@ test('Test binding @Length (with optional groups parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7176,7 +7176,7 @@ test('Test binding @Length (with optional label, message, and groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameters\\(s\\): min, max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7200,7 +7200,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (1)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): min");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): min");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7222,7 +7222,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (2)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameters\\(s\\): max");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): max");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7367,7 +7367,7 @@ test('Test binding @Digits (without parameters) through regula.bind', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7384,7 +7384,7 @@ test('Test binding @Digits (with optional label parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7406,7 +7406,7 @@ test('Test binding @Digits (with optional message parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7428,7 +7428,7 @@ test('Test binding @Digits (with optional groups parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7451,7 +7451,7 @@ test('Test binding @Digits (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameters\\(s\\): integer, fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7475,7 +7475,7 @@ test('Test binding @Digits (with integer parameter) through regula.bind', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7497,7 +7497,7 @@ test('Test binding @Digits (with integer and optional label parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7520,7 +7520,7 @@ test('Test binding @Digits (with integer and optional message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7543,7 +7543,7 @@ test('Test binding @Digits (with integer and optional groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(function () {
         regula.bind({
             element: $input.get(0),
@@ -7566,7 +7566,7 @@ test('Test binding @Digits (with integer and optional groups, label and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): fraction");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7591,7 +7591,7 @@ test('Test binding @Digits (with fraction parameter) through regula.bind', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7613,7 +7613,7 @@ test('Test binding @Digits (with fraction and optional label parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7636,7 +7636,7 @@ test('Test binding @Digits (with fraction and optional message parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7659,7 +7659,7 @@ test('Test binding @Digits (with fraction and optional groups parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7682,7 +7682,7 @@ test('Test binding @Digits (with fraction and optional groups, label and message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameters\\(s\\): integer");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7830,7 +7830,7 @@ test('Test binding @Past (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7847,7 +7847,7 @@ test('Test binding @Past (with optional label parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7869,7 +7869,7 @@ test('Test binding @Past (with optional message parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7891,7 +7891,7 @@ test('Test binding @Past (with optional groups parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -7913,7 +7913,7 @@ test('Test binding @Past (with optional groups, label and message parameter) thr
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8038,7 +8038,7 @@ test('Test binding @Past (with optional separator parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8060,7 +8060,7 @@ test('Test binding @Past (with optional separator and label parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8083,7 +8083,7 @@ test('Test binding @Past (with optional separator and message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8106,7 +8106,7 @@ test('Test binding @Past (with optional separator and groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8129,7 +8129,7 @@ test('Test binding @Past (with optional separator, groups, label and message par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8260,7 +8260,7 @@ test('Test binding @Past (with optional date parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8282,7 +8282,7 @@ test('Test binding @Past (with optional date and label parameter) through regula
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8305,7 +8305,7 @@ test('Test binding @Past (with optional date and message parameter) through regu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8328,7 +8328,7 @@ test('Test binding @Past (with optional date and groups parameter) through regul
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8351,7 +8351,7 @@ test('Test binding @Past (with optional date, groups, label and message paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8482,7 +8482,7 @@ test('Test binding @Past (with optional date parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8505,7 +8505,7 @@ test('Test binding @Past (with optional date and label parameter) through regula
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8529,7 +8529,7 @@ test('Test binding @Past (with optional date and message parameter) through regu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8553,7 +8553,7 @@ test('Test binding @Past (with optional date and groups parameter) through regul
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8577,7 +8577,7 @@ test('Test binding @Past (with optional date, separator, groups, label and messa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8731,7 +8731,7 @@ test('Test binding @Future (without parameters) through regula.bind', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8748,7 +8748,7 @@ test('Test binding @Future (with optional label parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8770,7 +8770,7 @@ test('Test binding @Future (with optional message parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8792,7 +8792,7 @@ test('Test binding @Future (with optional groups parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8814,7 +8814,7 @@ test('Test binding @Future (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8939,7 +8939,7 @@ test('Test binding @Future (with optional separator parameter) through regula.bi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8961,7 +8961,7 @@ test('Test binding @Future (with optional separator and label parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -8984,7 +8984,7 @@ test('Test binding @Future (with optional separator and message parameter) throu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9007,7 +9007,7 @@ test('Test binding @Future (with optional separator and groups parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9030,7 +9030,7 @@ test('Test binding @Future (with optional separator, groups, label and message p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9161,7 +9161,7 @@ test('Test binding @Future (with optional date parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9183,7 +9183,7 @@ test('Test binding @Future (with optional date and label parameter) through regu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9206,7 +9206,7 @@ test('Test binding @Future (with optional date and message parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9229,7 +9229,7 @@ test('Test binding @Future (with optional date and groups parameter) through reg
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9252,7 +9252,7 @@ test('Test binding @Future (with optional date, groups, label and message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9383,7 +9383,7 @@ test('Test binding @Future (with optional date parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9406,7 +9406,7 @@ test('Test binding @Future (with optional date and label parameter) through regu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9430,7 +9430,7 @@ test('Test binding @Future (with optional date and message parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9454,7 +9454,7 @@ test('Test binding @Future (with optional date and groups parameter) through reg
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9478,7 +9478,7 @@ test('Test binding @Future (with optional date, separator, groups, label and mes
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameters\\(s\\): format");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
     raises(function() {
         regula.bind({
             element: $input.get(0),
@@ -9741,7 +9741,7 @@ test('Test binding @PasswordsMatch (without parameters) through regula.bind', fu
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9758,7 +9758,7 @@ test('Test binding @PasswordsMatch (with optional label parameter) through regul
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9780,7 +9780,7 @@ test('Test binding @PasswordsMatch (with optional message parameter) through reg
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9802,7 +9802,7 @@ test('Test binding @PasswordsMatch (with optional groups parameter) through regu
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9824,7 +9824,7 @@ test('Test binding @PasswordsMatch (with optional label, message, and groups par
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9848,7 +9848,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field2");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -9870,7 +9870,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field1");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field1");
     raises(function() {
         regula.bind({
             element: $form.get(0),
@@ -10246,7 +10246,7 @@ test('Call regula.custom with required parameters and empty params attribute', f
     deleteElement(inputElementId);
 });
 
-test('Call regula.custom with required parameters and valid params attribute', function() {
+test('Call regula.custom with required parameters and valid params attribute (1)', function() {
     var time = new Date().getTime();
 
     equals(regula.custom({
@@ -10266,6 +10266,27 @@ test('Call regula.custom with required parameters and valid params attribute', f
     equals(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equals 1");
     equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
     equals(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equals 9");
+
+    deleteElement(inputElementId);
+});
+
+test('Call regula.custom with required parameters and valid params attribute (2)', function() {
+    var time = new Date().getTime();
+
+    equals(regula.custom({
+        name: "CustomConstraint" + time,
+        params: ["myParam"],
+        validator: function() {
+            return false;
+        }
+    }, undefined, "regula.custom called with required parameters and an valid params array must not generate any errors"));
+
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
+
+    raises(function() {
+        regula.bind();
+    }, new RegExp("You seem to have provided some optional or required parameters for @CustomConstraint" + time + ", but you are still missing the following 1 required parameter\\(s\\): myParam"));
 
     deleteElement(inputElementId);
 });
@@ -16549,7 +16570,7 @@ test('Test regula.unbind() with unbound id', function() {
         regula.unbind({
             elementId: "myText"
         });
-    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText}/, "regula.unbind() must fail if provided an unbound element's id");;
+    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText}/, "regula.unbind() must fail if provided an unbound element's id");
 });
 
 module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
@@ -16560,10 +16581,388 @@ test('Test calling regula.compound() without options', function() {
     }, /regula.compound expects options/, "regula.compound() must fail if no options are provided");
 });
 
+test('Test calling regula.compound() with empty options', function() {
+    raises(function() {
+        regula.compound({});
+    }, /regula.compound expects a name attribute in the options argument/, "regula.compound() called with an empty options argument must throw an error");
+});
+
+test('Test calling regula.compound() with non-string name attribute', function() {
+    raises(function() {
+        regula.compound({
+            name: true
+        });
+    }, /regula.compound expects name to be a string parameter/, "regula.compound() called with name set to a non-string value must throw an error");
+});
+
+test('Test calling regula.compound() with incomplete options (1)', function() {
+    raises(function() {
+        regula.compound({
+            name: "MyCompoundConstraint"
+        });
+    }, /regula.compound expects an array of composing constraints under a constraints attribute in the options argument/, "regula.compound() must fail if no constraints attribute is provided");
+});
+
+test('Test calling regula.compound() with params attribute set to non-array type', function() {
+    raises(function() {
+        regula.compound({
+            name: "MyCompoundConstraint",
+            params: true
+        });
+    }, /regula.compound expects the params attribute in the options argument to be an array/, "regula.compound() called with params set to a non-array type must throw an error");
+});
+
+test('Test calling regula.compound() with previously-defined constraint name', function() {
+    regula.compound({
+        name: "MyCompoundConstraint",
+        constraints: [
+            {constraintType: regula.Constraint.Numeric},
+            {constraintType: regula.Constraint.Checked}
+        ]
+    });
+
+    raises(function() {
+        regula.compound({
+            name: "MyCompoundConstraint",
+            constraints: [
+                {constraintType: regula.Constraint.Numeric},
+                {constraintType: regula.Constraint.Checked}
+            ]
+        });
+    }, /regula.compound: There is already a constraint called MyCompoundConstraint. If you wish to override this constraint, use regula.override/, "Trying to define a previously-defined constraint should result in an error");
+});
+
+test('Test calling regula.compound() where a composing-constraint does not have a constraint type', function() {
+    raises(function() {
+        regula.compound({
+            name: "AnotherCompoundConstraint",
+            constraints: [
+                {constraintType: regula.Constraint.Checked},
+                {}
+            ]
+        });
+    }, /In compound constraint AnotherCompoundConstraint: A composing constraint has no constraint type specified./, "Trying to define a compound constraint with a composing constraint without a constraint type must result in an error");
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (1)', function() {
+    raises(function() {
+        regula.compound({
+            name: "AnotherCompoundConstraint",
+            constraints: [
+                {constraintType: regula.Constraint.Range}
+            ]
+        });
+    }, new RegExp("In compound constraint AnotherCompoundConstraint: @Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max"), "regula.compound() must throw an error when using a composing constraint with insufficient parameters");
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (2)', function() {
+    raises(function() {
+        regula.compound({
+            name: "AnotherCompoundConstraint",
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        max: 10
+                    }
+                }
+            ]
+        });
+    }, new RegExp("In compound constraint AnotherCompoundConstraint: @Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min"), "regula.compound() must throw an error when using a composing constraint with insufficient parameters");
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (3)', function() {
+    raises(function() {
+        regula.compound({
+            name: "AnotherCompoundConstraint",
+            params: ["max"],
+            constraints: [
+                {constraintType: regula.Constraint.Range}
+            ]
+        });
+    }, new RegExp("In compound constraint AnotherCompoundConstraint: @Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min"), "regula.compound() must throw an error when using a composing constraint with insufficient parameters");
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (4)', function() {
+    equals(
+        regula.compound({
+            name: "CompoundConstraint0",
+            params: ["max", "min"],
+            constraints: [
+                {constraintType: regula.Constraint.Range}
+            ]
+        }), undefined, 'Calling regula.compound() with all parameters defined for all composing constraints must not fail'
+    );
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (5)', function() {
+    equals(
+        regula.compound({
+            name: "CompoundConstraint1",
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        min: 5,
+                        max: 10
+                    }
+                }
+            ]
+        }), undefined, 'Calling regula.compound() with all parameters defined for all composing constraints must not fail'
+    );
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (6)', function() {
+    equals(
+        regula.compound({
+            name: "CompoundConstraint2",
+            params: ["max", "min", "regex"],
+            constraints: [
+                {constraintType: regula.Constraint.Range},
+                {constraintType: regula.Constraint.Pattern}
+            ]
+        }), undefined, 'Calling regula.compound() with all parameters defined for all composing constraints must not fail'
+    );
+});
+
+test('Test calling regula.compound() with definitions that involve parameter merging (7)', function() {
+    equals(
+        regula.compound({
+            name: "CompoundConstraint3",
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        min: 5,
+                        max: 10
+                    }
+                },
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        regex: /[a-z]+/
+                    }
+                }
+            ]
+        }), undefined, 'Calling regula.compound() with all parameters defined for all composing constraints must not fail'
+    );
+});
+
+test('Test calling regula.compound() with definitions that involve a custom constraint', function() {
+    regula.custom({
+        name: "MyCustomConstraint",
+        params: ["a", "b"],
+        validator: function() {
+            return false;
+        }
+    });
+
+    equals(
+        regula.compound({
+            name: "CompoundConstraint4",
+            params: ["a", "b"],
+            constraints: [
+                {constraintType: regula.Constraint.NotBlank},
+                {constraintType: regula.Constraint.MyCustomConstraint}
+            ]
+        }), undefined, 'Calling regula.compound() with a custom constraint must not fail'
+    );
+});
+
+test('Test calling regula.compound() with definitions that involve compound constraints', function() {
+    regula.compound({
+        name: "CompoundConstraint5",
+        params: ["c", "d"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint6",
+        params: ["e", "f"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    equals(
+        regula.compound({
+            name: "CompoundConstraint7",
+            params: ["c", "d", "e", "f"],
+            constraints: [
+                {constraintType: regula.Constraint.CompoundConstraint5},
+                {constraintType: regula.Constraint.CompoundConstraint6}
+            ]
+        }), undefined, 'Calling regula.compound() with other compound constraints must not fail'
+    );
+});
+
+test('Test calling regula.compound() with a mix of regular, custom, and compound constraints', function() {
+    regula.custom({
+        name: "AnotherCustomConstraint",
+        params: ["a", "b"],
+        validator: function() {
+            return false;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint8",
+        params: ["c", "d"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint9",
+        params: ["e", "f"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    equals(
+        regula.compound({
+            name: "CompoundConstraint10",
+            params: ["a", "b", "c", "d", "e", "f"],
+            constraints: [
+                {constraintType: regula.Constraint.CompoundConstraint8},
+                {constraintType: regula.Constraint.CompoundConstraint9},
+                {constraintType: regula.Constraint.AnotherCustomConstraint},
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        regex: /[a-z]+/
+                    }
+                }
+            ]
+        }), undefined, 'Calling regula.compound() with other compound constraints must not fail'
+    );
+});
+
+test('Test binding a compound constraint with insufficient parameters', function() {
+    regula.compound({
+        name: "CompoundConstraint11",
+        params: ["e", "f"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    var $text = createInputElement("myText", "@CompoundConstraint11", "text");
+    raises(function() {
+        regula.bind();
+    }, new RegExp("myText.CompoundConstraint11: You seem to have provided some optional or required parameters for @CompoundConstraint11, but you are still missing the following 2 required parameter\\(s\\): e, f"), 'Binding to a compound constraint without sufficient parameters must result in an error');
+
+    deleteElement("myText");
+});
+
+test('Test that composing constraints and parameters have been properly bound to a compound constraint', function() {
+     regula.custom({
+        name: "OneMoreCustomConstraint",
+        params: ["a", "b"],
+        validator: function() {
+            return false;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint12",
+        params: ["c", "d"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint13",
+        params: ["e", "f"],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Numeric}
+        ]
+    });
+
+    equals(
+        regula.compound({
+            name: "CompoundConstraint14",
+            params: ["c", "d", "f", "max"],
+            constraints: [
+                {constraintType: regula.Constraint.CompoundConstraint12},
+                {
+                    constraintType: regula.Constraint.CompoundConstraint13,
+                    params: {
+                        e: 10
+                    }
+                },
+                {
+                    constraintType: regula.Constraint.OneMoreCustomConstraint,
+                    params: {
+                        a: 11,
+                        b: 12
+                    }
+                },
+                {
+                    constraintType: regula.Constraint.Pattern,
+                    params: {
+                        regex: /[a-z]+/
+                    }
+                },
+                {
+                    constraintType: regula.Constraint.Range,
+                    params: {
+                        min: 13
+                    }
+                }
+            ]
+        }), undefined, 'Calling regula.compound() with other compound constraints must not fail'
+    );
+
+    var $text = createInputElement("myText", "@CompoundConstraint14(c=14, d=15, f=16, max=17, message=\"This is {label} {a} {b} {c} {d} {e} {f} {max} {min} {regex}\", label=\"compound\")", "text");
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+
+    equals(constraintViolation.compound, true, "Constraint must be a compound constraint");
+    equals(constraintViolation.constraintName, "CompoundConstraint14", "The constraint name must match");
+    equals(constraintViolation.constraintParameters.__size__, 7, "There must be seven parameters");
+    equals(constraintViolation.constraintParameters.c, "14", "The value of the parameter 'c' must equal 14");
+    equals(constraintViolation.constraintParameters.d, "15", "The value of the parameter 'd' must equal 15");
+    equals(constraintViolation.constraintParameters.f, "16", "The value of the parameter 'f' must equal 16");
+    equals(constraintViolation.composingConstraintViolations.length, 5, "There must be 5 composing-constraint violations");
+    equals(constraintViolation.composingConstraintViolations[0].constraintName, "CompoundConstraint12", "The first composing-constraint violation must be the CompoundConstraint12 constraint");
+    equals(constraintViolation.composingConstraintViolations[0].constraintParameters.__size__, 0, "CompoundConstraint12 must have zero parameters");
+    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
+    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
+    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
+    equals(constraintViolation.composingConstraintViolations[1].constraintName, "CompoundConstraint13", "The second composing-constraint violation must be the CompoundConstraint13 constraint");
+    equals(constraintViolation.composingConstraintViolations[1].constraintParameters.__size__, 1, "CompoundConstraint13 must have 1 parameter");
+    equals(constraintViolation.composingConstraintViolations[1].constraintParameters.e, 10, "The value of the parameter 'e' must equal 10");
+    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
+    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
+    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
+    equals(constraintViolation.composingConstraintViolations[2].constraintName, "OneMoreCustomConstraint", "The third composing-constraint violation must be the OneMoreCustomConstraint constraint");
+    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.__size__, 2, "OneMoreCustomConstraint must have 2 parameters");
+    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.a, 11, "The value of the parameter 'a' must equal 11");
+    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.b, 12, "The value of the parameter 'b' must equal 11");
+    equals(constraintViolation.composingConstraintViolations[3].constraintName, "Pattern", "The fourth composing-constraint violation must be the Pattern constraint");
+    equals(constraintViolation.composingConstraintViolations[3].constraintParameters.__size__, 1, "Pattern must have 1 parameter");
+    equals(constraintViolation.composingConstraintViolations[3].constraintParameters.regex.toString(), "/[a-z]+/", "The value of the parameter 'regex' must equal /[a-z]+/");
+    equals(constraintViolation.composingConstraintViolations[4].constraintName, "Range", "The fifth composing-constraint violation must be the Range constraint");
+    equals(constraintViolation.composingConstraintViolations[4].constraintParameters.__size__, 1, "Range must have 1 parameter");
+    equals(constraintViolation.composingConstraintViolations[4].constraintParameters.min, 13, "The value of the parameter 'min' must equal 13");
+    equals(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
+});
 
 /* TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override()
- * TODO: Test regula.unbind
  * TODO: Test regula.override
  * TODO: Test regula.custom (param test done - the rest can probably be done in the validate() tests so it might be ok to ignore this
- * TODO: Test regula.compound - finish regula.compound() tests
  * */
