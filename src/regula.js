@@ -2576,7 +2576,7 @@ regula = (function () {
                         definedGroups += definedParameters["groups"][j] + ","
                     }
 
-                    else if (ReverseGroup[definedParameters["groups"][j]]) {
+                    else if (typeof ReverseGroup[definedParameters["groups"][j]] !== "undefined") {
                         definedGroups += ReverseGroup[definedParameters["groups"][j]] + ","
                     }
 

@@ -16406,7 +16406,7 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (2
             {
                 constraintType: regula.Constraint.NotBlank,
                 params: {
-                    groups: ["First", "Second", "Third"]
+                    groups: [regula.Group.First, regula.Group.Second, regula.Group.Third]
                 }
             }
         ]
@@ -16419,7 +16419,7 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (2
                 overwriteParameters: true,
                 constraintType: regula.Constraint.NotBlank,
                 params: {
-                    groups: ["First", "Fourth", "Fifth"]
+                    groups: [regula.Group.First, "Fourth", "Fifth"]
                 }
             }
         ]
@@ -16962,7 +16962,16 @@ test('Test that composing constraints and parameters have been properly bound to
     equals(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
 });
 
-/* TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override()
+module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
+
+/* TODO: Test behavior of CompletelyFilled and PasswordsMatch
+ * TODO: Test failing test. That is, pass in an invalid group "enum" to regula.bind() when doing overwrite. This takes care of the coverage issue in like 2584.
+ * TODO: Test failing test. Pass in a groups parameter that is not an array of enums or strings. (coverage issue line 2602)
+ * TODO: Test failing test. Pass in constraintType as undefined (i.e., invalid constraint type enum). (coverage issue line 2554)
+ * TODO: !!! Test bind where you're doing overwriting, but you're binding after parsing (i.e., constraint definition is on the element)
+ * TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override(). This will be kind of an integration test
+ * TODO: You want to make sure that things like parameter interpolation, parameters, etc. all work. Some of these have already been done. You just have to do the others.
  * TODO: Test regula.override
- * TODO: Test regula.custom (param test done - the rest can probably be done in the validate() tests so it might be ok to ignore this
+ * TODO: Test regula.custom (param test done - the rest can probably be done in the validate() tests so it might be ok to ignore this. the current tests you seem to test a bunch, but
+ * TODO: a few other tests you might want to add include: trying to bing a custom form-specific constraint to a non-form element and vice-versa.
  * */
