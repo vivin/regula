@@ -381,7 +381,9 @@ regula = (function () {
         addNode:function (type, parent) {},
         getNodeByType:function (type) {},
         cycleExists:function (startNode) {},
-        getRoot:function () {}
+        getRoot:function () {},
+        setRoot:function (root) {},
+        clone: function () {}
     };
 
     compositionGraph = (function () {
@@ -417,12 +419,32 @@ regula = (function () {
             typeToNodeMap[type] = newNode;
         }
 
+        function clone() {
+            return _clone(root);
+        }
+
+        function _clone(node) {
+            var cloned = {
+                visited: node.visited,
+                name: node.name,
+                type: node.type,
+                children: []
+            };
+
+            for(var i = 0; i < node.children.length; i++) {
+                cloned.children[cloned.children.length] = _clone(node.children[i]);
+            }
+
+            return cloned;
+        }
+
         function getNodeByType(type) {
             return typeToNodeMap[type];
         }
 
         function cycleExists(startNode) {
             var result = (function (node, path) {
+
                 var result = {cycleExists:false, path:path};
 
                 if (node.visited) {
@@ -431,6 +453,7 @@ regula = (function () {
 
                 else {
                     node.visited = true;
+
                     var i = 0;
                     while (i < node.children.length && !result.cycleExists) {
                         result = arguments.callee(node.children[i], path + "." + node.children[i].name);
@@ -448,6 +471,10 @@ regula = (function () {
             return result;
         }
 
+        function removeChildren(node) {
+            node.children = [];
+        }
+
         function clearVisited() {
             (function (node) {
                 node.visited = false;
@@ -461,11 +488,18 @@ regula = (function () {
             return root;
         }
 
+        function setRoot(newRoot) {
+            root = newRoot;
+        }
+
         return {
             addNode:addNode,
+            removeChildren:removeChildren,
             getNodeByType:getNodeByType,
             cycleExists:cycleExists,
-            getRoot:getRoot
+            getRoot:getRoot,
+            setRoot:setRoot,
+            clone:clone
         };
     })();
 
@@ -2125,6 +2159,8 @@ regula = (function () {
             graphNode = compositionGraph.getNodeByType(Constraint[constraintName]);
         }
 
+        //First we have to remove the existing children
+        compositionGraph.removeChildren(graphNode);
         for (var i = 0; i < composingConstraints.length; i++) {
             var composingConstraintName = ReverseConstraint[composingConstraints[i].constraintType];
             var composingConstraint = constraintsMap[composingConstraintName];
@@ -2194,18 +2230,21 @@ regula = (function () {
         }
 
         if (typeof options.constraintType == "undefined") {
-            throw "regula.override expects a constraintType attribute in the options argument";
+            throw "regula.override expects a valid constraintType attribute in the options argument";
         }
 
         var name = ReverseConstraint[options.constraintType];
-
-        if (typeof Constraint[name] == "undefined") {
-            throw "regula.override: A constraint called " + name + " has not been defined, so I cannot override it";
+        if (typeof name === "undefined") {
+            throw "regula.override: I could not find the specified constraint. Perhaps it has not been defined? Function received: " + explodeParameters(options);
         }
 
         else {
             /* for custom constraints, you can override anything. for built-in constraints however, you can only override the default message */
-            var formSpecific = constraintsMap[name].custom ? options.formSpecific || constraintsMap[name].formSpecific : constraintsMap[name].formSpecific;
+            var formSpecific = constraintsMap[name].formSpecific;
+            if(constraintsMap[name].custom) {
+                formSpecific = (typeof options.formSpecific === "undefined") ? constraintsMap[name].formSpecific : options.formSpecific;
+            }
+
             var validator = constraintsMap[name].custom && !constraintsMap[name].compound ? options.validator || constraintsMap[name].validator : constraintsMap[name].validator;
             var params = constraintsMap[name].custom ? options.params || constraintsMap[name].params : constraintsMap[name].params;
             var defaultMessage = options.defaultMessage || constraintsMap[name].defaultMessage;
@@ -2220,7 +2259,7 @@ regula = (function () {
                 throw "regula.override expects the validator attribute in the options argument to be a function";
             }
 
-            if (params.constructor.toString().indexOf("Array") < 0) {
+            if (!(params instanceof Array)) {
                 throw "regula.override expects the params attribute in the options argument to be an array";
             }
 
@@ -2231,6 +2270,13 @@ regula = (function () {
             if (compound) {
                 checkComposingConstraints(name, composingConstraints, params);
 
+                /* Typically a user should fix their code when they see a cyclical-composition error from regula.override().
+                 * If the error is ignored and validation is carried out however, we can get into an infinite loop because we
+                 * modified the graph to contain a cycle. A more robust solution would be to clone the composition graph and
+                 * restore it if we find out that it contains a cycle
+                 */
+                var root = compositionGraph.clone();
+
                 /* now let's update our graph */
                 updateCompositionGraph(name, composingConstraints);
 
@@ -2238,6 +2284,7 @@ regula = (function () {
                 var result = compositionGraph.cycleExists(compositionGraph.getNodeByType(options.constraintType));
 
                 if (result.cycleExists) {
+                    compositionGraph.setRoot(root);
                     throw "regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path;
                 }
             }
@@ -2329,13 +2376,13 @@ regula = (function () {
 
         if (typeof options == "undefined" || !options) {
             initializeBoundConstraints();
-            result = bindAfterParsing([]);
+            result = bindAfterParsing();
         }
 
         else {
             var elements = options.elements;
 
-            if (typeof elements == "undefined" || !elements) {
+            if (typeof elements === "undefined" || !elements) {
                 result = bindFromOptions(options);
             }
 
@@ -2359,11 +2406,10 @@ regula = (function () {
         while (result.successful && i < elements.length) {
 
             options.element = elements[i];
-
             result = bindFromOptions(options);
 
             if (!result.successful) {
-                result.message = "regula.bind: Element " + i + " of " + elements.length + " failed: " + result.message;
+                result.message = "regula.bind: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
             }
 
             i++;
@@ -2373,15 +2419,15 @@ regula = (function () {
     }
 
 
-    function bindAfterParsing(elements) {
+    function bindAfterParsing(element) {
         var elementsWithRegulaValidation;
 
-        if (typeof elements == "undefined" || !elements || elements.length == 0) {
+        if (typeof element === "undefined") {
             elementsWithRegulaValidation = getElementsByAttribute(document.body, "*", "data-constraints");
         }
 
         else {
-            elementsWithRegulaValidation = elements;
+            elementsWithRegulaValidation = [element];
         }
 
         var result = {
@@ -2401,16 +2447,17 @@ regula = (function () {
                     message:tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements.",
                     data:null
                 };
-            }
+            } else {
+                // automatically assign an id if the element does not have one
+                if (!element.id) {
+                    element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
+                }
 
-            // automatically assign an id if the element does not have one
-            if (!element.id) {
-                element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
-            }
+                var dataConstraintsAttribute = element.getAttribute("data-constraints");
+                result = parse(element, dataConstraintsAttribute);
 
-            var dataConstraintsAttribute = element.getAttribute("data-constraints");
-            result = parse(element, dataConstraintsAttribute);
-            i++;
+                i++;
+            }
         }
 
         return result;
@@ -2447,7 +2494,7 @@ regula = (function () {
         else if (tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
             result = {
                 successful:false,
-                message:tagName + "#" + element.id + " is not an input, select, or form element! Validation constraints can only be attached to input, select, or form elements. " + explodeParameters(options),
+                message:tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements. " + explodeParameters(options),
                 data:null
             };
         }
@@ -2462,7 +2509,7 @@ regula = (function () {
             }
 
             else {
-                result = bindAfterParsing([element]);
+                result = bindAfterParsing(element);
             }
         }
 
@@ -2561,7 +2608,7 @@ regula = (function () {
         /* we also need to make sure groups make sense (if we got any) */
         else if (definedParameters && definedParameters["groups"]) {
 
-            if (typeof definedParameters["groups"] == "object" && definedParameters["groups"].length != undefined) {
+            if (definedParameters["groups"] instanceof Array) {
 
                 /* We need to normalize the "groups" parameter that the user sends in. The user sends in the groups parameter as an array of 'enum'
                  values, or if it is a new constraint, a string. We need to normalize this into a string of comma-separated values. While we're
@@ -2583,7 +2630,7 @@ regula = (function () {
                     else {
                         result = {
                             successful:false,
-                            message:"Invalid group " + definedParameters["groups"][j] + " " + explodeParameters(options),
+                            message:"Invalid group: " + definedParameters["groups"][j] + ". " + explodeParameters(options),
                             data:null
                         };
                     }
@@ -2595,7 +2642,6 @@ regula = (function () {
                     definedGroups = definedGroups.replace(/,$/, "");
                     definedParameters["groups"] = definedGroups;
                 }
-
             }
 
             else {
