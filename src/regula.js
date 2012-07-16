@@ -1060,7 +1060,7 @@ regula = (function () {
                 str += argument + ": " + options[argument] + ", ";
             }
 
-            else if (options[argument].length) { //we need this to be an array
+            else if (options[argument] instanceof Array) { //we need this to be an array
                 str += argument + ": [" + explode(options[argument], ", ") + "], "
             }
         }
@@ -2767,14 +2767,37 @@ regula = (function () {
             throw "regula.validate: If a groups attribute is provided, it must be an array.";
         }
 
+        if(typeof options !== "undefined" && typeof options.groups !== "undefined" && options.groups.length == 0) {
+            throw "regula.validate: If a groups attribute is provided, it must not be empty.";
+        }
+
+        if(typeof options !== "undefined" && options.hasOwnProperty("constraintType") && typeof options.constraintType === "undefined") {
+            throw "regula.validate: If a constraintType attribute is provided, it cannot be undefined.";
+        }
+
         if (typeof options !== "undefined" && typeof options.elements !== "undefined") {
 
             if (options.elements instanceof Array) {
+
+                if(options.elements.length == 0) {
+                    throw "regula.validate: If an elements attribute is provided, it must not be empty.";
+                }
+
+                /*
+                 Since we redefined options.constraintType and options.groups in _validate(), we need to preserve their original values so that
+                 we can use them on each run
+                 */
+
+                var originalConstraintType = options.constraintType;
+                var originalGroups = options.groups;
 
                 result = [];
                 for (var i = 0; i < options.elements.length; i++) {
                     options.elementId = options.elements[i].id;
                     result = result.concat(_validate(options));
+
+                    options.constraintType = originalConstraintType;
+                    options.groups = originalGroups;
                 }
             }
 
@@ -2797,7 +2820,7 @@ regula = (function () {
         function generateKey(options) {
             var groups = options.groups || null;
             var elementId = options.elementId || null;
-            var constraintType = options.constraintType || null;
+            var constraintType = (typeof options.constraintType === "undefined" ? null : options.constraintType) || null;
             var key = "";
             key += (groups == null) ? "0" : "1";
             key += (elementId == null) ? "0" : "1";
@@ -2831,19 +2854,26 @@ regula = (function () {
         /* default to independent validation for groups i.e., groups are validated independent of each other and will not
          fail early
          */
-        if (options.independent == undefined) {
+        if (typeof options.independent === "undefined") {
             options.independent = true;
         }
 
         //Get the actual constraint name
-        if (options.constraintType) {
+        if (typeof options.constraintType !== "undefined") {
             options.constraintType = ReverseConstraint[options.constraintType];
         }
 
         //Get the actual group name
         if (options.groups) {
-            for (var i = 0; i < options.groups.length; i++) {
-                options.groups[i] = ReverseGroup[options.groups[i]];
+
+            //We're going to create a new array and assign that to options.groups. This array will contain the actual group
+            //names of the groups. The reason we do this is because in validate() we store a reference to the original groups
+            //array. If we didn't copy this over, we would be modifying that original array.
+            var groups = options.groups;
+            options.groups = [];
+
+            for (var i = 0; i < groups.length; i++) {
+                options.groups.push(ReverseGroup[groups[i]]);
             }
         }
 
@@ -2907,9 +2937,8 @@ regula = (function () {
 
         //We want to let the user know if they used a constraint that has not been defined anywhere. Otherwise, this
         //function returns zero validation results, which can be (incorrectly) interpreted as a successful validation
-
         if (!constraintFound) {
-            throw "Constraint " + ReverseConstraint[options.constraintType] + " has not been bound to any element. " + explodeParameters(options);
+            throw "Constraint " + options.constraintType + " has not been bound to any element. " + explodeParameters(options);
         }
 
         return constraintViolations;
@@ -3132,7 +3161,7 @@ regula = (function () {
         var groupElements = boundConstraints[group];
 
         if (!groupElements) {
-            throw "Undefined group in group list";
+            throw "Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")";
         }
 
         var elementConstraints = groupElements[elementId];
@@ -3216,7 +3245,7 @@ regula = (function () {
 
         if (!constraintsMap[elementConstraint].reportAsSingleViolation) {
             validationResult.composingConstraintViolations = composingConstraintViolations;
-        }
+       }
 
         return validationResult;
     }
