@@ -521,7 +521,22 @@ regula = (function () {
     }
 
     function checked() {
-        return this.checked;
+        var result = false;
+
+        if(this.type.toLowerCase() === "radio" && this.name.replace(/\s/g, "") !== "") {
+            var elements = getElementsByAttribute(document.body, "input", "name", this.name);
+
+            var i = 0;
+            while(i < elements.length && !result) {
+                result = elements[i].checked;
+                i++;
+            }
+
+        } else {
+            result = this.checked;
+        }
+
+        return result;
     }
 
     function selected() {
@@ -684,15 +699,15 @@ regula = (function () {
         var result = true;
 
         if (this.tagName) {
-            if (this.tagName.toLowerCase() == "select") {
+            if (this.tagName.toLowerCase() === "select") {
                 result = selected.call(this);
             }
 
-            else if (this.type.toLowerCase() == "checkbox" || this.type.toLowerCase() == "radio") {
+            else if (this.type.toLowerCase() === "checkbox" || this.type.toLowerCase() === "radio") {
                 result = checked.call(this);
             }
 
-            else if (this.tagName.toLowerCase() == "input" || this.tagName.toLowerCase() == "textarea") {
+            else if (this.tagName.toLowerCase() === "input" || this.tagName.toLowerCase() === "textarea") {
                 if (this.type.toLowerCase() != "button") {
                     result = notBlank.call(this);
                 }
