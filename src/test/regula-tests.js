@@ -10692,6 +10692,27 @@ test('Test @Checked against checked radio-button group (passing, programmatic)',
     deleteElements();
 });
 
+test('Test @Checked against radio-button group where each element has the constraint, doesn\'t return multiple violations', function() {
+    var $radio0 = createInputElement("radio0", "@Checked", "radio");
+    $radio0.attr("name", "AwesomeRadios");
+
+    var $radio1 = createInputElement("radio1", "@Checked", "radio");
+    $radio1.attr("name", "AwesomeRadios");
+
+    var $radio2 = createInputElement("radio2", "@Checked", "radio");
+    $radio2.attr("name", "AwesomeRadios");
+
+    var $radio3 = createInputElement("radio3", "@Checked", "radio");
+    $radio3.attr("name", "AwesomeRadios");
+
+    regula.bind();
+    var constraintViolations = regula.validate();
+    equals(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
+    equals(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
+
+    deleteElements();
+});
+
 test('Test @Checked against unchecked checkbox (markup)', function() {
     var inputElementId = "myCheckbox";
     var $checkbox = createInputElement(inputElementId, "@Checked", "checkbox");
