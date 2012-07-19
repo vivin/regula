@@ -1,4 +1,4 @@
-## Regula: An annotation-based form-validator for client-side validation. 
+## Regula: An annotation-based form-validator for client-side validation
 
 ### Why?
 
