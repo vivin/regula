@@ -505,6 +505,7 @@ regula = (function () {
 
     var boundConstraints = null; //Keeps track of all bound constraints. Keyed by Group -> Element Id -> Constraint Name
     var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
+    var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
 
     function initializeBoundConstraints() {
         boundConstraints = {Default:{}};
@@ -521,7 +522,22 @@ regula = (function () {
     }
 
     function checked() {
-        return this.checked;
+        var result = false;
+
+        if(this.type.toLowerCase() === "radio" && this.name.replace(/\s/g, "") !== "") {
+            var elements = getElementsByAttribute(document.body, "input", "name", this.name);
+
+            var i = 0;
+            while(i < elements.length && !result) {
+                result = elements[i].checked;
+                i++;
+            }
+
+        } else {
+            result = this.checked;
+        }
+
+        return result;
     }
 
     function selected() {
@@ -684,15 +700,15 @@ regula = (function () {
         var result = true;
 
         if (this.tagName) {
-            if (this.tagName.toLowerCase() == "select") {
+            if (this.tagName.toLowerCase() === "select") {
                 result = selected.call(this);
             }
 
-            else if (this.type.toLowerCase() == "checkbox" || this.type.toLowerCase() == "radio") {
+            else if (this.type.toLowerCase() === "checkbox" || this.type.toLowerCase() === "radio") {
                 result = checked.call(this);
             }
 
-            else if (this.tagName.toLowerCase() == "input" || this.tagName.toLowerCase() == "textarea") {
+            else if (this.tagName.toLowerCase() === "input" || this.tagName.toLowerCase() === "textarea") {
                 if (this.type.toLowerCase() != "button") {
                     result = notBlank.call(this);
                 }
@@ -2861,6 +2877,7 @@ regula = (function () {
         };
 
         validatedConstraints = {}; //clear this out on every run
+        validatedRadioGroups = {}; //clear this out on every run
 
         //if no arguments were passed in, we initialize options to an empty map
         if (!options || typeof options === "undefined") {
@@ -3186,8 +3203,20 @@ regula = (function () {
             validatedConstraints[elementId] = {};
         }
 
+        var element = document.getElementById(elementId);
+        var name = element.name.replace(/\s/g, "");
+
+        if(typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            if(!validatedRadioGroups[name]) {
+                validatedRadioGroups[name] = {};
+            }
+        } else {
+            name = "__dontcare__";
+            validatedRadioGroups[name] = {}; //we really don't care about this if what we're looking at is not a radio button
+        }
+
         //Validate this constraint only if we haven't already validated it during this validation run
-        if (!validatedConstraints[elementId][elementConstraint]) {
+        if (!validatedConstraints[elementId][elementConstraint] && !validatedRadioGroups[name][elementConstraint]) {
             if (!elementConstraints) {
                 throw "No constraints have been defined for the element with id: " + elementId + " in group " + group;
             }
@@ -3253,6 +3282,12 @@ regula = (function () {
         }
 
         validatedConstraints[elementId][elementConstraint] = true; //mark this element constraint as validated
+
+        var name = element.name.replace(/\s/g, "");
+        if(typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            validatedRadioGroups[name][elementConstraint] = true; //mark this radio group as validated
+            failingElements = getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
+        }
 
         var validationResult = {
             constraintPassed:constraintPassed,
