@@ -116,7 +116,7 @@ jQuery(document).ready(function() {
 
 In the above example, we first call `regula.bind()` to bind all our constraints to the elements they have been defined on. Then, we call `regula.validate()` that performs all the validation. This function returns an array of constraint violations, that you can then examine to see which elements failed validation. That's all there is to it!
 
-There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and try it out. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
+There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.2.3 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
 
 ###Going forward
 
