@@ -53,7 +53,6 @@ And its use:
 <input id = "theAnswerToLifeTheUniverseAndEverything" 
        name = "theAnswerToLifeTheUniverseAndEverything" 
        value = ""
-       class = "regula-validation"
        data-constraints = "@MustBe42" />
 ```
 
@@ -77,7 +76,6 @@ And usage:
 <input id = "number" 
        name = "number" 
        value = ""
-       class = "regula-validation"
        data-constraints = "@DivisibleBy(divisor=3, label='The Number')" />
 ```
 
