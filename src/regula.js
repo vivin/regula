@@ -3,7 +3,7 @@
  Written By Vivin Paliath (http://vivin.net)
  License: BSD License
  Copyright (C) 2010-2012
- Version 1.2.3
+ Version 1.2.4-SNAPSHOT
  */
 /* for code completion */
 var regula = {
