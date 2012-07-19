@@ -508,7 +508,7 @@ test('Test binding @Pattern (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -524,7 +524,7 @@ test('Test binding @Pattern (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -545,7 +545,7 @@ test('Test binding @Pattern (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -566,7 +566,7 @@ test('Test binding @Pattern (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -587,7 +587,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -706,7 +706,7 @@ test('Test binding @Pattern (with optional flags parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -727,7 +727,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameters\\(s\\): regex");
+    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
     raises(function() {
         $input.regula('bind',{
             constraints: [
@@ -868,7 +868,7 @@ test('Test binding @PasswordsMatch (without parameters) through regula.bind', fu
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -884,7 +884,7 @@ test('Test binding @PasswordsMatch (with optional label parameter) through regul
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -905,7 +905,7 @@ test('Test binding @PasswordsMatch (with optional message parameter) through reg
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -926,7 +926,7 @@ test('Test binding @PasswordsMatch (with optional groups parameter) through regu
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -947,7 +947,7 @@ test('Test binding @PasswordsMatch (with optional label, message, and groups par
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameters\\(s\\): field1, field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -970,7 +970,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field2");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field2");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -991,7 +991,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameters\\(s\\): field1");
+    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field1");
     raises(function() {
         $form.regula('bind',{
             constraints: [
@@ -1108,10 +1108,6 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
 
     deleteElement(formElementId);
 });
-
-
-
-
 
 module("jQuery Regula Validate Tests");
 

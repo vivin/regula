@@ -9,15 +9,32 @@
         bind: function(options) {
             if (this instanceof jQuery) {
                 if(!options) options = {};
-                $.extend(true, options,  { elements: this.get() });
+
+                if(this.get().length > 0) {
+                    $.extend(true, options,  { elements: this.get() });
+                }
             }
             regula.bind(options);
+            return this; //make chainable
+        },
+        unbind: function(options) {
+            if(this instanceof jQuery) {
+                if(!options) options = {};
+
+                if(this.get().length > 0) {
+                    $.extend(true, options, { elements: this.get() });
+                }
+            }
+            regula.unbind(options);
             return this; //make chainable
         },
         validate: function(options) {
             if (this instanceof jQuery) {
                 if(!options) options = {};
-                $.extend(true, options,  { elements: this.get() });
+
+                if(this.get().length > 0) {
+                    $.extend(true, options, { elements: this.get() });
+                }
             }
             return regula.validate(options);
         },
@@ -49,8 +66,6 @@
             $.error('Method ' + method + ' does not exist on jQuery.regula');
         }
 
-    };
-
-
+    }
 
 })(jQuery);

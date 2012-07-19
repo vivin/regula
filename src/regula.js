@@ -36,7 +36,7 @@ regula = (function () {
             oCurrent = arrElements[i];
             oAttribute = oCurrent.getAttribute && oCurrent.getAttribute(strAttributeName);
             if (typeof oAttribute == "string" && oAttribute.length > 0) {
-                if (typeof strAttributeValue == "undefined" || (oAttributeValue && oAttributeValue.test(oAttribute))) {
+                if (typeof strAttributeValue === "undefined" || (oAttributeValue && oAttributeValue.test(oAttribute))) {
                     arrReturnElements.push(oCurrent);
                 }
             }
@@ -877,7 +877,7 @@ regula = (function () {
             };
         }
 
-        else if ((typeof element.type == "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
+        else if ((typeof element.type === "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful:false,
                 message:generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
@@ -931,7 +931,7 @@ regula = (function () {
         for (var j = 0; j < constraint.params.length; j++) {
             var param = constraint.params[j];
 
-            if (typeof receivedParameters[param] == "undefined") {
+            if (typeof receivedParameters[param] === "undefined") {
                 missingParams.push(param);
             }
         }
@@ -2108,7 +2108,7 @@ regula = (function () {
         var formSpecific = options.formSpecific || false;
         var defaultMessage = options.defaultMessage || "";
         var params = options.params || [];
-        var reportAsSingleViolation = typeof options.reportAsSingleViolation == "undefined" ? false : options.reportAsSingleViolation;
+        var reportAsSingleViolation = typeof options.reportAsSingleViolation === "undefined" ? false : options.reportAsSingleViolation;
 
         if (!name) {
             throw "regula.compound expects a name attribute in the options argument";
@@ -2229,7 +2229,7 @@ regula = (function () {
             throw "regula.override expects options";
         }
 
-        if (typeof options.constraintType == "undefined") {
+        if (typeof options.constraintType === "undefined") {
             throw "regula.override expects a valid constraintType attribute in the options argument";
         }
 
@@ -2304,49 +2304,65 @@ regula = (function () {
 
     function unbind(options) {
 
-        if (typeof options == "undefined" || !options) {
+        if (typeof options === "undefined" || !options) {
             initializeBoundConstraints();
         }
 
         else {
-            if (typeof options.elementId == "undefined") {
-                throw "regula.unbind requires an id if options are provided";
+            if (typeof options.elementId === "undefined" && typeof options.elements === "undefined") {
+                throw "regula.unbind requires an elementId attribute, or an elements attribute if options are provided";
             }
 
-            var id = options.elementId;
-            var constraints = options.constraints || [];
+            if(typeof options.elements !== "undefined" && !(options.elements instanceof Array)) {
+                throw "regula.unbind expects the elements attribute to be an array, if it is provided";
+            }
 
-            if (constraints.length == 0) {
-                for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
+            if(typeof options.elements === "undefined") {
+                options.elements = [document.getElementById(options.elementId)];
 
-                    if(typeof boundConstraints[group][id] !== "undefined") {
-                        delete boundConstraints[group][id];
-
-                        if(group !== "Default") {
-                            removeElementAndGroupFromConstraintsIfEmpty(id, group);
-                        }
-                    } else {
-                        throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
-                    }
-
+                //This can happen when they pass in an id that doesn't belong to any element
+                if(options.elements[0] === null) {
+                    throw "Element with id " + options.elementId + " does not have any constraints bound to it. " + explodeParameters(options);
                 }
             }
 
-            else {
-                for (var i = 0; i < constraints.length; i++) {
-                    var constraint = constraints[i];
+            for (var i = 0; i < options.elements.length; i++) {
+                var id = options.elements[i].id;
 
+                var constraints = options.constraints || [];
+
+                if (constraints.length == 0) {
                     for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
-                        if(typeof boundConstraints[group][id] !== "undefined") {
-                            delete boundConstraints[group][id][ReverseConstraint[constraint]];
+                        if (typeof boundConstraints[group][id] !== "undefined") {
+                            delete boundConstraints[group][id];
 
-                            if(group !== "Default") {
+                            if (group !== "Default") {
                                 removeElementAndGroupFromConstraintsIfEmpty(id, group);
                             }
-
                         } else {
                             throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                        }
+
+                    }
+                }
+
+                else {
+                    for (var j = 0; j < constraints.length; j++) {
+                        var constraint = constraints[j];
+
+                        for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
+
+                            if (typeof boundConstraints[group][id] !== "undefined") {
+                                delete boundConstraints[group][id][ReverseConstraint[constraint]];
+
+                                if (group !== "Default") {
+                                    removeElementAndGroupFromConstraintsIfEmpty(id, group);
+                                }
+
+                            } else {
+                                throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                            }
                         }
                     }
                 }
@@ -2374,7 +2390,7 @@ regula = (function () {
             data:null
         };
 
-        if (typeof options == "undefined" || !options) {
+        if (typeof options === "undefined" || !options) {
             initializeBoundConstraints();
             result = bindAfterParsing();
         }
@@ -2597,7 +2613,7 @@ regula = (function () {
         var newParameters = {__size__:0};
 
         /* We check to see if this was a valid/defined constraint. It wasn't so we need to return an error message */
-        if (typeof constraintType == "undefined") {
+        if (typeof constraintType === "undefined") {
             result = {
                 successful:false,
                 message:"regula.bind expects a valid constraint type for each constraint in constraints attribute of the options argument. " + explodeParameters(options),
@@ -2847,7 +2863,7 @@ regula = (function () {
         validatedConstraints = {}; //clear this out on every run
 
         //if no arguments were passed in, we initialize options to an empty map
-        if (!options || typeof options == "undefined") {
+        if (!options || typeof options === "undefined") {
             options = {};
         }
 

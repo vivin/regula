@@ -16793,7 +16793,15 @@ test('Test regula.unbind() without any parameters unbinds everything', function(
 test('Test regula.unbind() with empty options parameter', function() {
     raises(function() {
         regula.unbind({});
-    }, /regula.unbind requires an id if options are provided/, "Calling regula.unbind() with empty options parameter must error out");
+    }, /regula.unbind requires an elementId attribute, or an elements attribute if options are provided/, "Calling regula.unbind() with empty options parameter must error out");
+});
+
+test('Test regula.unbind() with invalid elements parameter', function() {
+    raises(function() {
+        regula.unbind({
+            elements: "string"
+        });
+    }, /regula.unbind expects the elements attribute to be an array, if it is provided/, "Calling regula.unbind() with elements attribute set to wrong type must error out");
 });
 
 test('Test regula.unbind() with id parameter (1)', function() {
@@ -16818,8 +16826,9 @@ test('Test regula.unbind() with id parameter (2)', function() {
     });
 
     equals(regula.validate().length, 3, "Other bound elements must not have been unbound");
+
     raises(function() {
-        regula.validate({elementId: "myText0"})
+        regula.validate({elementId: "myText0"});
     }, /No constraints have been bound to element with id myText0. Function received: {elementId: myText0}/, "Calling regula.validate with an unbound element's id must result in an error");
 
     deleteElements();
@@ -16842,6 +16851,26 @@ test('Test regula.unbind() with id parameter (3)', function() {
     raises(function() {
         regula.validate({groups : [regula.Group.Second]});
     }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
+
+    deleteElements();
+});
+
+test('Test regula.unbind() with elements parameter', function() {
+    var $text0 = createInputElement("myText0", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+    var $text1 = createInputElement("myText1", "@NotBlank @Max(value=5) @Min(value=10)", "text");
+
+    regula.bind();
+    regula.unbind({
+        elements: [$text0.get(0), $text1.get(0)]
+    });
+
+    equals(regula.validate().length, 0, "All bound elements must have been unbound");
+    raises(function() {
+        regula.validate({elementId: "myText0"})
+    }, /No constraints have been bound to element with id myText0. Function received: {elementId: myText0}/, "Calling regula.validate with an unbound element's id must result in an error");
+    raises(function() {
+        regula.validate({elementId: "myText1"})
+    }, /No constraints have been bound to element with id myText1. Function received: {elementId: myText1}/, "Calling regula.validate with an unbound element's id must result in an error");
 
     deleteElements();
 });
@@ -16891,21 +16920,56 @@ test('Test regula.unbind() with id and constraints parameter (3)', function() {
     deleteElements();
 });
 
-test('Test regula.unbind() with unbound id', function() {
+test('Test regula.unbind() with unbound id (1)', function() {
+    console.log("blort");
     raises(function() {
         regula.unbind({
             elementId: "myText"
         });
-    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText}/, "regula.unbind() must fail if provided an unbound element's id");
+    }, new RegExp("Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, elements: \\[null\\]}"), "regula.unbind() must fail if provided an unbound element's id");
 });
 
-test('Test regula.unbind() with unbound id and specified constraint', function() {
+test('Test regula.unbind() with unbound id (2)', function() {
+    var $text = createInputElement("myText", null, "text");
+
+    raises(function() {
+        regula.unbind({
+            elementId: "myText"
+        });
+    }, new RegExp("Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, elements: \\[\\[object HTMLInputElement\\]\\]}"), "regula.unbind() must fail if provided an unbound element's id");
+
+    deleteElements();
+});
+
+test('Test regula.unbind() with unbound id and specified constraint (1)', function() {
     raises(function() {
         regula.unbind({
             elementId: "myText",
             constraints: [regula.Constraint.NotBlank]
         });
-    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, constraints: \[5\]}/, "regula.unbind() must fail if provided an unbound element's id");
+    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, constraints: \[5\], elements: \[null\]}/, "regula.unbind() must fail if provided an unbound element's id");
+});
+
+test('Test regula.unbind() with unbound id and specified constraint (2)', function() {
+    var $text = createInputElement("myText", null, "text");
+
+    raises(function() {
+        regula.unbind({
+            elementId: "myText",
+            constraints: [regula.Constraint.NotBlank]
+        });
+    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, constraints: \[5\], elements: \[\[object HTMLInputElement\]\]}/, "regula.unbind() must fail if provided an unbound element's id");
+});
+
+test('Test regula.unbind() with unbound id and specified constraint (3)', function() {
+    var $text = createInputElement("myText", "@Max(value=10)", "text");
+
+    raises(function() {
+        regula.unbind({
+            elementId: "myText",
+            constraints: [regula.Constraint.NotBlank]
+        });
+    }, /Element with id myText does not have any constraints bound to it. Function received: {elementId: myText, constraints: \[5\], elements: \[\[object HTMLInputElement\]\]}/, "regula.unbind() must fail if provided an unbound element's id");
 });
 
 module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
