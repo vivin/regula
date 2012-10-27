@@ -4,6 +4,9 @@
  License: BSD License
  Copyright (C) 2010-2011
  Version 1.2.3-SNAPSHOT
+
+ TODO: Add step validation to regula (like html5 step validation)
+ TODO: Add URL validation to regula (like html5 url validation)
  */
 
 /* for code completion */
@@ -44,6 +47,26 @@ regula = (function () {
         return arrReturnElements;
     };
 
+    /*
+    Original code from:
+     http://stackoverflow.com/a/3755343/263004
+     */
+    var getAttribute = function(element, attribute) {
+        var result = (element.getAttribute && element.getAttribute(attribute)) || null;
+
+        if(!result) {
+            var attributes = element.attributes;
+
+            for(var i = 0; i < attribute.length; i++) {
+                if(attributes[i].nodeName === attribute) {
+                    result = attributes[i].nodeValue;
+                }
+            }
+        }
+
+        return result;
+    };
+
     /* regula code starts here */
 
     /*
@@ -51,8 +74,39 @@ regula = (function () {
      */
     var config = {
         validateEmptyFields:true,
+        enableHTML5Validation: true,
         debug:false
     };
+
+    /*
+     Exceptions
+     */
+
+    var Exception = {
+        IllegalArgumentException: function(message) {
+            this.name = "IllegalArgumentException";
+            this.message = message;
+        },
+        ConstraintDefinitionException: function(message) {
+            this.name = "ConstraintDefinitionException";
+            this.message = message;
+        },
+        BindException: function(message) {
+            this.name = "BindException";
+            this.message = message;
+        }
+    };
+
+    //Make sure our errors extend the native Exception object
+    for(var errorType in Exception) if(Exception.hasOwnProperty(errorType)) {
+        var error = Exception[errorType];
+        error.prototype = new Error();
+        error.prototype.constructor = error;
+    }
+
+    /*
+     Keeps track of groups
+     */
 
     var Group = {
         Default:0
@@ -84,288 +138,432 @@ regula = (function () {
      */
 
     var Constraint = {
-        Checked:0,
-        Selected:1,
-        Max:2,
-        Min:3,
-        Range:4,
-        Between:4,
-        NotBlank:5,
-        NotEmpty:5,
-        Blank:6,
-        Empty:6,
-        Pattern:7,
-        Matches:7,
-        Email:8,
-        Alpha:9,
-        IsAlpha:9,
-        Numeric:10,
-        IsNumeric:12,
-        AlphaNumeric:11,
-        IsAlphaNumeric:11,
-        Integer:12,
-        Real:13,
-        CompletelyFilled:14,
-        PasswordsMatch:15,
-        Required:16,
-        Length:17,
-        Digits:18,
-        Past:19,
-        Future:20
+        Checked: 0,
+        Selected: 1,
+        Max: 2,
+        Min: 3,
+        Range: 4,
+        Between: 4,
+        NotBlank: 5,
+        NotEmpty: 5,
+        Blank: 6,
+        Empty: 6,
+        Pattern: 7,
+        Matches: 7,
+        Email: 8,
+        Alpha: 9,
+        IsAlpha: 9,
+        Numeric: 10,
+        IsNumeric: 12,
+        AlphaNumeric: 11,
+        IsAlphaNumeric: 11,
+        Integer: 12,
+        Real: 13,
+        CompletelyFilled: 14,
+        PasswordsMatch: 15,
+        Required: 16,
+        Length: 17,
+        Digits: 18,
+        Past: 19,
+        Future: 20,
+        Step: 21,
+        HTML5Required: 22,
+        HTML5Email: 23,
+        HTML5URL: 24,
+        HTML5Pattern: 25,
+        HTML5MaxLength: 26,
+        HTML5Min: 27,
+        HTML5Max: 28,
+        HTML5Step: 29
     };
 
     var ReverseConstraint = {
-        0:"Checked",
-        1:"Selected",
-        2:"Max",
-        3:"Min",
-        4:"Range",
-        5:"NotBlank",
-        6:"Blank",
-        7:"Pattern",
-        8:"Email",
-        9:"Alpha",
-        10:"Numeric",
-        11:"AlphaNumeric",
-        12:"Integer",
-        13:"Real",
-        14:"CompletelyFilled",
-        15:"PasswordsMatch",
-        16:"Required",
-        17:"Length",
-        18:"Digits",
-        19:"Past",
-        20:"Future"
+        0: "Checked",
+        1: "Selected",
+        2: "Max",
+        3: "Min",
+        4: "Range",
+        5: "NotBlank",
+        6: "Blank",
+        7: "Pattern",
+        8: "Email",
+        9: "Alpha",
+        10: "Numeric",
+        11: "AlphaNumeric",
+        12: "Integer",
+        13: "Real",
+        14: "CompletelyFilled",
+        15: "PasswordsMatch",
+        16: "Required",
+        17: "Length",
+        18: "Digits",
+        19: "Past",
+        20: "Future",
+        21: "Step",
+        22: "HTML5Required",
+        23: "HTML5Email",
+        24: "HTML5URL",
+        25: "HTML5Pattern",
+        26: "HTML5MaxLength",
+        27: "HTML5Min",
+        28: "HTML5Max",
+        29: "HTML5Step"
     };
 
     var DateFormat = {
-        DMY:"DMY",
-        MDY:"MDY",
-        YMD:"YMD"
+        DMY: "DMY",
+        MDY: "MDY",
+        YMD: "YMD"
     };
 
     var friendlyInputNames = {
-        form:"The form",
-        select:"The select box",
-        textarea:"The text area",
-        checkbox:"The checkbox",
-        radio:"The radio button",
-        text:"The text field",
-        password:"The password"
+        form: "The form",
+        select: "The select box",
+        textarea: "The text area",
+        checkbox: "The checkbox",
+        radio: "The radio button",
+        text: "The text field",
+        password: "The password"
     };
 
-    var firstCustomConstraintIndex = 21;
+    var firstCustomConstraintIndex = 30;
     var firstCustomGroupIndex = 1;
 
     var constraintsMap = {
-        Checked:{
-            formSpecific:false,
-            validator:checked,
-            constraintType:Constraint.Checked,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} needs to be checked."
+        Checked: {
+            html5: false,
+            formSpecific: false,
+            validator: checked,
+            constraintType: Constraint.Checked,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} needs to be checked."
         },
 
-        Selected:{
-            formSpecific:false,
-            validator:selected,
-            constraintType:Constraint.Selected,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} needs to be selected."
+        Selected: {
+            html5: false,
+            formSpecific: false,
+            validator: selected,
+            constraintType: Constraint.Selected,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} needs to be selected."
         },
 
-        Max:{
-            formSpecific:false,
-            validator:max,
-            constraintType:Constraint.Max,
-            custom:false,
-            compound:false,
-            params:["value"],
-            defaultMessage:"{label} needs to be lesser than or equal to {value}."
+        Max: {
+            html5: false,
+            formSpecific: false,
+            validator: max,
+            constraintType: Constraint.Max,
+            custom: false,
+            compound: false,
+            params: ["value"],
+            defaultMessage: "{label} needs to be lesser than or equal to {value}."
         },
 
-        Min:{
-            formSpecific:false,
-            validator:min,
-            constraintType:Constraint.Min,
-            custom:false,
-            compound:false,
-            params:["value"],
-            defaultMessage:"{label} needs to be greater than or equal to {value}."
+        Min: {
+            html5: false,
+            formSpecific: false,
+            validator: min,
+            constraintType: Constraint.Min,
+            custom: false,
+            compound: false,
+            params: ["value"],
+            defaultMessage: "{label} needs to be greater than or equal to {value}."
         },
 
-        Range:{
-            formSpecific:false,
-            validator:range,
-            constraintType:Constraint.Range,
-            custom:false,
-            compound:false,
-            params:["min", "max"],
-            defaultMessage:"{label} needs to be between {min} and {max}."
+        Range: {
+            html5: false,
+            formSpecific: false,
+            validator: range,
+            constraintType: Constraint.Range,
+            custom: false,
+            compound: false,
+            params: ["min", "max"],
+            defaultMessage: "{label} needs to be between {min} and {max}."
         },
 
-        NotBlank:{
-            formSpecific:false,
-            validator:notBlank,
-            constraintType:Constraint.NotBlank,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} cannot be blank."
+        NotBlank: {
+            html5: false,
+            formSpecific: false,
+            validator: notBlank,
+            constraintType: Constraint.NotBlank,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} cannot be blank."
         },
 
-        Blank:{
-            formSpecific:false,
-            validator:blank,
-            constraintType:Constraint.Blank,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} needs to be blank."
+        Blank: {
+            html5: false,
+            formSpecific: false,
+            validator: blank,
+            constraintType: Constraint.Blank,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} needs to be blank."
         },
 
-        Pattern:{
-            formSpecific:false,
-            validator:matches,
-            constraintType:Constraint.Pattern,
-            custom:false,
-            compound:false,
-            params:["regex"],
-            defaultMessage:"{label} needs to match {regex}{flags}."
+        Pattern: {
+            html5: false,
+            formSpecific: false,
+            validator: matches,
+            constraintType: Constraint.Pattern,
+            custom: false,
+            compound: false,
+            params: ["regex"],
+            defaultMessage: "{label} needs to match {regex}{flags}."
         },
 
-        Email:{
-            formSpecific:false,
-            validator:email,
-            constraintType:Constraint.Email,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} is not a valid email."
+        Email: {
+            html5: false,
+            formSpecific: false,
+            validator: email,
+            constraintType: Constraint.Email,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} is not a valid email."
         },
 
-        Alpha:{
-            formSpecific:false,
-            validator:alpha,
-            constraintType:Constraint.Alpha,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} can only contain letters."
+        Alpha: {
+            html5: false,
+            formSpecific: false,
+            validator: alpha,
+            constraintType: Constraint.Alpha,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} can only contain letters."
         },
 
-        Numeric:{
-            formSpecific:false,
-            validator:numeric,
-            constraintType:Constraint.Numeric,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} can only contain numbers."
+        Numeric: {
+            html5: false,
+            formSpecific: false,
+            validator: numeric,
+            constraintType: Constraint.Numeric,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} can only contain numbers."
         },
 
-        AlphaNumeric:{
-            formSpecific:false,
-            validator:alphaNumeric,
-            constraintType:Constraint.AlphaNumeric,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} can only contain numbers and letters."
+        AlphaNumeric: {
+            html5: false,
+            formSpecific: false,
+            validator: alphaNumeric,
+            constraintType: Constraint.AlphaNumeric,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} can only contain numbers and letters."
         },
 
-        Integer:{
-            formSpecific:false,
-            validator:integer,
-            constraintType:Constraint.Integer,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} must be an integer."
+        Integer: {
+            html5: false,
+            formSpecific: false,
+            validator: integer,
+            constraintType: Constraint.Integer,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} must be an integer."
         },
 
-        Real:{
-            formSpecific:false,
-            validator:real,
-            constraintType:Constraint.Real,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} must be a real number."
+        Real: {
+            html5: false,
+            formSpecific: false,
+            validator: real,
+            constraintType: Constraint.Real,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} must be a real number."
         },
 
-        CompletelyFilled:{
-            formSpecific:true,
-            validator:completelyFilled,
-            constraintType:Constraint.CompletelyFilled,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} must be completely filled."
+        CompletelyFilled: {
+            html5: false,
+            formSpecific: true,
+            validator: completelyFilled,
+            constraintType: Constraint.CompletelyFilled,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} must be completely filled."
         },
 
-        PasswordsMatch:{
-            formSpecific:true,
-            validator:passwordsMatch,
-            constraintType:Constraint.PasswordsMatch,
-            custom:false,
-            compound:false,
-            params:["field1", "field2"],
-            defaultMessage:"Passwords do not match."
+        PasswordsMatch: {
+            html5: false,
+            formSpecific: true,
+            validator: passwordsMatch,
+            constraintType: Constraint.PasswordsMatch,
+            custom: false,
+            compound: false,
+            params: ["field1", "field2"],
+            defaultMessage: "Passwords do not match."
         },
 
-        Required:{
-            formSpecific:false,
-            validator:required,
-            constraintType:Constraint.Required,
-            custom:false,
-            compound:false,
-            params:[],
-            defaultMessage:"{label} is required."
+        Required: {
+            html5: false,
+            formSpecific: false,
+            validator: required,
+            constraintType: Constraint.Required,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} is required."
         },
 
-        Length:{
-            formSpecific:false,
-            validator:length,
-            constraintType:Constraint.Length,
-            custom:false,
-            compound:false,
-            params:["min", "max"],
-            defaultMessage:"{label} length must be between {min} and {max}."
+        Length: {
+            html5: false,
+            formSpecific: false,
+            validator: length,
+            constraintType: Constraint.Length,
+            custom: false,
+            compound: false,
+            params: ["min", "max"],
+            defaultMessage: "{label} length must be between {min} and {max}."
         },
 
-        Digits:{
-            formSpecific:false,
-            validator:digits,
-            constraintType:Constraint.Digits,
-            custom:false,
-            compound:false,
-            params:["integer", "fraction"],
-            defaultMessage:"{label} must have up to {integer} digits and {fraction} fractional digits."
+        Digits: {
+            html5: false,
+            formSpecific: false,
+            validator: digits,
+            constraintType: Constraint.Digits,
+            custom: false,
+            compound: false,
+            params: ["integer", "fraction"],
+            defaultMessage: "{label} must have up to {integer} digits and {fraction} fractional digits."
         },
 
-        Past:{
-            formSpecific:false,
-            validator:past,
-            constraintType:Constraint.Past,
-            custom:false,
-            compound:false,
-            params:["format"],
-            defaultMessage:"{label} must be in the past."
+        Past: {
+            html5: false,
+            formSpecific: false,
+            validator: past,
+            constraintType: Constraint.Past,
+            custom: false,
+            compound: false,
+            params: ["format"],
+            defaultMessage: "{label} must be in the past."
         },
 
-        Future:{
-            formSpecific:false,
-            validator:future,
-            constraintType:Constraint.Future,
-            custom:false,
-            compound:false,
-            params:["format"],
-            defaultMessage:"{label} must be in the future."
+        Future: {
+            html5: false,
+            formSpecific: false,
+            validator: future,
+            constraintType: Constraint.Future,
+            custom: false,
+            compound: false,
+            params: ["format"],
+            defaultMessage: "{label} must be in the future."
+        },
+
+        Step: {
+            /* TODO:  implement */
+            html5: false,
+            formSpecific: false,
+            constraintType: Constraint.Step,
+            custom: false,
+            compound: false,
+            params: ["min", "value"],
+            defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
+        },
+
+        HTML5Required: {
+            /* TODO:  implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5required,
+            constraintType: Constraint.HTML5Required,
+            custom: false,
+            compound: false,
+            defaultMessage: "{label} is required."
+        },
+
+        HTML5Email: {
+            /* TODO:  implement pattern is /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/  */
+            html5: true,
+            formSpecific: false,
+            validator: html5type,
+            constraintType: Constraint.HTML5Email,
+            custom: false,
+            compound: false,
+            defaultMessage: "{label} is not a valid email."
+        },
+
+        HTML5Pattern: {
+            /* TODO: implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5pattern,
+            constraintType: Constraint.HTML5Pattern,
+            custom: false,
+            compound: false,
+            params: ["pattern"],
+            defaultPattern: "{label} needs to match {pattern}."
+        },
+
+        HTML5URL: {
+            /* TODO:  implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5type,
+            constraintType: Constraint.HTML5URL,
+            custom: false,
+            compound: false,
+            params: [],
+            defaultMessage: "{label} is not a valid URL."
+        },
+
+        HTML5MaxLength: {
+            /* TODO:  implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5maxlength,
+            constraintType: Constraint.HTML5MaxLength,
+            custom: false,
+            compound: false,
+            params: ["maxlength"],
+            defaultMessage: "{label} must be less than {maxlength} characters."
+        },
+
+        HTML5Min: {
+            /* TODO:  implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5min,
+            constraintType: Constraint.HTML5Min,
+            custom: false,
+            compound: false,
+            params: ["min"],
+            defaultMessage: "{label} needs to be greater than or equal to {min}."
+        },
+
+        HTML5Max: {
+            /* TODO:  iimplement */
+            html5: true,
+            formSpecific: false,
+            validator: html5max,
+            constraintType: Constraint.HTML5Max,
+            custom: false,
+            compound: false,
+            params: ["max"],
+            defaultMessage: "{label} must be greater than or equal to {max}."
+        },
+
+        HTML5Step: {
+            /* TODO:  implement */
+            html5: true,
+            formSpecific: false,
+            validator: html5step,
+            constraintType: Constraint.HTML5Step,
+            custom: false,
+            compound: false,
+            params: ["step"],
+            defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
         }
     };
 
@@ -804,23 +1002,41 @@ regula = (function () {
         return result;
     }
 
-    function iterateOverMap(map, callback) {
-        var index = 0;
-        for (var property in map) if (map.hasOwnProperty(property) && property !== "__size__") {
+    function html5required(params) {
+        return !this.validity.valueMissing;
+    }
 
-            //the callback receives as arguments key, value, index. this is set to
-            //the map that you are iterating over
-            callback.call(map, property, map[property], index);
-            index++;
-        }
+    function html5type(params) {
+        return !this.validity.typeMismatch;
+    }
+
+    function html5pattern(params) {
+        return !this.validity.patternMismatch;
+    }
+
+    function html5maxlength(params) {
+        return !this.validity.tooLong;
+    }
+
+    function html5min(params) {
+        return !this.validity.rangeUnderflow;
+    }
+
+    function html5max(params) {
+        return !this.validity.rangeOverflow;
+    }
+
+    function html5step(params) {
+        return !this.validity.stepMismatch;
     }
 
     /* a meta-validator that validates member constraints of a composing constraint */
 
     function compoundValidator(params, currentGroup, compoundConstraint) {
+//        console.log(params, currentGroup, compoundConstraint);
         var composingConstraints = compoundConstraint.composingConstraints;
         var constraintViolations = [];
-
+//        console.log("composing constraints", composingConstraints);
         for (var i = 0; i < composingConstraints.length; i++) {
             var composingConstraint = composingConstraints[i];
             var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
@@ -845,8 +1061,9 @@ regula = (function () {
 
             var validationResult = runValidatorFor(currentGroup, this.id, composingConstraintName, mergedParams);
 
+            var errorMessage = "";
             if (!validationResult.constraintPassed) {
-                var errorMessage = interpolateErrorMessage(this.id, composingConstraintName, mergedParams);
+                errorMessage = interpolateExceptionMessage(this.id, composingConstraintName, mergedParams);
                 var constraintViolation = {
                     group:currentGroup,
                     constraintName:composingConstraintName,
@@ -862,6 +1079,12 @@ regula = (function () {
                 }
 
                 constraintViolations.push(constraintViolation);
+            }
+//            console.log("finish validation");
+            if(config.enableHTML5Validation) {
+                for(var j = 0; j < validationResult.failingElements.length; j++) {
+                    validationResult.failingElements[j].setCustomValidity(errorMessage);
+                }
             }
         }
 
@@ -880,7 +1103,7 @@ regula = (function () {
         if (element.tagName.toLowerCase() == "form" && !constraintsMap[constraintName].formSpecific) {
             result = {
                 successful:false,
-                message:generateErrorMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
+                message:generateExceptionMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
                 data:null
             };
         }
@@ -888,7 +1111,7 @@ regula = (function () {
         else if (element.tagName.toLowerCase() != "form" && constraintsMap[constraintName].formSpecific) {
             result = {
                 successful:false,
-                message:generateErrorMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
+                message:generateExceptionMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
                 data:null
             };
         }
@@ -896,7 +1119,7 @@ regula = (function () {
         else if ((typeof element.type == "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful:false,
-                message:generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
+                message:generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
                 data:null
             };
         }
@@ -904,7 +1127,7 @@ regula = (function () {
         else if (element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
             result = {
                 successful:false,
-                message:generateErrorMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
+                message:generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
                 data:null
             };
         }
@@ -937,7 +1160,7 @@ regula = (function () {
         if (receivedParameters.__size__ < constraint.params.length) {
             result = {
                 error:true,
-                message:generateErrorMessage(element, ReverseConstraint[constraint.constraintType], "@" + ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length +
+                message:generateExceptionMessage(element, ReverseConstraint[constraint.constraintType], "@" + ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length +
                     " parameter(s). However, you have provided only " + receivedParameters.__size__),
                 data:null
             };
@@ -955,7 +1178,7 @@ regula = (function () {
         if (missingParams.length > 0) {
             result = {
                 error:true,
-                message:generateErrorMessage(element, ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ReverseConstraint[constraint.constraintType] +
+                message:generateExceptionMessage(element, ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ReverseConstraint[constraint.constraintType] +
                     ", but you are still missing the following " + missingParams.length + " required parameter(s): " + explode(missingParams, ", ")),
                 data:null
             };
@@ -967,6 +1190,7 @@ regula = (function () {
     /* this function creates a constraint and binds it to the element specified using the constraint name and defined parameters */
 
     function createConstraintFromDefinition(element, constraintName, definedParameters) {
+        //console.log("i got:", element, constraintName, definedParameters, "bc: ", boundConstraints);
         var groupParamValue = "";
 
         //Regex that checks to see if Default is explicitly defined in the groups parameter
@@ -1022,9 +1246,48 @@ regula = (function () {
 
             boundConstraints[group][element.id][constraintName] = definedParameters;
         }
+
+        //If this is an HTML5 validation constraint, let's attach the appropriate HTML5 attributes to the element
+        if(constraintsMap[constraintName].html5) {
+            attachHTML5Attributes(element, constraintName, definedParameters);
+        }
+    }
+
+    function attachHTML5Attributes(element, constraintName, definedParameters) {
+        switch(constraintName) {
+            case ReverseConstraint[Constraint.HTML5Required]:
+                element.setAttribute("required", "true");
+                break;
+
+            case ReverseConstraint[Constraint.HTML5Email]:
+                element.setAttribute("type", "email");
+                break;
+
+            case ReverseConstraint[Constraint.HTML5URL]:
+                element.setAttribute("type", "url");
+                break;
+
+            default:
+                var constraint = constraintsMap[constraintName];
+                for(var i = 0; i < constraint.params.length; i++) {
+                    element.setAttribute(constraint.params[i], definedParameters[constraint.params[i]]);
+                }
+                break;
+        }
     }
 
     /* a few basic utility functions */
+
+    function iterateOverMap(map, callback) {
+        var index = 0;
+        for (var property in map) if (map.hasOwnProperty(property) && property !== "__size__") {
+
+            //the callback receives as arguments key, value, index. this is set to
+            //the map that you are iterating over
+            callback.call(map, property, map[property], index);
+            index++;
+        }
+    }
 
     function exists(array, value) {
         var found = false;
@@ -1068,6 +1331,14 @@ regula = (function () {
         return true;
     }
 
+    function supportsHTML5Validation() {
+        return (typeof document.createElement("input").checkValidity === "function");
+    }
+
+    function generateRandomId() {
+        return "regula-generated-" + Math.floor(Math.random() * 1000000);
+    }
+
     function explodeParameters(options) {
         var str = "Function received: {";
         for (var argument in options) if (options.hasOwnProperty(argument)) {
@@ -1085,7 +1356,7 @@ regula = (function () {
         return str;
     }
 
-    function generateErrorMessage(element, constraintName, message) {
+    function generateExceptionMessage(element, constraintName, message) {
         var errorMessage = "";
 
         if (element != null) {
@@ -1263,7 +1534,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid constraint. Constraint definitions need to start with '@'") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid constraint. Constraint definitions need to start with '@'") + " " + result.message,
                     data:null
                 };
             }
@@ -1304,7 +1575,7 @@ regula = (function () {
                 else {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it") + " " + result.message,
+                        message:generateExceptionMessage(element, currentConstraintName, "I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it") + " " + result.message,
                         data:null
                     };
                 }
@@ -1313,7 +1584,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid constraint name in constraint definition") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid constraint name in constraint definition") + " " + result.message,
                     data:null
                 };
             }
@@ -1340,7 +1611,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid starting character for constraint name. Can only include A-Z, a-z, and _") + " " + result.message,
                     data:null
                 };
             }
@@ -1359,7 +1630,7 @@ regula = (function () {
             if (!/[A-Za-z_]/.test(character) || typeof character === "undefined" || character == null) {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid starting character"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid starting character"),
                     data:null
                 };
             }
@@ -1377,7 +1648,7 @@ regula = (function () {
             if (!/[0-9A-Za-z_]/.test(character)) {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid character in identifier. Can only include 0-9, A-Z, a-z, and _") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid character in identifier. Can only include 0-9, A-Z, a-z, and _") + " " + result.message,
                     data:null
                 };
             }
@@ -1438,7 +1709,7 @@ regula = (function () {
                             if (token != ")") {
                                 result = {
                                     successful:false,
-                                    message:generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
+                                    message:generateExceptionMessage(element, currentConstraintName, "Cannot find matching closing ) in parameter list") + " " + result.message,
                                     data:null
                                 };
                             }
@@ -1452,7 +1723,7 @@ regula = (function () {
                     else {
                         result = {
                             successful:false,
-                            message:generateErrorMessage(element, currentConstraintName, "Invalid parameter definition") + " " + result.message,
+                            message:generateExceptionMessage(element, currentConstraintName, "Invalid parameter definition") + " " + result.message,
                             data:null
                         };
                     }
@@ -1463,7 +1734,7 @@ regula = (function () {
                 //The next token MUST be a @ if we are expecting further constraints
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Unexpected character '" + peek(tokens) + "'" + " after constraint definition") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Unexpected character '" + peek(tokens) + "'" + " after constraint definition") + " " + result.message,
                     data:null
                 };
             }
@@ -1491,7 +1762,7 @@ regula = (function () {
                     else {
                         result = {
                             successful:false,
-                            message:generateErrorMessage(element, currentConstraintName, "Invalid parameter value") + " " + result.message,
+                            message:generateExceptionMessage(element, currentConstraintName, "Invalid parameter value") + " " + result.message,
                             data:null
                         };
                     }
@@ -1501,7 +1772,7 @@ regula = (function () {
                     tokens.unshift(token);
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "'=' expected after parameter name" + " " + result.message),
+                        message:generateExceptionMessage(element, currentConstraintName, "'=' expected after parameter name" + " " + result.message),
                         data:null
                     };
                 }
@@ -1510,7 +1781,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid parameter name. You might have unmatched parentheses") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid parameter name. You might have unmatched parentheses") + " " + result.message,
                     data:null
                 };
             }
@@ -1528,7 +1799,7 @@ regula = (function () {
 
             var result = {
                 successful:false,
-                message:generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _"),
+                message:generateExceptionMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _"),
                 data:null
             };
 
@@ -1550,7 +1821,7 @@ regula = (function () {
                 else {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + " " + result.message,
+                        message:generateExceptionMessage(element, currentConstraintName, "Invalid starting character for parameter name. Can only include A-Z, a-z, and _") + " " + result.message,
                         data:null
                     };
                 }
@@ -1575,7 +1846,7 @@ regula = (function () {
             if (peek(tokens) == ")") {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Parameter value expected") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Parameter value expected") + " " + result.message,
                     data:null
                 };
             }
@@ -1612,7 +1883,7 @@ regula = (function () {
                                 if (!result.successful) {
                                     result = {
                                         successful:false,
-                                        message:generateErrorMessage(element, currentConstraintName, "Parameter value must be a number, quoted string, regular expression, or a boolean") + " " + message,
+                                        message:generateExceptionMessage(element, currentConstraintName, "Parameter value must be a number, quoted string, regular expression, or a boolean") + " " + message,
                                         data:null
                                     };
                                 }
@@ -1634,7 +1905,7 @@ regula = (function () {
                 if (!result.successful) {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "Parameter value is not a number") + " " + result.message,
+                        message:generateExceptionMessage(element, currentConstraintName, "Parameter value is not a number") + " " + result.message,
                         data:null
                     };
                 }
@@ -1662,7 +1933,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a negative number"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a negative number"),
                     data:null
                 };
             }
@@ -1696,7 +1967,7 @@ regula = (function () {
             if (!result.successful) {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a positive number") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a positive number") + " " + result.message,
                     data:null
                 };
             }
@@ -1716,7 +1987,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a valid fraction"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a valid fraction"),
                     data:null
                 };
             }
@@ -1744,7 +2015,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a valid integer") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a valid integer") + " " + result.message,
                     data:[]
                 };
             }
@@ -1762,7 +2033,7 @@ regula = (function () {
             if (!/[0-9]/.test(character)) {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a valid digit"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a valid digit"),
                     data:null
                 };
             }
@@ -1798,7 +2069,7 @@ regula = (function () {
                 if (!done) {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "Unterminated string literal"),
+                        message:generateExceptionMessage(element, currentConstraintName, "Unterminated string literal"),
                         data:null
                     };
                 }
@@ -1808,7 +2079,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid quoted string"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid quoted string"),
                     data:null
                 };
             }
@@ -1869,7 +2140,7 @@ regula = (function () {
                 if (!done) {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "Unterminated regex literal"),
+                        message:generateExceptionMessage(element, currentConstraintName, "Unterminated regex literal"),
                         data:null
                     };
                 }
@@ -1879,7 +2150,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a regular expression"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a regular expression"),
                     data:null
                 };
             }
@@ -1909,7 +2180,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a boolean"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a boolean"),
                     data:null
                 };
             }
@@ -1976,7 +2247,7 @@ regula = (function () {
                     if (token != "]") {
                         result = {
                             successful:false,
-                            message:generateErrorMessage(element, currentConstraintName, "Cannot find matching closing ] in group definition") + " " + result.message,
+                            message:generateExceptionMessage(element, currentConstraintName, "Cannot find matching closing ] in group definition") + " " + result.message,
                             data:null
                         };
                     }
@@ -1985,7 +2256,7 @@ regula = (function () {
                 else {
                     result = {
                         successful:false,
-                        message:generateErrorMessage(element, currentConstraintName, "Invalid group definition") + " " + result.message,
+                        message:generateExceptionMessage(element, currentConstraintName, "Invalid group definition") + " " + result.message,
                         data:null
                     };
                 }
@@ -1995,7 +2266,7 @@ regula = (function () {
                 tokens.unshift(token);
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Not a valid group definition"),
+                    message:generateExceptionMessage(element, currentConstraintName, "Not a valid group definition"),
                     data:null
                 };
             }
@@ -2034,7 +2305,7 @@ regula = (function () {
             else {
                 result = {
                     successful:false,
-                    message:generateErrorMessage(element, currentConstraintName, "Invalid starting character for group name. Can only include A-Z, a-z, and _") + " " + result.message,
+                    message:generateExceptionMessage(element, currentConstraintName, "Invalid starting character for group name. Can only include A-Z, a-z, and _") + " " + result.message,
                     data:null
                 };
             }
@@ -2046,7 +2317,7 @@ regula = (function () {
     function custom(options) {
 
         if (!options) {
-            throw "regula.custom expects options";
+            throw new Exception.IllegalArgumentException("regula.custom expects options");
         }
 
         var name = options.name;
@@ -2059,43 +2330,43 @@ regula = (function () {
 
         /* name attribute*/
         if (!name) {
-            throw "regula.custom expects a name attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.custom expects a name attribute in the options argument");
         }
 
         else if (typeof name != "string") {
-            throw "regula.custom expects the name attribute in the options argument to be a string";
+            throw new Exception.IllegalArgumentException("regula.custom expects the name attribute in the options argument to be a string");
         }
 
         else if (name.replace(/\s/g, "").length == 0) {
-            throw "regula.custom cannot accept an empty string for the name attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.custom cannot accept an empty string for the name attribute in the options argument");
         }
 
         /* formSpecific attribute */
         if (typeof formSpecific != "boolean") {
-            throw "regula.custom expects the formSpecific attribute in the options argument to be a boolean";
+            throw new Exception.IllegalArgumentException("regula.custom expects the formSpecific attribute in the options argument to be a boolean");
         }
 
         /* validator attribute */
         if (!validator) {
-            throw "regula.custom expects a validator attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.custom expects a validator attribute in the options argument");
         }
 
         else if (typeof validator != "function") {
-            throw "regula.custom expects the validator attribute in the options argument to be a function";
+            throw new Exception.IllegalArgumentException("regula.custom expects the validator attribute in the options argument to be a function");
         }
 
         /* params attribute */
         if (params.constructor.toString().indexOf("Array") < 0) {
-            throw "regula.custom expects the params attribute in the options argument to be an array";
+            throw new Exception.IllegalArgumentException("regula.custom expects the params attribute in the options argument to be an array");
         }
 
         /* defaultMessage attribute */
         if (typeof defaultMessage != "string") {
-            throw "regula.custom expects the defaultMessage attribute in the options argument to be a string";
+            throw new Exception.IllegalArgumentException("regula.custom expects the defaultMessage attribute in the options argument to be a string");
         }
 
         if (constraintsMap[name]) {
-            throw "There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override";
+            throw new Exception.IllegalArgumentException("There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override");
         }
 
         else {
@@ -2116,7 +2387,7 @@ regula = (function () {
     function compound(options) {
 
         if (!options) {
-            throw "regula.compound expects options";
+            throw new Exception.IllegalArgumentException("regula.compound expects options");
         }
 
         var name = options.name;
@@ -2127,24 +2398,24 @@ regula = (function () {
         var reportAsSingleViolation = typeof options.reportAsSingleViolation == "undefined" ? false : options.reportAsSingleViolation;
 
         if (!name) {
-            throw "regula.compound expects a name attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.compound expects a name attribute in the options argument");
         }
 
         if (typeof name != "string") {
-            throw "regula.compound expects name to be a string parameter";
+            throw new Exception.IllegalArgumentException("regula.compound expects name to be a string parameter");
         }
 
         /* params attribute */
         if (params.constructor.toString().indexOf("Array") < 0) {
-            throw "regula.compound expects the params attribute in the options argument to be an array";
+            throw new Exception.IllegalArgumentException("regula.compound expects the params attribute in the options argument to be an array");
         }
 
         if (constraints.length == 0) {
-            throw "regula.compound expects an array of composing constraints under a constraints attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.compound expects an array of composing constraints under a constraints attribute in the options argument");
         }
 
         if (constraintsMap[name]) {
-            throw "regula.compound: There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override";
+            throw new Exception.IllegalArgumentException("regula.compound: There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override");
         }
 
         checkComposingConstraints(name, constraints, params);
@@ -2192,7 +2463,7 @@ regula = (function () {
 
         for (var i = 0; i < constraints.length; i++) {
             if (typeof constraints[i].constraintType === "undefined") {
-                throw "In compound constraint " + name + ": A composing constraint has no constraint type specified."
+                throw new Exception.ConstraintDefinitionException("In compound constraint " + name + ": A composing constraint has no constraint type specified.")
             }
 
             else {
@@ -2234,7 +2505,7 @@ regula = (function () {
             var result = ensureAllRequiredParametersPresent(null, constraintsMap[constraintName], definedParameters);
 
             if (result.error) {
-                throw "In compound constraint " + name + ": " + result.message;
+                throw new Exception.ConstraintDefinitionException("In compound constraint " + name + ": " + result.message);
             }
         }
     }
@@ -2242,16 +2513,16 @@ regula = (function () {
     function override(options) {
 
         if (!options) {
-            throw "regula.override expects options";
+            throw new Exception.IllegalArgumentException("regula.override expects options");
         }
 
         if (typeof options.constraintType == "undefined") {
-            throw "regula.override expects a valid constraintType attribute in the options argument";
+            throw new Exception.IllegalArgumentException("regula.override expects a valid constraintType attribute in the options argument");
         }
 
         var name = ReverseConstraint[options.constraintType];
         if (typeof name === "undefined") {
-            throw "regula.override: I could not find the specified constraint. Perhaps it has not been defined? Function received: " + explodeParameters(options);
+            throw new Exception.IllegalArgumentException("regula.override: I could not find the specified constraint. Perhaps it has not been defined? Function received: " + explodeParameters(options));
         }
 
         else {
@@ -2268,19 +2539,19 @@ regula = (function () {
             var composingConstraints = options.constraints || constraintsMap[name].constraints;
 
             if (typeof formSpecific != "boolean") {
-                throw "regula.override expects the formSpecific attribute in the options argument to be a boolean";
+                throw new Exception.IllegalArgumentException("regula.override expects the formSpecific attribute in the options argument to be a boolean");
             }
 
             if (typeof validator != "function") {
-                throw "regula.override expects the validator attribute in the options argument to be a function";
+                throw new Exception.IllegalArgumentException("regula.override expects the validator attribute in the options argument to be a function");
             }
 
             if (!(params instanceof Array)) {
-                throw "regula.override expects the params attribute in the options argument to be an array";
+                throw new Exception.IllegalArgumentException("regula.override expects the params attribute in the options argument to be an array");
             }
 
             if (typeof defaultMessage != "string") {
-                throw "regula.override expects the defaultMessage attribute in the options argument to be a string";
+                throw new Exception.IllegalArgumentException("regula.override expects the defaultMessage attribute in the options argument to be a string");
             }
 
             if (compound) {
@@ -2301,7 +2572,7 @@ regula = (function () {
 
                 if (result.cycleExists) {
                     compositionGraph.setRoot(root);
-                    throw "regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path;
+                    throw new Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
                 }
             }
 
@@ -2326,7 +2597,7 @@ regula = (function () {
 
         else {
             if (typeof options.elementId == "undefined") {
-                throw "regula.unbind requires an id if options are provided";
+                throw new Exception.IllegalArgumentException("regula.unbind requires an id if options are provided");
             }
 
             var id = options.elementId;
@@ -2342,7 +2613,7 @@ regula = (function () {
                             removeElementAndGroupFromConstraintsIfEmpty(id, group);
                         }
                     } else {
-                        throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                        throw new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
                     }
 
                 }
@@ -2362,7 +2633,7 @@ regula = (function () {
                             }
 
                         } else {
-                            throw "Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options);
+                            throw new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
                         }
                     }
                 }
@@ -2392,7 +2663,11 @@ regula = (function () {
 
         if (typeof options == "undefined" || !options) {
             initializeBoundConstraints();
+
             result = bindAfterParsing();
+            if(result.successful && config.enableHTML5Validation) {
+                result = bindHTML5Validation();
+            }
         }
 
         else {
@@ -2408,7 +2683,7 @@ regula = (function () {
         }
 
         if (!result.successful) {
-            throw result.message;
+            throw new Exception.BindException(result.message);
         }
     }
 
@@ -2466,7 +2741,7 @@ regula = (function () {
             } else {
                 // automatically assign an id if the element does not have one
                 if (!element.id) {
-                    element.id = "regula-generated-" + Math.floor(Math.random() * 1000000);
+                    element.id = generateRandomId();
                 }
 
                 var dataConstraintsAttribute = element.getAttribute("data-constraints");
@@ -2475,6 +2750,117 @@ regula = (function () {
                 i++;
             }
         }
+
+        return result;
+    }
+
+    /*
+    TODO: Figure out how to handle programmatic binding of HTML5 Validation constraints. Do we create the attributes?
+    TODO: Figure out how HTML5 validation binding works with bindFromOptions() and bindFromOptionsWithElements()
+     */
+
+    function bindHTML5Validation(element) {
+
+        var result = {
+            successful:true,
+            message:"",
+            data:null
+        };
+
+        var html5Constraints = [
+            {attribute: "required", constraint: Constraint.HTML5Required},
+            {attribute: "type", value: "email", constraint: Constraint.HTML5Email},
+            {attribute: "type", value: "url", constraint: Constraint.HTML5URL},
+            {attribute: "pattern", constraint: Constraint.HTML5Pattern},
+            {attribute: "maxlength", constraint: Constraint.HTML5MaxLength},
+            {attribute: "min", constraint: Constraint.HTML5Min},
+            {attribute: "max", constraint: Constraint.HTML5Max},
+            {attribute: "step", constraint: Constraint.HTML5Step}
+        ];
+
+        function addConstraintToElementMap(elementMap, elements, html5Constraint) {
+            for(var i = 0; i < elements.length; i++) {
+
+                var element = elements[i];
+                if(!element.id) {
+                    element.id = generateRandomId();
+                }
+
+                if(!elementMap[element.id]) {
+                    elementMap[element.id] = [];
+                }
+
+                var constraintDefinition = {
+                    constraint: html5Constraint.constraint,
+                    params: {}
+                };
+
+                if(typeof html5Constraint.value === "undefined") {
+                    constraintDefinition.params[html5Constraint.attribute] = getAttribute(element, html5Constraint.attribute);
+                }
+
+                elementMap[element.id].push(constraintDefinition);
+            }
+        }
+
+        var elementsWithHTML5Validation = {};
+
+        if(typeof element === "undefined") {
+            for(var i = 0; i < html5Constraints.length; i++) {
+                var html5Constraint = html5Constraints[i];
+
+                if(!html5Constraint.value) {
+                    addConstraintToElementMap(elementsWithHTML5Validation, getElementsByAttribute(document.body, "*", html5Constraint.attribute), html5Constraint);
+                } else {
+                    addConstraintToElementMap(elementsWithHTML5Validation, getElementsByAttribute(document.body, "*", html5Constraint.attribute, html5Constraint.value), html5Constraint);
+                }
+            }
+        } else {
+            if(!element.id) {
+                element.id = generateRandomId();
+            }
+
+            elementsWithHTML5Validation[element.id] = [];
+
+            for(var i = 0; i < html5Constraints.length; i++) {
+                var html5Constraint = html5Constraints[i];
+
+                if(!html5Constraint.value) {
+                    if(getAttribute(element, html5Constraint.attribute) != null) {
+                        var constraintDefinition = {
+                            constraint: html5Constraint.constraint,
+                            params: {}
+                        };
+
+                        constraintDefinition.params[html5Constraint.attribute] = getAttribute(element, html5Constraint.attribute);
+                        elementsWithHTML5Validation[element.id].push(constraintDefinition);
+                    }
+                } else {
+                    var value = getAttribute(element, html5Constraint.attribute);
+
+                    if(value != null && value.toLowerCase() === "email") {
+                        elementsWithHTML5Validation[element.id].push({
+                            constraint: Constraint.Email,
+                            params: {}
+                        });
+                    } else if(value != null && value.toLowerCase() === "url") {
+                        elementsWithHTML5Validation[element.id].push({
+                            constraint: Constraint.HTML5URL,
+                            params: {}
+                        });
+                    }
+                }
+            }
+        }
+
+        iterateOverMap(elementsWithHTML5Validation, function(elementId, constraintDefinitions, index) {
+            var element = document.getElementById(elementId);
+
+            for(var i = 0; i < constraintDefinitions.length; i++) {
+                var constraintDefinition = constraintDefinitions[i];
+                createConstraintFromDefinition(element, ReverseConstraint[constraintDefinition.constraint], constraintDefinition.params);
+            }
+        });
 
         return result;
     }
@@ -2780,15 +3166,15 @@ regula = (function () {
         var result = null;
 
         if(typeof options !== "undefined" && typeof options.groups !== "undefined" && !(options.groups instanceof Array)) {
-            throw "regula.validate: If a groups attribute is provided, it must be an array.";
+            throw new Exception.IllegalArgumentException("regula.validate: If a groups attribute is provided, it must be an array.");
         }
 
         if(typeof options !== "undefined" && typeof options.groups !== "undefined" && options.groups.length == 0) {
-            throw "regula.validate: If a groups attribute is provided, it must not be empty.";
+            throw new Exception.IllegalArgumentException("regula.validate: If a groups attribute is provided, it must not be empty.");
         }
 
         if(typeof options !== "undefined" && options.hasOwnProperty("constraintType") && typeof options.constraintType === "undefined") {
-            throw "regula.validate: If a constraintType attribute is provided, it cannot be undefined.";
+            throw new Exception.IllegalArgumentException("regula.validate: If a constraintType attribute is provided, it cannot be undefined.");
         }
 
         if (typeof options !== "undefined" && typeof options.elements !== "undefined") {
@@ -2796,7 +3182,7 @@ regula = (function () {
             if (options.elements instanceof Array) {
 
                 if(options.elements.length == 0) {
-                    throw "regula.validate: If an elements attribute is provided, it must not be empty.";
+                    throw new Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must not be empty.");
                 }
 
                 /*
@@ -2818,7 +3204,7 @@ regula = (function () {
             }
 
             else {
-                throw "regula.validate: If an elements attribute is provided, it must be an array.";
+                throw new Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must be an array.");
             }
         }
 
@@ -2955,7 +3341,7 @@ regula = (function () {
         //We want to let the user know if they used a constraint that has not been defined anywhere. Otherwise, this
         //function returns zero validation results, which can be (incorrectly) interpreted as a successful validation
         if (!constraintFound) {
-            throw "Constraint " + options.constraintType + " has not been bound to any element. " + explodeParameters(options);
+            throw new Exception.IllegalArgumentException("Constraint " + options.constraintType + " has not been bound to any element. " + explodeParameters(options));
         }
 
         return constraintViolations;
@@ -2988,7 +3374,7 @@ regula = (function () {
         //function returns zero results, which can be (incorrectly) interpreted as a successful validation
 
         if (!elementFound) {
-            throw "No constraints have been bound to element with id " + options.elementId + ". " + explodeParameters(options);
+            throw new Exception.IllegalArgumentException("No constraints have been bound to element with id " + options.elementId + ". " + explodeParameters(options));
         }
 
         return constraintViolations;
@@ -3020,7 +3406,7 @@ regula = (function () {
         }
 
         if (!elementFound || !constraintFound) {
-            throw "No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + explodeParameters(options);
+            throw new Exception.IllegalArgumentException("No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + explodeParameters(options));
         }
 
         return constraintViolations;
@@ -3053,7 +3439,7 @@ regula = (function () {
             }
 
             else {
-                throw "Undefined group in group list. " + explodeParameters(options);
+                throw new Exception.IllegalArgumentException("Undefined group in group list. " + explodeParameters(options));
             }
 
             i++;
@@ -3093,12 +3479,12 @@ regula = (function () {
                 //function can return zero validation results, which can be (incorrectly) interpreted as a successful validation
 
                 if (!constraintFound) {
-                    throw "Constraint " + options.constraintType + " has not been bound to any element under group " + group + ". " + explodeParameters(options);
+                    throw new Exception.IllegalArgumentException("Constraint " + options.constraintType + " has not been bound to any element under group " + group + ". " + explodeParameters(options));
                 }
             }
 
             else {
-                throw "Undefined group in group list. " + explodeParameters(options);
+                throw new Exception.IllegalArgumentException("Undefined group in group list. " + explodeParameters(options));
             }
 
             i++;
@@ -3139,7 +3525,7 @@ regula = (function () {
             }
 
             else {
-                throw "Undefined group in group list. " + explodeParameters(options);
+                throw new Exception.IllegalArgumentException("Undefined group in group list. " + explodeParameters(options));
             }
 
             i++;
@@ -3147,7 +3533,7 @@ regula = (function () {
         }
 
         if (notFound.length > 0) {
-            throw "No element with id " + options.elementId + " was found in the following group(s): [" + explode(notFound, ",").replace(/,/g, ", ") + "]. " + explodeParameters(options);
+            throw new Exception.IllegalArgumentException("No element with id " + options.elementId + " was found in the following group(s): )[" + explode(notFound, ",").replace(/,/g, ", ") + "]. " + explodeParameters(options));
         }
 
         return constraintViolations;
@@ -3174,11 +3560,12 @@ regula = (function () {
     }
 
     function validateGroupElementConstraintCombination(group, elementId, elementConstraint) {
+//console.log(group, elementId, elementConstraint);
         var constraintViolation;
         var groupElements = boundConstraints[group];
 
         if (!groupElements) {
-            throw "Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")";
+            throw new Exception.IllegalArgumentException("Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")");
         }
 
         var elementConstraints = groupElements[elementId];
@@ -3202,21 +3589,22 @@ regula = (function () {
         //Validate this constraint only if we haven't already validated it during this validation run
         if (!validatedConstraints[elementId][elementConstraint] && !validatedRadioGroups[name][elementConstraint]) {
             if (!elementConstraints) {
-                throw "No constraints have been defined for the element with id: " + elementId + " in group " + group;
+                throw new Exception.IllegalArgumentException("No constraints have been defined for the element with id: " + elementId + " in group " + group);
             }
 
             else {
                 var params = elementConstraints[elementConstraint];
 
                 if (!params) {
-                    throw elementConstraint + " in group " + group + " hasn't been bound to the element with id " + elementId;
+                    throw new Exception.IllegalArgumentException(elementConstraint + " in group " + group + " hasn't been bound to the element with id " + elementId);
                 }
 
                 else {
                     var validationResult = runValidatorFor(group, elementId, elementConstraint, params);
 
+                    var errorMessage = "";
                     if (!validationResult.constraintPassed) {
-                        var errorMessage = interpolateErrorMessage(elementId, elementConstraint, params);
+                        errorMessage = interpolateExceptionMessage(elementId, elementConstraint, params);
 
                         constraintViolation = {
                             group:group,
@@ -3229,6 +3617,12 @@ regula = (function () {
                             failingElements:validationResult.failingElements,
                             message:errorMessage
                         };
+                    }
+
+                    if(config.enableHTML5Validation) {
+                        for(var i = 0; i < validationResult.failingElements.length; i++) {
+                            validationResult.failingElements[i].setCustomValidity("");
+                        }
                     }
                 }
             }
@@ -3249,6 +3643,7 @@ regula = (function () {
         }
 
         else if (constraintsMap[elementConstraint].compound) {
+//            console.log("is compound");
             composingConstraintViolations = constraintsMap[elementConstraint].validator.call(element, params, currentGroup, constraintsMap[elementConstraint]);
             constraintPassed = composingConstraintViolations.length == 0;
 
@@ -3285,7 +3680,7 @@ regula = (function () {
         return validationResult;
     }
 
-    function interpolateErrorMessage(elementId, elementConstraint, params) {
+    function interpolateExceptionMessage(elementId, elementConstraint, params) {
         var element = document.getElementById(elementId);
         var errorMessage = "";
 
@@ -3351,6 +3746,7 @@ regula = (function () {
         override:override,
         Constraint:Constraint,
         Group:Group,
-        DateFormat:DateFormat
+        DateFormat:DateFormat,
+        Exception: Exception
     };
 })();

@@ -53,7 +53,7 @@ test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "");
 
-    equals(regula.bind(), undefined, "Calling bind() on an element with no constraints must not return anything");
+    equal(regula.bind(), undefined, "Calling bind() on an element with no constraints must not return anything");
 
     deleteElements();
 });
@@ -62,7 +62,7 @@ test('Test definition with one space', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, " ");
 
-    equals(regula.bind(), undefined, "Calling bind() on an element where the constraint definition is just a space, must not return anything");
+    equal(regula.bind(), undefined, "Calling bind() on an element where the constraint definition is just a space, must not return anything");
 
     deleteElements();
 });
@@ -71,7 +71,7 @@ test('Test definition with only spaces', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "   ");
 
-    equals(regula.bind(), undefined, "Calling bind() on an element where the constraint definition just has spaces, must not return anything");
+    equal(regula.bind(), undefined, "Calling bind() on an element where the constraint definition just has spaces, must not return anything");
 
     deleteElements();
 });
@@ -80,10 +80,7 @@ test('Test definition without a name throws an exception', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ": Invalid constraint name in constraint definition " +
-                                               inputElementId + ": Invalid starting character for constraint name. Can only include A-Z, a-z, and _ " +
-                                               inputElementId + ": Invalid starting character");
-    raises(regula.bind, expectedExceptionMessage, "'@' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@' should not be a valid definition");
 
     deleteElements();
 });
@@ -92,8 +89,7 @@ test('Test definition that does not start with @ throws an exception', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "ThisShouldFail");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ": Invalid constraint. Constraint definitions need to start with '@'");
-    raises(regula.bind, expectedExceptionMessage, "'ThisShouldFail' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'ThisShouldFail' should not be a valid definition");
 
     deleteElements();
 });
@@ -102,10 +98,7 @@ test('Test definition with invalid starting-character 3 throws an exception', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@3ThisShouldFail");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ": Invalid constraint name in constraint definition " +
-                                               inputElementId + ": Invalid starting character for constraint name. Can only include A-Z, a-z, and _ " +
-                                               inputElementId + ": Invalid starting character");
-    raises(regula.bind, expectedExceptionMessage, "'@3ThisShouldFail' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@3ThisShouldFail' should not be a valid definition");
 
     deleteElements();
 });
@@ -114,10 +107,7 @@ test('Test definition with invalid starting-character + throws an exception', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@+ThisShouldFail");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ": Invalid constraint name in constraint definition " +
-                                               inputElementId + ": Invalid starting character for constraint name. Can only include A-Z, a-z, and _ " +
-                                               inputElementId + ": Invalid starting character");
-    raises(regula.bind, expectedExceptionMessage, "'@+ThisShouldFail' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@+ThisShouldFail' should not be a valid definition");
 
     deleteElements();
 });
@@ -126,22 +116,18 @@ test('Test definition containing invalid character + throws an exception', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@This+ShouldFail");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ": Invalid constraint name in constraint definition " +
-                                               inputElementId + ": Invalid character in identifier. Can only include 0-9, A-Z, a-z, and _");
-    raises(regula.bind, expectedExceptionMessage, "'@This+ShouldFail' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@This+ShouldFail' should not be a valid definition");
 
     deleteElements();
 });
 
 
-//We use raises here because the constraint names we are using aren't defined. So we expect an exception.
+//We use throws here because the constraint names we are using aren't defined. So we expect an exception.
 
 test('Test definition with one starting character', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@_");
-
-    var expectedExceptionMessage =  new RegExp(inputElementId + "._: I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it");
-    raises(regula.bind, expectedExceptionMessage, "'@_' should be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@_' should be a valid definition");
 
     deleteElements();
 });
@@ -150,8 +136,7 @@ test('Test definition with valid characters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@_This3Isavalid__Constraint");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + "._This3Isavalid__Constraint: I cannot find the specified constraint name. If this is a custom constraint, you need to define it before you bind to it");
-    raises(regula.bind, expectedExceptionMessage, "'@_This3Isavalid__' should be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@_This3Isavalid__' should be a valid definition");
 
     deleteElements();
 });
@@ -160,7 +145,7 @@ test('Test definition with no parentheses and no parameters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank");
 
-    equals(regula.bind(), undefined, "@NotBlank should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank should be a valid definition");
 
     deleteElements();
 });
@@ -169,10 +154,7 @@ test('Test definition without closing parenthesis', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                               inputElementId + ".NotBlank: Invalid parameter name. You might have unmatched parentheses " +
-                                               inputElementId + ".NotBlank: Invalid starting character for parameter name. Can only include A-Z, a-z, and _");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(' should not be a valid definition");
 
     deleteElements();
 });
@@ -181,8 +163,7 @@ test('Test definition without opening parenthesis', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank)");
 
-    var expectedExceptionMessage =  new RegExp(inputElementId + ".NotBlank: Unexpected character '\\)' after constraint definition");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank)' should not be a valid definition");
 
     deleteElements();
 });
@@ -191,7 +172,7 @@ test('Test definition with balanced parentheses and no parameters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank()");
 
-    equals(regula.bind(), undefined, "@NotBlank() should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank() should be a valid definition");
 
     deleteElements();
 });
@@ -200,8 +181,7 @@ test('Test definition with unbalanced parentheses and a valid parameter', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=2");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing \\) in parameter list");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBLank(param=2' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBLank(param=2' should not be a valid definition");
 
     deleteElements();
 });
@@ -210,7 +190,7 @@ test('Test definition with valid parameter and spaces after that parameter', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=2             )");
 
-    equals(regula.bind(), undefined, "'@NotBlank(param=2             )' should be a valid definition");
+    equal(regula.bind(), undefined, "'@NotBlank(param=2             )' should be a valid definition");
 
     deleteElements();
 });
@@ -219,9 +199,7 @@ test('Test definition with malformed parameters (1)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: '=' expected after parameter name");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param) should not be a valid definition");
 
     deleteElements();
 });
@@ -230,9 +208,7 @@ test('Test definition with malformed parameters (2)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value expected");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=) should not be a valid definition");
 
     deleteElements();
 });
@@ -241,18 +217,7 @@ test('Test definition with malformed parameters (3)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=value)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a positive number " +
-                                              inputElementId + ".NotBlank: Not a valid integer " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=value) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=value) should not be a valid definition");
 
     deleteElements();
 });
@@ -261,8 +226,7 @@ test('Test definition with malformed parameters (4)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=12a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Parameter value is not a number");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12a) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=12a) should not be a valid definition");
 
     deleteElements();
 });
@@ -271,8 +235,7 @@ test('Test definition with malformed parameters (5)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-12a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Parameter value is not a number");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=-12a) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=-12a) should not be a valid definition");
 
     deleteElements();
 });
@@ -282,18 +245,7 @@ test('Test definition with malformed parameters (6)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a positive number " +
-                                              inputElementId + ".NotBlank: Not a valid integer " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=-a) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=-a) should not be a valid definition");
 
     deleteElements();
 });
@@ -302,8 +254,7 @@ test('Test definition with malformed parameters (7)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Unterminated string literal");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\") should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=\") should not be a valid definition");
 
     deleteElements();
 });
@@ -312,8 +263,7 @@ test('Test definition with malformed parameters (8)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\"\\\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Unterminated string literal");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\"\\\") should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=\"\\\") should not be a valid definition");
 
     deleteElements();
 });
@@ -322,18 +272,7 @@ test('Test definition with malformed parameters (9)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\\\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a positive number " +
-                                              inputElementId + ".NotBlank: Not a valid integer " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\\\") should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=\\\") should not be a valid definition");
 
     deleteElements();
 });
@@ -342,8 +281,7 @@ test('Test definition with malformed parameters (10)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=/)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Unterminated regex literal");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=/) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=/) should not be a valid definition");
 
     deleteElements();
 });
@@ -352,8 +290,7 @@ test('Test definition with malformed parameters (11)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=/\\/)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Unterminated regex literal");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=/\\/) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=/\\/) should not be a valid definition");
 
     deleteElements();
 });
@@ -363,18 +300,7 @@ test('Test definition with malformed parameters (12)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\\/)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter value " +
-                                              inputElementId + ".NotBlank: Parameter value must be a number, quoted string, regular expression, or a boolean " +
-                                              inputElementId + ".NotBlank: Not a valid group definition " +
-                                              inputElementId + ".NotBlank: Not a boolean " +
-                                              inputElementId + ".NotBlank: Not a regular expression " +
-                                              inputElementId + ".NotBlank: Invalid quoted string " +
-                                              inputElementId + ".NotBlank: Parameter value is not a number " +
-                                              inputElementId + ".NotBlank: Not a positive number " +
-                                              inputElementId + ".NotBlank: Not a valid integer " +
-                                              inputElementId + ".NotBlank: Not a valid digit");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=\\/) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=\\/) should not be a valid definition");
 
     deleteElements();
 });
@@ -384,8 +310,7 @@ test('Test definition with malformed parameters (13)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[) should not be a valid definition");
 
     deleteElements();
 });
@@ -395,8 +320,7 @@ test('Test definition with malformed parameters (14)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[0)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[0) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[0) should not be a valid definition");
 
     deleteElements();
 });
@@ -405,8 +329,7 @@ test('Test definition with malformed parameters (15)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[G)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing ] in group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[G)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[G)' should not be a valid definition");
 
     deleteElements();
 });
@@ -415,8 +338,7 @@ test('Test definition with malformed parameters (16)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[Group)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing ] in group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[Group)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[Group)' should not be a valid definition");
 
     deleteElements();
 });
@@ -425,8 +347,7 @@ test('Test definition with malformed parameters (17)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[Group,)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing ] in group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[Group,)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[Group,)' should not be a valid definition");
 
     deleteElements();
 });
@@ -435,8 +356,7 @@ test('Test definition with malformed parameters (18)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[Group,G)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing ] in group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[Group,G)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[Group,G)' should not be a valid definition");
 
     deleteElements();
 });
@@ -445,8 +365,7 @@ test('Test definition with malformed parameters (19)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=[Group,Group)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Cannot find matching closing ] in group definition ");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=[Group,Group)' should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=[Group,Group)' should not be a valid definition");
 
     deleteElements();
 });
@@ -456,9 +375,7 @@ test('Test definition with malformed parameters (20)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param,)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: '=' expected after parameter name");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param,) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param,) should not be a valid definition");
 
     deleteElements();
 });
@@ -467,10 +384,7 @@ test('Test definition with malformed parameters (21)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=10,)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter name. You might have unmatched parentheses " +
-                                              inputElementId + ".NotBlank: Invalid starting character for parameter name. Can only include A-Z, a-z, and _ " +
-                                              inputElementId + ".NotBlank: Invalid starting character");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=10,) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=10,) should not be a valid definition");
 
     deleteElements();
 });
@@ -480,8 +394,7 @@ test('Test definition with malformed parameters (21)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=10,param2)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: '=' expected after parameter name");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=10,param2) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=10,param2) should not be a valid definition");
 
     deleteElements();
 });
@@ -491,11 +404,7 @@ test('Test definition with malformed parameters (22)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(2)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " +
-                                              inputElementId + ".NotBlank: Invalid parameter name. You might have unmatched parentheses " +
-                                              inputElementId + ".NotBlank: Invalid starting character for parameter name. Can only include A-Z, a-z, and _ " +
-                                              inputElementId + ".NotBlank: Invalid starting character");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(2) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(2) should not be a valid definition");
 
     deleteElements();
 });
@@ -505,8 +414,7 @@ test('Test definition with malformed parameters (23)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=12.)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Not a valid fraction");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=12.) should not be a valid definition");
     deleteElements();
 });
 
@@ -515,8 +423,7 @@ test('Test definition with malformed parameters (24)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=12.a)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Not a valid fraction");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.a) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=12.a) should not be a valid definition");
     deleteElements();
 });
 
@@ -524,8 +431,7 @@ test('Test definition with malformed parameters (25)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[10])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid starting character for group name");
-    raises(regula.bind, expectedExceptionMessage, "'@NotBlank(param=12.a) should not be a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "'@NotBlank(param=groups=[10]) should not be a valid definition");
     deleteElements();
 });
 
@@ -533,7 +439,7 @@ test('Test definition with valid boolean parameter-value (true)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=true)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=true) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=true) should be a valid definition");
 
     deleteElements();
 });
@@ -542,7 +448,7 @@ test('Test definition with valid boolean parameter-value (false)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=false)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=false) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=false) should be a valid definition");
 
     deleteElements();
 });
@@ -551,7 +457,7 @@ test('Test definition with positive integer as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=2)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=2) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=2) should be a valid definition");
 
     deleteElements();
 });
@@ -560,7 +466,7 @@ test('Test definition with negative integer as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-2)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=-2) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=-2) should be a valid definition");
 
     deleteElements();
 });
@@ -569,7 +475,7 @@ test('Test definition with positive real number as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=2.5)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=2.5) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=2.5) should be a valid definition");
 
     deleteElements();
 });
@@ -578,7 +484,7 @@ test('Test definition with negative real number as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-2.5)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=-2.5) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=-2.5) should be a valid definition");
 
     deleteElements();
 });
@@ -587,7 +493,7 @@ test('Test definition with positive real number (with only fractional part) as a
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=.5)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=.5) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=.5) should be a valid definition");
 
     deleteElements();
 });
@@ -596,7 +502,7 @@ test('Test definition with negative real number (with only fractional part) as a
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=-.5)");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=-.5) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=-.5) should be a valid definition");
 
     deleteElements();
 });
@@ -605,7 +511,7 @@ test('Test definition with empty string as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\"\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=\"\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=\"\") should be a valid definition");
 
     deleteElements();
 });
@@ -614,7 +520,7 @@ test('Test definition with non-empty string as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\"some text here\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=\"some text here\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=\"some text here\") should be a valid definition");
 
     deleteElements();
 });
@@ -623,7 +529,7 @@ test('Test definition with string containing escaped quotes as a parameter (1)',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\"\\\"\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=\"\\\"\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=\"\\\"\") should be a valid definition");
 
     deleteElements();
 });
@@ -632,7 +538,7 @@ test('Test definition with string containing escaped quotes as a parameter (2)',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param=\"this is a\\\"test\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(param=\"this is a\\\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param=\"this is a\\\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -641,7 +547,7 @@ test('Test definition with empty group-definition as a parameter', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(groups=[]) should be a valid definition");
 
     deleteElements();
 });
@@ -651,7 +557,7 @@ test('Test definition with group-definition (with one group) as a parameter', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(groups=[MyGroup]) should be a valid definition");
 
     deleteElements();
 });
@@ -660,7 +566,7 @@ test('Test definition with group-definition (with more than one group) as a para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
 
     deleteElements();
 });
@@ -669,7 +575,7 @@ test('Test definition with group-definition (with more than one group) as a para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
 
     deleteElements();
 });
@@ -678,7 +584,7 @@ test('Test definition with multiple valid parameters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
 
-    equals(regula.bind(), undefined, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
 
     deleteElements();
 });
@@ -689,7 +595,7 @@ test('Test definition with multiple constraints, with one malformed constraint',
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".NotBlank: Invalid parameter definition " + inputElementId + ".NotBlank: Invalid parameter name. You might have unmatched parentheses hiddenInput.NotBlank: Invalid starting character for parameter name. Can only include A-Z, a-z, and _");
 
-    raises(regula.bind, expectedExceptionMessage, "@NotBlank @NotBlank( is not a valid definition");
+    throws(regula.bind, regula.Exception.BindException, "@NotBlank @NotBlank( is not a valid definition");
 
     deleteElements()
 });
@@ -698,7 +604,7 @@ test('Test definition with multiple valid constraints (markup)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
-    equals(regula.bind(), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
 
     deleteElements();
 });
@@ -707,7 +613,7 @@ test('Test definition with multiple valid constraints (programmatic)', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.NotBlank},
@@ -730,7 +636,7 @@ test('Test definition with multiple valid constraints being bound to multiple el
     var $input1 = createInputElement("input1", null, "text");
     var $input2 = createInputElement("input2", null, "text");
 
-    equals(regula.bind({
+    equal(regula.bind({
         elements: [$input0.get(0), $input1.get(0), $input2.get(0)],
         constraints: [
             {constraintType: regula.Constraint.NotBlank},
@@ -753,11 +659,11 @@ test('Test definition with multiple valid constraints, and one invalid constrain
     var $input1 = createInputElement("input1", "@NotBlank @Required @Range(min=5)");
     var $input2 = createInputElement("input2", "@NotBlank @Required @Range(min=5, max=10)");
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             elements: [$input0.get(0), $input1.get(0), $input2.get(0)]
         });
-    }, new RegExp("regula.bind: Element 2 of 3 failed: input1.Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max"), "regula.bind must fail if one of the elements has an invalid constraint definition");
+    }, regula.Exception.BindException, "regula.bind must fail if one of the elements has an invalid constraint definition");
 
     deleteElements();
 });
@@ -769,7 +675,7 @@ test('Test binding @Checked through markup to a form element', function() {
     var $form = createFormElement(formElementId, "@Checked");
 
     var expectedExceptionMessage = new RegExp(formElementId + ".Checked: @Checked is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Checked cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Checked cannot be bound to a form element");
 
     deleteElements();
 });
@@ -779,7 +685,7 @@ test('Test binding @Checked through markup to a non-checkbox/non-radio-button el
     var $input = createInputElement(inputElementId, "@Checked");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Checked: @Checked is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button");
-    raises(regula.bind, expectedExceptionMessage, "@Checked should not be bound to a non-checkbox/non-radio-button element");
+    throws(regula.bind, regula.Exception.BindException, "@Checked should not be bound to a non-checkbox/non-radio-button element");
 
     deleteElements();
 });
@@ -788,7 +694,7 @@ test('Test binding @Checked (without parameters) through markup to a checkbox', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checked should be a valid definition");
+    equal(regula.bind(), undefined, "@Checked should be a valid definition");
 
     deleteElements();
 });
@@ -797,7 +703,7 @@ test('Test binding @Checked (without parameters) through markup to a radio', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked", "radio");
 
-    equals(regula.bind(), undefined, "@Checked should be a valid definition");
+    equal(regula.bind(), undefined, "@Checked should be a valid definition");
 
     deleteElements();
 });
@@ -806,7 +712,7 @@ test('Test binding @Checked (with label parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked(label=\"test\")", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checked(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Checked(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -815,7 +721,7 @@ test('Test binding @Checked (with message parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked(message=\"This is a test\")", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checkbox(message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Checkbox(message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -824,7 +730,7 @@ test('Test binding @Checked (with groups parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked(groups=[Test])", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checkbox(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Checkbox(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -833,7 +739,7 @@ test('Test binding @Checked (with groups, message and label parameters) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Checked(label=\"test\", message=\"This is a test\", groups=[Test])", "checkbox");
 
-    equals(regula.bind(), undefined, "@Checkbox(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Checkbox(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -842,8 +748,7 @@ test('Test binding @Selected through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Selected");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Selected: @Selected is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Selected cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Selected cannot be bound to a form element");
 
     deleteElements();
 });
@@ -853,7 +758,7 @@ test('Test binding @Selected through markup to a non-select element', function()
     var $input = createInputElement(inputElementId, "@Selected");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Selected: @Selected is only applicable to select boxes. You are trying to bind it to an input element that is not a select box");
-    raises(regula.bind, expectedExceptionMessage, "@Selected should not be bound to a non-select-box element");
+    throws(regula.bind, regula.Exception.BindException, "@Selected should not be bound to a non-select-box element");
 
     deleteElements();
 });
@@ -862,7 +767,7 @@ test('Test binding @Selected (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected", "select");
 
-    equals(regula.bind(), undefined, "@Selected should be a valid definition");
+    equal(regula.bind(), undefined, "@Selected should be a valid definition");
 
     deleteElements();
 });
@@ -871,7 +776,7 @@ test('Test binding @Selected (with label parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected(label=\"test\")", "select");
 
-    equals(regula.bind(), undefined, "@Selected(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Selected(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -880,7 +785,7 @@ test('Test binding @Selected (with message parameter) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected(message=\"This is a test\")", "select");
 
-    equals(regula.bind(), undefined, "@Selected(message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Selected(message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -889,7 +794,7 @@ test('Test binding @Selected (with groups parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected(groups=[Test])", "select");
 
-    equals(regula.bind(), undefined, "@Selected(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Selected(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -898,7 +803,7 @@ test('Test binding @Selected (with groups, message and label parameters) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test])", "select");
 
-    equals(regula.bind(), undefined, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Selected(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -907,8 +812,7 @@ test('Test binding @Required through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Required");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Required: @Required is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Required cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Required cannot be bound to a form element");
 
     deleteElements();
 });
@@ -917,7 +821,7 @@ test('Test binding @Required (without parameters) through markup to an input ele
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required");
 
-    equals(regula.bind(), undefined, "@Required should be a valid definition");
+    equal(regula.bind(), undefined, "@Required should be a valid definition");
 
     deleteElements();
 });
@@ -926,7 +830,7 @@ test('Test binding @Required (without parameters) through markup to a checkbox',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required", "checkbox");
 
-    equals(regula.bind(), undefined, "@Required should be a valid definition");
+    equal(regula.bind(), undefined, "@Required should be a valid definition");
 
     deleteElements();
 });
@@ -935,7 +839,7 @@ test('Test binding @Required (without parameters) through markup to a radio', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required", "radio");
 
-    equals(regula.bind(), undefined, "@Required should be a valid definition");
+    equal(regula.bind(), undefined, "@Required should be a valid definition");
 
     deleteElements();
 });
@@ -944,7 +848,7 @@ test('Test binding @Required (without parameters) through markup to a select', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required", "select");
 
-    equals(regula.bind(), undefined, "@Required should be a valid definition");
+    equal(regula.bind(), undefined, "@Required should be a valid definition");
 
     deleteElements();
 });
@@ -953,7 +857,7 @@ test('Test binding @Required (with label parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Required(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Required(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -962,7 +866,7 @@ test('Test binding @Required (with message parameter) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required(message=\"This is a test\")");
 
-    equals(regula.bind(), undefined, "@Required(message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Required(message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -971,7 +875,7 @@ test('Test binding @Required (with groups parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Required(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Required(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -980,7 +884,7 @@ test('Test binding @Required (with groups, message and label parameters) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Required(label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Required(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Required(label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -989,8 +893,7 @@ test('Test binding @Max through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Max");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Max: @Max is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound to a form element");
 
     deleteElements();
 });
@@ -999,8 +902,7 @@ test('Test binding @Max (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1009,8 +911,7 @@ test('Test binding @Max (with optional label parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1019,8 +920,7 @@ test('Test binding @Max (with optional message parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1029,8 +929,7 @@ test('Test binding @Max (with optional groups parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1039,8 +938,7 @@ test('Test binding @Max (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1049,7 +947,7 @@ test('Test binding @Max (with required parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10)");
 
-    equals(regula.bind(), undefined, "@Max(value=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@Max(value=10) should be a valid definition");
 
     deleteElements();
 });
@@ -1058,7 +956,7 @@ test('Test binding @Max (with required parameter and optional label parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Max(value=10, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Max(value=10, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1067,7 +965,7 @@ test('Test binding @Max (with required parameter and optional message parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Max(value=10, message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Max(value=10, message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1076,7 +974,7 @@ test('Test binding @Max (with required parameter and optional groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Max(value=10, groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Max(value=10, groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1085,7 +983,7 @@ test('Test binding @Max (with required parameter and optional groups, label and 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Max(value=10, label=\"test\", message=\"This is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1094,8 +992,7 @@ test('Test binding @Min through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Min");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Min: @Min is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1104,8 +1001,7 @@ test('Test binding @Min (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1114,8 +1010,7 @@ test('Test binding @Min (with optional label parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1124,8 +1019,7 @@ test('Test binding @Min (with optional message parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1134,8 +1028,7 @@ test('Test binding @Min (with optional groups parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1144,8 +1037,7 @@ test('Test binding @Min (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(regula.bind, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1154,7 +1046,7 @@ test('Test binding @Min (with required parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10)");
 
-    equals(regula.bind(), undefined, "@Min(value=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@Min(value=10) should be a valid definition");
 
     deleteElements();
 });
@@ -1163,7 +1055,7 @@ test('Test binding @Min (with required parameter and optional label parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Min(value=10, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1172,7 +1064,7 @@ test('Test binding @Min (with required parameter and optional message parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Min(value=10, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Min(value=10, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1181,7 +1073,7 @@ test('Test binding @Min (with required parameter and optional groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Min(value=10, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Min(value=10, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1190,7 +1082,7 @@ test('Test binding @Min (with required parameter and optional label, message, an
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Min(value=10, label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Min(value=10, label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Min(value=10, label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1199,8 +1091,7 @@ test('Test binding @Range through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Range");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1209,8 +1100,7 @@ test('Test binding @Range (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1219,8 +1109,7 @@ test('Test binding @Range (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1229,8 +1118,7 @@ test('Test binding @Range (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1239,8 +1127,7 @@ test('Test binding @Range (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1249,8 +1136,7 @@ test('Test binding @Range (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1259,8 +1145,7 @@ test('Test binding @Range (with one required parameter) through markup (1)', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1269,8 +1154,7 @@ test('Test binding @Range (with one required parameter) through markup (2)', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(regula.bind, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1279,7 +1163,7 @@ test('Test binding @Range (with both required parameters) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5, max=10)");
 
-    equals(regula.bind(), undefined, "@Range(min=5, max=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@Range(min=5, max=10) should be a valid definition");
 
     deleteElements();
 });
@@ -1288,7 +1172,7 @@ test('Test binding @Range (with both required parameters and optional label para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5, max=10, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1297,7 +1181,7 @@ test('Test binding @Range (with both required parameters and optional message pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5, max=10, message=\"test message\")");
 
-    equals(regula.bind(), undefined, "@Range(min=5, max=10, message=\"test message\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Range(min=5, max=10, message=\"test message\") should be a valid definition");
 
     deleteElements();
 });
@@ -1306,7 +1190,7 @@ test('Test binding @Range (with both required parameters and optional groups par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5, max=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Range(min=5, max=10, message=\"test message\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Range(min=5, max=10, message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1315,7 +1199,7 @@ test('Test binding @Range (with both required parameters and optional message, l
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Range(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Range(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1324,8 +1208,7 @@ test('Test binding @Between through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Between");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1334,8 +1217,7 @@ test('Test binding @Between (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1344,8 +1226,7 @@ test('Test binding @Between (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1354,8 +1235,7 @@ test('Test binding @Between (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1364,8 +1244,7 @@ test('Test binding @Between (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1374,8 +1253,7 @@ test('Test binding @Between (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1384,8 +1262,7 @@ test('Test binding @Between (with one required parameter) through markup (1)', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1395,8 +1272,7 @@ test('Test binding @Between (with one required parameter) through markup (2)', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(regula.bind, expectedExceptionMessage, "@Between cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Between cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1405,7 +1281,7 @@ test('Test binding @Between (with both required parameters) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5, max=10)");
 
-    equals(regula.bind(), undefined, "@Between(min=5, max=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@Between(min=5, max=10) should be a valid definition");
 
     deleteElements();
 });
@@ -1414,7 +1290,7 @@ test('Test binding @Between (with both required parameters and optional label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5, max=10, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1423,7 +1299,7 @@ test('Test binding @Between (with both required parameters and optional message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5, max=10, message=\"test message\")");
 
-    equals(regula.bind(), undefined, "@Between(min=5, max=10, message=\"test message\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Between(min=5, max=10, message=\"test message\") should be a valid definition");
 
     deleteElements();
 });
@@ -1432,7 +1308,7 @@ test('Test binding @Between (with both required parameters and optional message,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Between(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1441,8 +1317,7 @@ test('Test binding @NotBlank through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@NotBlank");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@NotBlank cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1451,7 +1326,7 @@ test('Test binding @NotBlank (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank");
 
-    equals(regula.bind(), undefined, "@NotBlank should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank should be a valid definition");
 
     deleteElements();
 });
@@ -1460,7 +1335,7 @@ test('Test binding @NotBlank (with optional label parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1469,7 +1344,7 @@ test('Test binding @NotBlank (with optional message parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@NotBlank(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1478,7 +1353,7 @@ test('Test binding @NotBlank (with optional groups parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotBlank(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1487,7 +1362,7 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotBlank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1496,8 +1371,7 @@ test('Test binding @NotEmpty through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@NotEmpty");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@NotEmpty cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@NotEmpty cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1506,7 +1380,7 @@ test('Test binding @NotEmpty (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty");
 
-    equals(regula.bind(), undefined, "@NotEmpty should be a valid definition");
+    equal(regula.bind(), undefined, "@NotEmpty should be a valid definition");
 
     deleteElements();
 });
@@ -1515,7 +1389,7 @@ test('Test binding @NotEmpty (with optional label parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotEmpty(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1524,7 +1398,7 @@ test('Test binding @NotEmpty (with optional message parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@NotEmpty(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@NotEmpty(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1533,7 +1407,7 @@ test('Test binding @NotEmpty (with optional groups parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotEmpty(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotEmpty(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1542,7 +1416,7 @@ test('Test binding @NotEmpty (with optional label, message, groups parameter) th
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@NotEmpty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1551,8 +1425,7 @@ test('Test binding @Empty through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Empty");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Empty cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Empty cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1561,7 +1434,7 @@ test('Test binding @Empty (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty");
 
-    equals(regula.bind(), undefined, "@Empty should be a valid definition");
+    equal(regula.bind(), undefined, "@Empty should be a valid definition");
 
     deleteElements();
 });
@@ -1570,7 +1443,7 @@ test('Test binding @Empty (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Empty(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Empty(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1579,7 +1452,7 @@ test('Test binding @Empty (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Empty(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Empty(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1588,7 +1461,7 @@ test('Test binding @Empty (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Empty(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Empty(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1597,7 +1470,7 @@ test('Test binding @Empty (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Empty(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1606,8 +1479,7 @@ test('Test binding @Blank through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Blank");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Blank cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Blank cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1616,7 +1488,7 @@ test('Test binding @Blank (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank");
 
-    equals(regula.bind(), undefined, "@Blank should be a valid definition");
+    equal(regula.bind(), undefined, "@Blank should be a valid definition");
 
     deleteElements();
 });
@@ -1625,7 +1497,7 @@ test('Test binding @Blank (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Blank(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Blank(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1634,7 +1506,7 @@ test('Test binding @Blank (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Blank(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Blank(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1643,7 +1515,7 @@ test('Test binding @Blank (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Blank(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Blank(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1652,7 +1524,7 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Blank(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -1661,8 +1533,7 @@ test('Test binding @Pattern through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Pattern");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1671,8 +1542,7 @@ test('Test binding @Pattern (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1681,8 +1551,7 @@ test('Test binding @Pattern (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1691,8 +1560,7 @@ test('Test binding @Pattern (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1701,8 +1569,7 @@ test('Test binding @Pattern (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1711,8 +1578,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1721,7 +1587,7 @@ test('Test binding @Pattern (with required parameter) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/)");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/) should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/) should be a valid definition");
 
     deleteElements();
 });
@@ -1730,7 +1596,7 @@ test('Test binding @Pattern (with required parameter and optional label paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1739,7 +1605,7 @@ test('Test binding @Pattern (with required parameter and optional message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1748,7 +1614,7 @@ test('Test binding @Pattern (with required parameter and optional groups paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1757,7 +1623,7 @@ test('Test binding @Pattern (with required parameter and optional label, message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1766,8 +1632,7 @@ test('Test binding @Pattern (with optional flags parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1776,8 +1641,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1786,8 +1650,7 @@ test('Test binding @Pattern (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1796,8 +1659,7 @@ test('Test binding @Pattern (with optional flags and groups parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1806,8 +1668,7 @@ test('Test binding @Pattern (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1816,7 +1677,7 @@ test('Test binding @Pattern (with required parameter and optional flags paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\")");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
 
     deleteElements();
 });
@@ -1825,7 +1686,7 @@ test('Test binding @Pattern (with required parameter and optional flags and labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1834,7 +1695,7 @@ test('Test binding @Pattern (with required parameter and optional flags and mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1843,7 +1704,7 @@ test('Test binding @Pattern (with required parameter and optional flags and grou
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1852,7 +1713,7 @@ test('Test binding @Pattern (with required parameter and optional flags, label, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Pattern(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1861,8 +1722,7 @@ test('Test binding @Matches through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Matches");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound to a form element");
 
     deleteElements();
 });
@@ -1871,8 +1731,7 @@ test('Test binding @Matches (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1881,8 +1740,7 @@ test('Test binding @Matches (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1891,8 +1749,7 @@ test('Test binding @Matches (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1901,8 +1758,7 @@ test('Test binding @Matches (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1911,8 +1767,7 @@ test('Test binding @Matches (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1921,7 +1776,7 @@ test('Test binding @Matches (with required parameter) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/)");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/) should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/) should be a valid definition");
 
     deleteElements();
 });
@@ -1930,7 +1785,7 @@ test('Test binding @Matches (with required parameter and optional label paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1939,7 +1794,7 @@ test('Test binding @Matches (with required parameter and optional message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1948,7 +1803,7 @@ test('Test binding @Matches (with required parameter and optional groups paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1957,7 +1812,7 @@ test('Test binding @Matches (with required parameter and optional label, message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -1966,8 +1821,7 @@ test('Test binding @Matches (with optional flags parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1976,8 +1830,7 @@ test('Test binding @Matches (with optional flags and label parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1986,8 +1839,7 @@ test('Test binding @Matches (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -1996,8 +1848,7 @@ test('Test binding @Matches (with optional flags and groups parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2006,8 +1857,7 @@ test('Test binding @Matches (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(flags=\"ig\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(regula.bind, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2016,7 +1866,7 @@ test('Test binding @Matches (with required parameter and optional flags paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\")");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\") should be a valid definition");
 
     deleteElements();
 });
@@ -2025,7 +1875,7 @@ test('Test binding @Matches (with required parameter and optional flags and labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2034,7 +1884,7 @@ test('Test binding @Matches (with required parameter and optional flags and mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2043,7 +1893,7 @@ test('Test binding @Matches (with required parameter and optional flags and grou
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2052,7 +1902,7 @@ test('Test binding @Matches (with required parameter and optional flags, label, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Matches(regex=/[a-z]/, flags=\"ig\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2061,8 +1911,7 @@ test('Test binding @Email through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Email");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Email: @Email is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Email cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Email cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2071,7 +1920,7 @@ test('Test binding @Email (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email");
 
-    equals(regula.bind(), undefined, "@Email should be a valid definition");
+    equal(regula.bind(), undefined, "@Email should be a valid definition");
 
     deleteElements();
 });
@@ -2080,7 +1929,7 @@ test('Test binding @Email (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Email(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Email(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2089,7 +1938,7 @@ test('Test binding @Email (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Email(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Email(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2098,7 +1947,7 @@ test('Test binding @Email (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Email(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Email(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2107,7 +1956,7 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Email(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2116,8 +1965,7 @@ test('Test binding @Alpha through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Alpha");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Alpha: @Alpha is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Alpha cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Alpha cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2126,7 +1974,7 @@ test('Test binding @Alpha (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Alpha");
 
-    equals(regula.bind(), undefined, "@Alpha should be a valid definition");
+    equal(regula.bind(), undefined, "@Alpha should be a valid definition");
 
     deleteElements();
 });
@@ -2135,7 +1983,7 @@ test('Test binding @Alpha (with optional label parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Alpha(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Alpha(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Alpha(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2144,7 +1992,7 @@ test('Test binding @Alpha (with optional message parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Alpha(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Alpha(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Alpha(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2153,7 +2001,7 @@ test('Test binding @Alpha (with optional groups parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Alpha(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Alpha(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Alpha(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2162,7 +2010,7 @@ test('Test binding @Alpha (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Alpha(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2171,8 +2019,7 @@ test('Test binding @Numeric through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Numeric");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Numeric: @Numeric is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Numeric cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Numeric cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2181,7 +2028,7 @@ test('Test binding @Numeric (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Numeric");
 
-    equals(regula.bind(), undefined, "@Numeric should be a valid definition");
+    equal(regula.bind(), undefined, "@Numeric should be a valid definition");
 
     deleteElements();
 });
@@ -2190,7 +2037,7 @@ test('Test binding @Numeric (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Numeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Numeric(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Numeric(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2199,7 +2046,7 @@ test('Test binding @Numeric (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Numeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Numeric(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Numeric(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2208,7 +2055,7 @@ test('Test binding @Numeric (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Numeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Numeric(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Numeric(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2217,7 +2064,7 @@ test('Test binding @Numeric (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equal(regula.bind(), undefined, "@Numeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElements();
 });
@@ -2226,8 +2073,7 @@ test('Test binding @AlphaNumeric through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@AlphaNumeric");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".AlphaNumeric: @AlphaNumeric is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@AlphaNumeric cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@AlphaNumeric cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2236,7 +2082,7 @@ test('Test binding @AlphaNumeric (without parameters) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@AlphaNumeric");
 
-    equals(regula.bind(), undefined, "@AlphaNumeric should be a valid definition");
+    equal(regula.bind(), undefined, "@AlphaNumeric should be a valid definition");
 
     deleteElements();
 });
@@ -2245,7 +2091,7 @@ test('Test binding @AlphaNumeric (with optional label parameter) through markup'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@AlphaNumeric(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@AlphaNumeric(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@AlphaNumeric(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2254,7 +2100,7 @@ test('Test binding @AlphaNumeric (with optional message parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@AlphaNumeric(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@AlphaNumeric(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@AlphaNumeric(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2263,7 +2109,7 @@ test('Test binding @AlphaNumeric (with optional groups parameter) through markup
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@AlphaNumeric(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@AlphaNumeric(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@AlphaNumeric(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2272,7 +2118,7 @@ test('Test binding @AlphaNumeric (with optional label, message, and groups param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@AlphaNumeric(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2281,8 +2127,7 @@ test('Test binding @Length through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Length");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Length: @Length is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2291,8 +2136,7 @@ test('Test binding @Integer through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Integer");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Integer: @Integer is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Integer cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Integer cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2301,7 +2145,7 @@ test('Test binding @Integer (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Integer");
 
-    equals(regula.bind(), undefined, "@Integer should be a valid definition");
+    equal(regula.bind(), undefined, "@Integer should be a valid definition");
 
     deleteElements();
 });
@@ -2310,7 +2154,7 @@ test('Test binding @Integer (with optional label parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Integer(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Integer(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Integer(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2319,7 +2163,7 @@ test('Test binding @Integer (with optional message parameter) through markup', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Integer(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Integer(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Integer(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2328,7 +2172,7 @@ test('Test binding @Integer (with optional groups parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Integer(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Integer(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Integer(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2337,7 +2181,7 @@ test('Test binding @Integer (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equal(regula.bind(), undefined, "@Integer(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElements();
 });
@@ -2346,8 +2190,7 @@ test('Test binding @Real through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Real");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Real: @Real is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Real cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Real cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2356,7 +2199,7 @@ test('Test binding @Real (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Real");
 
-    equals(regula.bind(), undefined, "@Real should be a valid definition");
+    equal(regula.bind(), undefined, "@Real should be a valid definition");
 
     deleteElements();
 });
@@ -2365,7 +2208,7 @@ test('Test binding @Real (with optional label parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Real(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Real(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Real(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2374,7 +2217,7 @@ test('Test binding @Real (with optional message parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Real(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Real(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Real(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2383,7 +2226,7 @@ test('Test binding @Real (with optional groups parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Real(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Real(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Real(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2392,7 +2235,7 @@ test('Test binding @Real (with optional label, message, and groups parameter) th
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Real(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Real(label=\"test\", message=\"this is a test\", groups=[Test])");
+    equal(regula.bind(), undefined, "@Real(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     deleteElements();
 });
@@ -2401,8 +2244,7 @@ test('Test binding @Length (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2411,8 +2253,7 @@ test('Test binding @Length (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2421,8 +2262,7 @@ test('Test binding @Length (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2431,8 +2271,7 @@ test('Test binding @Length (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2441,8 +2280,7 @@ test('Test binding @Length (with optional label, message, and groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2451,8 +2289,7 @@ test('Test binding @Length (with one required parameter) through markup (1)', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(max=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2461,8 +2298,7 @@ test('Test binding @Length (with one required parameter) through markup (2)', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(regula.bind, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2471,7 +2307,7 @@ test('Test binding @Length (with both required parameters) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10)");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10) should be a valid definition");
+    equal(regula.bind(), undefined, "@Length(min=5, max=10) should be a valid definition");
 
     deleteElements();
 });
@@ -2480,7 +2316,7 @@ test('Test binding @Length (with both required parameters and optional label par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10, label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Length(min=5, max=10, label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2489,7 +2325,7 @@ test('Test binding @Length (with both required parameters and optional message p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10, message=\"test message\")");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10, message=\"test message\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Length(min=5, max=10, message=\"test message\") should be a valid definition");
 
     deleteElements();
 });
@@ -2498,7 +2334,7 @@ test('Test binding @Length (with both required parameters and optional groups pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10, groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Length(min=5, max=10, groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2507,7 +2343,7 @@ test('Test binding @Length (with both required parameters and optional message, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Length(min=5, max=10, label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2516,8 +2352,7 @@ test('Test binding @Digits through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Digits");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Digits: @Digits is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2526,8 +2361,7 @@ test('Test binding @Digits (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2536,8 +2370,7 @@ test('Test binding @Digits (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2546,8 +2379,7 @@ test('Test binding @Digits (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2556,8 +2388,7 @@ test('Test binding @Digits (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2566,8 +2397,7 @@ test('Test binding @Digits (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2576,8 +2406,7 @@ test('Test binding @Digits (with integer parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2586,8 +2415,7 @@ test('Test binding @Digits (with integer and optional label parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2596,8 +2424,7 @@ test('Test binding @Digits (with integer and optional message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2606,8 +2433,7 @@ test('Test binding @Digits (with integer and optional groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2616,8 +2442,7 @@ test('Test binding @Digits (with integer and optional groups, label and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameters");
 
     deleteElements();
 });
@@ -2626,8 +2451,7 @@ test('Test binding @Digits (with fraction parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5)");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameters");
 
     deleteElements();
 });
@@ -2636,8 +2460,7 @@ test('Test binding @Digits (with fraction and optional label parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2646,8 +2469,7 @@ test('Test binding @Digits (with fraction and optional message parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2656,8 +2478,7 @@ test('Test binding @Digits (with fraction and optional groups parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2666,8 +2487,7 @@ test('Test binding @Digits (with fraction and optional groups, label and message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(fraction=5, label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(regula.bind, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2676,7 +2496,7 @@ test('Test binding @Digits (with integer and fraction parameter) through markup'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5)");
 
-    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5) must be a valid definition");
+    equal(regula.bind(), undefined, "@Digits(integer=5, fraction=5) must be a valid definition");
 
     deleteElements();
 });
@@ -2685,7 +2505,7 @@ test('Test binding @Digits (with integer and fraction and optional label paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\") must be a valid definition");
+    equal(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\") must be a valid definition");
 
     deleteElements();
 });
@@ -2694,7 +2514,7 @@ test('Test binding @Digits (with integer and fraction and optional message param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, message=\"this is a test\") must be a valid definition");
+    equal(regula.bind(), undefined, "@Digits(integer=5, fraction=5, message=\"this is a test\") must be a valid definition");
 
     deleteElements();
 });
@@ -2703,7 +2523,7 @@ test('Test binding @Digits (with integer and fraction and optional groups parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, groups=[Test]) must be a valid definition");
+    equal(regula.bind(), undefined, "@Digits(integer=5, fraction=5, groups=[Test]) must be a valid definition");
 
     deleteElements();
 });
@@ -2712,7 +2532,7 @@ test('Test binding @Digits (with integer and fraction and optional groups, label
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
+    equal(regula.bind(), undefined, "@Digits(integer=5, fraction=5, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
 
     deleteElements();
 });
@@ -2721,8 +2541,7 @@ test('Test binding @Past through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Past");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Past: @Past is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound to a form element");
 
     deleteElements();
 });
@@ -2731,8 +2550,7 @@ test('Test binding @Past (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2741,8 +2559,7 @@ test('Test binding @Past (with optional label parameter) through markup', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2751,8 +2568,7 @@ test('Test binding @Past (with optional message parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2761,8 +2577,7 @@ test('Test binding @Past (with optional groups parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2771,8 +2586,7 @@ test('Test binding @Past (with optional groups, label and message parameter) thr
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2781,7 +2595,7 @@ test('Test binding @Past (with required parameter) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\") should be a valid definition");
 
     deleteElements();
 });
@@ -2790,7 +2604,7 @@ test('Test binding @Past (with required parameter and optional label parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2799,7 +2613,7 @@ test('Test binding @Past (with required parameter and optional message parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2808,7 +2622,7 @@ test('Test binding @Past (with required parameter and optional groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2817,7 +2631,7 @@ test('Test binding @Past (with required parameter and optional label, message, a
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2826,8 +2640,7 @@ test('Test binding @Past (with optional separator parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2836,8 +2649,7 @@ test('Test binding @Past (with optional separator and label parameter) through m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2846,8 +2658,7 @@ test('Test binding @Past (with optional separator and message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2856,8 +2667,7 @@ test('Test binding @Past (with optional separator and groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2866,8 +2676,7 @@ test('Test binding @Past (with optional separator, groups, label and message par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2876,7 +2685,7 @@ test('Test binding @Past (with required parameter and optional separator paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\") should be a valid definition");
 
     deleteElements();
 });
@@ -2885,7 +2694,7 @@ test('Test binding @Past (with required parameter and optional separator and lab
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2894,7 +2703,7 @@ test('Test binding @Past (with required parameter and optional separator and mes
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2903,7 +2712,7 @@ test('Test binding @Past (with required parameter and optional separator and gro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -2912,7 +2721,7 @@ test('Test binding @Past (with required parameter and optional separator, label,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2921,8 +2730,7 @@ test('Test binding @Past (with optional date parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2931,8 +2739,7 @@ test('Test binding @Past (with optional date and label parameter) through markup
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2941,8 +2748,7 @@ test('Test binding @Past (with optional date and message parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2951,8 +2757,7 @@ test('Test binding @Past (with optional date and groups parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2961,8 +2766,7 @@ test('Test binding @Past (with optional date, groups, label and message paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -2971,7 +2775,7 @@ test('Test binding @Past (with required parameter and optional date parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", date=\"07/03/1984\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\") should be a valid definition");
 
     deleteElements();
 });
@@ -2980,7 +2784,7 @@ test('Test binding @Past (with required parameter and optional date and label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2989,7 +2793,7 @@ test('Test binding @Past (with required parameter and optional date and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -2998,7 +2802,7 @@ test('Test binding @Past (with required parameter and optional date and groups p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", date=\"07/03/1984\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3007,7 +2811,7 @@ test('Test binding @Past (with required parameter and optional date, label, mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3016,8 +2820,7 @@ test('Test binding @Past (with optional date parameter) through markup', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3026,8 +2829,7 @@ test('Test binding @Past (with optional date and label parameter) through markup
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3036,8 +2838,7 @@ test('Test binding @Past (with optional date and message parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3046,8 +2847,7 @@ test('Test binding @Past (with optional date and groups parameter) through marku
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3056,8 +2856,7 @@ test('Test binding @Past (with optional date, separator, groups, label and messa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Past cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Past cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3066,7 +2865,7 @@ test('Test binding @Past (with required parameter and optional date parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\") should be a valid definition");
 
     deleteElements();
 });
@@ -3075,7 +2874,7 @@ test('Test binding @Past (with required parameter and optional date and label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3084,7 +2883,7 @@ test('Test binding @Past (with required parameter and optional date and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3093,7 +2892,7 @@ test('Test binding @Past (with required parameter and optional date and groups p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3102,7 +2901,7 @@ test('Test binding @Past (with required parameter and optional date, separator, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Past(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3111,8 +2910,7 @@ test('Test binding @Future through markup to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@Future");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Future: @Future is not a form constraint, but you are trying to bind it to a form");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound to a form element");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound to a form element");
 
     deleteElements();
 });
@@ -3121,8 +2919,7 @@ test('Test binding @Future (without parameters) through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3131,8 +2928,7 @@ test('Test binding @Future (with optional label parameter) through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3141,8 +2937,7 @@ test('Test binding @Future (with optional message parameter) through markup', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3151,8 +2946,7 @@ test('Test binding @Future (with optional groups parameter) through markup', fun
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3161,8 +2955,7 @@ test('Test binding @Future (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3171,7 +2964,7 @@ test('Test binding @Future (with required parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\") should be a valid definition");
 
     deleteElements();
 });
@@ -3180,7 +2973,7 @@ test('Test binding @Future (with required parameter and optional label parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3189,7 +2982,7 @@ test('Test binding @Future (with required parameter and optional message paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3198,7 +2991,7 @@ test('Test binding @Future (with required parameter and optional groups paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3207,7 +3000,7 @@ test('Test binding @Future (with required parameter and optional label, message,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3216,8 +3009,7 @@ test('Test binding @Future (with optional separator parameter) through markup', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3226,8 +3018,7 @@ test('Test binding @Future (with optional separator and label parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3236,8 +3027,7 @@ test('Test binding @Future (with optional separator and message parameter) throu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3246,8 +3036,7 @@ test('Test binding @Future (with optional separator and groups parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3256,8 +3045,7 @@ test('Test binding @Future (with optional separator, groups, label and message p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3266,7 +3054,7 @@ test('Test binding @Future (with required parameter and optional separator param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\") should be a valid definition");
 
     deleteElements();
 });
@@ -3275,7 +3063,7 @@ test('Test binding @Future (with required parameter and optional separator and l
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3284,7 +3072,7 @@ test('Test binding @Future (with required parameter and optional separator and m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3293,7 +3081,7 @@ test('Test binding @Future (with required parameter and optional separator and g
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3302,7 +3090,7 @@ test('Test binding @Future (with required parameter and optional separator, labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3311,8 +3099,7 @@ test('Test binding @Future (with optional date parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3321,8 +3108,7 @@ test('Test binding @Future (with optional date and label parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3331,8 +3117,7 @@ test('Test binding @Future (with optional date and message parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3341,8 +3126,7 @@ test('Test binding @Future (with optional date and groups parameter) through mar
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3351,8 +3135,7 @@ test('Test binding @Future (with optional date, groups, label and message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3361,7 +3144,7 @@ test('Test binding @Future (with required parameter and optional date parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", date=\"07/03/1984\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\") should be a valid definition");
 
     deleteElements();
 });
@@ -3370,7 +3153,7 @@ test('Test binding @Future (with required parameter and optional date and label 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3379,7 +3162,7 @@ test('Test binding @Future (with required parameter and optional date and messag
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3388,7 +3171,7 @@ test('Test binding @Future (with required parameter and optional date and groups
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", date=\"07/03/1984\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3397,7 +3180,7 @@ test('Test binding @Future (with required parameter and optional date, label, me
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3406,8 +3189,7 @@ test('Test binding @Future (with optional date parameter) through markup', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3416,8 +3198,7 @@ test('Test binding @Future (with optional date and label parameter) through mark
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3426,8 +3207,7 @@ test('Test binding @Future (with optional date and message parameter) through ma
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3436,8 +3216,7 @@ test('Test binding @Future (with optional date and groups parameter) through mar
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3446,8 +3225,7 @@ test('Test binding @Future (with optional date, separator, groups, label and mes
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(regula.bind, expectedExceptionMessage, "@Future cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@Future cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3456,7 +3234,7 @@ test('Test binding @Future (with required parameter and optional date parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\") should be a valid definition");
 
     deleteElements();
 });
@@ -3465,7 +3243,7 @@ test('Test binding @Future (with required parameter and optional date and label 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3474,7 +3252,7 @@ test('Test binding @Future (with required parameter and optional date and messag
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3483,7 +3261,7 @@ test('Test binding @Future (with required parameter and optional date and groups
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", message=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3492,7 +3270,7 @@ test('Test binding @Future (with required parameter and optional date, separator
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@Future(format=\"MDY\", separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"This is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3501,8 +3279,7 @@ test('Test binding @CompletelyFilled to a non-form element through markup', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@CompletelyFilled");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".CompletelyFilled: @CompletelyFilled is a form constraint, but you are trying to bind it to a non-form element");
-    raises(regula.bind, expectedExceptionMessage, "@CompletelyFilled cannot be bound to a non-form element");
+    throws(regula.bind, regula.Exception.BindException, "@CompletelyFilled cannot be bound to a non-form element");
 
     deleteElements();
 });
@@ -3511,7 +3288,7 @@ test('Test binding @CompletelyFilled (without parameters) through markup', funct
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled should be a valid definition");
+    equal(regula.bind(), undefined, "@CompletelyFilled should be a valid definition");
 
     deleteElements();
 });
@@ -3520,7 +3297,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through mar
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@CompletelyFilled(label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3529,7 +3306,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(message=\"this is a test\")");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@CompletelyFilled(message=\"this is a test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3538,7 +3315,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through ma
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@CompletelyFilled(groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3547,7 +3324,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@CompletelyFilled(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3556,8 +3333,7 @@ test('Test binding @PasswordsMatch through markup to a non-form element', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@PasswordsMatch");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".PasswordsMatch: @PasswordsMatch is a form constraint, but you are trying to bind it to a non-form element");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound to a input element");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound to a input element");
 
     deleteElements();
 });
@@ -3566,8 +3342,7 @@ test('Test binding @PasswordsMatch (without parameters) through markup', functio
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3576,8 +3351,7 @@ test('Test binding @PasswordsMatch (with optional label parameter) through marku
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3586,8 +3360,7 @@ test('Test binding @PasswordsMatch (with optional message parameter) through mar
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(message=\"this is a test\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3596,8 +3369,7 @@ test('Test binding @PasswordsMatch (with optional groups parameter) through mark
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3606,8 +3378,7 @@ test('Test binding @PasswordsMatch (with optional label, message, and groups par
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3616,8 +3387,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through markup 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field1=\"field1\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field2");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3626,8 +3396,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through markup 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\")");
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field1");
-    raises(regula.bind, expectedExceptionMessage, "@PasswordsMatch cannot be bound without its required parameter");
+    throws(regula.bind, regula.Exception.BindException, "@PasswordsMatch cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -3636,7 +3405,7 @@ test('Test binding @PasswordsMatch (with both required parameters) through marku
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\")");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\") should be a valid definition");
+    equal(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\") should be a valid definition");
 
     deleteElements();
 });
@@ -3645,7 +3414,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional l
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\")");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\") should be a valid definition");
+    equal(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\") should be a valid definition");
 
     deleteElements();
 });
@@ -3654,7 +3423,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\")");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\") should be a valid definition");
+    equal(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", message=\"test message\") should be a valid definition");
 
     deleteElements();
 });
@@ -3663,7 +3432,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional g
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3672,7 +3441,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test])");
 
-    equals(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+    equal(regula.bind(), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
@@ -3683,16 +3452,14 @@ test('Test binding @Checked through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Checked: @Checked is not a form constraint, but you are trying to bind it to a form");
-
-    raises(function() {
+    throws(function() {
        regula.bind({
            element: $form.get(0),
            constraints: [
                {constraintType: regula.Constraint.Checked}
            ]
        });
-    }, expectedExceptionMessage, "@Checked cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Checked cannot be bound to a form element");
 
     deleteElements();
 });
@@ -3701,16 +3468,14 @@ test('Test binding @Checked through regula.bind to a non-checkbox/non-radio-butt
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Checked: @Checked is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button");
-
-    raises(function() {
+    throws(function() {
        regula.bind({
            element: $input.get(0),
            constraints: [
                {constraintType: regula.Constraint.Checked}
            ]
        });
-    }, expectedExceptionMessage, "@Checked should not be bound to a non-checkbox/non-radio-button element");
+    }, regula.Exception.BindException, "@Checked should not be bound to a non-checkbox/non-radio-button element");
 
     deleteElements();
 });
@@ -3719,7 +3484,7 @@ test('Test binding @Checked (without parameters) through regula.bind to a checkb
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Checked}
@@ -3733,7 +3498,7 @@ test('Test binding @Checked (without parameters) through regula.bind to a radio'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "radio");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Checked}
@@ -3747,7 +3512,7 @@ test('Test binding @Checked (with label parameter) through regula.bind', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3766,7 +3531,7 @@ test('Test binding @Checked (with message parameter) through regula.bind', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3785,7 +3550,7 @@ test('Test binding @Checked (with groups parameter) through regula.bind', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3804,7 +3569,7 @@ test('Test binding @Checked (with groups, message and label parameters) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3825,15 +3590,14 @@ test('Test binding @Selected through regula.bind to a form element', function() 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Selected: @Selected is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Selected}
             ]
         });
-    }, expectedExceptionMessage, "@Selected cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Selected cannot be bound to a form element");
 
     deleteElements();
 });
@@ -3842,16 +3606,14 @@ test('Test binding @Selected through regula.bind to a non-select element', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Selected: @Selected is only applicable to select boxes. You are trying to bind it to an input element that is not a select box");
-
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Selected}
             ]
         });
-    }, expectedExceptionMessage, "@Selected should not be bound to a non-select-box element");
+    }, regula.Exception.BindException, "@Selected should not be bound to a non-select-box element");
 
     deleteElements();
 });
@@ -3860,7 +3622,7 @@ test('Test binding @Selected (without parameters) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Selected}
@@ -3874,7 +3636,7 @@ test('Test binding @Selected (with label parameter) through regula.bind', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3893,7 +3655,7 @@ test('Test binding @Selected (with message parameter) through regula.bind', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3912,7 +3674,7 @@ test('Test binding @Selected (with groups parameter) through regula.bind', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3931,7 +3693,7 @@ test('Test binding @Selected (with groups, message and label parameters) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -3952,15 +3714,14 @@ test('Test binding @Required through regula.bind to a form element', function() 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Required: @Required is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Required}
             ]
         })
-    }, expectedExceptionMessage, "@Required cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Required cannot be bound to a form element");
 
     deleteElements();
 });
@@ -3969,7 +3730,7 @@ test('Test binding @Required (without parameters) through regula.bind to an inpu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Required}
@@ -3983,7 +3744,7 @@ test('Test binding @Required (without parameters) through regula.bind to a check
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "checkbox");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Required}
@@ -3997,7 +3758,7 @@ test('Test binding @Required (without parameters) through regula.bind to a radio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "radio");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Required}
@@ -4011,7 +3772,7 @@ test('Test binding @Required (without parameters) through regula.bind to a selec
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, undefined, "select");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Required}
@@ -4026,7 +3787,7 @@ test('Test binding @Required (with label parameter) through markup', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4045,7 +3806,7 @@ test('Test binding @Required (with message parameter) through markup', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4064,7 +3825,7 @@ test('Test binding @Required (with groups parameter) through markup', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4083,7 +3844,7 @@ test('Test binding @Required (with groups, message and label parameters) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4104,15 +3865,14 @@ test('Test binding @Max through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Max: @Max is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Max}
             ]
         });
-    }, expectedExceptionMessage, "@Max cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Max cannot be bound to a form element");
 
     deleteElements();
 });
@@ -4121,15 +3881,14 @@ test('Test binding @Max (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Max}
             ]
         });
-    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4138,8 +3897,7 @@ test('Test binding @Max (with optional label parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4151,7 +3909,7 @@ test('Test binding @Max (with optional label parameter) through regula.bind', fu
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4160,8 +3918,7 @@ test('Test binding @Max (with optional message parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4173,7 +3930,7 @@ test('Test binding @Max (with optional message parameter) through regula.bind', 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4182,8 +3939,7 @@ test('Test binding @Max (with optional groups parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4195,7 +3951,7 @@ test('Test binding @Max (with optional groups parameter) through regula.bind', f
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Max cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Max cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4204,8 +3960,7 @@ test('Test binding @Max (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Max: You seem to have provided some optional or required parameters for @Max, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4219,7 +3974,7 @@ test('Test binding @Max (with optional groups, label and message parameter) thro
                 }
             ]
         });
-    });
+    }, regula.Exception.BindException, "@Max cannot be bound without its required parameters");
 
     deleteElements();
 });
@@ -4228,7 +3983,7 @@ test('Test binding @Max (with required parameter) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4247,7 +4002,7 @@ test('Test binding @Max (with required parameter and optional label parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4267,7 +4022,7 @@ test('Test binding @Max (with required parameter and optional message parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4287,7 +4042,7 @@ test('Test binding @Max (with required parameter and optional groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4307,7 +4062,7 @@ test('Test binding @Max (with required parameter and optional groups, label and 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4329,15 +4084,14 @@ test('Test binding @Min through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Min: @Min is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Min}
             ]
         });
-    }, expectedExceptionMessage, "@Min cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Min cannot be bound to a form element");
 
     deleteElements();
 });
@@ -4346,15 +4100,14 @@ test('Test binding @Min (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Min}
             ]
         });
-    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4363,8 +4116,7 @@ test('Test binding @Min (with optional label parameter) through regula.bind', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4376,7 +4128,7 @@ test('Test binding @Min (with optional label parameter) through regula.bind', fu
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4385,8 +4137,7 @@ test('Test binding @Min (with optional message parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4398,7 +4149,7 @@ test('Test binding @Min (with optional message parameter) through regula.bind', 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4407,8 +4158,7 @@ test('Test binding @Min (with optional groups parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4420,7 +4170,7 @@ test('Test binding @Min (with optional groups parameter) through regula.bind', f
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Min cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4429,8 +4179,7 @@ test('Test binding @Min (with optional groups, label and message parameter) thro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Min: You seem to have provided some optional or required parameters for @Min, but you are still missing the following 1 required parameter\\(s\\): value");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4444,7 +4193,7 @@ test('Test binding @Min (with optional groups, label and message parameter) thro
                 }
             ]
         });
-    });
+    }, regula.Exception.BindException, "@Min cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4453,7 +4202,7 @@ test('Test binding @Min (with required parameter) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4472,7 +4221,7 @@ test('Test binding @Min (with required parameter and optional label parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4492,7 +4241,7 @@ test('Test binding @Min (with required parameter and optional message parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4512,7 +4261,7 @@ test('Test binding @Min (with required parameter and optional groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4532,7 +4281,7 @@ test('Test binding @Min (with required parameter and optional groups, label and 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4554,15 +4303,14 @@ test('Test binding @Range through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Range}
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Range cannot be bound to a form element");
 
     deleteElements();
 });
@@ -4571,15 +4319,14 @@ test('Test binding @Range (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Range}
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4588,8 +4335,7 @@ test('Test binding @Range (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4601,7 +4347,7 @@ test('Test binding @Range (with optional label parameter) through regula.bind', 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4610,8 +4356,7 @@ test('Test binding @Range (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4623,7 +4368,7 @@ test('Test binding @Range (with optional message parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4632,8 +4377,7 @@ test('Test binding @Range (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4645,7 +4389,7 @@ test('Test binding @Range (with optional groups parameter) through regula.bind',
                 }
             ]
         })
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4654,8 +4398,7 @@ test('Test binding @Range (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4669,7 +4412,7 @@ test('Test binding @Range (with optional label, message, and groups parameter) t
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4678,8 +4421,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (1)'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4691,7 +4433,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (1)'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4700,8 +4442,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (2)'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4713,7 +4454,7 @@ test('Test binding @Range (with one required parameter) through regula.bind (2)'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4722,7 +4463,7 @@ test('Test binding @Range (with both required parameters) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4742,7 +4483,7 @@ test('Test binding @Range (with both required parameters and optional label para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4763,7 +4504,7 @@ test('Test binding @Range (with both required parameters and optional message pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4784,7 +4525,7 @@ test('Test binding @Range (with both required parameters and optional groups par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4805,7 +4546,7 @@ test('Test binding @Range (with both required parameters and optional message, l
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -4828,15 +4569,14 @@ test('Test binding @Between through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Range: @Range is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Between}
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Range cannot be bound to a form element");
 
     deleteElements();
 });
@@ -4845,15 +4585,14 @@ test('Test binding @Between (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Between}
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4862,8 +4601,7 @@ test('Test binding @Between (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4875,7 +4613,7 @@ test('Test binding @Between (with optional label parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4884,8 +4622,7 @@ test('Test binding @Between (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4897,7 +4634,7 @@ test('Test binding @Between (with optional message parameter) through regula.bin
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4906,8 +4643,7 @@ test('Test binding @Between (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4919,7 +4655,7 @@ test('Test binding @Between (with optional groups parameter) through regula.bind
                 }
             ]
         })
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4928,8 +4664,7 @@ test('Test binding @Between (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4943,7 +4678,7 @@ test('Test binding @Between (with optional label, message, and groups parameter)
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4952,8 +4687,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (1
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4965,7 +4699,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (1
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4974,8 +4708,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (2
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Range: You seem to have provided some optional or required parameters for @Range, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -4987,7 +4720,7 @@ test('Test binding @Between (with one required parameter) through regula.bind (2
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Range cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Range cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -4996,7 +4729,7 @@ test('Test binding @Between (with both required parameters) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5016,7 +4749,7 @@ test('Test binding @Between (with both required parameters and optional label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5037,7 +4770,7 @@ test('Test binding @Between (with both required parameters and optional message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5058,7 +4791,7 @@ test('Test binding @Between (with both required parameters and optional groups p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5079,7 +4812,7 @@ test('Test binding @Between (with both required parameters and optional message,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5102,16 +4835,14 @@ test('Test binding @NotBlank through regula.bind to a form element', function() 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
-
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.NotBlank}
             ]
         });
-    }, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+    }, regula.Exception.BindException, "@NotBlank cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5120,16 +4851,14 @@ test('Test binding @NotBlank through regula.bind to a form element', function() 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
-
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.NotBlank}
             ]
         });
-    }, expectedExceptionMessage, "@NotBlank cannot be bound to a form element");
+    }, regula.Exception.BindException, "@NotBlank cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5138,7 +4867,7 @@ test('Test binding @NotBlank (without parameters) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.NotBlank}
@@ -5152,7 +4881,7 @@ test('Test binding @NotBlank (with optional label parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5171,7 +4900,7 @@ test('Test binding @NotBlank (with optional message parameter) through regula.bi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5190,7 +4919,7 @@ test('Test binding @NotBlank (with optional groups parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5209,7 +4938,7 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5232,16 +4961,14 @@ test('Test binding @NotEmpty through regula.bind to a form element', function() 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".NotBlank: @NotBlank is not a form constraint, but you are trying to bind it to a form");
-
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.NotBlank}
             ]
         });
-    }, expectedExceptionMessage, "@NotEmpty cannot be bound to a form element");
+    }, regula.Exception.BindException, "@NotEmpty cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5250,7 +4977,7 @@ test('Test binding @NotEmpty (without parameters) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.NotEmpty}
@@ -5264,7 +4991,7 @@ test('Test binding @NotEmpty (with optional label parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5283,7 +5010,7 @@ test('Test binding @NotEmpty (with optional message parameter) through regula.bi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5302,7 +5029,7 @@ test('Test binding @NotEmpty (with optional groups parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5321,7 +5048,7 @@ test('Test binding @NotEmpty (with optional label, message, and groups parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5342,15 +5069,14 @@ test('Test binding @Empty through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Empty}
             ]
         });
-    });
+    }, regula.Exception.BindException, "@Empty cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5359,7 +5085,7 @@ test('Test binding @Empty (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Empty}
@@ -5373,7 +5099,7 @@ test('Test binding @Empty (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5392,7 +5118,7 @@ test('Test binding @Empty (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5411,7 +5137,7 @@ test('Test binding @Empty (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5430,7 +5156,7 @@ test('Test binding @Empty (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5451,15 +5177,14 @@ test('Test binding @Blank through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Blank: @Blank is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Blank}
             ]
         });
-    });
+    }, regula.Exception.BindException, "@Blank cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5468,7 +5193,7 @@ test('Test binding @Blank (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Blank}
@@ -5482,7 +5207,7 @@ test('Test binding @Blank (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5501,7 +5226,7 @@ test('Test binding @Blank (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5520,7 +5245,7 @@ test('Test binding @Blank (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5539,7 +5264,7 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5560,15 +5285,14 @@ test('Test binding @Pattern through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Pattern}
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Pattern cannot be bound to a form element");
 
     deleteElements();
 });
@@ -5577,15 +5301,14 @@ test('Test binding @Pattern (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Pattern}
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5594,8 +5317,7 @@ test('Test binding @Pattern (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5607,7 +5329,7 @@ test('Test binding @Pattern (with optional label parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5616,8 +5338,7 @@ test('Test binding @Pattern (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5629,7 +5350,7 @@ test('Test binding @Pattern (with optional message parameter) through regula.bin
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5638,8 +5359,7 @@ test('Test binding @Pattern (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5651,7 +5371,7 @@ test('Test binding @Pattern (with optional groups parameter) through regula.bind
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5660,8 +5380,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5675,7 +5394,7 @@ test('Test binding @Pattern (with optional groups, label and message parameter) 
                 }
             ]
         })
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5684,7 +5403,7 @@ test('Test binding @Pattern (with required parameter) through regula.bind', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5703,7 +5422,7 @@ test('Test binding @Pattern (with required parameter and optional label paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5723,7 +5442,7 @@ test('Test binding @Pattern (with required parameter and optional message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5743,7 +5462,7 @@ test('Test binding @Pattern (with required parameter and optional groups paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5763,7 +5482,7 @@ test('Test binding @Pattern (with required parameter and optional label, message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5785,8 +5504,7 @@ test('Test binding @Pattern (with optional flags parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5798,7 +5516,7 @@ test('Test binding @Pattern (with optional flags parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5807,8 +5525,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5821,7 +5538,7 @@ test('Test binding @Pattern (with optional flags and label parameter) through re
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5830,8 +5547,7 @@ test('Test binding @Pattern (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5844,7 +5560,7 @@ test('Test binding @Pattern (with optional flags and message parameter) through 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5853,8 +5569,7 @@ test('Test binding @Pattern (with optional flags and groups parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5867,7 +5582,7 @@ test('Test binding @Pattern (with optional flags and groups parameter) through r
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5876,8 +5591,7 @@ test('Test binding @Pattern (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -5892,7 +5606,7 @@ test('Test binding @Pattern (with optional flags, groups, label and message para
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Pattern cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Pattern cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -5901,7 +5615,7 @@ test('Test binding @Pattern (with required parameter and optional flags paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5921,7 +5635,7 @@ test('Test binding @Pattern (with required parameter and optional flags and labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5942,7 +5656,7 @@ test('Test binding @Pattern (with required parameter and optional flags and mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5963,7 +5677,7 @@ test('Test binding @Pattern (with required parameter and optional flags and grou
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -5984,7 +5698,7 @@ test('Test binding @Pattern (with required parameter and optional flags, label, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6007,15 +5721,14 @@ test('Test binding @Matches through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Pattern: @Pattern is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Matches}
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Matches cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6024,15 +5737,14 @@ test('Test binding @Matches (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Matches}
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6041,8 +5753,7 @@ test('Test binding @Matches (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6054,7 +5765,7 @@ test('Test binding @Matches (with optional label parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6063,8 +5774,7 @@ test('Test binding @Matches (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6076,7 +5786,7 @@ test('Test binding @Matches (with optional message parameter) through regula.bin
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6085,8 +5795,7 @@ test('Test binding @Matches (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6098,7 +5807,7 @@ test('Test binding @Matches (with optional groups parameter) through regula.bind
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6107,8 +5816,7 @@ test('Test binding @Matches (with optional groups, label and message parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6122,7 +5830,7 @@ test('Test binding @Matches (with optional groups, label and message parameter) 
                 }
             ]
         })
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6131,7 +5839,7 @@ test('Test binding @Matches (with required parameter) through regula.bind', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6150,7 +5858,7 @@ test('Test binding @Matches (with required parameter and optional label paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6170,7 +5878,7 @@ test('Test binding @Matches (with required parameter and optional message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6190,7 +5898,7 @@ test('Test binding @Matches (with required parameter and optional groups paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6210,7 +5918,7 @@ test('Test binding @Matches (with required parameter and optional label, message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6232,8 +5940,7 @@ test('Test binding @Matches (with optional flags parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6245,7 +5952,7 @@ test('Test binding @Matches (with optional flags parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6254,8 +5961,7 @@ test('Test binding @Matches (with optional flags and label parameter) through re
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6268,7 +5974,7 @@ test('Test binding @Matches (with optional flags and label parameter) through re
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6277,8 +5983,7 @@ test('Test binding @Matches (with optional flags and message parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6291,7 +5996,7 @@ test('Test binding @Matches (with optional flags and message parameter) through 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6300,8 +6005,7 @@ test('Test binding @Matches (with optional flags and groups parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6314,7 +6018,7 @@ test('Test binding @Matches (with optional flags and groups parameter) through r
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6323,8 +6027,7 @@ test('Test binding @Matches (with optional flags, groups, label and message para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Pattern: You seem to have provided some optional or required parameters for @Pattern, but you are still missing the following 1 required parameter\\(s\\): regex");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -6339,7 +6042,7 @@ test('Test binding @Matches (with optional flags, groups, label and message para
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Matches cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Matches cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -6348,7 +6051,7 @@ test('Test binding @Matches (with required parameter and optional flags paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6368,7 +6071,7 @@ test('Test binding @Matches (with required parameter and optional flags and labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6389,7 +6092,7 @@ test('Test binding @Matches (with required parameter and optional flags and mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6410,7 +6113,7 @@ test('Test binding @Matches (with required parameter and optional flags and grou
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6431,7 +6134,7 @@ test('Test binding @Matches (with required parameter and optional flags, label, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6454,15 +6157,14 @@ test('Test binding @Email through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Email: @Email is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Email}
             ]
         });
-    }, expectedExceptionMessage, "@Email cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Email cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6471,7 +6173,7 @@ test('Test binding @Email (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Email}
@@ -6485,7 +6187,7 @@ test('Test binding @Email (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6504,7 +6206,7 @@ test('Test binding @Email (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6521,7 +6223,7 @@ test('Test binding @Email (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6538,7 +6240,7 @@ test('Test binding @Email (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Email(label=\"test\", message=\"this is a test\", groups=[Test])");
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6557,15 +6259,14 @@ test('Test binding @Alpha through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Alpha: @Alpha is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Alpha}
             ]
         });
-    }, expectedExceptionMessage, "@Alpha cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Alpha cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6574,7 +6275,7 @@ test('Test binding @Alpha (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Alpha}
@@ -6588,7 +6289,7 @@ test('Test binding @Alpha (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6607,7 +6308,7 @@ test('Test binding @Alpha (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6626,7 +6327,7 @@ test('Test binding @Alpha (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6645,7 +6346,7 @@ test('Test binding @Alpha (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6666,15 +6367,14 @@ test('Test binding @Numeric through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Numeric: @Numeric is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Numeric}
             ]
         });
-    }, expectedExceptionMessage, "@Numeric cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Numeric cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6683,7 +6383,7 @@ test('Test binding @Numeric (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Numeric}
@@ -6697,7 +6397,7 @@ test('Test binding @Numeric (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6716,7 +6416,7 @@ test('Test binding @Numeric (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6735,7 +6435,7 @@ test('Test binding @Numeric (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6754,7 +6454,7 @@ test('Test binding @Numeric (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6775,15 +6475,14 @@ test('Test binding @AlphaNumeric through regula.bind to a form element', functio
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".AlphaNumeric: @AlphaNumeric is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.AlphaNumeric}
             ]
         });
-    }, expectedExceptionMessage, "@AlphaNumeric cannot be bound to a form element");
+    }, regula.Exception.BindException, "@AlphaNumeric cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6792,7 +6491,7 @@ test('Test binding @AlphaNumeric (without parameters) through regula.bind', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.AlphaNumeric}
@@ -6806,7 +6505,7 @@ test('Test binding @AlphaNumeric (with optional label parameter) through regula.
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6825,7 +6524,7 @@ test('Test binding @AlphaNumeric (with optional message parameter) through regul
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6844,7 +6543,7 @@ test('Test binding @AlphaNumeric (with optional groups parameter) through regula
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6863,7 +6562,7 @@ test('Test binding @AlphaNumeric (with optional label, message, and groups param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6884,15 +6583,14 @@ test('Test binding @Integer through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Integer: @Integer is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Integer}
             ]
         });
-    }, expectedExceptionMessage, "@Integer cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Integer cannot be bound to a form element");
 
     deleteElements();
 });
@@ -6901,7 +6599,7 @@ test('Test binding @Integer (without parameters) through regula.bind', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Integer}
@@ -6915,7 +6613,7 @@ test('Test binding @Integer (with optional label parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6934,7 +6632,7 @@ test('Test binding @Integer (with optional message parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6953,7 +6651,7 @@ test('Test binding @Integer (with optional groups parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6972,7 +6670,7 @@ test('Test binding @Integer (with optional label, message, and groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -6993,15 +6691,14 @@ test('Test binding @Real through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Real: @Real is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Real}
             ]
         });
-    }, expectedExceptionMessage, "@Real cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Real cannot be bound to a form element");
 
     deleteElements();
 });
@@ -7010,7 +6707,7 @@ test('Test binding @Real (without parameters) through regula.bind', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {constraintType: regula.Constraint.Real}
@@ -7024,7 +6721,7 @@ test('Test binding @Real (with optional label parameter) through regula.bind', f
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7043,7 +6740,7 @@ test('Test binding @Real (with optional message parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7062,7 +6759,7 @@ test('Test binding @Real (with optional groups parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7081,7 +6778,7 @@ test('Test binding @Real (with optional label, message, and groups parameter) th
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7102,15 +6799,14 @@ test('Test binding @Length through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Length: @Length is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Length}
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Length cannot be bound to a form element");
 
     deleteElements();
 });
@@ -7119,15 +6815,14 @@ test('Test binding @Length (without parameters) through regula.bind', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Length}
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7136,8 +6831,7 @@ test('Test binding @Length (with optional label parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7149,7 +6843,7 @@ test('Test binding @Length (with optional label parameter) through regula.bind',
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7158,8 +6852,7 @@ test('Test binding @Length (with optional message parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7171,7 +6864,7 @@ test('Test binding @Length (with optional message parameter) through regula.bind
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElements();
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");    deleteElements();
 
     deleteElements();
 });
@@ -7180,8 +6873,7 @@ test('Test binding @Length (with optional groups parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@Length(groups=[Test])");
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7193,7 +6885,7 @@ test('Test binding @Length (with optional groups parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElements();
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");    deleteElements();
 
     deleteElements();
 });
@@ -7202,8 +6894,7 @@ test('Test binding @Length (with optional label, message, and groups parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 2 required parameter\\(s\\): min, max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7217,7 +6908,7 @@ test('Test binding @Length (with optional label, message, and groups parameter) 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");    deleteElements();
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");    deleteElements();
 
     deleteElements();
 });
@@ -7226,8 +6917,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (1)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): min");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7239,7 +6929,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (1)
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7248,8 +6938,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (2)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Length: You seem to have provided some optional or required parameters for @Length, but you are still missing the following 1 required parameter\\(s\\): max");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7261,7 +6950,7 @@ test('Test binding @Length (with one required parameter) through regula.bind (2)
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Length cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Length cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7270,7 +6959,7 @@ test('Test binding @Length (with both required parameters) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7290,7 +6979,7 @@ test('Test binding @Length (with both required parameters and optional label par
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7311,7 +7000,7 @@ test('Test binding @Length (with both required parameters and optional message p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7332,7 +7021,7 @@ test('Test binding @Length (with both required parameters and optional groups pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7353,7 +7042,7 @@ test('Test binding @Length (with both required parameters and optional message, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7376,15 +7065,14 @@ test('Test binding @Digits through regula.bind to a form element', function() {
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    var expectedExceptionMessage = new RegExp(formElementId + ".Digits: @Digits is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Digits}
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound to a form element");
+    }, regula.Exception.BindException, "@Digits cannot be bound to a form element");
 
     deleteElements();
 });
@@ -7393,15 +7081,14 @@ test('Test binding @Digits (without parameters) through regula.bind', function()
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
                 {constraintType: regula.Constraint.Digits}
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7410,8 +7097,7 @@ test('Test binding @Digits (with optional label parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7423,7 +7109,7 @@ test('Test binding @Digits (with optional label parameter) through regula.bind',
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7432,8 +7118,7 @@ test('Test binding @Digits (with optional message parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7445,7 +7130,7 @@ test('Test binding @Digits (with optional message parameter) through regula.bind
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7454,8 +7139,7 @@ test('Test binding @Digits (with optional groups parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7467,7 +7151,7 @@ test('Test binding @Digits (with optional groups parameter) through regula.bind'
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
 
     deleteElements();
@@ -7477,8 +7161,7 @@ test('Test binding @Digits (with optional groups, label and message parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 2 required parameter\\(s\\): integer, fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7492,7 +7175,7 @@ test('Test binding @Digits (with optional groups, label and message parameter) t
                 }
             ]
         });
-    });
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7501,8 +7184,7 @@ test('Test binding @Digits (with integer parameter) through regula.bind', functi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7514,7 +7196,7 @@ test('Test binding @Digits (with integer parameter) through regula.bind', functi
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7523,8 +7205,7 @@ test('Test binding @Digits (with integer and optional label parameter) through r
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7537,7 +7218,7 @@ test('Test binding @Digits (with integer and optional label parameter) through r
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7546,8 +7227,7 @@ test('Test binding @Digits (with integer and optional message parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7560,7 +7240,7 @@ test('Test binding @Digits (with integer and optional message parameter) through
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7569,8 +7249,7 @@ test('Test binding @Digits (with integer and optional groups parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(function () {
+    throws(function () {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7583,7 +7262,7 @@ test('Test binding @Digits (with integer and optional groups parameter) through 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7592,8 +7271,7 @@ test('Test binding @Digits (with integer and optional groups, label and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): fraction");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7608,7 +7286,7 @@ test('Test binding @Digits (with integer and optional groups, label and message 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameters");
 
     deleteElements();
 });
@@ -7617,8 +7295,7 @@ test('Test binding @Digits (with fraction parameter) through regula.bind', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7630,7 +7307,7 @@ test('Test binding @Digits (with fraction parameter) through regula.bind', funct
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameters");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameters");
 
     deleteElements();
 });
@@ -7639,8 +7316,7 @@ test('Test binding @Digits (with fraction and optional label parameter) through 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7653,7 +7329,7 @@ test('Test binding @Digits (with fraction and optional label parameter) through 
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7662,8 +7338,7 @@ test('Test binding @Digits (with fraction and optional message parameter) throug
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7676,7 +7351,7 @@ test('Test binding @Digits (with fraction and optional message parameter) throug
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7685,8 +7360,7 @@ test('Test binding @Digits (with fraction and optional groups parameter) through
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7699,7 +7373,7 @@ test('Test binding @Digits (with fraction and optional groups parameter) through
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7708,8 +7382,7 @@ test('Test binding @Digits (with fraction and optional groups, label and message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    var expectedExceptionMessage = new RegExp(inputElementId + ".Digits: You seem to have provided some optional or required parameters for @Digits, but you are still missing the following 1 required parameter\\(s\\): integer");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7724,7 +7397,7 @@ test('Test binding @Digits (with fraction and optional groups, label and message
                 }
             ]
         });
-    }, expectedExceptionMessage, "@Digits cannot be bound without its required parameter");
+    }, regula.Exception.BindException, "@Digits cannot be bound without its required parameter");
 
     deleteElements();
 });
@@ -7733,7 +7406,7 @@ test('Test binding @Digits (with integer and fraction parameter) through regula.
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7753,7 +7426,7 @@ test('Test binding @Digits (with integer and fraction and optional label paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7774,7 +7447,7 @@ test('Test binding @Digits (with integer and fraction and optional message param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7795,7 +7468,7 @@ test('Test binding @Digits (with integer and fraction and optional groups parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7816,7 +7489,7 @@ test('Test binding @Digits (with integer and fraction and optional groups, label
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7840,7 +7513,7 @@ test('Test binding @Past through regula.bind to a form element', function() {
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".Past: @Past is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -7857,7 +7530,7 @@ test('Test binding @Past (without parameters) through regula.bind', function() {
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7874,7 +7547,7 @@ test('Test binding @Past (with optional label parameter) through regula.bind', f
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7896,7 +7569,7 @@ test('Test binding @Past (with optional message parameter) through regula.bind',
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7918,7 +7591,7 @@ test('Test binding @Past (with optional groups parameter) through regula.bind', 
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7940,7 +7613,7 @@ test('Test binding @Past (with optional groups, label and message parameter) thr
     var $input = createInputElement(inputElementId, "@Past(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -7963,7 +7636,7 @@ test('Test binding @Past (with required parameter) through regula.bind', functio
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -7982,7 +7655,7 @@ test('Test binding @Past (with required parameter and optional label parameter) 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8002,7 +7675,7 @@ test('Test binding @Past (with required parameter and optional message parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8022,7 +7695,7 @@ test('Test binding @Past (with required parameter and optional groups parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8042,7 +7715,7 @@ test('Test binding @Past (with required parameter and optional label, message, a
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8065,7 +7738,7 @@ test('Test binding @Past (with optional separator parameter) through regula.bind
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8087,7 +7760,7 @@ test('Test binding @Past (with optional separator and label parameter) through r
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8110,7 +7783,7 @@ test('Test binding @Past (with optional separator and message parameter) through
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8133,7 +7806,7 @@ test('Test binding @Past (with optional separator and groups parameter) through 
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8156,7 +7829,7 @@ test('Test binding @Past (with optional separator, groups, label and message par
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8180,7 +7853,7 @@ test('Test binding @Past (with required parameter and optional separator paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8200,7 +7873,7 @@ test('Test binding @Past (with required parameter and optional separator and lab
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8221,7 +7894,7 @@ test('Test binding @Past (with required parameter and optional separator and mes
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8242,7 +7915,7 @@ test('Test binding @Past (with required parameter and optional separator and gro
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8263,7 +7936,7 @@ test('Test binding @Past (with required parameter and optional separator, label,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8287,7 +7960,7 @@ test('Test binding @Past (with optional date parameter) through regula.bind', fu
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8309,7 +7982,7 @@ test('Test binding @Past (with optional date and label parameter) through regula
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8332,7 +8005,7 @@ test('Test binding @Past (with optional date and message parameter) through regu
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8355,7 +8028,7 @@ test('Test binding @Past (with optional date and groups parameter) through regul
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8378,7 +8051,7 @@ test('Test binding @Past (with optional date, groups, label and message paramete
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8402,7 +8075,7 @@ test('Test binding @Past (with required parameter and optional date parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8422,7 +8095,7 @@ test('Test binding @Past (with required parameter and optional date and label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8443,7 +8116,7 @@ test('Test binding @Past (with required parameter and optional date and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8464,7 +8137,7 @@ test('Test binding @Past (with required parameter and optional date and groups p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8485,7 +8158,7 @@ test('Test binding @Past (with required parameter and optional date, label, mess
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8509,7 +8182,7 @@ test('Test binding @Past (with optional date parameter) through regula.bind', fu
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\")");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8532,7 +8205,7 @@ test('Test binding @Past (with optional date and label parameter) through regula
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8556,7 +8229,7 @@ test('Test binding @Past (with optional date and message parameter) through regu
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8580,7 +8253,7 @@ test('Test binding @Past (with optional date and groups parameter) through regul
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8604,7 +8277,7 @@ test('Test binding @Past (with optional date, separator, groups, label and messa
     var $input = createInputElement(inputElementId, "@Past(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Past: You seem to have provided some optional or required parameters for @Past, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8629,7 +8302,7 @@ test('Test binding @Past (with required parameter and optional date parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8650,7 +8323,7 @@ test('Test binding @Past (with required parameter and optional date and label pa
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8672,7 +8345,7 @@ test('Test binding @Past (with required parameter and optional date and message 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8694,7 +8367,7 @@ test('Test binding @Past (with required parameter and optional date and groups p
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8716,7 +8389,7 @@ test('Test binding @Past (with required parameter and optional date, separator, 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8741,7 +8414,7 @@ test('Test binding @Future through regula.bind to a form element', function() {
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".Future: @Future is not a form constraint, but you are trying to bind it to a form");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -8758,7 +8431,7 @@ test('Test binding @Future (without parameters) through regula.bind', function()
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8775,7 +8448,7 @@ test('Test binding @Future (with optional label parameter) through regula.bind',
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8797,7 +8470,7 @@ test('Test binding @Future (with optional message parameter) through regula.bind
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8819,7 +8492,7 @@ test('Test binding @Future (with optional groups parameter) through regula.bind'
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8841,7 +8514,7 @@ test('Test binding @Future (with optional groups, label and message parameter) t
     var $input = createInputElement(inputElementId, "@Future(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8864,7 +8537,7 @@ test('Test binding @Future (with required parameter) through regula.bind', funct
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8883,7 +8556,7 @@ test('Test binding @Future (with required parameter and optional label parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8903,7 +8576,7 @@ test('Test binding @Future (with required parameter and optional message paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8923,7 +8596,7 @@ test('Test binding @Future (with required parameter and optional groups paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8943,7 +8616,7 @@ test('Test binding @Future (with required parameter and optional label, message,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -8966,7 +8639,7 @@ test('Test binding @Future (with optional separator parameter) through regula.bi
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -8988,7 +8661,7 @@ test('Test binding @Future (with optional separator and label parameter) through
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9011,7 +8684,7 @@ test('Test binding @Future (with optional separator and message parameter) throu
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9034,7 +8707,7 @@ test('Test binding @Future (with optional separator and groups parameter) throug
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9057,7 +8730,7 @@ test('Test binding @Future (with optional separator, groups, label and message p
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9081,7 +8754,7 @@ test('Test binding @Future (with required parameter and optional separator param
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9101,7 +8774,7 @@ test('Test binding @Future (with required parameter and optional separator and l
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9122,7 +8795,7 @@ test('Test binding @Future (with required parameter and optional separator and m
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9143,7 +8816,7 @@ test('Test binding @Future (with required parameter and optional separator and g
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9164,7 +8837,7 @@ test('Test binding @Future (with required parameter and optional separator, labe
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9188,7 +8861,7 @@ test('Test binding @Future (with optional date parameter) through regula.bind', 
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9210,7 +8883,7 @@ test('Test binding @Future (with optional date and label parameter) through regu
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9233,7 +8906,7 @@ test('Test binding @Future (with optional date and message parameter) through re
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9256,7 +8929,7 @@ test('Test binding @Future (with optional date and groups parameter) through reg
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9279,7 +8952,7 @@ test('Test binding @Future (with optional date, groups, label and message parame
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9303,7 +8976,7 @@ test('Test binding @Future (with required parameter and optional date parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9323,7 +8996,7 @@ test('Test binding @Future (with required parameter and optional date and label 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9344,7 +9017,7 @@ test('Test binding @Future (with required parameter and optional date and messag
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9365,7 +9038,7 @@ test('Test binding @Future (with required parameter and optional date and groups
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9386,7 +9059,7 @@ test('Test binding @Future (with required parameter and optional date, label, me
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9410,7 +9083,7 @@ test('Test binding @Future (with optional date parameter) through regula.bind', 
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\")");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9433,7 +9106,7 @@ test('Test binding @Future (with optional date and label parameter) through regu
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\")");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9457,7 +9130,7 @@ test('Test binding @Future (with optional date and message parameter) through re
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9481,7 +9154,7 @@ test('Test binding @Future (with optional date and groups parameter) through reg
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9505,7 +9178,7 @@ test('Test binding @Future (with optional date, separator, groups, label and mes
     var $input = createInputElement(inputElementId, "@Future(separator=\"/\", date=\"07/03/1984\", label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".Future: You seem to have provided some optional or required parameters for @Future, but you are still missing the following 1 required parameter\\(s\\): format");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9530,7 +9203,7 @@ test('Test binding @Future (with required parameter and optional date parameter)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9551,7 +9224,7 @@ test('Test binding @Future (with required parameter and optional date and label 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9573,7 +9246,7 @@ test('Test binding @Future (with required parameter and optional date and messag
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9595,7 +9268,7 @@ test('Test binding @Future (with required parameter and optional date and groups
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9617,7 +9290,7 @@ test('Test binding @Future (with required parameter and optional date, separator
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $input.get(0),
         constraints: [
             {
@@ -9642,7 +9315,7 @@ test('Test binding @CompletelyFilled to a non-form element through regula.bind',
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".CompletelyFilled: @CompletelyFilled is a form constraint, but you are trying to bind it to a non-form element");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9658,7 +9331,7 @@ test('Test binding @CompletelyFilled (without parameters) through regula.bind', 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {constraintType: regula.Constraint.CompletelyFilled}
@@ -9672,7 +9345,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through reg
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9691,7 +9364,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through r
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9710,7 +9383,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through re
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9729,7 +9402,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9751,7 +9424,7 @@ test('Test binding @PasswordsMatch through regula.bind to a non-form element', f
     var $input = createInputElement(inputElementId);
 
     var expectedExceptionMessage = new RegExp(inputElementId + ".PasswordsMatch: @PasswordsMatch is a form constraint, but you are trying to bind it to a non-form element");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -9768,7 +9441,7 @@ test('Test binding @PasswordsMatch (without parameters) through regula.bind', fu
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9785,7 +9458,7 @@ test('Test binding @PasswordsMatch (with optional label parameter) through regul
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9807,7 +9480,7 @@ test('Test binding @PasswordsMatch (with optional message parameter) through reg
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9829,7 +9502,7 @@ test('Test binding @PasswordsMatch (with optional groups parameter) through regu
     var $form = createFormElement(formElementId, "@PasswordsMatch(groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9851,7 +9524,7 @@ test('Test binding @PasswordsMatch (with optional label, message, and groups par
     var $form = createFormElement(formElementId, "@PasswordsMatch(label=\"test\", message=\"this is a test\", groups=[Test])");
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 2 required parameter\\(s\\): field1, field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9875,7 +9548,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field2");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9897,7 +9570,7 @@ test('Test binding @PasswordsMatch (with one required parameter) through regula.
     var $form = createFormElement(formElementId);
 
     var expectedExceptionMessage = new RegExp(formElementId + ".PasswordsMatch: You seem to have provided some optional or required parameters for @PasswordsMatch, but you are still missing the following 1 required parameter\\(s\\): field1");
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $form.get(0),
             constraints: [
@@ -9918,7 +9591,7 @@ test('Test binding @PasswordsMatch (with both required parameters) through regul
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9938,7 +9611,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional l
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9959,7 +9632,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -9980,7 +9653,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional g
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -10001,7 +9674,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals(regula.bind({
+    equal(regula.bind({
         element: $form.get(0),
         constraints: [
             {
@@ -10023,17 +9696,17 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
 module('Test regula.custom');
 
 test('Call regula.custom without any arguments', function() {
-    raises(regula.custom, /regula\.custom expects options/, "regula.custom requires options");
+    throws(regula.custom, /regula\.custom expects options/, "regula.custom requires options");
 });
 
 test('Call regula.custom with empty object-literal', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({});
     }, /regula\.custom expects a name attribute in the options argument/, "regula.custom requires options");
 });
 
 test('Call regula.custom with null name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: null
         });
@@ -10041,7 +9714,7 @@ test('Call regula.custom with null name', function() {
 });
 
 test('Call regula.custom with undefined name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: undefined
         });
@@ -10049,7 +9722,7 @@ test('Call regula.custom with undefined name', function() {
 });
 
 test('Call regula.custom with empty string as name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: ""
         });
@@ -10057,7 +9730,7 @@ test('Call regula.custom with empty string as name', function() {
 });
 
 test('Call regula.custom with only spaces as name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "       "
         });
@@ -10065,7 +9738,7 @@ test('Call regula.custom with only spaces as name', function() {
 });
 
 test('Call regula.custom with non-string as value for name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: true
         });
@@ -10073,7 +9746,7 @@ test('Call regula.custom with non-string as value for name', function() {
 });
 
 test('Call regula.custom with valid name and no validator', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime()
         });
@@ -10081,7 +9754,7 @@ test('Call regula.custom with valid name and no validator', function() {
 });
 
 test('Call regula.custom with valid name and null validator', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime(),
             validator: null
@@ -10090,7 +9763,7 @@ test('Call regula.custom with valid name and null validator', function() {
 });
 
 test('Call regula.custom with valid name and undefined validator', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime(),
             validator: undefined
@@ -10099,7 +9772,7 @@ test('Call regula.custom with valid name and undefined validator', function() {
 });
 
 test('Call regula.custom with valid name and non-function validator', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime(),
             validator: "string"
@@ -10108,7 +9781,7 @@ test('Call regula.custom with valid name and non-function validator', function()
 });
 
 test('Call regula.custom with valid name and non-string defaultMessage', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime(),
             validator: function() {
@@ -10119,7 +9792,7 @@ test('Call regula.custom with valid name and non-string defaultMessage', functio
 });
 
 test('Call regula.custom with an existing constraint name', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "Required",
             validator: function() {
@@ -10132,7 +9805,7 @@ test('Call regula.custom with an existing constraint name', function() {
 test('Call regula.custom with valid name and validator', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         validator: function() {
             return false;
@@ -10144,16 +9817,16 @@ test('Call regula.custom with valid name and validator', function() {
 
     regula.bind();
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equal 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equal \"Default\"");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElements();
 });
 
 test('Call regula.custom with required parameters and formSpecific attribute of non-boolean type', function() {
-    raises(function() {
+    throws(function() {
        regula.custom({
            name: "CustomConstraint" + new Date().getTime(),
            formSpecific: "true",
@@ -10166,7 +9839,7 @@ test('Call regula.custom with required parameters and formSpecific attribute of 
 test('Call regula.custom with required parameters and null formSpecific attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         formSpecific: null,
         validator: function() {
@@ -10179,7 +9852,7 @@ test('Call regula.custom with required parameters and null formSpecific attribut
 
     regula.bind();
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
 
     deleteElements();
 });
@@ -10187,7 +9860,7 @@ test('Call regula.custom with required parameters and null formSpecific attribut
 test('Call regula.custom with required parameters and undefined formSpecific attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         formSpecific: undefined,
         validator: function() {
@@ -10200,13 +9873,13 @@ test('Call regula.custom with required parameters and undefined formSpecific att
 
     regula.bind();
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
 
     deleteElements();
 });
 
 test('Call regula.custom with required parameters and valid formSpecific attribute', function() {
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + new Date().getTime(),
         formSpecific: true,
         validator: function() {
@@ -10217,7 +9890,7 @@ test('Call regula.custom with required parameters and valid formSpecific attribu
 test('Call regula.custom with required parameters and null params attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         params: [],
         validator: function() {
@@ -10231,8 +9904,8 @@ test('Call regula.custom with required parameters and null params attribute', fu
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equal 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equal \"Default\"");
 
     deleteElements();
 });
@@ -10240,7 +9913,7 @@ test('Call regula.custom with required parameters and null params attribute', fu
 test('Call regula.custom with required parameters and undefined params attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         params: null,
         validator: function() {
@@ -10254,14 +9927,14 @@ test('Call regula.custom with required parameters and undefined params attribute
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equal 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equal \"Default\"");
 
     deleteElements();
 });
 
 test('Call regula.custom with required parameters and params attribute of non-array type', function() {
-    raises(function() {
+    throws(function() {
         regula.custom({
             name: "CustomConstraint" + new Date().getTime(),
             params: "params",
@@ -10274,7 +9947,7 @@ test('Call regula.custom with required parameters and params attribute of non-ar
 test('Call regula.custom with required parameters and empty params attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         params: [],
         validator: function() {
@@ -10288,8 +9961,8 @@ test('Call regula.custom with required parameters and empty params attribute', f
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equal 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equal \"Default\"");
 
     deleteElements();
 });
@@ -10297,7 +9970,7 @@ test('Call regula.custom with required parameters and empty params attribute', f
 test('Call regula.custom with required parameters and valid params attribute (1)', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         params: ["myParam"],
         validator: function() {
@@ -10311,9 +9984,9 @@ test('Call regula.custom with required parameters and valid params attribute (1)
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
-    equals(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equals 9");
+    equal(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equal 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equal \"Default\"");
+    equal(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equal 9");
 
     deleteElements();
 });
@@ -10321,7 +9994,7 @@ test('Call regula.custom with required parameters and valid params attribute (1)
 test('Call regula.custom with required parameters and valid params attribute (2)', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         params: ["myParam"],
         validator: function() {
@@ -10332,7 +10005,7 @@ test('Call regula.custom with required parameters and valid params attribute (2)
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@CustomConstraint" + time);
 
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("You seem to have provided some optional or required parameters for @CustomConstraint" + time + ", but you are still missing the following 1 required parameter\\(s\\): myParam"));
 
@@ -10342,7 +10015,7 @@ test('Call regula.custom with required parameters and valid params attribute (2)
 test('Call regula.custom with required parameters and null defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         defaultMessage: null,
         validator: function() {
@@ -10356,7 +10029,7 @@ test('Call regula.custom with required parameters and null defaultMessage attrib
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElements();
 });
@@ -10364,7 +10037,7 @@ test('Call regula.custom with required parameters and null defaultMessage attrib
 test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         defaultMessage: undefined,
         validator: function() {
@@ -10378,7 +10051,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElements();
 });
@@ -10386,7 +10059,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
 test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         defaultMessage: undefined,
         validator: function() {
@@ -10400,7 +10073,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElements();
 });
@@ -10408,7 +10081,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
 test('Call regula.custom with required parameters and valid defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals(regula.custom({
+    equal(regula.custom({
         name: "CustomConstraint" + time,
         defaultMessage: "This is a test",
         validator: function() {
@@ -10422,7 +10095,7 @@ test('Call regula.custom with required parameters and valid defaultMessage attri
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+    equal(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
 
     deleteElements();
 });
@@ -10440,7 +10113,7 @@ test('Create form-specific constraint with regula.custom() and ensure that it bi
     });
 
     var $form = createFormElement("myForm", "@CustomConstraint" + time);
-    equals(regula.bind(), undefined, "Binding a custom form-specific constraint to a form must not fail");
+    equal(regula.bind(), undefined, "Binding a custom form-specific constraint to a form must not fail");
 
     deleteElements();
 });
@@ -10459,7 +10132,7 @@ test('Create form-specific constraint with regula.custom() and try to bind it to
 
     var $text = createInputElement("myText", "@CustomConstraint" + time, "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("myText.CustomConstraint" + time + ": @CustomConstraint" + time + " is a form constraint, but you are trying to bind it to a non-form element"), "Binding a custom form-specific element to a non-form element must fail");
 
@@ -10481,7 +10154,7 @@ test('Test that there is an error when not supplying enough parameters when bind
 
     var $text = createInputElement("myText", "@CustomConstraint" + time, "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("myText.CustomConstraint" + time + ": You seem to have provided some optional or required parameters for @CustomConstraint" + time + ", but you are still missing the following 2 required parameter\\(s\\): param1, param2"), "Not supplying enough parameters to a custom constraint must result in an error");
 
@@ -10503,7 +10176,7 @@ test('Test that there is an error when not supplying enough parameters when bind
 
     var $text = createInputElement("myText", "@CustomConstraint" + time + "(param1=5)", "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("myText.CustomConstraint" + time + ": You seem to have provided some optional or required parameters for @CustomConstraint" + time + ", but you are still missing the following 1 required parameter\\(s\\): param2"), "Binding a custom form-specific element to a non-form element must fail");
 
@@ -10518,20 +10191,20 @@ function testConstraintViolationsForDefaultConstraints(constraintViolation, para
         numFailingElements = params.numFailingElements;
     }
 
-    equals(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equals(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
-    equals(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
-    equals(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
-    equals(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
-    equals(constraintViolation.failingElements.length, numFailingElements, "There must be one failing element");
-    equals(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
+    equal(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
+    equal(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
+    equal(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
+    equal(constraintViolation.failingElements.length, numFailingElements, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
 
     if(typeof params.elementId2 !== "undefined") {
-        equals(constraintViolation.failingElements[1].id, params.elementId2, params.elementId2 + " must be the id of the second failing element");
+        equal(constraintViolation.failingElements[1].id, params.elementId2, params.elementId2 + " must be the id of the second failing element");
     }
 
-    equals(constraintViolation.group, params.validatedGroups, "The following groups must have been validated: " + params.validatedGroups);
-    equals(constraintViolation.message, params.errorMessage, "Wrong error message");
+    equal(constraintViolation.group, params.validatedGroups, "The following groups must have been validated: " + params.validatedGroups);
+    equal(constraintViolation.message, params.errorMessage, "Wrong error message");
 }
 
 test('Test @Checked against unchecked radio button (markup)', function() {
@@ -10581,7 +10254,7 @@ test('Test @Checked against checked radio button (markup)', function() {
     $radio.attr("checked", "true");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
 
     deleteElements();
 });
@@ -10597,7 +10270,7 @@ test('Test @Checked against checked radio button (regula.bind)', function() {
             {constraintType: regula.Constraint.Checked}
         ]
     });
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio button");
 
     deleteElements();
 });
@@ -10616,7 +10289,7 @@ test('Test @Checked against checked radio-button group (failing, markup)', funct
     $radio3.attr("name", "AwesomeRadios");
 
     regula.bind();
-    equals(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    equal(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
 
     deleteElements();
 });
@@ -10641,7 +10314,7 @@ test('Test @Checked against checked radio-button group (failing, programmatic)',
         ]
     });
 
-    equals(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    equal(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
 
     deleteElements();
 });
@@ -10661,7 +10334,7 @@ test('Test @Checked against checked radio-button group (passing, markup)', funct
     $radio3.attr("name", "AwesomeRadios");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
 
     deleteElements();
 });
@@ -10687,7 +10360,7 @@ test('Test @Checked against checked radio-button group (passing, programmatic)',
         ]
     });
 
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
 
     deleteElements();
 });
@@ -10707,8 +10380,8 @@ test('Test @Checked against radio-button group where each element has the constr
 
     regula.bind();
     var constraintViolations = regula.validate();
-    equals(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
-    equals(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
+    equal(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
+    equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
 
     deleteElements();
 });
@@ -10760,7 +10433,7 @@ test('Test @Checked against checked checkbox (markup)', function() {
     $checkbox.attr("checked", "true");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
 
     deleteElements()
 });
@@ -10776,7 +10449,7 @@ test('Test @Checked against checked checkbox (regula.bind)', function() {
             {constraintType: regula.Constraint.Checked}
         ]
     });
-    equals(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked checkbox");
 
     deleteElements();
 });
@@ -10850,7 +10523,7 @@ test('Test @Selected against selected dropdown (markup)', function() {
     $select.val(1);
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
+    equal(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
 
     deleteElements();
 });
@@ -10872,7 +10545,7 @@ test('Test @Selected against selected dropdown (regula.bind)', function() {
             {constraintType: regula.Constraint.Selected}
         ]
     });
-    equals(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
+    equal(regula.validate().length, 0, "The @Selected constraint must not fail against a selected dropdown");
 
     deleteElements();
 });
@@ -10926,7 +10599,7 @@ test('Test @Required against checked radio button (markup)', function() {
     $radio.attr("checked", "true");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
 
     deleteElements();
 });
@@ -10942,7 +10615,7 @@ test('Test @Required against checked radio button (regula.bind)', function() {
             {constraintType: regula.Constraint.Required}
         ]
     });
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a checked radio button");
 
     deleteElements();
 });
@@ -10994,7 +10667,7 @@ test('Test @Required against checked checkbox (markup)', function() {
     $checkbox.attr("checked", "true");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
 
     deleteElements()
 });
@@ -11010,7 +10683,7 @@ test('Test @Required against checked checkbox (regula.bind)', function() {
             {constraintType: regula.Constraint.Required}
         ]
     });
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a checked checkbox");
 
     deleteElements();
 });
@@ -11082,7 +10755,7 @@ test('Test @Required against selected dropdown (markup)', function() {
     $select.val(1);
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
 
     deleteElements();
 });
@@ -11104,7 +10777,7 @@ test('Test @Required against selected dropdown (regula.bind)', function() {
             {constraintType: regula.Constraint.Required}
         ]
     });
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a selected dropdown");
 
     deleteElements();
 });
@@ -11156,7 +10829,7 @@ test('Test @Required against non-empty text field (markup)', function() {
     $text.val("test");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
 
     deleteElements();
 });
@@ -11172,7 +10845,7 @@ test('Test @Required against non-empty text field (regula.bind)', function() {
             {constraintType: regula.Constraint.Required}
         ]
     });
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty text field");
 
     deleteElements();
 });
@@ -11224,7 +10897,7 @@ test('Test @Required against non-empty textarea (markup)', function() {
     $textarea.val("test");
 
     regula.bind();
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
 
     deleteElements();
 });
@@ -11240,7 +10913,7 @@ test('Test @Required against non-empty textarea (regula.bind)', function() {
             {constraintType: regula.Constraint.Required}
         ]
     });
-    equals(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
+    equal(regula.validate().length, 0, "The @Required constraint must not fail against a non-empty textarea");
 
     deleteElements();
 });
@@ -11301,7 +10974,7 @@ test('Test passing @Max against text field (markup)', function() {
     $text.val(5);
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Max must not fail when value=5 and textbox value is 5");
+    equal(regula.validate().length, 0, "@Max must not fail when value=5 and textbox value is 5");
 
     deleteElements();
 });
@@ -11323,7 +10996,7 @@ test('Test passing @Max against text field (regula.bind)', function() {
         ]
     });
     var constraintViolation = regula.validate()[0];
-    equals(regula.validate().length, 0, "@Max must not fail when value=-2 and textbox value is -5");
+    equal(regula.validate().length, 0, "@Max must not fail when value=-2 and textbox value is -5");
 
     deleteElements();
 });
@@ -11384,7 +11057,7 @@ test('Test passing @Min against text field (markup)', function() {
     $text.val(5);
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Min must not fail when value=5 and textbox value is 5");
+    equal(regula.validate().length, 0, "@Min must not fail when value=5 and textbox value is 5");
 
     deleteElements();
 });
@@ -11406,7 +11079,7 @@ test('Test passing @Min against text field (regula.bind)', function() {
         ]
     });
     var constraintViolation = regula.validate()[0];
-    equals(regula.validate().length, 0, "@Min must not fail when value=-2 and textbox value is 0");
+    equal(regula.validate().length, 0, "@Min must not fail when value=-2 and textbox value is 0");
 
     deleteElements();
 });
@@ -11468,7 +11141,7 @@ test('Test passing @Range against text field (markup)', function() {
     $text.val(0);
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=0");
+    equal(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=0");
 
     deleteElements();
 });
@@ -11490,7 +11163,7 @@ test('Test failing @Range against text field (regula.bind)(1)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=5");
+    equal(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=5");
 
 
     deleteElements();
@@ -11513,7 +11186,7 @@ test('Test failing @Range against text field (regula.bind)(2)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=3");
+    equal(regula.validate().length, 0, "@Range(min=0, max=5) must not fail with value=3");
 
 
     deleteElements();
@@ -11568,7 +11241,7 @@ test('Test passing @NotBlank against text field (markup)', function() {
     $text.val("test");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
+    equal(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
 
     deleteElements();
 });
@@ -11584,7 +11257,7 @@ test('Test passing @NotBlank against text field (regula.bind)', function() {
             {constraintType: regula.Constraint.NotBlank}
         ]
     });
-    equals(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
+    equal(regula.validate().length, 0, "@NotBlank should not fail on a non-empty text field");
 
     deleteElements();
 });
@@ -11639,7 +11312,7 @@ test('Test passing @Blank against text field (markup)', function() {
     var $text = createInputElement(inputElementId, "@Blank", "text");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Blank should not fail on an empty text field");
+    equal(regula.validate().length, 0, "@Blank should not fail on an empty text field");
 
     deleteElements();
 });
@@ -11654,7 +11327,7 @@ test('Test passing @Blank against text field (regula.bind)', function() {
             {constraintType: regula.Constraint.Blank}
         ]
     });
-    equals(regula.validate().length, 0, "@Blank should not fail on an empty text field");
+    equal(regula.validate().length, 0, "@Blank should not fail on an empty text field");
 
     deleteElements();
 });
@@ -11865,7 +11538,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("NCC-1701");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
 
     deleteElements();
 });
@@ -11886,7 +11559,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on NCC-1701");
 
     deleteElements();
 });
@@ -11897,7 +11570,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("ncc-1701-D");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Pattern should not fail on ncc-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on ncc-1701");
 
     deleteElements();
 });
@@ -11919,7 +11592,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Pattern should not fail on ncc-1701-D");
+    equal(regula.validate().length, 0, "@Pattern should not fail on ncc-1701-D");
 
     deleteElements();
 });
@@ -11930,7 +11603,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("NCC-1701-D NCC-1701");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
 
     deleteElements();
 });
@@ -11952,7 +11625,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
 
     deleteElements();
 });
@@ -11963,7 +11636,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("Ncc-1701-d ncc-1701");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
 
     deleteElements();
 });
@@ -11985,7 +11658,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-D Ncc-1701");
+    equal(regula.validate().length, 0, "@Pattern should not fail on Ncc-1701-D Ncc-1701");
 
     deleteElements();
 });
@@ -12131,7 +11804,7 @@ test('Test passing @Email against text field (markup)', function() {
     $text.val("abc@example.com");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Email should not fail on abc@example.com");
+    equal(regula.validate().length, 0, "@Email should not fail on abc@example.com");
 
     deleteElements();
 });
@@ -12149,7 +11822,7 @@ test('Test passing @Email against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Email should not fail on abc@example.com");
+    equal(regula.validate().length, 0, "@Email should not fail on abc@example.com");
 
     deleteElements();
 });
@@ -12250,7 +11923,7 @@ test('Test padding @Alpha against text field (markup)', function() {
     $text.val("abc");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Alpha should not fail on 'abc'");
+    equal(regula.validate().length, 0, "@Alpha should not fail on 'abc'");
 
     deleteElements();
 });
@@ -12268,7 +11941,7 @@ test('Test passing @Alpha against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Alpha should not fail 'abc'");
+    equal(regula.validate().length, 0, "@Alpha should not fail 'abc'");
 
     deleteElements();
 });
@@ -12369,7 +12042,7 @@ test('Test passing @Numeric against text field (markup)', function() {
     $text.val("123");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Numeric should not fail on '123'");
+    equal(regula.validate().length, 0, "@Numeric should not fail on '123'");
 
     deleteElements();
 });
@@ -12387,7 +12060,7 @@ test('Test passing @Numeric against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Numeric should not fail on '123'");
+    equal(regula.validate().length, 0, "@Numeric should not fail on '123'");
 
     deleteElements();
 });
@@ -12488,7 +12161,7 @@ test('Test passing @AlphaNumeric against text field (markup)', function() {
     $text.val("1a2b3c");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
+    equal(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
 
     deleteElements();
 });
@@ -12506,7 +12179,7 @@ test('Test passing @AlphaNumeric against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
+    equal(regula.validate().length, 0, "@AlphaNumeric should not fail on '1a2b3c'");
 
     deleteElements();
 });
@@ -12633,7 +12306,7 @@ test('Test passing @Integer against text field (markup)', function() {
     $text.val("0");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Integer should not fail on '0'");
+    equal(regula.validate().length, 0, "@Integer should not fail on '0'");
 
     deleteElements();
 });
@@ -12651,7 +12324,7 @@ test('Test passing @Integer against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Integer should not fail on '-1'");
+    equal(regula.validate().length, 0, "@Integer should not fail on '-1'");
 
     deleteElements();
 });
@@ -12669,7 +12342,7 @@ test('Test passing @Integer against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Integer should not fail on '100'");
+    equal(regula.validate().length, 0, "@Integer should not fail on '100'");
 
     deleteElements();
 });
@@ -12770,7 +12443,7 @@ test('Test passing @Real against text field (markup)', function() {
     $text.val("0");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Real should not fail on '0'");
+    equal(regula.validate().length, 0, "@Real should not fail on '0'");
 
     deleteElements();
 });
@@ -12788,7 +12461,7 @@ test('Test passing @Real against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Real should not fail on '-1'");
+    equal(regula.validate().length, 0, "@Real should not fail on '-1'");
 
     deleteElements();
 });
@@ -12799,7 +12472,7 @@ test('Test passing @Real against text field (markup)', function() {
     $text.val("0.1");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Real should not fail on '0.1'");
+    equal(regula.validate().length, 0, "@Real should not fail on '0.1'");
 
     deleteElements();
 });
@@ -12817,7 +12490,7 @@ test('Test passing @Real against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Real should not fail on '-1.34'");
+    equal(regula.validate().length, 0, "@Real should not fail on '-1.34'");
 
     deleteElements();
 });
@@ -12828,7 +12501,7 @@ test('Test passing @Real against text field (markup)', function() {
     $text.val(".1");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Real should not fail on '.1'");
+    equal(regula.validate().length, 0, "@Real should not fail on '.1'");
 
     deleteElements();
 });
@@ -12846,7 +12519,7 @@ test('Test passing @Real against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Real should not fail on '-.34'");
+    equal(regula.validate().length, 0, "@Real should not fail on '-.34'");
 
     deleteElements();
 });
@@ -13004,7 +12677,7 @@ test('Test passing @Length against text field (markup)', function() {
     $text.val("abcde");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13026,7 +12699,7 @@ test('Test passing @Length against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13037,7 +12710,7 @@ test('Test passing @Length against text field (markup)', function() {
     $text.val("abcdefgh");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13059,7 +12732,7 @@ test('Test passing @Length against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13070,7 +12743,7 @@ test('Test passing @Length against text field (markup)', function() {
     $text.val("abcdefghij");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13092,7 +12765,7 @@ test('Test passing @Length against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
+    equal(regula.validate().length, 0, "@Length(min=5, max=10) should not fail on 'abcde'");
 
     deleteElements();
 });
@@ -13300,7 +12973,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("1.1");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
 
     deleteElements();
 
@@ -13323,7 +12996,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.1'");
 
     deleteElements();
 });
@@ -13334,7 +13007,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("1.12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
 
     deleteElements();
 
@@ -13357,7 +13030,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '1.12'");
 
     deleteElements();
 });
@@ -13368,7 +13041,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("12.1");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
 
     deleteElements();
 
@@ -13391,7 +13064,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.1'");
 
     deleteElements();
 });
@@ -13402,7 +13075,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("12.12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
 
     deleteElements();
 
@@ -13425,7 +13098,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12.12'");
 
     deleteElements();
 });
@@ -13436,7 +13109,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
 
     deleteElements();
 
@@ -13459,7 +13132,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '12'");
 
     deleteElements();
 });
@@ -13470,7 +13143,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val(".12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
 
     deleteElements();
 
@@ -13493,7 +13166,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
 
     deleteElements();
 });
@@ -13504,7 +13177,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val(".12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
 
     deleteElements();
 
@@ -13527,7 +13200,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=2) must not fail on '.12'");
 
     deleteElements();
 });
@@ -13538,7 +13211,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("2");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
 
     deleteElements();
 
@@ -13561,7 +13234,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2'");
 
     deleteElements();
 });
@@ -13572,7 +13245,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("2.0");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
 
     deleteElements();
 
@@ -13595,7 +13268,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.0'");
 
     deleteElements();
 });
@@ -13606,7 +13279,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("2.013");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
 
     deleteElements();
 
@@ -13629,7 +13302,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '2.013'");
 
     deleteElements();
 });
@@ -13640,7 +13313,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("22.013");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
 
     deleteElements();
 
@@ -13663,7 +13336,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '22.013'");
 
     deleteElements();
 });
@@ -13674,7 +13347,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val(".013");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
 
     deleteElements();
 
@@ -13697,7 +13370,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
+    equal(regula.validate().length, 0, "@Digits(integer=2, fraction=0) must not fail on '.013'");
 
     deleteElements();
 });
@@ -13708,7 +13381,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val(".12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
 
     deleteElements();
 
@@ -13731,7 +13404,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '.12'");
 
     deleteElements();
 });
@@ -13742,7 +13415,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("1.12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
 
     deleteElements();
 
@@ -13765,7 +13438,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '1.12'");
 
     deleteElements();
 });
@@ -13776,7 +13449,7 @@ test('Test passing @Digits against text field (markup)', function() {
     $text.val("123.12");
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
 
     deleteElements();
 
@@ -13799,7 +13472,7 @@ test('Test passing @Digits against text field (regula.bind)', function() {
             }
         ]
     });
-    equals(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
+    equal(regula.validate().length, 0, "@Digits(integer=0, fraction=2) must not fail on '123.12'");
 
     deleteElements();
 });
@@ -14341,7 +14014,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
+    equal(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
 
     deleteElements();
 });
@@ -14363,7 +14036,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
+    equal(regula.validate().length, 0, '@Past(format="MDY") must not fail on 07/03/2009');
 
     deleteElements();
 });
@@ -14375,7 +14048,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
+    equal(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
 
     deleteElements();
 });
@@ -14397,7 +14070,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
+    equal(regula.validate().length, 0, '@Past(format="MDY") must not fail on 7/3/2009');
 
     deleteElements();
 });
@@ -14409,7 +14082,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
+    equal(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
 
     deleteElements();
 });
@@ -14431,7 +14104,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
+    equal(regula.validate().length, 0, '@Past(format="DMY") must not fail on 03/07/2009');
 
     deleteElements();
 });
@@ -14443,7 +14116,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
+    equal(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
 
     deleteElements();
 });
@@ -14465,7 +14138,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
+    equal(regula.validate().length, 0, '@Past(format="DMY") must not fail on 3/7/2009');
 
     deleteElements();
 });
@@ -14477,7 +14150,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
 
     deleteElements();
 });
@@ -14499,7 +14172,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/07/03');
 
     deleteElements();
 });
@@ -14511,7 +14184,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -14533,7 +14206,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -14545,7 +14218,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
 
     deleteElements();
 });
@@ -14567,7 +14240,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009-7-3');
 
     deleteElements();
 });
@@ -14579,7 +14252,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
 
     deleteElements();
 });
@@ -14602,7 +14275,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
+    equal(regula.validate().length, 0, '@Past(format="YMD") must not fail on 2009 7 3');
 
     deleteElements();
 });
@@ -14614,7 +14287,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
+    equal(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
 
     deleteElements();
 });
@@ -14637,7 +14310,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
+    equal(regula.validate().length, 0, '@Past(format="YMD", separator=":") must not fail on 2009:7:3');
 
     deleteElements();
 });
@@ -14649,7 +14322,7 @@ test('Test passing @Past against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -14672,7 +14345,7 @@ test('Test passing @Past against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Past(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -15214,7 +14887,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
+    equal(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
 
     deleteElements();
 });
@@ -15236,7 +14909,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
+    equal(regula.validate().length, 0, '@Future(format="MDY") must not fail on 07/03/2100');
 
     deleteElements();
 });
@@ -15248,7 +14921,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
+    equal(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
 
     deleteElements();
 });
@@ -15270,7 +14943,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
+    equal(regula.validate().length, 0, '@Future(format="MDY") must not fail on 7/3/2100');
 
     deleteElements();
 });
@@ -15282,7 +14955,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
+    equal(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
 
     deleteElements();
 });
@@ -15304,7 +14977,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
+    equal(regula.validate().length, 0, '@Future(format="DMY") must not fail on 03/07/2100');
 
     deleteElements();
 });
@@ -15316,7 +14989,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
+    equal(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
 
     deleteElements();
 });
@@ -15338,7 +15011,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
+    equal(regula.validate().length, 0, '@Future(format="DMY") must not fail on 3/7/2100');
 
     deleteElements();
 });
@@ -15350,7 +15023,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
 
     deleteElements();
 });
@@ -15372,7 +15045,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/07/03');
 
     deleteElements();
 });
@@ -15384,7 +15057,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
 
     deleteElements();
 });
@@ -15406,7 +15079,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100/7/3');
 
     deleteElements();
 });
@@ -15418,7 +15091,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
 
     deleteElements();
 });
@@ -15440,7 +15113,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100-7-3');
 
     deleteElements();
 });
@@ -15452,7 +15125,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
 
     deleteElements();
 });
@@ -15475,7 +15148,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
+    equal(regula.validate().length, 0, '@Future(format="YMD") must not fail on 2100 7 3');
 
     deleteElements();
 });
@@ -15487,7 +15160,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
+    equal(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
 
     deleteElements();
 });
@@ -15510,7 +15183,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
+    equal(regula.validate().length, 0, '@Future(format="YMD", separator=":") must not fail on 2100:7:3');
 
     deleteElements();
 });
@@ -15522,7 +15195,7 @@ test('Test passing @Future against text field (markup)', function() {
 
     regula.bind();
 
-    equals(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -15545,7 +15218,7 @@ test('Test passing @Future against text field (regula.bind)', function() {
         ]
     });
 
-    equals(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
+    equal(regula.validate().length, 0, '@Future(format="YMD", date="20011/9/5") must not fail on 2009/7/3');
 
     deleteElements();
 });
@@ -15590,7 +15263,7 @@ test('Test passing @Max against empty field (validateEmptyFields set to false)',
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15606,7 +15279,7 @@ test('Test passing @Max against empty field (validateEmptyFields set to true, ig
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15643,7 +15316,7 @@ test('Test passing @Min against empty field (validateEmptyFields set to false)',
 
     regula.bind();
 
-    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15658,7 +15331,7 @@ test('Test passing @Min against empty field (validateEmptyFields set to true, ig
 
     regula.bind();
 
-    equals(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Min must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15696,7 +15369,7 @@ test('Test passing @Range against empty field (validateEmptyFields set to false)
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15712,7 +15385,7 @@ test('Test passing @Range against empty field (validateEmptyFields set to true, 
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Range must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15750,7 +15423,7 @@ test('Test passing @Pattern against empty field (validateEmptyFields set to fals
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15766,7 +15439,7 @@ test('Test passing @Pattern against empty field (validateEmptyFields set to true
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Pattern must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15804,7 +15477,7 @@ test('Test passing @Email against empty field (validateEmptyFields set to false)
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15820,7 +15493,7 @@ test('Test passing @Email against empty field (validateEmptyFields set to true, 
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Email must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15858,7 +15531,7 @@ test('Test passing @Alpha against empty field (validateEmptyFields set to false)
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15874,7 +15547,7 @@ test('Test passing @Alpha against empty field (validateEmptyFields set to true, 
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Alpha must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15912,7 +15585,7 @@ test('Test passing @Numeric against empty field (validateEmptyFields set to fals
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15928,7 +15601,7 @@ test('Test passing @Numeric against empty field (validateEmptyFields set to true
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to true, ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Numeric must not fail against empty field when validateEmptyFields is set to true, ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -15966,7 +15639,7 @@ test('Test passing @AlphaNumeric against empty field (validateEmptyFields set to
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -15982,7 +15655,7 @@ test('Test passing @AlphaNumeric against empty field (validateEmptyFields set to
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@AlphaNumeric must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16020,7 +15693,7 @@ test('Test passing @Integer against empty field (validateEmptyFields set to fals
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -16036,7 +15709,7 @@ test('Test passing @Integer against empty field (validateEmptyFields set to true
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Integer must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16074,7 +15747,7 @@ test('Test passing @Real against empty field (validateEmptyFields set to false)'
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -16090,7 +15763,7 @@ test('Test passing @Real against empty field (validateEmptyFields set to true, i
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Real must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16128,7 +15801,7 @@ test('Test passing @Digits against empty field (validateEmptyFields set to false
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -16144,7 +15817,7 @@ test('Test passing @Digits against empty field (validateEmptyFields set to true,
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Digits must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16182,7 +15855,7 @@ test('Test passing @Past against empty field (validateEmptyFields set to false)'
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -16198,7 +15871,7 @@ test('Test passing @Past against empty field (validateEmptyFields set to true, i
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Past must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16236,7 +15909,7 @@ test('Test passing @Future against empty field (validateEmptyFields set to false
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    equals(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false");
+    equal(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false");
     deleteElements();
 });
 
@@ -16250,7 +15923,7 @@ test('Test passing @Future against empty field (validateEmptyFields set to true,
     });
 
     regula.bind();
-    equals(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false and ignoreEmpty is set to true");
+    equal(regula.validate().length, 0, "@Future must not fail against empty field when validateEmptyFields is set to false and ignoreEmpty is set to true");
     deleteElements();
 });
 
@@ -16292,7 +15965,7 @@ test('Test passing @PasswordsMatch', function() {
     $form.append($password2);
 
     regula.bind();
-    equals(regula.validate().length, 0, "@PasswordsMatch must not fail when both password fields match");
+    equal(regula.validate().length, 0, "@PasswordsMatch must not fail when both password fields match");
 
     deleteElements();
 });
@@ -16315,19 +15988,19 @@ test('Test failing @CompletelyFilled', function() {
     regula.bind();
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equals(constraintViolation.compound, false, "@CompletelyFilled is not a compound constraint");
-    equals(constraintViolation.constraintName, "CompletelyFilled", "@CompletelyFilled must be the failing constraint");
-    equals(constraintViolation.constraintParameters.groups, "Default", "Must belong to the following group(s): Default");
-    equals(constraintViolation.custom, false, "@CompleteleFilled is not a custom constraint");
-    equals(constraintViolation.failingElements.length, 5, "There must be five failing elements");
-    equals(constraintViolation.failingElements[0].id, "myText", "myText must be the id of the failing element");
-    equals(constraintViolation.failingElements[1].id, "myCheckbox", "myCheckbox must be the id of the failing element");
-    equals(constraintViolation.failingElements[2].id, "myRadio", "myRadio must be the id of the failing element");
-    equals(constraintViolation.failingElements[3].id, "myTextarea", "myTextarea must be the id of the failing element");
-    equals(constraintViolation.failingElements[4].id, "mySelect", "mySelect must be the id of the failing element");
-    equals(constraintViolation.group, "Default", "The following groups must have been validated: Default");
-    equals(constraintViolation.message, "The form must be completely filled.", "Wrong error message");
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "@CompletelyFilled is not a compound constraint");
+    equal(constraintViolation.constraintName, "CompletelyFilled", "@CompletelyFilled must be the failing constraint");
+    equal(constraintViolation.constraintParameters.groups, "Default", "Must belong to the following group(s): Default");
+    equal(constraintViolation.custom, false, "@CompleteleFilled is not a custom constraint");
+    equal(constraintViolation.failingElements.length, 5, "There must be five failing elements");
+    equal(constraintViolation.failingElements[0].id, "myText", "myText must be the id of the failing element");
+    equal(constraintViolation.failingElements[1].id, "myCheckbox", "myCheckbox must be the id of the failing element");
+    equal(constraintViolation.failingElements[2].id, "myRadio", "myRadio must be the id of the failing element");
+    equal(constraintViolation.failingElements[3].id, "myTextarea", "myTextarea must be the id of the failing element");
+    equal(constraintViolation.failingElements[4].id, "mySelect", "mySelect must be the id of the failing element");
+    equal(constraintViolation.group, "Default", "The following groups must have been validated: Default");
+    equal(constraintViolation.message, "The form must be completely filled.", "Wrong error message");
 
     deleteElements();
 });
@@ -16359,7 +16032,7 @@ test('Test passing @CompletelyFilled', function() {
     $form.append($select);
 
     regula.bind();
-    equals(regula.validate().length, 0, "@CompleteleFilled must not fail when all elements are filled");
+    equal(regula.validate().length, 0, "@CompleteleFilled must not fail when all elements are filled");
 
     deleteElements();
 });
@@ -16372,13 +16045,13 @@ test('Test passing @CompletelyFilled', function() {
 module("Test regula.bind() to make sure it returns the expected errors and that it binds properly");
 
 test('Test calling regula.bind() with an empty object-literal', function() {
-    raises(function() {
+    throws(function() {
         regula.bind({});
     }, new RegExp("regula.bind expects a non-null element attribute in the options argument. Function received: {}"), "regula.bind({}) must error out.");
 });
 
 test('Test calling regula.bind() with element attribute set to non-HTMLElement type', function() {
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: "I swear I am an HTML element"
         });
@@ -16388,7 +16061,7 @@ test('Test calling regula.bind() with element attribute set to non-HTMLElement t
 test('Test calling regula.bind() with HTMLElement of wrong type (1)', function() {
     var div = jQuery("<div />").get(0);
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: div
         });
@@ -16399,7 +16072,7 @@ test('Test calling regula.bind() with HTMLElement of wrong type (2)', function()
     var $div = jQuery("<div />").attr("data-constraints", "@Required");
     jQuery("body").append($div);
 
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("div# is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements."), "regula.bind() with element sent to invalid HTMLElement must error out");
     $div.remove();
@@ -16409,7 +16082,7 @@ test('Test calling regula.bind() with valid input element and an HTMLElement of 
     var div = jQuery("<div />").get(0);
     var $input = createInputElement("myInput", "@NotBlank", "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             elements: [$input.get(0), div]
         });
@@ -16421,7 +16094,7 @@ test('Test calling regula.bind() with valid input element and an HTMLElement of 
 test('Test calling regula.bind() with invalid constraint type', function() {
     var $input = createInputElement("myInput", null, "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -16436,7 +16109,7 @@ test('Test calling regula.bind() with invalid constraint type', function() {
 test('Test calling regula.bind() with an invalid group', function() {
     var $input = createInputElement("myInput", null, "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -16456,7 +16129,7 @@ test('Test calling regula.bind() with an invalid group', function() {
 test('Test calling regula.bind() with an group attribute in the constraint set to a non-Array', function() {
     var $input = createInputElement("myInput", null, "text");
 
-    raises(function() {
+    throws(function() {
         regula.bind({
             element: $input.get(0),
             constraints: [
@@ -16490,13 +16163,13 @@ test('Test that element has been bound to the groups specified (markup)', functi
     regula.bind();
 
     var constraintViolation = regula.validate({groups: [regula.Group.First]})[0];
-    equals(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
+    equal(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
 
     constraintViolation = regula.validate({groups: [regula.Group.Second]})[0];
-    equals(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+    equal(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
 
     constraintViolation = regula.validate({groups: [regula.Group.Third]})[0];
-    equals(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+    equal(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
 
     deleteElements();
 });
@@ -16515,13 +16188,13 @@ test('Test that element has been bound to the groups specified (programmatic)', 
     });
 
     var constraintViolation = regula.validate({groups: [regula.Group.First]})[0];
-    equals(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
+    equal(constraintViolation.group, "First", "Constraint is expected to be bound to regula.Group.First");
 
     constraintViolation = regula.validate({groups: [regula.Group.Second]})[0];
-    equals(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+    equal(constraintViolation.group, "Second", "Constraint is expected to be bound to regula.Group.Second");
 
     constraintViolation = regula.validate({groups: [regula.Group.Third]})[0];
-    equals(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+    equal(constraintViolation.group, "Third", "Constraint is expected to be bound to regula.Group.Third");
 
     deleteElements();
 });
@@ -16556,9 +16229,9 @@ test('Test that original constraints do not get overwritten when binding to elem
     });
 
     var constraintViolations = regula.validate();
-    equals(constraintViolations.length, 2, "There must be two constraints bound to this element");
-    equals(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
-    equals(constraintViolations[1].constraintName, "Range", "Range must be bound to this element");
+    equal(constraintViolations.length, 2, "There must be two constraints bound to this element");
+    equal(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
+    equal(constraintViolations[1].constraintName, "Range", "Range must be bound to this element");
 
     deleteElements();
 });
@@ -16594,9 +16267,9 @@ test('Test that original constraint gets completely overwritten (overwriteConstr
     });
 
     var constraintViolations = regula.validate();
-    equals(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
-    equals(constraintViolations[0].constraintParameters.value, 10, "The value parameter must be equal to 10");
-    equals(constraintViolations[0].constraintParameters.message, "unicorns rule", "The value of the message parameter does not match");
+    equal(constraintViolations[0].constraintName, "Min", "Min must be bound to this element");
+    equal(constraintViolations[0].constraintParameters.value, 10, "The value parameter must be equal to 10");
+    equal(constraintViolations[0].constraintParameters.message, "unicorns rule", "The value of the message parameter does not match");
 
     deleteElements();
 });
@@ -16618,8 +16291,8 @@ test('Test that the original constraint\'s parameters are constructively overwri
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
-    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
+    equal(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equal(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
 
     regula.bind({
         element: $text.get(0),
@@ -16635,9 +16308,9 @@ test('Test that the original constraint\'s parameters are constructively overwri
     });
 
     constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
-    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must remain /[a-z]/");
-    equals(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
+    equal(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equal(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must remain /[a-z]/");
+    equal(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
 
 
     deleteElements();
@@ -16660,8 +16333,8 @@ test('Test that the original constraint\'s parameters are destructively overwrit
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
-    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
+    equal(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equal(constraintViolation.constraintParameters.regex.toString(), "/[a-z]/", "regex parameter must be /[a-z]/");
 
     regula.bind({
         element: $text.get(0),
@@ -16678,9 +16351,9 @@ test('Test that the original constraint\'s parameters are destructively overwrit
     });
 
     constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
-    equals(constraintViolation.constraintParameters.regex.toString(), "/[a-z]+/", "regex parameter must remain /[a-z]/+");
-    equals(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
+    equal(constraintViolation.constraintName, "Pattern", "Pattern must be bound to this element");
+    equal(constraintViolation.constraintParameters.regex.toString(), "/[a-z]+/", "regex parameter must remain /[a-z]/+");
+    equal(constraintViolation.constraintParameters.flags, "ig", "flags parameter must be ig");
 
     deleteElements();
 });
@@ -16715,12 +16388,12 @@ test('Test group-overwriting behavior when overwriteConstraint is set to true (1
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
-    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
-    equals(regula.Group.Second, undefined, "Group Second must not exist");
-    equals(regula.Group.Third, undefined, "Group Third must not exist");
-    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
-    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equal(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    equal(regula.Group.Second, undefined, "Group Second must not exist");
+    equal(regula.Group.Third, undefined, "Group Third must not exist");
+    equal(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equal(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
 
     deleteElements();
 });
@@ -16769,16 +16442,16 @@ test('Test group-overwriting behavior when overwriteConstraint is set to true (2
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
-    equals(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
-    raises(function() {
+    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equal(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Second]})
     }, /No element with id myText was found in the following group\(s\): \[Second\]. Function received: {elementId: myText, groups: \[Second\]}/, "Constraint must not belong to group Second");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Third]})
     }, /No element with id myText was found in the following group\(s\): \[Third\]. Function received: {elementId: myText, groups: \[Third\]}/, "Constraint must not belong to group Third");
-    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
-    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+    equal(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equal(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
 
     deleteElements();
 });
@@ -16813,12 +16486,12 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (1
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
-    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
-    equals(regula.Group.Second, undefined, "Group Second must not exist");
-    equals(regula.Group.Third, undefined, "Group Third must not exist");
-    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
-    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equal(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    equal(regula.Group.Second, undefined, "Group Second must not exist");
+    equal(regula.Group.Third, undefined, "Group Third must not exist");
+    equal(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equal(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
 
     deleteElements();
 });
@@ -16867,16 +16540,16 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (2
     });
 
     var constraintViolation = regula.validate()[0];
-    equals(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
-    equals(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
-    raises(function() {
+    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    equal(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
+    throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Second]})
     }, /No element with id myText was found in the following group\(s\): \[Second\]. Function received: {elementId: myText, groups: \[Second\]}/, "Constraint must not belong to group Second");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Third]})
     }, /No element with id myText was found in the following group\(s\): \[Third\]. Function received: {elementId: myText, groups: \[Third\]}/, "Constraint must not belong to group Third");
-    equals(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
-    equals(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
+    equal(regula.validate({groups: [regula.Group.Fourth]}).length, 1, "Constraint must belong to the group Fourth");
+    equal(regula.validate({groups: [regula.Group.Fifth]}).length, 1, "Constraint must belong to the group Fifth");
 
     deleteElements();
 });
@@ -16896,13 +16569,13 @@ test('Test regula.unbind() without any parameters unbinds everything', function(
     regula.bind();
     regula.unbind();
 
-    equals(regula.validate().length, 0, "There must not be any constraint violations since all bound constraints should have been unbound");
+    equal(regula.validate().length, 0, "There must not be any constraint violations since all bound constraints should have been unbound");
 
     deleteElements();
 });
 
 test('Test regula.unbind() with empty options parameter', function() {
-    raises(function() {
+    throws(function() {
         regula.unbind({});
     }, /regula.unbind requires an id if options are provided/, "Calling regula.unbind() with empty options parameter must error out");
 });
@@ -16915,7 +16588,7 @@ test('Test regula.unbind() with id parameter (1)', function() {
         elementId: "myText"
     });
 
-    equals(regula.validate().length, 0, "There must not be any constraint violations since all constraints bound to this element have been removed");
+    equal(regula.validate().length, 0, "There must not be any constraint violations since all constraints bound to this element have been removed");
     deleteElements();
 });
 
@@ -16928,8 +16601,8 @@ test('Test regula.unbind() with id parameter (2)', function() {
         elementId: "myText0"
     });
 
-    equals(regula.validate().length, 3, "Other bound elements must not have been unbound");
-    raises(function() {
+    equal(regula.validate().length, 3, "Other bound elements must not have been unbound");
+    throws(function() {
         regula.validate({elementId: "myText0"})
     }, /No constraints have been bound to element with id myText0. Function received: {elementId: myText0}/, "Calling regula.validate with an unbound element's id must result in an error");
 
@@ -16945,12 +16618,12 @@ test('Test regula.unbind() with id parameter (3)', function() {
         elementId: "myText0"
     });
 
-    equals(regula.validate().length, 3, "Other bound elements must not have been unbound");
-    raises(function() {
+    equal(regula.validate().length, 3, "Other bound elements must not have been unbound");
+    throws(function() {
         regula.validate({groups : [regula.Group.Zeroth]});
     }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
-    equals(regula.validate({groups: [regula.Group.First]}).length, 1, "Even though element associated with this group has been unbound, there are still other elements associated with this group");
-    raises(function() {
+    equal(regula.validate({groups: [regula.Group.First]}).length, 1, "Even though element associated with this group has been unbound, there are still other elements associated with this group");
+    throws(function() {
         regula.validate({groups : [regula.Group.Second]});
     }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
 
@@ -16966,7 +16639,7 @@ test('Test regula.unbind() with id and constraints parameter (1)', function() {
         constraints: [regula.Constraint.NotBlank]
     });
 
-    equals(regula.validate().length, 2, "There should only be two constraints bound to this element");
+    equal(regula.validate().length, 2, "There should only be two constraints bound to this element");
 
     deleteElements();
 });
@@ -16980,7 +16653,7 @@ test('Test regula.unbind() with id and constraints parameter (2)', function() {
         constraints: [regula.Constraint.NotBlank, regula.Constraint.Min]
     });
 
-    equals(regula.validate().length, 1, "There should only be one constraint bound to this element");
+    equal(regula.validate().length, 1, "There should only be one constraint bound to this element");
 
     deleteElements();
 });
@@ -16994,8 +16667,8 @@ test('Test regula.unbind() with id and constraints parameter (3)', function() {
         constraints: [regula.Constraint.NotBlank]
     });
 
-    equals(regula.validate().length, 2, "There should only be two constraints bound to this element");
-    raises(function() {
+    equal(regula.validate().length, 2, "There should only be two constraints bound to this element");
+    throws(function() {
         regula.validate({groups : [regula.Group.Zeroth]});
     }, /Undefined group in group list. Function received: {groups: \[undefined\]}/, "Since element has been unbound, all associated empty groups must have been removed");
 
@@ -17003,7 +16676,7 @@ test('Test regula.unbind() with id and constraints parameter (3)', function() {
 });
 
 test('Test regula.unbind() with unbound id', function() {
-    raises(function() {
+    throws(function() {
         regula.unbind({
             elementId: "myText"
         });
@@ -17011,7 +16684,7 @@ test('Test regula.unbind() with unbound id', function() {
 });
 
 test('Test regula.unbind() with unbound id and specified constraint', function() {
-    raises(function() {
+    throws(function() {
         regula.unbind({
             elementId: "myText",
             constraints: [regula.Constraint.NotBlank]
@@ -17022,19 +16695,19 @@ test('Test regula.unbind() with unbound id and specified constraint', function()
 module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
 
 test('Test calling regula.compound() without options', function() {
-    raises(function() {
+    throws(function() {
         regula.compound();
     }, /regula.compound expects options/, "regula.compound() must fail if no options are provided");
 });
 
 test('Test calling regula.compound() with empty options', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({});
     }, /regula.compound expects a name attribute in the options argument/, "regula.compound() called with an empty options argument must throw an error");
 });
 
 test('Test calling regula.compound() with non-string name attribute', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: true
         });
@@ -17042,7 +16715,7 @@ test('Test calling regula.compound() with non-string name attribute', function()
 });
 
 test('Test calling regula.compound() with incomplete options (1)', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "MyCompoundConstraint"
         });
@@ -17050,7 +16723,7 @@ test('Test calling regula.compound() with incomplete options (1)', function() {
 });
 
 test('Test calling regula.compound() with params attribute set to non-array type', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "MyCompoundConstraint",
             params: true
@@ -17067,7 +16740,7 @@ test('Test calling regula.compound() with previously-defined constraint name', f
         ]
     });
 
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "MyCompoundConstraint",
             constraints: [
@@ -17079,7 +16752,7 @@ test('Test calling regula.compound() with previously-defined constraint name', f
 });
 
 test('Test calling regula.compound() where a composing-constraint does not have a constraint type', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "AnotherCompoundConstraint",
             constraints: [
@@ -17091,7 +16764,7 @@ test('Test calling regula.compound() where a composing-constraint does not have 
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (1)', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "AnotherCompoundConstraint",
             constraints: [
@@ -17102,7 +16775,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (2)', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "AnotherCompoundConstraint",
             constraints: [
@@ -17118,7 +16791,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (3)', function() {
-    raises(function() {
+    throws(function() {
         regula.compound({
             name: "AnotherCompoundConstraint",
             params: ["max"],
@@ -17130,7 +16803,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (4)', function() {
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint0",
             params: ["max", "min"],
@@ -17142,7 +16815,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (5)', function() {
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint1",
             constraints: [
@@ -17159,7 +16832,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (6)', function() {
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint2",
             params: ["max", "min", "regex"],
@@ -17172,7 +16845,7 @@ test('Test calling regula.compound() with definitions that involve parameter mer
 });
 
 test('Test calling regula.compound() with definitions that involve parameter merging (7)', function() {
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint3",
             constraints: [
@@ -17203,7 +16876,7 @@ test('Test calling regula.compound() with definitions that involve a custom cons
         }
     });
 
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint4",
             params: ["a", "b"],
@@ -17234,7 +16907,7 @@ test('Test calling regula.compound() with definitions that involve compound cons
         ]
     });
 
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint7",
             params: ["c", "d", "e", "f"],
@@ -17273,7 +16946,7 @@ test('Test calling regula.compound() with a mix of regular, custom, and compound
         ]
     });
 
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint10",
             params: ["a", "b", "c", "d", "e", "f"],
@@ -17303,7 +16976,7 @@ test('Test binding a compound constraint with insufficient parameters', function
     });
 
     var $text = createInputElement("myText", "@CompoundConstraint11", "text");
-    raises(function() {
+    throws(function() {
         regula.bind();
     }, new RegExp("myText.CompoundConstraint11: You seem to have provided some optional or required parameters for @CompoundConstraint11, but you are still missing the following 2 required parameter\\(s\\): e, f"), 'Binding to a compound constraint without sufficient parameters must result in an error');
 
@@ -17337,7 +17010,7 @@ test('Test that composing constraints and parameters have been properly bound to
         ]
     });
 
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint14",
             params: ["c", "d", "f", "max"],
@@ -17377,35 +17050,35 @@ test('Test that composing constraints and parameters have been properly bound to
 
     var constraintViolation = regula.validate()[0];
 
-    equals(constraintViolation.compound, true, "Constraint must be a compound constraint");
-    equals(constraintViolation.constraintName, "CompoundConstraint14", "The constraint name must match");
-    equals(constraintViolation.constraintParameters.__size__, 7, "There must be seven parameters");
-    equals(constraintViolation.constraintParameters.c, "14", "The value of the parameter 'c' must equal 14");
-    equals(constraintViolation.constraintParameters.d, "15", "The value of the parameter 'd' must equal 15");
-    equals(constraintViolation.constraintParameters.f, "16", "The value of the parameter 'f' must equal 16");
-    equals(constraintViolation.composingConstraintViolations.length, 5, "There must be 5 composing-constraint violations");
-    equals(constraintViolation.composingConstraintViolations[0].constraintName, "CompoundConstraint12", "The first composing-constraint violation must be the CompoundConstraint12 constraint");
-    equals(constraintViolation.composingConstraintViolations[0].constraintParameters.__size__, 0, "CompoundConstraint12 must have zero parameters");
-    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
-    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
-    equals(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
-    equals(constraintViolation.composingConstraintViolations[1].constraintName, "CompoundConstraint13", "The second composing-constraint violation must be the CompoundConstraint13 constraint");
-    equals(constraintViolation.composingConstraintViolations[1].constraintParameters.__size__, 1, "CompoundConstraint13 must have 1 parameter");
-    equals(constraintViolation.composingConstraintViolations[1].constraintParameters.e, 10, "The value of the parameter 'e' must equal 10");
-    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
-    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
-    equals(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
-    equals(constraintViolation.composingConstraintViolations[2].constraintName, "OneMoreCustomConstraint", "The third composing-constraint violation must be the OneMoreCustomConstraint constraint");
-    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.__size__, 2, "OneMoreCustomConstraint must have 2 parameters");
-    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.a, 11, "The value of the parameter 'a' must equal 11");
-    equals(constraintViolation.composingConstraintViolations[2].constraintParameters.b, 12, "The value of the parameter 'b' must equal 11");
-    equals(constraintViolation.composingConstraintViolations[3].constraintName, "Pattern", "The fourth composing-constraint violation must be the Pattern constraint");
-    equals(constraintViolation.composingConstraintViolations[3].constraintParameters.__size__, 1, "Pattern must have 1 parameter");
-    equals(constraintViolation.composingConstraintViolations[3].constraintParameters.regex.toString(), "/[a-z]+/", "The value of the parameter 'regex' must equal /[a-z]+/");
-    equals(constraintViolation.composingConstraintViolations[4].constraintName, "Range", "The fifth composing-constraint violation must be the Range constraint");
-    equals(constraintViolation.composingConstraintViolations[4].constraintParameters.__size__, 1, "Range must have 1 parameter");
-    equals(constraintViolation.composingConstraintViolations[4].constraintParameters.min, 13, "The value of the parameter 'min' must equal 13");
-    equals(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
+    equal(constraintViolation.compound, true, "Constraint must be a compound constraint");
+    equal(constraintViolation.constraintName, "CompoundConstraint14", "The constraint name must match");
+    equal(constraintViolation.constraintParameters.__size__, 7, "There must be seven parameters");
+    equal(constraintViolation.constraintParameters.c, "14", "The value of the parameter 'c' must equal 14");
+    equal(constraintViolation.constraintParameters.d, "15", "The value of the parameter 'd' must equal 15");
+    equal(constraintViolation.constraintParameters.f, "16", "The value of the parameter 'f' must equal 16");
+    equal(constraintViolation.composingConstraintViolations.length, 5, "There must be 5 composing-constraint violations");
+    equal(constraintViolation.composingConstraintViolations[0].constraintName, "CompoundConstraint12", "The first composing-constraint violation must be the CompoundConstraint12 constraint");
+    equal(constraintViolation.composingConstraintViolations[0].constraintParameters.__size__, 0, "CompoundConstraint12 must have zero parameters");
+    equal(constraintViolation.composingConstraintViolations[0].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
+    equal(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
+    equal(constraintViolation.composingConstraintViolations[0].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
+    equal(constraintViolation.composingConstraintViolations[1].constraintName, "CompoundConstraint13", "The second composing-constraint violation must be the CompoundConstraint13 constraint");
+    equal(constraintViolation.composingConstraintViolations[1].constraintParameters.__size__, 1, "CompoundConstraint13 must have 1 parameter");
+    equal(constraintViolation.composingConstraintViolations[1].constraintParameters.e, 10, "The value of the parameter 'e' must equal 10");
+    equal(constraintViolation.composingConstraintViolations[1].composingConstraintViolations.length, 2, "CompoundConstraint12 must have two composing constraints");
+    equal(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[0].constraintName, "NotBlank", "CompoundConstraint12 must have the composing constraint NotBlank");
+    equal(constraintViolation.composingConstraintViolations[1].composingConstraintViolations[1].constraintName, "Numeric", "CompoundConstraint12 must have the composing constraint Numeric");
+    equal(constraintViolation.composingConstraintViolations[2].constraintName, "OneMoreCustomConstraint", "The third composing-constraint violation must be the OneMoreCustomConstraint constraint");
+    equal(constraintViolation.composingConstraintViolations[2].constraintParameters.__size__, 2, "OneMoreCustomConstraint must have 2 parameters");
+    equal(constraintViolation.composingConstraintViolations[2].constraintParameters.a, 11, "The value of the parameter 'a' must equal 11");
+    equal(constraintViolation.composingConstraintViolations[2].constraintParameters.b, 12, "The value of the parameter 'b' must equal 11");
+    equal(constraintViolation.composingConstraintViolations[3].constraintName, "Pattern", "The fourth composing-constraint violation must be the Pattern constraint");
+    equal(constraintViolation.composingConstraintViolations[3].constraintParameters.__size__, 1, "Pattern must have 1 parameter");
+    equal(constraintViolation.composingConstraintViolations[3].constraintParameters.regex.toString(), "/[a-z]+/", "The value of the parameter 'regex' must equal /[a-z]+/");
+    equal(constraintViolation.composingConstraintViolations[4].constraintName, "Range", "The fifth composing-constraint violation must be the Range constraint");
+    equal(constraintViolation.composingConstraintViolations[4].constraintParameters.__size__, 1, "Range must have 1 parameter");
+    equal(constraintViolation.composingConstraintViolations[4].constraintParameters.min, 13, "The value of the parameter 'min' must equal 13");
+    equal(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
 
     deleteElements();
 });
@@ -17437,7 +17110,7 @@ test('Test that composing constraints and parameters have been properly bound to
         ]
     });
 
-    equals(
+    equal(
         regula.compound({
             name: "CompoundConstraint101",
             params: ["c", "d", "f", "max"],
@@ -17478,14 +17151,14 @@ test('Test that composing constraints and parameters have been properly bound to
 
     var constraintViolation = regula.validate()[0];
 
-    equals(constraintViolation.compound, true, "Constraint must be a compound constraint");
-    equals(constraintViolation.constraintName, "CompoundConstraint101", "The constraint name must match");
-    equals(constraintViolation.constraintParameters.__size__, 7, "There must be seven parameters");
-    equals(constraintViolation.constraintParameters.c, "14", "The value of the parameter 'c' must equal 14");
-    equals(constraintViolation.constraintParameters.d, "15", "The value of the parameter 'd' must equal 15");
-    equals(constraintViolation.constraintParameters.f, "16", "The value of the parameter 'f' must equal 16");
-    equals(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations when reportAsSingleViolation is true");
-    equals(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
+    equal(constraintViolation.compound, true, "Constraint must be a compound constraint");
+    equal(constraintViolation.constraintName, "CompoundConstraint101", "The constraint name must match");
+    equal(constraintViolation.constraintParameters.__size__, 7, "There must be seven parameters");
+    equal(constraintViolation.constraintParameters.c, "14", "The value of the parameter 'c' must equal 14");
+    equal(constraintViolation.constraintParameters.d, "15", "The value of the parameter 'd' must equal 15");
+    equal(constraintViolation.constraintParameters.f, "16", "The value of the parameter 'f' must equal 16");
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations when reportAsSingleViolation is true");
+    equal(constraintViolation.message, "This is compound 11 12 14 15 10 16 17 13 /[a-z]+/", "The failure message must match");
 
     deleteElements();
 });
@@ -17493,19 +17166,19 @@ test('Test that composing constraints and parameters have been properly bound to
 module('Test regula.override() to make sure that it returns proper error messages and creates compound constraints properly');
 
 test('Test calling regula.override() without any options', function() {
-    raises(function() {
+    throws(function() {
         regula.override();
     }, /regula.override expects options/, "regula.override() when called without options must error out");
 });
 
 test('Test calling regula.override() with empty options', function() {
-    raises(function() {
+    throws(function() {
         regula.override({});
     }, /regula.override expects a valid constraintType attribute in the options argument/, "regula.override() when called with an empty options parameter must error out");
 });
 
 test('Test calling regula.override() with an undefined constraint type', function() {
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint.Bogus
         });
@@ -17513,7 +17186,7 @@ test('Test calling regula.override() with an undefined constraint type', functio
 });
 
 test('Test calling regula.override() with an invalid constraint type', function() {
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: "a"
         });
@@ -17529,7 +17202,7 @@ test('Test calling regula.override() with non-boolean formSpecific attribute', f
         }
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CustomConstraint" + time],
             formSpecific: "a"
@@ -17546,7 +17219,7 @@ test('Test calling regula.override() with non-function validator attribute', fun
         }
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CustomConstraint" + time],
             validator: "a"
@@ -17563,7 +17236,7 @@ test('Test calling regula.override() with non-array params attribute', function(
         }
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CustomConstraint" + time],
             params: "a"
@@ -17580,7 +17253,7 @@ test('Test calling regula.override() with non-string defaultMessage attribute', 
         }
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CustomConstraint" + time],
             defaultMessage: 6
@@ -17602,7 +17275,7 @@ test('Test calling regula.override() to create a cyclic composition (1)', functi
         }]
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CompoundConstraint" + time],
             constraints: [{
@@ -17640,7 +17313,7 @@ test('Test calling regula.override() to create a cyclic composition (2)', functi
     });
 
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["CompoundConstraint" + time],
             constraints: [{
@@ -17699,7 +17372,7 @@ test('Test calling regula.override() to create a cyclic composition (3)', functi
         }]
     });
 
-    raises(function() {
+    throws(function() {
         regula.override({
             constraintType: regula.Constraint["AwesomeCompoundConstraint" + time],
             constraints: [{
@@ -17758,14 +17431,16 @@ test('Test successful regula.override() on a compound constraint', function() {
         }]
     });
 
-    regula.override({
-        constraintType: regula.Constraint["AwesomeCompoundConstraint" + time],
-        constraints: [{
-            constraintType: regula.Constraint.NotBlank
-        }, {
-            constraintType: regula.Constraint.Numeric
-        }]
-    });
+    equal(
+        regula.override({
+            constraintType: regula.Constraint["AwesomeCompoundConstraint" + time],
+            constraints: [{
+                constraintType: regula.Constraint.NotBlank
+            }, {
+                constraintType: regula.Constraint.Numeric
+            }]
+        }), undefined, "Call to regula.override() on the defined compound constraint must be successful"
+    );
 });
 
 test('Test that calling regula.override() on a built-in constraint only results in overriding the default message', function() {
@@ -17785,13 +17460,13 @@ test('Test that calling regula.override() on a built-in constraint only results 
     var constraintViolations = regula.validate();
     var constraintViolation = constraintViolations[0];
 
-    equals(constraintViolations.length, 1, "There must be a constraint violation because the validator must not have been overridden");
-    equals(constraintViolation.constraintParameters.max, 5, "The max parameter must exist and it must be set to 5");
-    equals(constraintViolation.constraintParameters.min, 0, "The min parameter must exist and it must be set to 0");
+    equal(constraintViolations.length, 1, "There must be a constraint violation because the validator must not have been overridden");
+    equal(constraintViolation.constraintParameters.max, 5, "The max parameter must exist and it must be set to 5");
+    equal(constraintViolation.constraintParameters.min, 0, "The min parameter must exist and it must be set to 0");
     ok(typeof constraintViolation.constraintParameters.a === "undefined", "The a parameter must not exist in params");
     ok(typeof constraintViolation.constraintParameters.b === "undefined", "The b parameter must not exist in params");
-    equals(constraintViolation.formSpecific, false, "formSpecific must remain false");
-    equals(constraintViolation.message, "The default message has changed", "The default message must have been changed");
+    equal(constraintViolation.formSpecific, false, "formSpecific must remain false");
+    equal(constraintViolation.message, "The default message has changed", "The default message must have been changed");
 
     //reset Range to how it used to be
     regula.override({
@@ -17825,11 +17500,11 @@ test('Test that calling regula.override() on a custom constraint without any new
     var constraintViolations = regula.validate();
     var constraintViolation = constraintViolations[0];
 
-    equals(constraintViolations.length, 1, "There must be a constraint violation because the validator must not have been overridden");
-    equals(constraintViolation.constraintParameters.a, "0", "The a parameter must exist and it must be set to 0");
-    equals(constraintViolation.constraintParameters.b, "5", "The b parameter must exist and it must be set to 5");
-    equals(constraintViolation.formSpecific, false, "formSpecific must remain false");
-    equals(constraintViolation.message, "a is 0 and b is 5", "The default message must not have changed");
+    equal(constraintViolations.length, 1, "There must be a constraint violation because the validator must not have been overridden");
+    equal(constraintViolation.constraintParameters.a, "0", "The a parameter must exist and it must be set to 0");
+    equal(constraintViolation.constraintParameters.b, "5", "The b parameter must exist and it must be set to 5");
+    equal(constraintViolation.formSpecific, false, "formSpecific must remain false");
+    equal(constraintViolation.message, "a is 0 and b is 5", "The default message must not have changed");
 
     deleteElements();
 });
@@ -17863,11 +17538,11 @@ test('Test that you can override everything on a custom constraint', function() 
     var constraintViolations = regula.validate();
     var constraintViolation = constraintViolations[0];
 
-    equals(constraintViolations.length, 1, "There must be a constraint violation because the validator must have been overridden");
-    equals(constraintViolation.constraintParameters.c, "0", "The c parameter must exist and it must be set to 0");
-    equals(constraintViolation.constraintParameters.d, "5", "The d parameter must exist and it must be set to 5");
-    equals(constraintViolation.formSpecific, true, "formSpecific must be true");
-    equals(constraintViolation.message, "c is 0 and d is 5", "The default message must have changed");
+    equal(constraintViolations.length, 1, "There must be a constraint violation because the validator must have been overridden");
+    equal(constraintViolation.constraintParameters.c, "0", "The c parameter must exist and it must be set to 0");
+    equal(constraintViolation.constraintParameters.d, "5", "The d parameter must exist and it must be set to 5");
+    equal(constraintViolation.formSpecific, true, "formSpecific must be true");
+    equal(constraintViolation.message, "c is 0 and d is 5", "The default message must have changed");
 
     deleteElements();
 });
@@ -17886,25 +17561,25 @@ test('Test that regula.validate() doesn\'t error out after a bound element has b
     regula.bind();
     deleteElements();
 
-    equals(regula.validate().length, 0, "Calling validate() should succeed (i.e., not error out) even if a bound element has been deleted");
+    equal(regula.validate().length, 0, "Calling validate() should succeed (i.e., not error out) even if a bound element has been deleted");
 });
 
 test('Test calling regula.validate() without any arguments', function() {
-    equals(regula.validate().length, 0, "Calling regula.validate() without any arguments should succeed");
+    equal(regula.validate().length, 0, "Calling regula.validate() without any arguments should succeed");
 });
 
 test('Test calling regula.validate() with an empty options parameter', function() {
-    equals(regula.validate({}).length, 0, "Calling regula.validate() with an empty options argument should succeed");
+    equal(regula.validate({}).length, 0, "Calling regula.validate() with an empty options argument should succeed");
 });
 
 test('Test calling regula.validate() with non-array groups attribute', function() {
-    raises(function() {
+    throws(function() {
         regula.validate({groups: "test"});
     }, /regula.validate: If a groups attribute is provided, it must be an array./, "Calling regula.validate() with the groups attribute set to a non-array should error out");
 });
 
 test('Test calling regula.validate() with empty groups attribute', function() {
-    raises(function() {
+    throws(function() {
         regula.validate({groups: []});
     }, /regula.validate: If a groups attribute is provided, it must not be empty./, "Calling regula.validate() with an empty groups attribute should error out");
 });
@@ -17927,13 +17602,13 @@ test('Test calling regula.validate() with groups attribute (1)', function() {
         groups: [regula.Group.GroupA, regula.Group.GroupB]
     });
 
-    equals(constraintViolations.length, 6, "There must be six constraint violations");
-    equals(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[3].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[4].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[5].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations.length, 6, "There must be six constraint violations");
+    equal(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[3].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[4].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[5].group, "GroupB", "Constraint must be part of Group B");
 
     deleteElements();
 });
@@ -17956,25 +17631,25 @@ test('Test calling regula.validate() with groups attribute (2)', function() {
         groups: [regula.Group.GroupA, regula.Group.GroupB]
     });
 
-    equals(constraintViolations.length, 9, "There must be nine constraint violations");
-    equals(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[3].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[4].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[5].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[6].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[7].group, "GroupB", "Constraint must be part of Group B");
-    equals(constraintViolations[8].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations.length, 9, "There must be nine constraint violations");
+    equal(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[3].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[4].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[5].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[6].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[7].group, "GroupB", "Constraint must be part of Group B");
+    equal(constraintViolations[8].group, "GroupB", "Constraint must be part of Group B");
 
     constraintViolations = regula.validate({
         groups: [regula.Group.GroupC]
     });
 
-    equals(constraintViolations.length, 3, "There must be three constraint violations");
-    equals(constraintViolations[0].group, "GroupC", "Constraint must be part of Group C");
-    equals(constraintViolations[1].group, "GroupC", "Constraint must be part of Group C");
-    equals(constraintViolations[2].group, "GroupC", "Constraint must be part of Group C");
+    equal(constraintViolations.length, 3, "There must be three constraint violations");
+    equal(constraintViolations[0].group, "GroupC", "Constraint must be part of Group C");
+    equal(constraintViolations[1].group, "GroupC", "Constraint must be part of Group C");
+    equal(constraintViolations[2].group, "GroupC", "Constraint must be part of Group C");
 
     deleteElements();
 });
@@ -17998,22 +17673,22 @@ test('Test calling regula.validate() with groups attribute (independent set to f
         independent: false
     });
 
-    equals(constraintViolations.length, 3, "There must be three constraint violations");
-    equals(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
-    equals(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations.length, 3, "There must be three constraint violations");
+    equal(constraintViolations[0].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[1].group, "GroupA", "Constraint must be part of Group A");
+    equal(constraintViolations[2].group, "GroupA", "Constraint must be part of Group A");
 
     deleteElements();
 });
 
 test('Test calling regula.validate() with non-array elements attribute', function() {
-    raises(function() {
+    throws(function() {
         regula.validate({elements: "test"});
     }, /regula.validate: If an elements attribute is provided, it must be an array./, "Calling regula.validate() with elements attribute set to non-array should error out");
 });
 
 test('Test calling regula.validate() with empty elements attribute', function() {
-    raises(function() {
+    throws(function() {
         regula.validate({elements: []});
     }, /regula.validate: If an elements attribute is provided, it must not be empty./, "Calling regula.validate() with ane mpty elements attribute should error out");
 });
@@ -18029,7 +17704,7 @@ test('Test calling regula.validate() with array of elements (constraints passing
     $text2.val("123qwe");
 
     regula.bind();
-    equals(regula.validate({elements: [$text0.get(0), $text1.get(0), $text2.get(0)]}).length, 0, "Calling regula.validate() with elements attributes shouldn't error out");
+    equal(regula.validate({elements: [$text0.get(0), $text1.get(0), $text2.get(0)]}).length, 0, "Calling regula.validate() with elements attributes shouldn't error out");
 
     deleteElements();
 });
@@ -18040,7 +17715,7 @@ test('Test calling regula.validate() with array of elements (constraints failing
     var $text2 = createInputElement("text2", "@AlphaNumeric", "text");
 
     regula.bind();
-    equals(regula.validate({elements: [$text0.get(0), $text1.get(0), $text2.get(0)]}).length, 3, "Calling regula.validate() with elements attributes shouldn't error out");
+    equal(regula.validate({elements: [$text0.get(0), $text1.get(0), $text2.get(0)]}).length, 3, "Calling regula.validate() with elements attributes shouldn't error out");
 
     deleteElements();
 });
@@ -18052,7 +17727,7 @@ test('Test calling regula.validate() after having deleted an element', function(
 
     regula.bind();
     $text1.remove();
-    equals(regula.validate().length, 2, "Calling regula.validate() after having removed one element shouldn't error out");
+    equal(regula.validate().length, 2, "Calling regula.validate() after having removed one element shouldn't error out");
 
     deleteElements();
 });
@@ -18067,17 +17742,17 @@ test('Test calling regula.validate() with a constraint type', function() {
         constraintType: regula.Constraint.Numeric
     });
 
-    equals(constraintViolations.length, 2, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
+    equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
 
     deleteElements();
 });
 
 test('Test calling regula.validate() with an invalid constraint type', function() {
-    raises(function() {
+    throws(function() {
         regula.validate({
             constraintType: regula.Constraint.FakeConstraint
         });
@@ -18087,7 +17762,7 @@ test('Test calling regula.validate() with an invalid constraint type', function(
 test('Test calling regula.validate() with a constraint that hasn\'t been bound to any element', function() {
     regula.unbind();
 
-    raises(function() {
+    throws(function() {
         regula.validate({
             constraintType: regula.Constraint.AlphaNumeric
         });
@@ -18102,9 +17777,9 @@ test('Test calling requla.validate() with elementId', function() {
         elementId: "text0"
     });
 
-    equals(constraintViolations.length, 1, "There should only be one constraint-violation");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the failing constraint");
+    equal(constraintViolations.length, 1, "There should only be one constraint-violation");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the failing constraint");
 
     deleteElements();
 });
@@ -18119,9 +17794,9 @@ test('Test calling regula.validate() with elementId and constraint', function() 
         constraintType: regula.Constraint.AlphaNumeric
     });
 
-    equals(constraintViolations.length, 1, "There should only be one constraint-violation");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].constraintName, "AlphaNumeric", "@AlphaNumeric should be the failing constraint");
+    equal(constraintViolations.length, 1, "There should only be one constraint-violation");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].constraintName, "AlphaNumeric", "@AlphaNumeric should be the failing constraint");
 
     deleteElements();
 });
@@ -18131,7 +17806,7 @@ test('Test calling regula.validate() with elementId and unbound constraint', fun
     var $text1 = createInputElement("text1", "@NotBlank", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             elementId: "text0",
             constraintType: regula.Constraint.Email
@@ -18152,11 +17827,11 @@ test('Test calling regula.validate() with elements and constraint', function() {
         constraintType: regula.Constraint.Numeric
     });
 
-    equals(constraintViolations.length, 2, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
+    equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
 
     deleteElements();
 });
@@ -18167,7 +17842,7 @@ test('Test calling regula.validate() with elements and unbound constraint', func
     var $text2 = createInputElement("text2", "@AlphaNumeric", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             elements: [$text0.get(0), $text1.get(0)],
             constraintType: regula.Constraint.Email
@@ -18188,13 +17863,13 @@ test('Test calling regula.validate() with groups and constraint', function() {
         constraintType: regula.Constraint.Numeric
     });
 
-    equals(constraintViolations.length, 2, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "FirstGroup", "The group attribute of the constraint violation does not match");
-    equals(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
-    equals(constraintViolations[1].group, "SecondGroup", "The group attribute of the constraint violation does not match");
+    equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "FirstGroup", "The group attribute of the constraint violation does not match");
+    equal(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
+    equal(constraintViolations[1].group, "SecondGroup", "The group attribute of the constraint violation does not match");
 
     deleteElements();
 });
@@ -18205,7 +17880,7 @@ test('Test calling regula.validate() with undefined and unbound constraint', fun
     var $text2 = createInputElement("text2", "@AlphaNumeric", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.FakeGroup],
             constraintType: regula.Constraint.Numeric
@@ -18221,7 +17896,7 @@ test('Test calling regula.validate() with groups and unbound constraint', functi
     var $text2 = createInputElement("text2", "@AlphaNumeric", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             groups: [regula.Group.FirstGroup, regula.Group.SecondGroup],
             constraintType: regula.Constraint.AlphaNumeric
@@ -18241,10 +17916,10 @@ test('Test calling regula.validate() with groups and elementId', function() {
         elementId: "text0"
     });
 
-    equals(constraintViolations.length, 1, "There should only be one constraint-violation");
-    equals(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations.length, 1, "There should only be one constraint-violation");
+    equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
 
     deleteElements();
 });
@@ -18260,13 +17935,13 @@ test('Test calling regula.validate() with groups and elements', function() {
     });
 
 
-    equals(constraintViolations.length, 2, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
-    equals(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
-    equals(constraintViolations[1].group, "SecondGroup", "The group attribute of the constraint violation does not match");
+    equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
+    equal(constraintViolations[1].group, "SecondGroup", "The group attribute of the constraint violation does not match");
 
     deleteElements();
 });
@@ -18276,7 +17951,7 @@ test('Test calling regula.validate() with undefined group and elements', functio
     var $text1 = createInputElement("text1", "@Numeric(groups=[SecondGroup])", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             groups: [regula.Group.SecondGroup, regula.Group.FakeGroup],
             elements: [$text0.get(0), $text1.get(0)]
@@ -18291,7 +17966,7 @@ test('Test calling regula.validate() with groups and unbound element', function(
     var $text1 = createInputElement("text1", "@Numeric(groups=[FirstGroup])", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             groups: [regula.Group.SecondGroup],
             elements: [$text0.get(0), $text1.get(0)]
@@ -18313,10 +17988,10 @@ test('Test calling regula.validate() with elementId, group, and constraint', fun
         groups: [regula.Group.SecondGroup]
     });
 
-    equals(constraintViolations.length, 1, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations.length, 1, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
 });
 
 test('Test calling regula.validate() with elements, group, and constraint', function() {
@@ -18331,13 +18006,13 @@ test('Test calling regula.validate() with elements, group, and constraint', func
         groups: [regula.Group.SecondGroup]
     });
 
-    equals(constraintViolations.length, 2, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
-    equals(constraintViolations[1].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text2", "The id of the failing element does not match");
-    equals(constraintViolations[1].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations[1].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text2", "The id of the failing element does not match");
+    equal(constraintViolations[1].group, "SecondGroup", "The group of the failing constraint does not match");
 });
 
 test('Test calling regula.validate() with elements not bound to group, group, and constraint', function() {
@@ -18346,7 +18021,7 @@ test('Test calling regula.validate() with elements not bound to group, group, an
     var $text2 = createInputElement("text2", "@Email(groups=[SecondGroup])", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             elements: [$text0.get(0), $text2.get(0), $text1.get(0)],
             constraintType: regula.Constraint.Email,
@@ -18360,7 +18035,7 @@ test('Test calling regula.validate() with elements, undefined group, and constra
     var $text1 = createInputElement("text1", "@Email(groups=[FirstGroup])", "text");
     var $text2 = createInputElement("text2", "@Email(groups=[SecondGroup])", "text");
 
-    raises(function() {
+    throws(function() {
         regula.validate({
             elements: [$text0.get(0), $text2.get(0)],
             constraintType: regula.Constraint.Email,
@@ -18381,16 +18056,16 @@ test('Test calling regula.validate() with elements, groups, and constraint', fun
         groups: [regula.Group.SecondGroup, regula.Group.FirstGroup]
     });
 
-    equals(constraintViolations.length, 3, "There should only be two constraint-violations");
-    equals(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
-    equals(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
-    equals(constraintViolations[1].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[1].failingElements[0].id, "text2", "The id of the failing element does not match");
-    equals(constraintViolations[1].group, "SecondGroup", "The group of the failing constraint does not match");
-    equals(constraintViolations[2].constraintName, "Email", "@Email should be the failing constraint");
-    equals(constraintViolations[2].failingElements[0].id, "text1", "The id of the failing element does not match");
-    equals(constraintViolations[2].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations.length, 3, "There should only be two constraint-violations");
+    equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations[1].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[1].failingElements[0].id, "text2", "The id of the failing element does not match");
+    equal(constraintViolations[1].group, "SecondGroup", "The group of the failing constraint does not match");
+    equal(constraintViolations[2].constraintName, "Email", "@Email should be the failing constraint");
+    equal(constraintViolations[2].failingElements[0].id, "text1", "The id of the failing element does not match");
+    equal(constraintViolations[2].group, "SecondGroup", "The group of the failing constraint does not match");
 });
 
 test('Test calling regula.validate() with elements not bound to constraint, groups, and constraint', function() {
@@ -18399,7 +18074,7 @@ test('Test calling regula.validate() with elements not bound to constraint, grou
     var $text2 = createInputElement("text2", "@Email(groups=[FirstGroup, SecondGroup])", "text");
 
     regula.bind();
-    raises(function() {
+    throws(function() {
         regula.validate({
             elements: [$text0.get(0), $text2.get(0), $text1.get(0)],
             constraintType: regula.Constraint.Numeric,
@@ -18413,7 +18088,7 @@ test('Test label and message interpolation when calling regula.validate() (1)', 
 
     regula.bind();
     var constraintViolations = regula.validate();
-    equals(constraintViolations[0].message, "monkey is awesome", "Interpolated message must match");
+    equal(constraintViolations[0].message, "monkey is awesome", "Interpolated message must match");
 });
 
 test('Test label and message interpolation when calling regula.validate() (2)', function() {
@@ -18421,5 +18096,5 @@ test('Test label and message interpolation when calling regula.validate() (2)', 
 
     regula.bind();
     var constraintViolations = regula.validate();
-    equals(constraintViolations[0].message, "monkey is awesome", "Interpolated message must match");
+    equal(constraintViolations[0].message, "monkey is awesome", "Interpolated message must match");
 });
