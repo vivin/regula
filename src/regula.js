@@ -564,206 +564,6 @@ regula = (function () {
             compound: false,
             params: ["step"],
             defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
-        },
-
-        Selected: {
-            formSpecific: false,
-            validator: selected,
-            constraintType: Constraint.Selected,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} needs to be selected."
-        },
-
-        Max: {
-            formSpecific: false,
-            validator: max,
-            constraintType: Constraint.Max,
-            custom: false,
-            compound: false,
-            params: ["value"],
-            defaultMessage: "{label} needs to be lesser than or equal to {value}."
-        },
-
-        Min: {
-            formSpecific: false,
-            validator: min,
-            constraintType: Constraint.Min,
-            custom: false,
-            compound: false,
-            params: ["value"],
-            defaultMessage: "{label} needs to be greater than or equal to {value}."
-        },
-
-        Range: {
-            formSpecific: false,
-            validator: range,
-            constraintType: Constraint.Range,
-            custom: false,
-            compound: false,
-            params: ["min", "max"],
-            defaultMessage: "{label} needs to be between {min} and {max}."
-        },
-
-        NotBlank: {
-            formSpecific: false,
-            validator: notBlank,
-            constraintType: Constraint.NotBlank,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} cannot be blank."
-        },
-
-        Blank: {
-            formSpecific: false,
-            validator: blank,
-            constraintType: Constraint.Blank,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} needs to be blank."
-        },
-
-        Pattern: {
-            formSpecific: false,
-            validator: matches,
-            constraintType: Constraint.Pattern,
-            custom: false,
-            compound: false,
-            params: ["regex"],
-            defaultMessage: "{label} needs to match {regex}{flags}."
-        },
-
-        Email: {
-            formSpecific: false,
-            validator: email,
-            constraintType: Constraint.Email,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} is not a valid email."
-        },
-
-        Alpha: {
-            formSpecific: false,
-            validator: alpha,
-            constraintType: Constraint.Alpha,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} can only contain letters."
-        },
-
-        Numeric: {
-            formSpecific: false,
-            validator: numeric,
-            constraintType: Constraint.Numeric,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} can only contain numbers."
-        },
-
-        AlphaNumeric: {
-            formSpecific: false,
-            validator: alphaNumeric,
-            constraintType: Constraint.AlphaNumeric,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} can only contain numbers and letters."
-        },
-
-        Integer: {
-            formSpecific: false,
-            validator: integer,
-            constraintType: Constraint.Integer,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} must be an integer."
-        },
-
-        Real: {
-            formSpecific: false,
-            validator: real,
-            constraintType: Constraint.Real,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} must be a real number."
-        },
-
-        CompletelyFilled: {
-            formSpecific: true,
-            validator: completelyFilled,
-            constraintType: Constraint.CompletelyFilled,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} must be completely filled."
-        },
-
-        PasswordsMatch: {
-            formSpecific: true,
-            validator: passwordsMatch,
-            constraintType: Constraint.PasswordsMatch,
-            custom: false,
-            compound: false,
-            params: ["field1", "field2"],
-            defaultMessage: "Passwords do not match."
-        },
-
-        Required: {
-            formSpecific: false,
-            validator: required,
-            constraintType: Constraint.Required,
-            custom: false,
-            compound: false,
-            params: [],
-            defaultMessage: "{label} is required."
-        },
-
-        Length: {
-            formSpecific: false,
-            validator: length,
-            constraintType: Constraint.Length,
-            custom: false,
-            compound: false,
-            params: ["min", "max"],
-            defaultMessage: "{label} length must be between {min} and {max}."
-        },
-
-        Digits: {
-            formSpecific: false,
-            validator: digits,
-            constraintType: Constraint.Digits,
-            custom: false,
-            compound: false,
-            params: ["integer", "fraction"],
-            defaultMessage: "{label} must have up to {integer} digits and {fraction} fractional digits."
-        },
-
-        Past: {
-            formSpecific: false,
-            validator: past,
-            constraintType: Constraint.Past,
-            custom: false,
-            compound: false,
-            params: ["format"],
-            defaultMessage: "{label} must be in the past."
-        },
-
-        Future: {
-            formSpecific: false,
-            validator: future,
-            constraintType: Constraint.Future,
-            custom: false,
-            compound: false,
-            params: ["format"],
-            defaultMessage: "{label} must be in the future."
         }
     };
 
@@ -2718,11 +2518,11 @@ regula = (function () {
             initializeBoundConstraints();
         } else {
             if (typeof options.elementId === "undefined" && typeof options.elements === "undefined") {
-                new Exception.IllegalArgumentException("regula.unbind requires an elementId attribute, or an elements attribute if options are provided");
+                throw new Exception.IllegalArgumentException("regula.unbind requires an elementId attribute, or an elements attribute if options are provided");
             }
 
             if (typeof options.elements !== "undefined" && !(options.elements instanceof Array)) {
-                new Exception.IllegalArgumentException("regula.unbind expects the elements attribute to be an array, if it is provided");
+                throw new Exception.IllegalArgumentException("regula.unbind expects the elements attribute to be an array, if it is provided");
             }
 
             if (typeof options.elements === "undefined") {
@@ -2730,7 +2530,7 @@ regula = (function () {
 
                 //This can happen when they pass in an id that doesn't belong to any element
                 if (options.elements[0] === null) {
-                    new Exception.IllegalArgumentException("Element with id " + options.elementId + " does not have any constraints bound to it. " + explodeParameters(options));
+                    throw new Exception.IllegalArgumentException("Element with id " + options.elementId + " does not have any constraints bound to it. " + explodeParameters(options));
                 }
             }
 
@@ -2749,7 +2549,7 @@ regula = (function () {
                                 removeElementAndGroupFromConstraintsIfEmpty(id, group);
                             }
                         } else {
-                            new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
+                            throw new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
                         }
 
                     }
@@ -2767,7 +2567,7 @@ regula = (function () {
                                 }
 
                             } else {
-                                new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
+                                throw new Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + explodeParameters(options));
                             }
                         }
                     }
