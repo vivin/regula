@@ -223,8 +223,21 @@ regula = (function () {
         checkbox: "The checkbox",
         radio: "The radio button",
         text: "The text field",
-        password: "The password"
+        password: "The password",
+        email: "The email",
+        url: "The URL",
+        number: "The number",
+        datetime: "The datetime",
+        date: "The date",
+        month: "The month",
+        time: "The time",
+        week: "The week",
+        range: "The range",
+        tel: "The telephone number",
+        color: "The color"
     };
+
+    friendlyInputNames["datetime-local"] = "The local datetime";
 
     var firstCustomConstraintIndex = 30;
     var firstCustomGroupIndex = 1;
@@ -503,7 +516,7 @@ regula = (function () {
             custom: false,
             compound: false,
             params: ["pattern"],
-            defaultPattern: "{label} needs to match {pattern}."
+            defaultMessage: "{label} needs to match {pattern}."
         },
 
         HTML5URL: {
