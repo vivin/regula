@@ -49,14 +49,14 @@ test("Test regula('validate') after a bound element has been deleted", function(
     $("#" + inputElementId).regula('bind');
     deleteElement(inputElementId);
 
-    equals($("#" + inputElementId).regula('validate').length, 0, "Calling regula('validate') should succeed even if a bound element has been deleted");
+    equal($("#" + inputElementId).regula('validate').length, 0, "Calling regula('validate') should succeed even if a bound element has been deleted");
 });
 
 test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "");
 
-    equals($input.regula('bind'), $input, "Calling bind() on an element with no constraints must not return anything");
+    equal($input.regula('bind'), $input, "Calling bind() on an element with no constraints must not return anything");
 
     deleteElement(inputElementId);
 });
@@ -87,7 +87,7 @@ test('Test definition with group-definition (with one group) as a parameter', fu
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup])");
 
-    equals($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup]) should be a valid definition");
+    equal($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -96,7 +96,7 @@ test('Test definition with group-definition (with more than one group) as a para
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(groups=[MyGroup, MyOtherGroup])");
 
-    equals($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
+    equal($input.regula('bind'), $input, "@NotBlank(groups=[MyGroup, MyOtherGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -105,7 +105,7 @@ test('Test definition with multiple valid parameters', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup])");
 
-    equals($input.regula('bind'), $input, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
+    equal($input.regula('bind'), $input, "@NotBlank(param1=10, param2=\"text\\\"\", regex=/[a-b]\\//, param3=false, groups=[MyGroup, MyOtherGroup, AndAnotherGroup]) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -125,7 +125,7 @@ test('Test definition with multiple valid constraints (markup)', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
-    equals($input.regula('bind'), $input, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
+    equal($input.regula('bind'), $input, "@NotBlank @Required @Range(min=5, max=10) should be a valid definition");
 
     deleteElement(inputElementId);
 });
@@ -134,7 +134,7 @@ test('Test definition with multiple valid constraints (programmatic)', function(
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@NotBlank @Required @Range(min=5, max=10)");
 
-    equals($input.regula('bind', {
+    equal($input.regula('bind', {
         constraints: [
             {constraintType: regula.Constraint.NotBlank},
             {constraintType: regula.Constraint.Required},
@@ -225,7 +225,7 @@ test('Test binding @Max (with required parameter and optional groups, label and 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind', {
+    equal($input.regula('bind', {
         constraints: [
             {
                 constraintType: regula.Constraint.Max,
@@ -246,7 +246,7 @@ test('Test binding @Between (with both required parameters and optional message,
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind', {
+    equal($input.regula('bind', {
         constraints: [
             {
                 constraintType: regula.Constraint.Between,
@@ -302,7 +302,7 @@ test('Test binding @NotBlank (without parameters) through regula.bind', function
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind', {
+    equal($input.regula('bind', {
         constraints: [
             {constraintType: regula.Constraint.NotBlank}
         ]
@@ -315,7 +315,7 @@ test('Test binding @NotBlank (with optional label parameter) through regula.bind
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.NotBlank,
@@ -333,7 +333,7 @@ test('Test binding @NotBlank (with optional message parameter) through regula.bi
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.NotBlank,
@@ -351,7 +351,7 @@ test('Test binding @NotBlank (with optional groups parameter) through regula.bin
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.NotBlank,
@@ -369,7 +369,7 @@ test('Test binding @NotBlank (with optional label, message, and groups parameter
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.NotBlank,
@@ -405,7 +405,7 @@ test('Test binding @Blank (without parameters) through regula.bind', function() 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {constraintType: regula.Constraint.Blank}
         ]
@@ -418,7 +418,7 @@ test('Test binding @Blank (with optional label parameter) through regula.bind', 
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Blank,
@@ -436,7 +436,7 @@ test('Test binding @Blank (with optional message parameter) through regula.bind'
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Blank,
@@ -454,7 +454,7 @@ test('Test binding @Blank (with optional groups parameter) through regula.bind',
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Blank,
@@ -472,7 +472,7 @@ test('Test binding @Blank (with optional label, message, and groups parameter) t
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Blank,
@@ -610,7 +610,7 @@ test('Test binding @Pattern (with required parameter) through regula.bind', func
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Pattern,
@@ -628,7 +628,7 @@ test('Test binding @Pattern (with required parameter and optional label paramete
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Pattern,
@@ -647,7 +647,7 @@ test('Test binding @Pattern (with required parameter and optional message parame
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Pattern,
@@ -666,7 +666,7 @@ test('Test binding @Pattern (with required parameter and optional groups paramet
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Pattern,
@@ -685,7 +685,7 @@ test('Test binding @Pattern (with required parameter and optional label, message
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId);
 
-    equals($input.regula('bind',{
+    equal($input.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.Pattern,
@@ -765,7 +765,7 @@ test('Test binding @CompletelyFilled (without parameters) through regula.bind', 
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {constraintType: regula.Constraint.CompletelyFilled}
         ]
@@ -778,7 +778,7 @@ test('Test binding @CompletelyFilled (with optional label parameter) through reg
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.CompletelyFilled,
@@ -796,7 +796,7 @@ test('Test binding @CompletelyFilled (with optional message parameter) through r
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.CompletelyFilled,
@@ -814,7 +814,7 @@ test('Test binding @CompletelyFilled (with optional groups parameter) through re
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.CompletelyFilled,
@@ -832,7 +832,7 @@ test('Test binding @CompletelyFilled (with optional label, message, and groups p
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.CompletelyFilled,
@@ -1012,7 +1012,7 @@ test('Test binding @PasswordsMatch (with both required parameters) through regul
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.PasswordsMatch,
@@ -1031,7 +1031,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional l
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.PasswordsMatch,
@@ -1051,7 +1051,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.PasswordsMatch,
@@ -1071,7 +1071,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional g
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.PasswordsMatch,
@@ -1091,7 +1091,7 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
     var formElementId = "hiddenForm";
     var $form = createFormElement(formElementId);
 
-    equals($form.regula('bind',{
+    equal($form.regula('bind',{
         constraints: [
             {
                 constraintType: regula.Constraint.PasswordsMatch,
@@ -1112,15 +1112,15 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
 module("jQuery Regula Validate Tests");
 
 function testConstraintViolationsForDefaultConstraints(constraintViolation, params) {
-    equals(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equals(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
-    equals(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
-    equals(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
-    equals(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
-    equals(constraintViolation.failingElements.length, 1, "There must be one failing element");
-    equals(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
-    equals(constraintViolation.group, params.validatedGroups, "The following groups must have been validated: " + params.validatedGroups);
-    equals(constraintViolation.message, params.errorMessage, "Wrong error message");
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
+    equal(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
+    equal(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
+    equal(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
+    equal(constraintViolation.group, params.validatedGroups, "The following groups must have been validated: " + params.validatedGroups);
+    equal(constraintViolation.message, params.errorMessage, "Wrong error message");
 }
 
 test('Test @Checked against unchecked radio button (markup)', function() {
@@ -1169,7 +1169,7 @@ test('Test @Checked against checked radio button (markup)', function() {
     $radio.attr("checked", "true");
 
     $radio.regula('bind');
-    equals($radio.regula('validate').length, 0, "The @Checked constraint must not fail against a checked radio button");
+    equal($radio.regula('validate').length, 0, "The @Checked constraint must not fail against a checked radio button");
 
     deleteElement(inputElementId);
 });
@@ -1184,7 +1184,7 @@ test('Test @Checked against checked radio button (regula.bind)', function() {
             {constraintType: regula.Constraint.Checked}
         ]
     });
-    equals($radio.regula('validate').length, 0, "The @Checked constraint must not fail against a checked radio button");
+    equal($radio.regula('validate').length, 0, "The @Checked constraint must not fail against a checked radio button");
 
     deleteElement(inputElementId);
 });
@@ -1235,7 +1235,7 @@ test('Test @Checked against checked checkbox (markup)', function() {
     $checkbox.attr("checked", "true");
 
     $checkbox.regula('bind');
-    equals($checkbox.regula('validate').length, 0, "The @Checked constraint must not fail against a checked checkbox");
+    equal($checkbox.regula('validate').length, 0, "The @Checked constraint must not fail against a checked checkbox");
 
     deleteElement(inputElementId)
 });
@@ -1250,7 +1250,7 @@ test('Test @Checked against checked checkbox (regula.bind)', function() {
             {constraintType: regula.Constraint.Checked}
         ]
     });
-    equals($checkbox.regula('validate').length, 0, "The @Checked constraint must not fail against a checked checkbox");
+    equal($checkbox.regula('validate').length, 0, "The @Checked constraint must not fail against a checked checkbox");
 
     deleteElement(inputElementId);
 });
@@ -1301,7 +1301,7 @@ test('Test passing @NotBlank against text field (markup)', function() {
     $text.val("test");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@NotBlank should not fail on a non-empty text field");
+    equal($text.regula('validate').length, 0, "@NotBlank should not fail on a non-empty text field");
 
     deleteElement(inputElementId);
 });
@@ -1316,7 +1316,7 @@ test('Test passing @NotBlank against text field (regula.bind)', function() {
             {constraintType: regula.Constraint.NotBlank}
         ]
     });
-    equals($text.regula('validate').length, 0, "@NotBlank should not fail on a non-empty text field");
+    equal($text.regula('validate').length, 0, "@NotBlank should not fail on a non-empty text field");
 
     deleteElement(inputElementId);
 });
@@ -1368,7 +1368,7 @@ test('Test passing @Blank against text field (markup)', function() {
     var $text = createInputElement(inputElementId, "@Blank", "text");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@Blank should not fail on an empty text field");
+    equal($text.regula('validate').length, 0, "@Blank should not fail on an empty text field");
 
     deleteElement(inputElementId);
 });
@@ -1382,7 +1382,7 @@ test('Test passing @Blank against text field (regula.bind)', function() {
             {constraintType: regula.Constraint.Blank}
         ]
     });
-    equals($text.regula('validate').length, 0, "@Blank should not fail on an empty text field");
+    equal($text.regula('validate').length, 0, "@Blank should not fail on an empty text field");
 
     deleteElement(inputElementId);
 });
@@ -1588,7 +1588,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("NCC-1701");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701");
 
     deleteElement(inputElementId);
 });
@@ -1608,7 +1608,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701");
 
     deleteElement(inputElementId);
 });
@@ -1619,7 +1619,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("ncc-1701-D");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on ncc-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on ncc-1701");
 
     deleteElement(inputElementId);
 });
@@ -1640,7 +1640,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on ncc-1701-D");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on ncc-1701-D");
 
     deleteElement(inputElementId);
 });
@@ -1651,7 +1651,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("NCC-1701-D NCC-1701");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
 
     deleteElement(inputElementId);
 });
@@ -1672,7 +1672,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on NCC-1701-D NCC-1701");
 
     deleteElement(inputElementId);
 });
@@ -1683,7 +1683,7 @@ test('Test passing @Pattern against text field (markup)', function() {
     $text.val("Ncc-1701-d ncc-1701");
 
     $text.regula('bind');
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
 
     deleteElement(inputElementId);
 });
@@ -1704,7 +1704,7 @@ test('Test passing @Pattern against text field (regula.bind)', function() {
             }
         ]
     });
-    equals($text.regula('validate').length, 0, "@Pattern should not fail on Ncc-1701-D Ncc-1701");
+    equal($text.regula('validate').length, 0, "@Pattern should not fail on Ncc-1701-D Ncc-1701");
 
     deleteElement(inputElementId);
 });
@@ -1724,7 +1724,7 @@ test('Call regula.custom with empty object-literal', function() {
 test('Call regula.custom with valid name and validator', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         validator: function() {
             return false;
@@ -1736,10 +1736,10 @@ test('Call regula.custom with valid name and validator', function() {
 
     $.regula('bind');
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElement(inputElementId);
 });
@@ -1758,7 +1758,7 @@ test('Call regula.custom with required parameters and formSpecific attribute of 
 test('Call regula.custom with required parameters and null formSpecific attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         formSpecific: null,
         validator: function() {
@@ -1771,7 +1771,7 @@ test('Call regula.custom with required parameters and null formSpecific attribut
 
     $.regula('bind');
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
 
     deleteElement(inputElementId);
 });
@@ -1779,7 +1779,7 @@ test('Call regula.custom with required parameters and null formSpecific attribut
 test('Call regula.custom with required parameters and undefined formSpecific attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         formSpecific: undefined,
         validator: function() {
@@ -1792,13 +1792,13 @@ test('Call regula.custom with required parameters and undefined formSpecific att
 
     $.regula('bind');
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
+    equal(constraintViolation.formSpecific, false, "formSpecific attribute must be false");
 
     deleteElement(inputElementId);
 });
 
 test('Call regula.custom with required parameters and valid formSpecific attribute', function() {
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + new Date().getTime(),
         formSpecific: true,
         validator: function() {
@@ -1809,7 +1809,7 @@ test('Call regula.custom with required parameters and valid formSpecific attribu
 test('Call regula.custom with required parameters and null params attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         params: [],
         validator: function() {
@@ -1823,8 +1823,8 @@ test('Call regula.custom with required parameters and null params attribute', fu
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
 
     deleteElement(inputElementId);
 });
@@ -1832,7 +1832,7 @@ test('Call regula.custom with required parameters and null params attribute', fu
 test('Call regula.custom with required parameters and undefined params attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         params: null,
         validator: function() {
@@ -1846,8 +1846,8 @@ test('Call regula.custom with required parameters and undefined params attribute
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
 
     deleteElement(inputElementId);
 });
@@ -1866,7 +1866,7 @@ test('Call regula.custom with required parameters and params attribute of non-ar
 test('Call regula.custom with required parameters and empty params attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         params: [],
         validator: function() {
@@ -1880,8 +1880,8 @@ test('Call regula.custom with required parameters and empty params attribute', f
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.__size__, 1, "parameters must contain __size__ element that equals 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
 
     deleteElement(inputElementId);
 });
@@ -1889,7 +1889,7 @@ test('Call regula.custom with required parameters and empty params attribute', f
 test('Call regula.custom with required parameters and valid params attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         params: ["myParam"],
         validator: function() {
@@ -1903,9 +1903,9 @@ test('Call regula.custom with required parameters and valid params attribute', f
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equals 1");
-    equals(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
-    equals(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equals 9");
+    equal(constraintViolation.constraintParameters.__size__, 2, "parameters must contain __size__ element that equals 1");
+    equal(constraintViolation.constraintParameters.groups, "Default", "parameters must contain groups element that equals \"Default\"");
+    equal(constraintViolation.constraintParameters.myParam, 9, "parameters must contain myParam element that equals 9");
 
     deleteElement(inputElementId);
 });
@@ -1913,7 +1913,7 @@ test('Call regula.custom with required parameters and valid params attribute', f
 test('Call regula.custom with required parameters and null defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         defaultMessage: null,
         validator: function() {
@@ -1927,7 +1927,7 @@ test('Call regula.custom with required parameters and null defaultMessage attrib
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElement(inputElementId);
 });
@@ -1935,7 +1935,7 @@ test('Call regula.custom with required parameters and null defaultMessage attrib
 test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         defaultMessage: undefined,
         validator: function() {
@@ -1949,7 +1949,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElement(inputElementId);
 });
@@ -1957,7 +1957,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
 test('Call regula.custom with required parameters and undefined defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         defaultMessage: undefined,
         validator: function() {
@@ -1971,7 +1971,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.message, "", "defaultMessage must be an empty string");
+    equal(constraintViolation.message, "", "defaultMessage must be an empty string");
 
     deleteElement(inputElementId);
 });
@@ -1979,7 +1979,7 @@ test('Call regula.custom with required parameters and undefined defaultMessage a
 test('Call regula.custom with required parameters and valid defaultMessage attribute', function() {
     var time = new Date().getTime();
 
-    equals($.regula('custom',{
+    equal($.regula('custom',{
         name: "CustomConstraint" + time,
         defaultMessage: "This is a test",
         validator: function() {
@@ -1993,7 +1993,7 @@ test('Call regula.custom with required parameters and valid defaultMessage attri
     $.regula('bind');
 
     var constraintViolation = $.regula('validate')[0];
-    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+    equal(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
 
     deleteElement(inputElementId);
 });
@@ -2014,7 +2014,7 @@ test("Call $.regula('custom').regula('bind').regula('validate')  and valid defau
         .regula('bind')
         .regula('validate')[0];
 
-    equals(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
+    equal(constraintViolation.message, "This is a test", "defaultMessage must be \"This is a test\"");
 
     deleteElement(inputElementId);
 });
@@ -2025,7 +2025,7 @@ test("Call $(selector).regula('bind').regula('validate'); with a @Pattern text f
     $text.val("Ncc-1701-d ncc-1701");
 
     var result = $text.regula('bind').regula('validate');
-    equals(result.length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
+    equal(result.length, 0, "@Pattern should not fail on Ncc-1701-d ncc-1701");
 
     deleteElement(inputElementId);
 });
