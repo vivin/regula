@@ -125,6 +125,10 @@ I'm not done with Regula yet! Going forward, expect Regula to support the follow
 
 This is by no means an exhaustive list. I honestly believe that Regula is a good alternative to existing client-side validation-frameworks and I will be constantly improving and enhancing Regula. I take the quality of my code seriously and will do my best to release bug-free code. Currently JSCoverage reports 97% coverage (effective coverage is pretty much 100%) established through over 2,300 tests.
 
+###Questions?
+
+[Check out the mailing list!](https://groups.google.com/d/forum/regula-validation?fromplusone=1)
+
 ###Licensing
 
 Regula is licensed under the BSD License.

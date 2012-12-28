@@ -17,7 +17,7 @@
         // Browser globals
         root.regula = factory();
     }
-}(this, function(){
+}(this, function() {
     /* for code completion */
     var regula = {
         configure: function (options) {},
