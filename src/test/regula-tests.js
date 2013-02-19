@@ -15183,6 +15183,60 @@ test('Test passing @Future against text field (regula.bind)', function() {
 
 module('Test validation behavior against the validateEmptyFields configuration option');
 
+test('Test failing @Length against empty field', function () {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+        constraintName: "Length",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field length must be between 5 and 5."
+    });
+
+    deleteElements();
+});
+
+test('Test passing @Length against empty field (validateEmptyFields set to false)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=5)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equal(regula.validate().length, 0, "@Length must not fail against empty field when validateEmptyFields is set to false");
+    deleteElements();
+});
+
+test('Test passing @Length against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@Length(min=5, max=5, ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    equal(regula.validate().length, 0, "@Length must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElements();
+});
+
 test('Test failing @Max against empty field', function() {
     var inputElementId = "myText";
     var $text = createInputElement(inputElementId, "@Max(value=5)", "text");
