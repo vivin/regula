@@ -937,7 +937,13 @@
         }
 
         function length(params) {
-            return (this.value.length >= params["min"] && this.value.length <= params["max"]);
+            var result = true;
+
+            if (shouldValidate(this, params)) {
+                result = (this.value.length >= params["min"] && this.value.length <= params["max"]);
+            }
+
+            return result;
         }
 
         function digits(params) {
