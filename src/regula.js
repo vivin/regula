@@ -48,7 +48,7 @@
 
     /**
      * DOMUtils contains some convenience functions to look up information in the DOM.
-     * @type {*}
+     * @type {Object}
      */
     var DOMUtils = {
         friendlyInputNames: {},
@@ -125,16 +125,26 @@
             return result;
         }
 
+        /**
+         * generates a random id
+         * @return {String} - the generated id
+         */
+
+        function generateRandomId() {
+            return "regula-generated-" + Math.floor(Math.random() * 1000000);
+        }
+
         return {
             friendlyInputNames: friendlyInputNames,
             getElementsByAttribute: getElementsByAttribute,
-            getAttributeValueForElement: getAttributeValueForElement
+            getAttributeValueForElement: getAttributeValueForElement,
+            generateRandomId: generateRandomId
         };
     })();
 
     /**
      * ArrayUtils contains some convenience functions related to arrays.
-     * @type {*}
+     * @type {Object}
      */
     var ArrayUtils = {
         explode: function(array, delimiter) {}
@@ -159,7 +169,7 @@
 
     /**
      * MapUtils contains some convenience functions related to Maps.
-     * @type {*}
+     * @type {Object}
      */
     var MapUtils = {
         iterateOverMap: function(map, callback) {},
@@ -217,7 +227,7 @@
 
     /**
      * Exceptions that regula throws. Also contains a utility method that makes it easy to generate exception messages.
-     * @type {*}
+     * @type {Object}
      */
 
     var ExceptionService = {
@@ -437,124 +447,83 @@
     })();
 
     /**
-     * Validators that are used by regula to perform the actual validation. Will also contain references to custom and
-     * compound constraints defined by the user.
-     * @type {*}
+     * Encapsulates the logic that performs constraint validation.
+     * @type {Object}
      */
 
-    var Validator = {
-        Checked: function(params) {},
-        Selected: function(params) {},
-        Max: function(params) {},
-        Min: function(params) {},
-        Range: function(params) {},
-        Between: function(params) {},
-        NotBlank: function(params) {},
-        NotEmpty: function(params) {},
-        Blank: function(params) {},
-        Empty: function(params) {},
-        Pattern: function(params) {},
-        Matches: function(params) {},
-        Email: function(params) {},
-        Alpha: function(params) {},
-        IsAlpha: function(params) {},
-        Numeric: function(params) {},
-        IsNumeric: function(params) {},
-        AlphaNumeric: function(params) {},
-        IsAlphaNumeric: function(params) {},
-        Integer: function(params) {},
-        Real: function(params) {},
-        CompletelyFilled: function(params) {},
-        PasswordsMatch: function(params) {},
-        Required: function(params) {},
-        Length: function(params) {},
-        Digits: function(params) {},
-        Past: function(params) {},
-        Future: function(params) {},
-        Step: function(params) {},
-        URL: function(params) {},
-        HTML5Required: function(params) {},
-        HTML5Email: function(params) {},
-        HTML5URL: function(params) {},
-        HTML5Number: function(params) {},
-        HTML5DateTime: function(params) {},
-        HTML5DateTimeLocal: function(params) {},
-        HTML5Date: function(params) {},
-        HTML5Month: function(params) {},
-        HTML5Time: function(params) {},
-        HTML5Week: function(params) {},
-        HTML5Range: function(params) {},
-        HTML5Tel: function(params) {},
-        HTML5Color: function(params) {},
-        HTML5Pattern: function(params) {},
-        HTML5MaxLength: function(params) {},
-        HTML5Min: function(params) {},
-        HTML5Max: function(params) {},
-        HTML5Step: function(params) {}
+    var ValidationService = {
+        Validator: {},
+        compoundValidator: function(params, currentGroup, compoundConstraint) {},
+        validate: function(validationOptions) {},
+        runValidatorFor: function(currentGroup, elementId, elementConstraint, params) {},
+        interpolateConstraintDefaultMessage: function(elementId, elementConstraint, params) {}
     };
 
-    Validator = (function() {
-        function shouldValidate(element, params) {
-            var validateEmptyFields = config.validateEmptyFields;
+    ValidationService = (function() {
 
-            if (typeof params["ignoreEmpty"] !== "undefined") {
-                validateEmptyFields = !params["ignoreEmpty"];
-            }
-
-            return !(Validator.Blank.call(element) && !validateEmptyFields);
-        }
-
-        function parseDates(params) {
-            var DateFormatIndices = {
-                YMD: {
-                    Year: 0,
-                    Month: 1,
-                    Day: 2
-                },
-                MDY: {
-                    Month: 0,
-                    Day: 1,
-                    Year: 2
-                },
-                DMY: {
-                    Day: 0,
-                    Month: 1,
-                    Year: 2
-                }
-            };
-
-            var dateFormatIndices = DateFormatIndices[params["format"]];
-
-            var separator = params["separator"];
-            if (typeof params["separator"] === "undefined") {
-                separator = /\//.test(this.value) ? "/" : /\./.test(this.value) ? "." : / /.test(this.value) ? " " : /[^0-9]+/;
-            }
-
-            var parts = this.value.split(separator);
-            var dateToValidate = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
-
-            var dateToTestAgainst = new Date();
-            if (typeof params["date"] !== "undefined") {
-                parts = params["date"].split(separator);
-                dateToTestAgainst = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
-            }
-
-            return {
-                dateToValidate: dateToValidate,
-                dateToTestAgainst: dateToTestAgainst
-            };
-        }
+        var boundConstraints = null;
+        var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
+        var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
 
         /**
-         * This specific function is used by HTML5 constraints that essentially perform type-validation (e.g., type="url", type="email", etc.).
-         * Individual entries within Validator that perform type-specific validation (like HTML5Email) will point to this function.
-         * @return {Boolean}
+         * Validators that are used by regula to perform the actual validation. Will also contain references to custom and
+         * compound constraints defined by the user.
+         *
+         * @type {Object}
          */
-        function html5TypeValidator() {
-            return !this.validity.typeMismatch;
-        }
 
         var Validator = {
+            Checked: function(params) {},
+            Selected: function(params) {},
+            Max: function(params) {},
+            Min: function(params) {},
+            Range: function(params) {},
+            Between: function(params) {},
+            NotBlank: function(params) {},
+            NotEmpty: function(params) {},
+            Blank: function(params) {},
+            Empty: function(params) {},
+            Pattern: function(params) {},
+            Matches: function(params) {},
+            Email: function(params) {},
+            Alpha: function(params) {},
+            IsAlpha: function(params) {},
+            Numeric: function(params) {},
+            IsNumeric: function(params) {},
+            AlphaNumeric: function(params) {},
+            IsAlphaNumeric: function(params) {},
+            Integer: function(params) {},
+            Real: function(params) {},
+            CompletelyFilled: function(params) {},
+            PasswordsMatch: function(params) {},
+            Required: function(params) {},
+            Length: function(params) {},
+            Digits: function(params) {},
+            Past: function(params) {},
+            Future: function(params) {},
+            Step: function(params) {},
+            URL: function(params) {},
+            HTML5Required: function(params) {},
+            HTML5Email: function(params) {},
+            HTML5URL: function(params) {},
+            HTML5Number: function(params) {},
+            HTML5DateTime: function(params) {},
+            HTML5DateTimeLocal: function(params) {},
+            HTML5Date: function(params) {},
+            HTML5Month: function(params) {},
+            HTML5Time: function(params) {},
+            HTML5Week: function(params) {},
+            HTML5Range: function(params) {},
+            HTML5Tel: function(params) {},
+            HTML5Color: function(params) {},
+            HTML5Pattern: function(params) {},
+            HTML5MaxLength: function(params) {},
+            HTML5Min: function(params) {},
+            HTML5Max: function(params) {},
+            HTML5Step: function(params) {}
+        };
+
+        Validator = {
             Checked: function(params) {
                 var result = false;
 
@@ -841,771 +810,134 @@
 
             HTML5Step: function(params) {
                 return !this.validity.stepMismatch;
-            },
-
-            /**
-             * This is a meta-validator that validates constraints inside a compound constraint.
-             * @param params - parameters for the constraint
-             * @param currentGroup - the group that is currently being validated
-             * @param compoundConstraint - the constraint that is currently being validated
-             * @return {Array} - an array of constraint violations
-             */
-            compoundValidator: function(params, currentGroup, compoundConstraint) {
-                //        console.log(params, currentGroup, compoundConstraint);
-                var composingConstraints = compoundConstraint.composingConstraints;
-                var constraintViolations = [];
-                //        console.log("composing constraints", composingConstraints);
-                for (var i = 0; i < composingConstraints.length; i++) {
-                    var composingConstraint = composingConstraints[i];
-                    var composingConstraintName = ConstraintService.ReverseConstraint[composingConstraint.constraintType];
-
-                    /*
-                     Now we'll merge the parameters in the child constraints with the parameters from the parent
-                     constraint
-                     */
-
-                    var mergedParams = {};
-
-                    for (var paramName in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(paramName) && paramName != "__size__") {
-                        MapUtils.put(mergedParams, paramName, composingConstraint.params[paramName]);
-                    }
-
-                    /* we're only going to override if the compound constraint was defined with required params */
-                    if (compoundConstraint.params.length > 0) {
-                        for (var paramName in params) if (params.hasOwnProperty(paramName) && paramName != "__size__") {
-                            MapUtils.put(mergedParams, paramName, params[paramName]);
-                        }
-                    }
-
-                    var validationResult = ValidationService.runValidatorFor(currentGroup, this.id, composingConstraintName, mergedParams);
-
-                    var errorMessage = "";
-                    if (!validationResult.constraintPassed) {
-                        errorMessage = ValidationService.interpolateConstraintDefaultMessage(this.id, composingConstraintName, mergedParams);
-                        var constraintViolation = {
-                            group: currentGroup,
-                            constraintName: composingConstraintName,
-                            custom: ConstraintService.constraintDefinitions[composingConstraintName].custom,
-                            compound: ConstraintService.constraintDefinitions[composingConstraintName].compound,
-                            constraintParameters: composingConstraint.params,
-                            failingElements: validationResult.failingElements,
-                            message: errorMessage
-                        };
-
-                        if (!compoundConstraint.reportAsSingleViolation) {
-                            constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
-                        }
-
-                        constraintViolations.push(constraintViolation);
-                    }
-                    //            console.log("finish validation");
-                    if (config.enableHTML5Validation) {
-                        for (var j = 0; j < validationResult.failingElements.length; j++) {
-                            validationResult.failingElements[j].setCustomValidity(errorMessage);
-                        }
-                    }
-                }
-
-                return constraintViolations;
-            }
-        };
-
-        return Validator;
-    })();
-
-    /**
-     * Defines the actual constraints that regula supports, and also maintains reverse-mapping between numeric constraint-values
-     * and their String equivalents (for example, Checked can be mapped to 0, and 0 is reverse-mapped to Checked).
-     *
-     * This module also contains a few functions related to the validation of constraint definitions and constraint parameters.
-     * * @type {*}
-     */
-    var ConstraintService = {
-        Constraint: {},
-        ReverseConstraint: {},
-        firstCustomConstraintIndex: 0,
-        constraintDefinitions: {},
-        validateConstraintDefinition: function(element, constraintName, definedParameters) {},
-        verifyParameterCountMatch: function(element, constraint, receivedParameters) {}
-    };
-
-    ConstraintService = (function() {
-
-        var Constraint = {};
-        var ReverseConstraint = {};
-        var firstCustomConstraintIndex = 0;
-
-        (function(constraints) {
-            for(var i = 0; i < constraints.length; i++) {
-                Constraint[constraints[i]] = i;
-                ReverseConstraint[i] = constraints[i];
-            }
-
-            firstCustomConstraintIndex = i;
-
-            /*
-            Set up aliases
-             */
-
-            Constraint["Between"] = Constraint.Range;
-            Constraint["Matches"] = Constraint.Pattern;
-            Constraint["Empty"] = Constraint.Blank;
-            Constraint["NotEmpty"] = Constraint.NotBlank;
-            Constraint["IsAlpha"] = Constraint.Alpha;
-            Constraint["IsNumeric"] = Constraint.Numeric;
-            Constraint["IsAlphaNumeric"] = Constraint.AlphaNumeric;
-        })([
-            "Checked",
-            "Selected",
-            "Max",
-            "Min",
-            "Range",
-            "Between",
-            "NotBlank",
-            "NotEmpty",
-            "Blank",
-            "Empty",
-            "Pattern",
-            "Matches",
-            "Email",
-            "Alpha",
-            "IsAlpha",
-            "Numeric",
-            "IsNumeric",
-            "AlphaNumeric",
-            "IsAlphaNumeric",
-            "Integer",
-            "Real",
-            "CompletelyFilled",
-            "PasswordsMatch",
-            "Required",
-            "Length",
-            "Digits",
-            "Past",
-            "Future",
-            "Step",
-            "URL",
-            "HTML5Required",
-            "HTML5Email",
-            "HTML5URL",
-            "HTML5Number",
-            "HTML5DateTime",
-            "HTML5DateTimeLocal",
-            "HTML5Date",
-            "HTML5Month",
-            "HTML5Time",
-            "HTML5Week",
-            "HTML5Range",
-            "HTML5Tel",
-            "HTML5Color",
-            "HTML5Pattern",
-            "HTML5MaxLength",
-            "HTML5Min",
-            "HTML5Max",
-            "HTML5Step"
-        ]);
-
-        var constraintDefinitions = {
-            Checked: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Checked,
-                constraintType: Constraint.Checked,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} needs to be checked."
-            },
-
-            Selected: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Selected,
-                constraintType: Constraint.Selected,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} needs to be selected."
-            },
-
-            Max: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Max,
-                constraintType: Constraint.Max,
-                custom: false,
-                compound: false,
-                params: ["value"],
-                defaultMessage: "{label} needs to be lesser than or equal to {value}."
-            },
-
-            Min: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Min,
-                constraintType: Constraint.Min,
-                custom: false,
-                compound: false,
-                params: ["value"],
-                defaultMessage: "{label} needs to be greater than or equal to {value}."
-            },
-
-            Range: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Range,
-                constraintType: Constraint.Range,
-                custom: false,
-                compound: false,
-                params: ["min", "max"],
-                defaultMessage: "{label} needs to be between {min} and {max}."
-            },
-
-            NotBlank: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.NotBlank,
-                constraintType: Constraint.NotBlank,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} cannot be blank."
-            },
-
-            Blank: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Blank,
-                constraintType: Constraint.Blank,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} needs to be blank."
-            },
-
-            Pattern: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Matches,
-                constraintType: Constraint.Pattern,
-                custom: false,
-                compound: false,
-                params: ["regex"],
-                defaultMessage: "{label} needs to match {regex}{flags}."
-            },
-
-            Email: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Email,
-                constraintType: Constraint.Email,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid email."
-            },
-
-            Alpha: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Alpha,
-                constraintType: Constraint.Alpha,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} can only contain letters."
-            },
-
-            Numeric: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Numeric,
-                constraintType: Constraint.Numeric,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} can only contain numbers."
-            },
-
-            AlphaNumeric: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.AlphaNumeric,
-                constraintType: Constraint.AlphaNumeric,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} can only contain numbers and letters."
-            },
-
-            Integer: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Integer,
-                constraintType: Constraint.Integer,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} must be an integer."
-            },
-
-            Real: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Real,
-                constraintType: Constraint.Real,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} must be a real number."
-            },
-
-            CompletelyFilled: {
-                html5: false,
-                formSpecific: true,
-                validator: Validator.CompletelyFilled,
-                constraintType: Constraint.CompletelyFilled,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} must be completely filled."
-            },
-
-            PasswordsMatch: {
-                html5: false,
-                formSpecific: true,
-                validator: Validator.PasswordsMatch,
-                constraintType: Constraint.PasswordsMatch,
-                custom: false,
-                compound: false,
-                params: ["field1", "field2"],
-                defaultMessage: "Passwords do not match."
-            },
-
-            Required: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Required,
-                constraintType: Constraint.Required,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is required."
-            },
-
-            Length: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Length,
-                constraintType: Constraint.Length,
-                custom: false,
-                compound: false,
-                params: ["min", "max"],
-                defaultMessage: "{label} length must be between {min} and {max}."
-            },
-
-            Digits: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Digits,
-                constraintType: Constraint.Digits,
-                custom: false,
-                compound: false,
-                params: ["integer", "fraction"],
-                defaultMessage: "{label} must have up to {integer} digits and {fraction} fractional digits."
-            },
-
-            Past: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Past,
-                constraintType: Constraint.Past,
-                custom: false,
-                compound: false,
-                params: ["format"],
-                defaultMessage: "{label} must be in the past."
-            },
-
-            Future: {
-                html5: false,
-                formSpecific: false,
-                validator: Validator.Future,
-                constraintType: Constraint.Future,
-                custom: false,
-                compound: false,
-                params: ["format"],
-                defaultMessage: "{label} must be in the future."
-            },
-
-            Step: {
-                /* TODO:  implement */
-                html5: false,
-                formSpecific: false,
-                constraintType: Constraint.Step,
-                custom: false,
-                compound: false,
-                params: ["min", "value"],
-                defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
-            },
-
-            URL: {
-                /* TODO: implement */
-                html5: false,
-                formSpecific: false,
-                constraintType: Constraint.URL,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} must be a valid URL."
-            },
-
-            HTML5Required: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5Required,
-                constraintType: Constraint.HTML5Required,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is required."
-            },
-
-            HTML5Email: {
-                html5: true,
-                inputType: "email",
-                formSpecific: false,
-                validator: Validator.HTML5Email,
-                constraintType: Constraint.HTML5Email,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid email."
-            },
-
-            HTML5Pattern: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5Pattern,
-                constraintType: Constraint.HTML5Pattern,
-                custom: false,
-                compound: false,
-                params: ["pattern"],
-                defaultMessage: "{label} needs to match {pattern}."
-            },
-
-            HTML5URL: {
-                html5: true,
-                inputType: "url",
-                formSpecific: false,
-                validator: Validator.HTML5URL,
-                constraintType: Constraint.HTML5URL,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid URL."
-            },
-
-            HTML5Number: {
-                html5: true,
-                inputType: "number",
-                formSpecific: false,
-                validator: Validator.HTML5Number,
-                constraintType: Constraint.HTML5Number,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid number."
-            },
-
-            HTML5DateTime: {
-                html5: true,
-                inputType: "datetime",
-                formSpecific: false,
-                validator: Validator.HTML5DateTime,
-                constraintType: Constraint.HTML5DateTime,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid date-time."
-            },
-
-            HTML5DateTimeLocal: {
-                html5: true,
-                inputType: "datetime-local",
-                formSpecific: false,
-                validator: Validator.HTML5DateTimeLocal,
-                constraintType: Constraint.HTML5DateTimeLocal,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid local date-time."
-            },
-
-            HTML5Date: {
-                html5: true,
-                inputType: "date",
-                formSpecific: false,
-                validator: Validator.HTML5Date,
-                constraintType: Constraint.HTML5Date,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid date."
-            },
-
-            HTML5Month: {
-                html5: true,
-                inputType: "month",
-                formSpecific: false,
-                validator: Validator.HTML5Month,
-                constraintType: Constraint.HTML5Month,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid month."
-            },
-
-            HTML5Time: {
-                html5: true,
-                inputType: "time",
-                formSpecific: false,
-                validator: Validator.HTML5Time,
-                constraintType: Constraint.HTML5Time,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid time."
-            },
-
-            HTML5Week: {
-                html5: true,
-                inputType: "week",
-                formSpecific: false,
-                validator: Validator.HTML5Week,
-                constraintType: Constraint.HTML5Week,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid week."
-            },
-
-            HTML5Range: {
-                html5: true,
-                inputType: "range",
-                formSpecific: false,
-                validator: Validator.HTML5Range,
-                constraintType: Constraint.HTML5Range,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid range."
-            },
-
-            HTML5Tel: {
-                html5: true,
-                inputType: "tel",
-                formSpecific: false,
-                validator: Validator.HTML5Tel,
-                constraintType: Constraint.HTML5Tel,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid telephone number."
-            },
-
-            HTML5Color: {
-                html5: true,
-                inputType: "color",
-                formSpecific: false,
-                validator: Validator.HTML5Color,
-                constraintType: Constraint.HTML5Color,
-                custom: false,
-                compound: false,
-                params: [],
-                defaultMessage: "{label} is not a valid color."
-            },
-
-            HTML5MaxLength: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5MaxLength,
-                constraintType: Constraint.HTML5MaxLength,
-                custom: false,
-                compound: false,
-                params: ["maxlength"],
-                defaultMessage: "{label} must be less than {maxlength} characters."
-            },
-
-            HTML5Min: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5Min,
-                constraintType: Constraint.HTML5Min,
-                custom: false,
-                compound: false,
-                params: ["min"],
-                defaultMessage: "{label} needs to be greater than or equal to {min}."
-            },
-
-            HTML5Max: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5Max,
-                constraintType: Constraint.HTML5Max,
-                custom: false,
-                compound: false,
-                params: ["max"],
-                defaultMessage: "{label} must be greater than or equal to {max}."
-            },
-
-            HTML5Step: {
-                html5: true,
-                inputType: null,
-                formSpecific: false,
-                validator: Validator.HTML5Step,
-                constraintType: Constraint.HTML5Step,
-                custom: false,
-                compound: false,
-                params: ["step"],
-                defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
             }
         };
 
         /**
-         * Validates a constraint definition. Ensures the following:
-         *
-         *  o Constraint is bound to an element that supports it.
-         *  o Ensures that all parameters are present (by calling an auxiliary function)
-         *
-         * @param element - The element on which the constraint has been defined.
-         * @param constraintName - The constraint in question.
-         * @param definedParameters - The parameters that this constraint has received.
-         * @return {Object} - An object literal that represents the result of the validation.
+         * This is a meta-validator that validates constraints inside a compound constraint.
+         * @param params - parameters for the constraint
+         * @param currentGroup - the group that is currently being validated
+         * @param compoundConstraint - the constraint that is currently being validated
+         * @return {Array} - an array of constraint violations
          */
-        function validateConstraintDefinition(element, constraintName, definedParameters) {
-            var result = {
-                successful: true,
-                message: "",
-                data: null
-            };
+        function compoundValidator(params, currentGroup, compoundConstraint) {
+            //        console.log(params, currentGroup, compoundConstraint);
+            var composingConstraints = compoundConstraint.composingConstraints;
+            var constraintViolations = [];
+            //        console.log("composing constraints", composingConstraints);
+            for (var i = 0; i < composingConstraints.length; i++) {
+                var composingConstraint = composingConstraints[i];
+                var composingConstraintName = ConstraintService.ReverseConstraint[composingConstraint.constraintType];
 
-            if (element.tagName.toLowerCase() == "form" && !ConstraintService.constraintDefinitions[constraintName].formSpecific) {
-                result = {
-                    successful: false,
-                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
-                    data: null
-                };
-            } else if (element.tagName.toLowerCase() != "form" && ConstraintService.constraintDefinitions[constraintName].formSpecific) {
-                result = {
-                    successful: false,
-                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
-                    data: null
-                };
-            } else if ((typeof element.type === "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
-                result = {
-                    successful: false,
-                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
-                    data: null
-                };
-            } else if (element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
-                result = {
-                    successful: false,
-                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
-                    data: null
-                };
-            } else {
-                var parameterResult = verifyParameterCountMatch(element, ConstraintService.constraintDefinitions[constraintName], definedParameters);
+                /*
+                 Now we'll merge the parameters in the child constraints with the parameters from the parent
+                 constraint
+                 */
 
-                if (parameterResult.error) {
-                    result = {
-                        successful: false,
-                        message: parameterResult.message,
-                        data: null
+                var mergedParams = {};
+
+                for (var paramName in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(paramName) && paramName != "__size__") {
+                    MapUtils.put(mergedParams, paramName, composingConstraint.params[paramName]);
+                }
+
+                /* we're only going to override if the compound constraint was defined with required params */
+                if (compoundConstraint.params.length > 0) {
+                    for (var paramName in params) if (params.hasOwnProperty(paramName) && paramName != "__size__") {
+                        MapUtils.put(mergedParams, paramName, params[paramName]);
+                    }
+                }
+
+                var validationResult = ValidationService.runValidatorFor(currentGroup, this.id, composingConstraintName, mergedParams);
+
+                var errorMessage = "";
+                if (!validationResult.constraintPassed) {
+                    errorMessage = ValidationService.interpolateConstraintDefaultMessage(this.id, composingConstraintName, mergedParams);
+                    var constraintViolation = {
+                        group: currentGroup,
+                        constraintName: composingConstraintName,
+                        custom: ConstraintService.constraintDefinitions[composingConstraintName].custom,
+                        compound: ConstraintService.constraintDefinitions[composingConstraintName].compound,
+                        constraintParameters: composingConstraint.params,
+                        failingElements: validationResult.failingElements,
+                        message: errorMessage
                     };
-                } else {
-                    result.data = definedParameters;
+
+                    if (!compoundConstraint.reportAsSingleViolation) {
+                        constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
+                    }
+
+                    constraintViolations.push(constraintViolation);
+                }
+                //            console.log("finish validation");
+                if (config.enableHTML5Validation) {
+                    for (var j = 0; j < validationResult.failingElements.length; j++) {
+                        validationResult.failingElements[j].setCustomValidity(errorMessage);
+                    }
                 }
             }
 
-            return result;
+            return constraintViolations;
+        }
+
+        function shouldValidate(element, params) {
+            var validateEmptyFields = config.validateEmptyFields;
+
+            if (typeof params["ignoreEmpty"] !== "undefined") {
+                validateEmptyFields = !params["ignoreEmpty"];
+            }
+
+            return !(Validator.Blank.call(element) && !validateEmptyFields);
+        }
+
+        function parseDates(params) {
+            var DateFormatIndices = {
+                YMD: {
+                    Year: 0,
+                    Month: 1,
+                    Day: 2
+                },
+                MDY: {
+                    Month: 0,
+                    Day: 1,
+                    Year: 2
+                },
+                DMY: {
+                    Day: 0,
+                    Month: 1,
+                    Year: 2
+                }
+            };
+
+            var dateFormatIndices = DateFormatIndices[params["format"]];
+
+            var separator = params["separator"];
+            if (typeof params["separator"] === "undefined") {
+                separator = /\//.test(this.value) ? "/" : /\./.test(this.value) ? "." : / /.test(this.value) ? " " : /[^0-9]+/;
+            }
+
+            var parts = this.value.split(separator);
+            var dateToValidate = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
+
+            var dateToTestAgainst = new Date();
+            if (typeof params["date"] !== "undefined") {
+                parts = params["date"].split(separator);
+                dateToTestAgainst = new Date(parts[dateFormatIndices.Year], parts[dateFormatIndices.Month] - 1, parts[dateFormatIndices.Day]);
+            }
+
+            return {
+                dateToValidate: dateToValidate,
+                dateToTestAgainst: dateToTestAgainst
+            };
         }
 
         /**
-         * Ensures that all required parameters are present
-         * @param element - The element that this constraint is defined on
-         * @param constraint - The constraint in question
-         * @param receivedParameters - The parameters that this constraint has received
-         * @return {Object} - An object literal that states whether the verification was successful or not, along with
-         *                    an error message (if there was one).
+         * This specific function is used by HTML5 constraints that essentially perform type-validation (e.g., type="url", type="email", etc.).
+         * Individual entries within Validator that perform type-specific validation (like HTML5Email) will point to this function.
+         * @return {Boolean}
          */
-        function verifyParameterCountMatch(element, constraint, receivedParameters) {
-
-            var result = {
-                error: false,
-                message: ""
-            };
-
-            if (receivedParameters.__size__ < constraint.params.length) {
-                result = {
-                    error: true,
-                    message: ExceptionService.generateExceptionMessage(element, ConstraintService.ReverseConstraint[constraint.constraintType], "@" + ConstraintService.ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length + " parameter(s). However, you have provided only " + receivedParameters.__size__),
-                    data: null
-                };
-            }
-
-            var missingParams = [];
-            for (var j = 0; j < constraint.params.length; j++) {
-                var param = constraint.params[j];
-
-                if (typeof receivedParameters[param] === "undefined") {
-                    missingParams.push(param);
-                }
-            }
-
-            //console.log("missing params", missingParams);
-
-            if (missingParams.length > 0) {
-                result = {
-                    error: true,
-                    message: ExceptionService.generateExceptionMessage(element, ConstraintService.ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ConstraintService.ReverseConstraint[constraint.constraintType] + ", but you are still missing the following " + missingParams.length + " required parameter(s): " + ArrayUtils.explode(missingParams, ", ")),
-                    data: null
-                };
-            }
-
-            return result;
+        function html5TypeValidator() {
+            return !this.validity.typeMismatch;
         }
-
-        return {
-            Constraint: Constraint,
-            ReverseConstraint: ReverseConstraint,
-            firstCustomConstraintIndex: firstCustomConstraintIndex,
-            constraintDefinitions: constraintDefinitions,
-            validateConstraintDefinition: validateConstraintDefinition,
-            verifyParameterCountMatch: verifyParameterCountMatch
-        };
-    })();
-
-    /**
-     * Encapsulates the logic that performs constraint validation.
-     * @type {*}
-     */
-
-    var ValidationService = {
-        validate: function(validationOptions) {},
-        runValidatorFor: function(currentGroup, elementId, elementConstraint, params) {},
-        interpolateConstraintDefaultMessage: function(elementId, elementConstraint, params) {}
-    };
-
-    ValidationService = (function() {
-
-        var boundConstraints = null;
-        var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
-        var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
 
         function validate(validationOptions) {
 
@@ -2109,6 +1441,8 @@
         }
 
         return {
+            Validator: Validator,
+            compoundValidator: compoundValidator,
             validate: validate,
             runValidatorFor: runValidatorFor,
             interpolateConstraintDefaultMessage: interpolateConstraintDefaultMessage
@@ -2116,8 +1450,686 @@
     })();
 
     /**
+     * Defines the actual constraints that regula supports, and also maintains reverse-mapping between numeric constraint-values
+     * and their String equivalents (for example, Checked can be mapped to 0, and 0 is reverse-mapped to Checked).
+     *
+     * This module also contains a few functions related to the validation of constraint definitions and constraint parameters.
+     * * @type {Object}
+     */
+    var ConstraintService = {
+        Constraint: {},
+        ReverseConstraint: {},
+        firstCustomConstraintIndex: 0,
+        constraintDefinitions: {},
+        verifyConstraintDefinition: function(element, constraintName, definedParameters) {},
+        verifyParameterCountMatch: function(element, constraint, receivedParameters) {}
+    };
+
+    ConstraintService = (function() {
+
+        var Constraint = {};
+        var ReverseConstraint = {};
+        var firstCustomConstraintIndex = 0;
+
+        (function(constraints) {
+            for(var i = 0; i < constraints.length; i++) {
+                Constraint[constraints[i]] = i;
+                ReverseConstraint[i] = constraints[i];
+            }
+
+            firstCustomConstraintIndex = i;
+
+            /*
+            Set up aliases
+             */
+
+            Constraint["Between"] = Constraint.Range;
+            Constraint["Matches"] = Constraint.Pattern;
+            Constraint["Empty"] = Constraint.Blank;
+            Constraint["NotEmpty"] = Constraint.NotBlank;
+            Constraint["IsAlpha"] = Constraint.Alpha;
+            Constraint["IsNumeric"] = Constraint.Numeric;
+            Constraint["IsAlphaNumeric"] = Constraint.AlphaNumeric;
+        })([
+            "Checked",
+            "Selected",
+            "Max",
+            "Min",
+            "Range",
+            "Between",
+            "NotBlank",
+            "NotEmpty",
+            "Blank",
+            "Empty",
+            "Pattern",
+            "Matches",
+            "Email",
+            "Alpha",
+            "IsAlpha",
+            "Numeric",
+            "IsNumeric",
+            "AlphaNumeric",
+            "IsAlphaNumeric",
+            "Integer",
+            "Real",
+            "CompletelyFilled",
+            "PasswordsMatch",
+            "Required",
+            "Length",
+            "Digits",
+            "Past",
+            "Future",
+            "Step",
+            "URL",
+            "HTML5Required",
+            "HTML5Email",
+            "HTML5URL",
+            "HTML5Number",
+            "HTML5DateTime",
+            "HTML5DateTimeLocal",
+            "HTML5Date",
+            "HTML5Month",
+            "HTML5Time",
+            "HTML5Week",
+            "HTML5Range",
+            "HTML5Tel",
+            "HTML5Color",
+            "HTML5Pattern",
+            "HTML5MaxLength",
+            "HTML5Min",
+            "HTML5Max",
+            "HTML5Step"
+        ]);
+
+        var constraintDefinitions = {
+            Checked: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Checked,
+                constraintType: Constraint.Checked,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} needs to be checked."
+            },
+
+            Selected: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Selected,
+                constraintType: Constraint.Selected,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} needs to be selected."
+            },
+
+            Max: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Max,
+                constraintType: Constraint.Max,
+                custom: false,
+                compound: false,
+                params: ["value"],
+                defaultMessage: "{label} needs to be lesser than or equal to {value}."
+            },
+
+            Min: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Min,
+                constraintType: Constraint.Min,
+                custom: false,
+                compound: false,
+                params: ["value"],
+                defaultMessage: "{label} needs to be greater than or equal to {value}."
+            },
+
+            Range: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Range,
+                constraintType: Constraint.Range,
+                custom: false,
+                compound: false,
+                params: ["min", "max"],
+                defaultMessage: "{label} needs to be between {min} and {max}."
+            },
+
+            NotBlank: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.NotBlank,
+                constraintType: Constraint.NotBlank,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} cannot be blank."
+            },
+
+            Blank: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Blank,
+                constraintType: Constraint.Blank,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} needs to be blank."
+            },
+
+            Pattern: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Matches,
+                constraintType: Constraint.Pattern,
+                custom: false,
+                compound: false,
+                params: ["regex"],
+                defaultMessage: "{label} needs to match {regex}{flags}."
+            },
+
+            Email: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Email,
+                constraintType: Constraint.Email,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid email."
+            },
+
+            Alpha: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Alpha,
+                constraintType: Constraint.Alpha,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} can only contain letters."
+            },
+
+            Numeric: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Numeric,
+                constraintType: Constraint.Numeric,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} can only contain numbers."
+            },
+
+            AlphaNumeric: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.AlphaNumeric,
+                constraintType: Constraint.AlphaNumeric,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} can only contain numbers and letters."
+            },
+
+            Integer: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Integer,
+                constraintType: Constraint.Integer,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} must be an integer."
+            },
+
+            Real: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Real,
+                constraintType: Constraint.Real,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} must be a real number."
+            },
+
+            CompletelyFilled: {
+                html5: false,
+                formSpecific: true,
+                validator: ValidationService.Validator.CompletelyFilled,
+                constraintType: Constraint.CompletelyFilled,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} must be completely filled."
+            },
+
+            PasswordsMatch: {
+                html5: false,
+                formSpecific: true,
+                validator: ValidationService.Validator.PasswordsMatch,
+                constraintType: Constraint.PasswordsMatch,
+                custom: false,
+                compound: false,
+                params: ["field1", "field2"],
+                defaultMessage: "Passwords do not match."
+            },
+
+            Required: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Required,
+                constraintType: Constraint.Required,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is required."
+            },
+
+            Length: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Length,
+                constraintType: Constraint.Length,
+                custom: false,
+                compound: false,
+                params: ["min", "max"],
+                defaultMessage: "{label} length must be between {min} and {max}."
+            },
+
+            Digits: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Digits,
+                constraintType: Constraint.Digits,
+                custom: false,
+                compound: false,
+                params: ["integer", "fraction"],
+                defaultMessage: "{label} must have up to {integer} digits and {fraction} fractional digits."
+            },
+
+            Past: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Past,
+                constraintType: Constraint.Past,
+                custom: false,
+                compound: false,
+                params: ["format"],
+                defaultMessage: "{label} must be in the past."
+            },
+
+            Future: {
+                html5: false,
+                formSpecific: false,
+                validator: ValidationService.Validator.Future,
+                constraintType: Constraint.Future,
+                custom: false,
+                compound: false,
+                params: ["format"],
+                defaultMessage: "{label} must be in the future."
+            },
+
+            Step: {
+                /* TODO:  implement */
+                html5: false,
+                formSpecific: false,
+                constraintType: Constraint.Step,
+                custom: false,
+                compound: false,
+                params: ["min", "value"],
+                defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
+            },
+
+            URL: {
+                /* TODO: implement */
+                html5: false,
+                formSpecific: false,
+                constraintType: Constraint.URL,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} must be a valid URL."
+            },
+
+            HTML5Required: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Required,
+                constraintType: Constraint.HTML5Required,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is required."
+            },
+
+            HTML5Email: {
+                html5: true,
+                inputType: "email",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Email,
+                constraintType: Constraint.HTML5Email,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid email."
+            },
+
+            HTML5Pattern: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Pattern,
+                constraintType: Constraint.HTML5Pattern,
+                custom: false,
+                compound: false,
+                params: ["pattern"],
+                defaultMessage: "{label} needs to match {pattern}."
+            },
+
+            HTML5URL: {
+                html5: true,
+                inputType: "url",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5URL,
+                constraintType: Constraint.HTML5URL,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid URL."
+            },
+
+            HTML5Number: {
+                html5: true,
+                inputType: "number",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Number,
+                constraintType: Constraint.HTML5Number,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid number."
+            },
+
+            HTML5DateTime: {
+                html5: true,
+                inputType: "datetime",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5DateTime,
+                constraintType: Constraint.HTML5DateTime,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid date-time."
+            },
+
+            HTML5DateTimeLocal: {
+                html5: true,
+                inputType: "datetime-local",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5DateTimeLocal,
+                constraintType: Constraint.HTML5DateTimeLocal,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid local date-time."
+            },
+
+            HTML5Date: {
+                html5: true,
+                inputType: "date",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Date,
+                constraintType: Constraint.HTML5Date,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid date."
+            },
+
+            HTML5Month: {
+                html5: true,
+                inputType: "month",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Month,
+                constraintType: Constraint.HTML5Month,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid month."
+            },
+
+            HTML5Time: {
+                html5: true,
+                inputType: "time",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Time,
+                constraintType: Constraint.HTML5Time,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid time."
+            },
+
+            HTML5Week: {
+                html5: true,
+                inputType: "week",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Week,
+                constraintType: Constraint.HTML5Week,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid week."
+            },
+
+            HTML5Range: {
+                html5: true,
+                inputType: "range",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Range,
+                constraintType: Constraint.HTML5Range,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid range."
+            },
+
+            HTML5Tel: {
+                html5: true,
+                inputType: "tel",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Tel,
+                constraintType: Constraint.HTML5Tel,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid telephone number."
+            },
+
+            HTML5Color: {
+                html5: true,
+                inputType: "color",
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Color,
+                constraintType: Constraint.HTML5Color,
+                custom: false,
+                compound: false,
+                params: [],
+                defaultMessage: "{label} is not a valid color."
+            },
+
+            HTML5MaxLength: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5MaxLength,
+                constraintType: Constraint.HTML5MaxLength,
+                custom: false,
+                compound: false,
+                params: ["maxlength"],
+                defaultMessage: "{label} must be less than {maxlength} characters."
+            },
+
+            HTML5Min: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Min,
+                constraintType: Constraint.HTML5Min,
+                custom: false,
+                compound: false,
+                params: ["min"],
+                defaultMessage: "{label} needs to be greater than or equal to {min}."
+            },
+
+            HTML5Max: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Max,
+                constraintType: Constraint.HTML5Max,
+                custom: false,
+                compound: false,
+                params: ["max"],
+                defaultMessage: "{label} must be greater than or equal to {max}."
+            },
+
+            HTML5Step: {
+                html5: true,
+                inputType: null,
+                formSpecific: false,
+                validator: ValidationService.Validator.HTML5Step,
+                constraintType: Constraint.HTML5Step,
+                custom: false,
+                compound: false,
+                params: ["step"],
+                defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
+            }
+        };
+
+        /**
+         * Verifies a constraint definition. Ensures the following:
+         *
+         *  o Constraint is bound to an element that supports it.
+         *  o Ensures that all parameters are present (by calling an auxiliary function)
+         *
+         * @param element - The element on which the constraint has been defined.
+         * @param constraintName - The constraint in question.
+         * @param definedParameters - The parameters that this constraint has received.
+         * @return {Object} - An object literal that represents the result of the validation.
+         */
+        function verifyConstraintDefinition(element, constraintName, definedParameters) {
+            var result = {
+                successful: true,
+                message: "",
+                data: null
+            };
+
+            if (element.tagName.toLowerCase() == "form" && !ConstraintService.constraintDefinitions[constraintName].formSpecific) {
+                result = {
+                    successful: false,
+                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
+                    data: null
+                };
+            } else if (element.tagName.toLowerCase() != "form" && ConstraintService.constraintDefinitions[constraintName].formSpecific) {
+                result = {
+                    successful: false,
+                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
+                    data: null
+                };
+            } else if ((typeof element.type === "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
+                result = {
+                    successful: false,
+                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
+                    data: null
+                };
+            } else if (element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
+                result = {
+                    successful: false,
+                    message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
+                    data: null
+                };
+            } else {
+                var parameterResult = verifyParameterCountMatch(element, ConstraintService.constraintDefinitions[constraintName], definedParameters);
+
+                if (parameterResult.error) {
+                    result = {
+                        successful: false,
+                        message: parameterResult.message,
+                        data: null
+                    };
+                } else {
+                    result.data = definedParameters;
+                }
+            }
+
+            return result;
+        }
+
+        /**
+         * Ensures that all required parameters are present
+         * @param element - The element that this constraint is defined on
+         * @param constraint - The constraint in question
+         * @param receivedParameters - The parameters that this constraint has received
+         * @return {Object} - An object literal that states whether the verification was successful or not, along with
+         *                    an error message (if there was one).
+         */
+        function verifyParameterCountMatch(element, constraint, receivedParameters) {
+
+            var result = {
+                error: false,
+                message: ""
+            };
+
+            if (receivedParameters.__size__ < constraint.params.length) {
+                result = {
+                    error: true,
+                    message: ExceptionService.generateExceptionMessage(element, ConstraintService.ReverseConstraint[constraint.constraintType], "@" + ConstraintService.ReverseConstraint[constraint.constraintType] + " expects at least " + constraint.params.length + " parameter(s). However, you have provided only " + receivedParameters.__size__),
+                    data: null
+                };
+            }
+
+            var missingParams = [];
+            for (var j = 0; j < constraint.params.length; j++) {
+                var param = constraint.params[j];
+
+                if (typeof receivedParameters[param] === "undefined") {
+                    missingParams.push(param);
+                }
+            }
+
+            //console.log("missing params", missingParams);
+
+            if (missingParams.length > 0) {
+                result = {
+                    error: true,
+                    message: ExceptionService.generateExceptionMessage(element, ConstraintService.ReverseConstraint[constraint.constraintType], "You seem to have provided some optional or required parameters for @" + ConstraintService.ReverseConstraint[constraint.constraintType] + ", but you are still missing the following " + missingParams.length + " required parameter(s): " + ArrayUtils.explode(missingParams, ", ")),
+                    data: null
+                };
+            }
+
+            return result;
+        }
+
+        return {
+            Constraint: Constraint,
+            ReverseConstraint: ReverseConstraint,
+            firstCustomConstraintIndex: firstCustomConstraintIndex,
+            constraintDefinitions: constraintDefinitions,
+            verifyConstraintDefinition: verifyConstraintDefinition,
+            verifyParameterCountMatch: verifyParameterCountMatch
+        };
+    })();
+
+
+    /**
      * Encapsulates logic related to groups.
-     * @type {*}
+     * @type {Object}
      */
 
     var GroupService = {
@@ -2181,125 +2193,14 @@
             };
         }
 
-        /* this function creates a constraint and binds it to the element specified using the constraint name and defined parameters */
-
-        function createConstraintFromDefinition(element, constraintName, definedParameters) {
-            //console.log("i got:", element, constraintName, definedParameters, "bc: ", boundConstraints);
-            var groupParamValue = "";
-
-            //Regex that checks to see if Default is explicitly defined in the groups parameter
-            var re = new RegExp("^" + GroupService.ReverseGroup[GroupService.Group.Default] + "$|" + "^" + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + "$");
-
-            var result = {
-                successful: true,
-                message: "",
-                data: null
-            };
-
-            //If a "groups" parameter has not been specified, we'll create one and add "Default" to it since all elements
-            //belong to the "Default" group implicitly
-            if (!definedParameters["groups"]) {
-                MapUtils.put(definedParameters, "groups", GroupService.ReverseGroup[GroupService.Group.Default]);
-            }
-
-            groupParamValue = definedParameters["groups"].replace(/\s/g, "");
-
-            //If a "groups" parameter was defined, but it doesn't contain the "Default" group, we add it to groupParamValue
-            //explicitly and also update the "groups" parameter for this constraint
-            if (!re.test(groupParamValue)) {
-                groupParamValue = GroupService.ReverseGroup[GroupService.Group.Default] + "," + groupParamValue;
-                definedParameters["groups"] = groupParamValue;
-            }
-
-            var groups = groupParamValue.split(/,/);
-
-            for (var i = 0; i < groups.length; i++) {
-
-                var group = groups[i];
-
-                if (!boundConstraints[group]) {
-
-                    var newIndex = -1;
-
-                    if (GroupService.deletedGroupIndices.length > 0) {
-                        newIndex = GroupService.deletedGroupIndices.pop();
-                    } else {
-                        newIndex = GroupService.firstCustomGroupIndex++;
-                    }
-
-                    GroupService.Group[group] = newIndex;
-                    GroupService.ReverseGroup[newIndex] = group;
-                    boundConstraints[group] = {};
-                }
-
-                if (!boundConstraints[group][element.id]) {
-                    boundConstraints[group][element.id] = {};
-                }
-
-                boundConstraints[group][element.id][constraintName] = definedParameters;
-            }
-
-            //If this is an HTML5 type constraint, let's make sure that the constraint doesn't conflict with the element's type
-            //(if one has been specified) and let's attach the appropriate HTML5 attributes to the element
-            if(ConstraintService.constraintDefinitions[constraintName].html5) {
-                if(element.getAttribute("type") !== null && ConstraintService.constraintDefinitions[constraintName].inputType !== null && element.getAttribute("type") !== ConstraintService.constraintDefinitions[constraintName].inputType) {
-                    result = {
-                        successful: false,
-                        message: ExceptionService.generateExceptionMessage(element, constraintName, "Element type of " + element.getAttribute("type") + " conflicts with type of constraint @" + constraintName + ": " + ConstraintService.constraintDefinitions[constraintName].inputType),
-                        data: null
-                    };
-                } else {
-                    attachHTML5Attributes(element, constraintName, definedParameters);
-                }
-            }
-
-            return result;
-        }
-
-        function attachHTML5Attributes(element, constraintName, definedParameters) {
-            if(constraintName === ConstraintService.ReverseConstraint[ConstraintService.Constraint.HTML5Required]) {
-                element.setAttribute("required", true);
-            } else {
-                var constraint = ConstraintService.constraintDefinitions[constraintName];
-                for (var i = 0; i < constraint.params.length; i++) {
-                    element.setAttribute(constraint.params[i], definedParameters[constraint.params[i]]);
-                }
-
-                if(ConstraintService.constraintDefinitions[constraintName].inputType !== null) {
-                    element.setAttribute("type", ConstraintService.constraintDefinitions[constraintName].inputType);
-                }
-            }
-
-            element.setAttribute("class", element.getAttribute("class") + " regula-modified");
-        }
-
-        function supportsHTML5Validation() {
-            return (typeof document.createElement("input").checkValidity === "function");
-        }
-
-        function generateRandomId() {
-            return "regula-generated-" + Math.floor(Math.random() * 1000000);
-        }
-
-        function removeElementAndGroupFromConstraintsIfEmpty(id, group) {
-            if (MapUtils.isEmpty(boundConstraints[group][id])) {
-                delete boundConstraints[group][id];
-
-                if (MapUtils.isEmpty(boundConstraints[group])) {
-                    delete boundConstraints[group];
-
-                    var groupIndex = GroupService.Group[group];
-                    delete GroupService.Group[group];
-                    delete GroupService.ReverseGroup[groupIndex];
-
-                    GroupService.deletedGroupIndices.push(groupIndex);
-                }
-            }
-        }
-
-        /* TODO: investigate if it would be better to extract the parser out of all this. The problem is that it depends on
-           Constraints.constraintDefinitions and some other functions.
-
+        /*
+         * TODO: Would be nice to extract this out into its own "module". The problem is that this depends on
+         * TODO: "createConstraintFromDefinition", which is inside the regula module. This function is used during
+         * TODO: binding, and I am wondering if I shouldn't just extract all that into a "BindingService". Things like
+         * TODO: "bound constraints" or whatever, can be injected into the BindingService. This way, those data structures
+         * TODO: can remain inside the regula module, and just be passed into those modules that require them. We could do
+         * TODO: this with some sort of "init" function that we call every time, before we bind.
+         *
          * This is the parser that parses constraint definitions. The recursive-descent parser is actually defined inside
          * the 'parse' function (I've used inner functions to encapsulate the parsing logic).
          *
@@ -2307,17 +2208,8 @@
          */
 
         function parse(element, constraintDefinitionString) {
-            var currentConstraintName = "";
-            var tokens = tokenize({
-                str: trim(constraintDefinitionString.replace(/\s*\n\s*/g, "")),
-                delimiters: "@()[]=,\"\\/-\\.",
-                returnDelimiters: true,
-                returnEmptyTokens: false
-            });
 
-            return constraints(tokens);
-
-            /** utility functions. i.e., functions not directly related to parsing start here **/
+             /* Some utility functions */
 
             function trim(str) {
                 return str ? str.replace(/^\s+/, "").replace(/\s+$/, "") : "";
@@ -2370,10 +2262,23 @@
                 return tokens;
             }
 
+
+
+            var currentConstraintName = "";
+            var tokens = tokenize({
+                str: trim(constraintDefinitionString.replace(/\s*\n\s*/g, "")),
+                delimiters: "@()[]=,\"\\/-\\.",
+                returnDelimiters: true,
+                returnEmptyTokens: false
+            });
+
+            return constraints(tokens);
+
+
             /** the recursive-descent parser starts here **/
             /** it parses according to the following EBNF **/
 
-            /*
+            /**
              constraints            ::= { constraint }
              constraint             ::= "@", constraint-def
              constraint-def         ::= constraint-name, param-def
@@ -2396,7 +2301,7 @@
              group-definition       ::= "[", [ group { ",", group } ] "]"
              group                  ::= valid-starting-char { valid-char }
 
-             */
+             **/
 
             function constraints(tokens) {
                 var result = {
@@ -2461,7 +2366,7 @@
                         result = paramDef(tokens);
 
                         if (result.successful) {
-                            result = ConstraintService.validateConstraintDefinition(element, currentConstraintName, result.data);
+                            result = ConstraintService.verifyConstraintDefinition(element, currentConstraintName, result.data);
 
                             if (result.successful) {
                                 result = createConstraintFromDefinition(element, currentConstraintName, result.data);
@@ -3161,6 +3066,118 @@
             }
         }
 
+        /* this function creates a constraint and binds it to the element specified using the constraint name and defined parameters */
+
+        function createConstraintFromDefinition(element, constraintName, definedParameters) {
+            //console.log("i got:", element, constraintName, definedParameters, "bc: ", boundConstraints);
+            var groupParamValue = "";
+
+            //Regex that checks to see if Default is explicitly defined in the groups parameter
+            var re = new RegExp("^" + GroupService.ReverseGroup[GroupService.Group.Default] + "$|" + "^" + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + "$");
+
+            var result = {
+                successful: true,
+                message: "",
+                data: null
+            };
+
+            //If a "groups" parameter has not been specified, we'll create one and add "Default" to it since all elements
+            //belong to the "Default" group implicitly
+            if (!definedParameters["groups"]) {
+                MapUtils.put(definedParameters, "groups", GroupService.ReverseGroup[GroupService.Group.Default]);
+            }
+
+            groupParamValue = definedParameters["groups"].replace(/\s/g, "");
+
+            //If a "groups" parameter was defined, but it doesn't contain the "Default" group, we add it to groupParamValue
+            //explicitly and also update the "groups" parameter for this constraint
+            if (!re.test(groupParamValue)) {
+                groupParamValue = GroupService.ReverseGroup[GroupService.Group.Default] + "," + groupParamValue;
+                definedParameters["groups"] = groupParamValue;
+            }
+
+            var groups = groupParamValue.split(/,/);
+
+            for (var i = 0; i < groups.length; i++) {
+
+                var group = groups[i];
+
+                if (!boundConstraints[group]) {
+
+                    var newIndex = -1;
+
+                    if (GroupService.deletedGroupIndices.length > 0) {
+                        newIndex = GroupService.deletedGroupIndices.pop();
+                    } else {
+                        newIndex = GroupService.firstCustomGroupIndex++;
+                    }
+
+                    GroupService.Group[group] = newIndex;
+                    GroupService.ReverseGroup[newIndex] = group;
+                    boundConstraints[group] = {};
+                }
+
+                if (!boundConstraints[group][element.id]) {
+                    boundConstraints[group][element.id] = {};
+                }
+
+                boundConstraints[group][element.id][constraintName] = definedParameters;
+            }
+
+            //If this is an HTML5 type constraint, let's make sure that the constraint doesn't conflict with the element's type
+            //(if one has been specified) and let's attach the appropriate HTML5 attributes to the element
+            if(ConstraintService.constraintDefinitions[constraintName].html5) {
+                if(element.getAttribute("type") !== null && ConstraintService.constraintDefinitions[constraintName].inputType !== null && element.getAttribute("type") !== ConstraintService.constraintDefinitions[constraintName].inputType) {
+                    result = {
+                        successful: false,
+                        message: ExceptionService.generateExceptionMessage(element, constraintName, "Element type of " + element.getAttribute("type") + " conflicts with type of constraint @" + constraintName + ": " + ConstraintService.constraintDefinitions[constraintName].inputType),
+                        data: null
+                    };
+                } else {
+                    attachHTML5Attributes(element, constraintName, definedParameters);
+                }
+            }
+
+            return result;
+        }
+
+        function attachHTML5Attributes(element, constraintName, definedParameters) {
+            if(constraintName === ConstraintService.ReverseConstraint[ConstraintService.Constraint.HTML5Required]) {
+                element.setAttribute("required", true);
+            } else {
+                var constraint = ConstraintService.constraintDefinitions[constraintName];
+                for (var i = 0; i < constraint.params.length; i++) {
+                    element.setAttribute(constraint.params[i], definedParameters[constraint.params[i]]);
+                }
+
+                if(ConstraintService.constraintDefinitions[constraintName].inputType !== null) {
+                    element.setAttribute("type", ConstraintService.constraintDefinitions[constraintName].inputType);
+                }
+            }
+
+            element.setAttribute("class", element.getAttribute("class") + " regula-modified");
+        }
+
+        function supportsHTML5Validation() {
+            return (typeof document.createElement("input").checkValidity === "function");
+        }
+
+        function removeElementAndGroupFromConstraintsIfEmpty(id, group) {
+            if (MapUtils.isEmpty(boundConstraints[group][id])) {
+                delete boundConstraints[group][id];
+
+                if (MapUtils.isEmpty(boundConstraints[group])) {
+                    delete boundConstraints[group];
+
+                    var groupIndex = GroupService.Group[group];
+                    delete GroupService.Group[group];
+                    delete GroupService.ReverseGroup[groupIndex];
+
+                    GroupService.deletedGroupIndices.push(groupIndex);
+                }
+            }
+        }
+
         function custom(options) {
 
             if (!options) {
@@ -3270,7 +3287,7 @@
                 reportAsSingleViolation: reportAsSingleViolation,
                 composingConstraints: constraints,
                 defaultMessage: defaultMessage,
-                validator: Validator.compoundValidator
+                validator: ValidationService.compoundValidator
             };
 
             /* now let's update our graph */
@@ -3521,39 +3538,30 @@
             } else {
                 var elements = options.elements;
 
+                //If "elements" has not been provided, let's assume that "element" has been provided, and call "bindFromOptions"
                 if (typeof elements === "undefined" || !elements) {
                     result = bindFromOptions(options);
                 } else {
-                    result = bindFromOptionsWithElements(options, elements);
+
+                    //If "elements" has been provided, let's iterate over it and call bindFromOptions with each of those elements
+                    var i = 0;
+                    while (result.successful && i < elements.length) {
+
+                        options.element = elements[i];
+                        result = bindFromOptions(options);
+
+                        if (!result.successful) {
+                            result.message = "regula.bind: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
+                        }
+
+                        i++;
+                    }
                 }
             }
 
             if (!result.successful) {
                 throw new ExceptionService.Exception.BindException(result.message);
             }
-        }
-
-        function bindFromOptionsWithElements(options, elements) {
-            //console.log("bind from opts with eles");
-
-            var result = {
-                successful: true
-            };
-
-            var i = 0;
-            while (result.successful && i < elements.length) {
-
-                options.element = elements[i];
-                result = bindFromOptions(options);
-
-                if (!result.successful) {
-                    result.message = "regula.bind: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
-                }
-
-                i++;
-            }
-
-            return result;
         }
 
         function bindAfterParsing(element) {
@@ -3586,7 +3594,7 @@
                 } else {
                     // automatically assign an id if the element does not have one
                     if (!element.id) {
-                        element.id = generateRandomId();
+                        element.id = DOMUtils.generateRandomId();
                     }
 
                     var dataConstraintsAttribute = element.getAttribute("data-constraints");
@@ -3724,7 +3732,7 @@
 
                     var element = elements[i];
                     if (!element.id) {
-                        element.id = generateRandomId();
+                        element.id = DOMUtils.generateRandomId();
                     }
 
                     if (!elementMap[element.id]) {
@@ -3769,7 +3777,7 @@
                 }
             } else {
                 if(!element.id) {
-                    element.id = generateRandomId();
+                    element.id = DOMUtils.generateRandomId();
                 }
 
                 elementsWithHTML5Validation[element.id] = [];
@@ -3855,7 +3863,7 @@
 
                     var i = 0;
                     while (i < constraints.length && result.successful) {
-                        result = bindFromConstraintDefinition(constraints[i], options);
+                        result = bindUsingConstraintDefinition(constraints[i], options);
                         i++;
                     }
                 } else {
@@ -3866,7 +3874,7 @@
             return result;
         }
 
-        function bindFromConstraintDefinition(constraint, options) {
+        function bindUsingConstraintDefinition(constraint, options) {
 
             //a few inner utility-functions
 
@@ -4015,7 +4023,7 @@
                         MapUtils.put(newParameters, param, definedParameters[param]);
                     }
 
-                    result = ConstraintService.validateConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
+                    result = ConstraintService.verifyConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
                 } else {
 
                     if (overwriteConstraint) {
@@ -4025,7 +4033,7 @@
                             MapUtils.put(newParameters, param, definedParameters[param]);
                         }
 
-                        result = ConstraintService.validateConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
+                        result = ConstraintService.verifyConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
 
                         if (result.successful) {
                             /* We could delete this element-constraint combination out of all the old groups. But let's be smart about it
@@ -4062,7 +4070,7 @@
                                 MapUtils.put(newParameters, param, definedParameters[param]);
                             }
 
-                            result = ConstraintService.validateConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
+                            result = ConstraintService.verifyConstraintDefinition(element, ConstraintService.ReverseConstraint[constraintType], newParameters);
 
                             if (result.successful) {
                                 /* Because we're overwriting, we need to take groups into account. We basically need to see if
