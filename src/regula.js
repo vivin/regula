@@ -1770,6 +1770,7 @@
             HTML5Required: {
                 html5: true,
                 inputType: null,
+                attribute: "required",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Required,
                 constraintType: Constraint.HTML5Required,
@@ -1782,6 +1783,7 @@
             HTML5Email: {
                 html5: true,
                 inputType: "email",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Email,
                 constraintType: Constraint.HTML5Email,
@@ -1794,6 +1796,7 @@
             HTML5Pattern: {
                 html5: true,
                 inputType: null,
+                attribute: "pattern",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Pattern,
                 constraintType: Constraint.HTML5Pattern,
@@ -1806,6 +1809,7 @@
             HTML5URL: {
                 html5: true,
                 inputType: "url",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5URL,
                 constraintType: Constraint.HTML5URL,
@@ -1818,6 +1822,7 @@
             HTML5Number: {
                 html5: true,
                 inputType: "number",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Number,
                 constraintType: Constraint.HTML5Number,
@@ -1830,6 +1835,7 @@
             HTML5DateTime: {
                 html5: true,
                 inputType: "datetime",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5DateTime,
                 constraintType: Constraint.HTML5DateTime,
@@ -1842,6 +1848,7 @@
             HTML5DateTimeLocal: {
                 html5: true,
                 inputType: "datetime-local",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5DateTimeLocal,
                 constraintType: Constraint.HTML5DateTimeLocal,
@@ -1854,6 +1861,7 @@
             HTML5Date: {
                 html5: true,
                 inputType: "date",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Date,
                 constraintType: Constraint.HTML5Date,
@@ -1866,6 +1874,7 @@
             HTML5Month: {
                 html5: true,
                 inputType: "month",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Month,
                 constraintType: Constraint.HTML5Month,
@@ -1878,6 +1887,7 @@
             HTML5Time: {
                 html5: true,
                 inputType: "time",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Time,
                 constraintType: Constraint.HTML5Time,
@@ -1890,6 +1900,7 @@
             HTML5Week: {
                 html5: true,
                 inputType: "week",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Week,
                 constraintType: Constraint.HTML5Week,
@@ -1902,6 +1913,7 @@
             HTML5Range: {
                 html5: true,
                 inputType: "range",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Range,
                 constraintType: Constraint.HTML5Range,
@@ -1914,6 +1926,7 @@
             HTML5Tel: {
                 html5: true,
                 inputType: "tel",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Tel,
                 constraintType: Constraint.HTML5Tel,
@@ -1926,6 +1939,7 @@
             HTML5Color: {
                 html5: true,
                 inputType: "color",
+                attribute: null,
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Color,
                 constraintType: Constraint.HTML5Color,
@@ -1938,6 +1952,7 @@
             HTML5MaxLength: {
                 html5: true,
                 inputType: null,
+                attribute: "maxlength",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5MaxLength,
                 constraintType: Constraint.HTML5MaxLength,
@@ -1950,6 +1965,7 @@
             HTML5Min: {
                 html5: true,
                 inputType: null,
+                attribute: "min",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Min,
                 constraintType: Constraint.HTML5Min,
@@ -1962,6 +1978,7 @@
             HTML5Max: {
                 html5: true,
                 inputType: null,
+                attribute: "max",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Max,
                 constraintType: Constraint.HTML5Max,
@@ -1974,6 +1991,7 @@
             HTML5Step: {
                 html5: true,
                 inputType: null,
+                attribute: "step",
                 formSpecific: false,
                 validator: ValidationService.Validator.html5Step,
                 constraintType: Constraint.HTML5Step,
@@ -4024,7 +4042,14 @@
                         data: null
                     };
                 } else {
-                    attachHTML5Attributes(element, constraintName, definedParameters);
+                    //We will attach HTML5 attributes ONLY if the element doesn't have them
+                    var attribute = ConstraintService.constraintDefinitions[constraintName].attribute;
+                    var inputType = ConstraintService.constraintDefinitions[constraintName].inputType;
+
+                    if((attribute !== null && element.getAttribute(attribute) === null) ||
+                       (inputType !== null && element.getAttribute("type") === null)) {
+                        attachHTML5Attributes(element, constraintName, definedParameters);
+                    }
                 }
             }
 
@@ -4054,7 +4079,12 @@
                 }
             }
 
-            element.setAttribute("class", element.getAttribute("class") + " regula-modified");
+            var classes = element.getAttribute("class");
+
+            if(!/regula-modified/.test(classes)) {
+                element.setAttribute("class", classes + " regula-modified");
+            }
+
         }
 
         /**

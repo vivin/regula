@@ -18225,44 +18225,36 @@ test('Test passing HTML5 email validation', function() {
     deleteElements();
 });
 
-test('Test binding to HTML5 pattern', function() {
-    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
-    equal(regula.bind(), undefined, "Must be able to bind to HTML pattern without errors");
+/*
+
+            "HTML5Email",
+            "HTML5URL",
+            "HTML5Number",
+            "HTML5DateTime",
+            "HTML5DateTimeLocal",
+            "HTML5Date",
+            "HTML5Month",
+            "HTML5Time",
+            "HTML5Week",
+            "HTML5Range",
+            "HTML5Tel",
+            "HTML5Color",
+             */
+
+test('Test binding to HTML5 URL', function() {
+    var $url0 = createInputElement("url0", null, "url");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 URL without errors");
     deleteElements();
 });
 
-test('Test failing HTML5 pattern validation', function() {
-    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
-    $pattern0.val("herp");
-    regula.bind();
-
-    var constraintViolation = regula.validate()[0];
-    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equal(constraintViolation.compound, false, "This must not be a compound constraint");
-    equal(constraintViolation.constraintName, "HTML5Pattern", "The failing constraint must be HTML5Pattern");
-    equal(constraintViolation.custom, false, "This must not be a custom constraint");
-    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
-    equal(constraintViolation.failingElements[0].id, "pattern0", "The id of the failing element must match expected value");
-    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
-    equal(constraintViolation.message, "The text field needs to match [A-Z]{3}-[0-9]{4}.", "Failure message must match");
-
-    deleteElements();
-});
-
-test('Test passing HTML5 pattern validation', function() {
-    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
-    $pattern0.val("NCC-1701");
+test('Test passing HTML5 URL validation', function() {
+    var $url0 = createInputElement("url0", null, "url");
+    $url0.val("http://google.com");
     regula.bind();
 
     var constraintViolations = regula.validate();
     equal(constraintViolations.length, 0, "There must not be any constraint violations");
 
-    deleteElements();
-});
-
-test('Test binding to HTML5 URL', function() {
-    var $url0 = createInputElement("url0", null, "url");
-    equal(regula.bind(), undefined, "Must be able to bind to HTML5 URL without errors");
     deleteElements();
 });
 
@@ -18284,9 +18276,15 @@ test('Test failing HTML5 URL validation', function() {
     deleteElements();
 });
 
-test('Test passing HTML5 URL validation', function() {
-    var $url0 = createInputElement("url0", null, "url");
-    $url0.val("http://google.com");
+test('Test binding to HTML5 Number', function() {
+    var $number0 = createInputElement("number0", null, "number");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 Number without errors");
+    deleteElements();
+});
+
+test('Test passing HTML5 Number validation', function() {
+    var $number0 = createInputElement("number0", null, "number");
+    $number0.val(5);
     regula.bind();
 
     var constraintViolations = regula.validate();
@@ -18295,9 +18293,71 @@ test('Test passing HTML5 URL validation', function() {
     deleteElements();
 });
 
+/*
+Browser won't let you set the input to a non-numeric value and so there is no way to test this??
+
+test('Test failing HTML5 Number validation', function() {
+    console.log("<<<<<DDDOOORRRRPP")
+    var $number0 = createInputElement("number0", null, "number");
+    console.log($number0.get(0))
+    $number0.val("abc");
+    $number0.attr("value", "abc");
+    console.log($number0.get(0), "val:", $number0.val())
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    console.log("DERRRP>>>>>>>>")
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Number", "The failing constraint must be HTML5Number");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "url0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "The number is not a valid number.", "Failure message must match");
+
+    deleteElements();
+});
+*/
+
 test('Test binding to HTML5 maxlength', function() {
     var $maxlength0 = createInputElement("maxlength0", null, "text", {maxlength: 10});
     equal(regula.bind(), undefined, "Must be able to bind to HTML5 maxlength without errors");
+    deleteElements();
+});
+
+test('Test passing HTML5 pattern validation', function() {
+    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
+    $pattern0.val("NCC-1701");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 pattern', function() {
+    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
+    equal(regula.bind(), undefined, "Must be able to bind to HTML pattern without errors");
+    deleteElements();
+});
+
+test('Test failing HTML5 pattern validation', function() {
+    var $pattern0 = createInputElement("pattern0", null, "text", {pattern: "[A-Z]{3}-[0-9]{4}"});
+    $pattern0.val("herp");
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Pattern", "The failing constraint must be HTML5Pattern");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "pattern0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "The text field needs to match [A-Z]{3}-[0-9]{4}.", "Failure message must match");
+
     deleteElements();
 });
 
