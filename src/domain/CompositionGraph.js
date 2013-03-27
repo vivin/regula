@@ -7,7 +7,7 @@
  *
  * @type {{addNode: Function, getNodeByType: Function, cycleExists: Function, getRoot: Function, setRoot: Function, clone: Function}}
  */
-define(["service/ConstraintService"], function (ConstraintService) {
+define(function () {
     var typeToNodeMap = {};
 
     /* root is a special node that serves as the root of the composition tree/graph (works either way because a tree
@@ -21,10 +21,10 @@ define(["service/ConstraintService"], function (ConstraintService) {
         children: []
     };
 
-    function addNode(type, parent) {
+    function addNode(type, name, parent) {
         var newNode = typeToNodeMap[type] == null ? {
             visited: false,
-            name: ConstraintService.ReverseConstraint[type],
+            name: name,
             type: type,
             children: []
         } : typeToNodeMap[type];

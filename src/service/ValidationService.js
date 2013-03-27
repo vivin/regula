@@ -32,7 +32,6 @@ define(
          *         html5Color: Function, html5Pattern: Function, html5MaxLength: Function, html5Min: Function, html5Max: Function, html5Step: Function}}
          */
         var Validator = {
-
             checked: function (params) {
                 var result = false;
 

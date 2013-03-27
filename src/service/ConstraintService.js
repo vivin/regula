@@ -779,7 +779,7 @@ define(
             var graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
 
             if (graphNode == null) {
-                CompositionGraph.addNode(Constraint[constraintName], null);
+                CompositionGraph.addNode(Constraint[constraintName], constraintName, null);
                 graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
             }
 
@@ -790,7 +790,7 @@ define(
                 var composingConstraint = constraintDefinitions[composingConstraintName];
 
                 if (composingConstraint.compound) {
-                    CompositionGraph.addNode(composingConstraint.constraintType, graphNode);
+                    CompositionGraph.addNode(composingConstraint.constraintType, ReverseConstraint[composingConstraint.constraintType], graphNode);
                 }
             }
         }
