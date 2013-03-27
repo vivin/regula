@@ -18154,7 +18154,7 @@ test('Test label and message interpolation when calling regula.validate() (2)', 
     deleteElements();
 });
 
-module('Test HTML5 Validation');
+module('Test HTML5 Validation (native)');
 
 test('Test binding to HTML5 required', function() {
     var $text0 = createInputElement("text0", null, "text", {required: true});
@@ -18225,22 +18225,6 @@ test('Test passing HTML5 email validation', function() {
     deleteElements();
 });
 
-/*
-
-            "HTML5Email",
-            "HTML5URL",
-            "HTML5Number",
-            "HTML5DateTime",
-            "HTML5DateTimeLocal",
-            "HTML5Date",
-            "HTML5Month",
-            "HTML5Time",
-            "HTML5Week",
-            "HTML5Range",
-            "HTML5Tel",
-            "HTML5Color",
-             */
-
 test('Test binding to HTML5 URL', function() {
     var $url0 = createInputElement("url0", null, "url");
     equal(regula.bind(), undefined, "Must be able to bind to HTML5 URL without errors");
@@ -18292,33 +18276,6 @@ test('Test passing HTML5 Number validation', function() {
 
     deleteElements();
 });
-
-/*
-Browser won't let you set the input to a non-numeric value and so there is no way to test this??
-
-test('Test failing HTML5 Number validation', function() {
-    console.log("<<<<<DDDOOORRRRPP")
-    var $number0 = createInputElement("number0", null, "number");
-    console.log($number0.get(0))
-    $number0.val("abc");
-    $number0.attr("value", "abc");
-    console.log($number0.get(0), "val:", $number0.val())
-    regula.bind();
-
-    var constraintViolation = regula.validate()[0];
-    console.log("DERRRP>>>>>>>>")
-    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equal(constraintViolation.compound, false, "This must not be a compound constraint");
-    equal(constraintViolation.constraintName, "HTML5Number", "The failing constraint must be HTML5Number");
-    equal(constraintViolation.custom, false, "This must not be a custom constraint");
-    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
-    equal(constraintViolation.failingElements[0].id, "url0", "The id of the failing element must match expected value");
-    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
-    equal(constraintViolation.message, "The number is not a valid number.", "Failure message must match");
-
-    deleteElements();
-});
-*/
 
 test('Test binding to HTML5 maxlength', function() {
     var $maxlength0 = createInputElement("maxlength0", null, "text", {maxlength: 10});
@@ -18421,3 +18378,10 @@ test('Test failing HTML5 min for number', function() {
 
     deleteElements();
 });
+
+/*
+ There will be no tests for @HTML5Number, etc. This is because the only time ValidityState#typeMismatch is set to true
+ is when the type is URL or E-Mail. This essentially renders those constraints useless since there will be no way to
+ communicate validation failure to the user since the browser won't even let you enter invalid values into those
+ fields. I'm wondering if we should even have them... but that's a decision for another time.
+ */
