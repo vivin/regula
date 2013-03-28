@@ -2,7 +2,19 @@
  * Encapsulates logic related to groups.
  * @type {{Group: {}, ReverseGroup: {}, deletedGroupIndices: Array, firstCustomGroupIndex: number}}
  */
-define(function () {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.GroupService = factory();
+    }
+}(this, function () {
     var Group = {
         Default: 0
     };
@@ -38,4 +50,4 @@ define(function () {
         deletedGroupIndices: deletedGroupIndices,
         firstCustomGroupIndex: firstCustomGroupIndex
     };
-});
+}));

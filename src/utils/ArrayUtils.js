@@ -2,8 +2,20 @@
  * ArrayUtils contains some convenience functions related to arrays.
  * @type {{explode: Function}}
  */
-define(function () {
 
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.ArrayUtils = factory();
+    }
+}(this, function () {
     function explode(array, delimeter) {
         var str = "";
 
@@ -17,4 +29,4 @@ define(function () {
     return {
         explode: explode
     };
-});
+}));

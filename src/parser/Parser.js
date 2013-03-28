@@ -2,12 +2,29 @@
  * Contains the logic for the recursive-descent parser that parses constraint-definition strings
  * @type {{parse: Function}}
  */
-define(
-    [
-        "utils/MapUtils",
-        "service/ExceptionService",
-        "service/ConstraintService"
-    ], function (MapUtils, ExceptionService, ConstraintService) {
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([
+            "utils/MapUtils",
+            "service/ExceptionService",
+            "service/ConstraintService"
+        ], factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.Parser = factory(
+            root.regulaModules.MapUtils,
+            root.regulaModules.ExceptionService,
+            root.regulaModules.ConstraintService
+        );
+    }
+}(this, function (MapUtils, ExceptionService, ConstraintService) {
+
 
     /** A few utility functions that are used by the parser, but are not directly related to parsing **/
 
@@ -908,4 +925,4 @@ define(
     return {
         parse: parse
     };
-});
+}));

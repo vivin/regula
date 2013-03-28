@@ -2,8 +2,19 @@
  * MapUtils contains some convenience functions related to Maps.
  * @type {{iterateOverMap: Function, exists: Function, put: Function, isEmpty: Function}}
  */
-define(function () {
-    console.log("MapUtils!");
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.MapUtils = factory();
+    }
+}(this, function () {
     return {
         iterateOverMap: function (map, callback) {
             var index = 0;
@@ -48,4 +59,4 @@ define(function () {
             return true;
         }
     };
-});
+}));

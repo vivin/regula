@@ -2,7 +2,20 @@
  * Defines exceptions that regula throws. Also contains a utility method that makes it easy to generate exception messages.
  * @type {{Exception: {}, generateExceptionMessage: Function, explodeParameters: Function}}
  */
-define(["utils/ArrayUtils"], function (ArrayUtils) {
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(["utils/ArrayUtils"], factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.ExceptionService = factory(root.regulaModules.ArrayUtils);
+    }
+}(this, function (ArrayUtils) {
     var Exception = {
         IllegalArgumentException: function (message) {
             this.name = "IllegalArgumentException";
@@ -74,4 +87,4 @@ define(["utils/ArrayUtils"], function (ArrayUtils) {
         generateExceptionMessage: generateExceptionMessage,
         explodeParameters: explodeParameters
     }
-});
+}));

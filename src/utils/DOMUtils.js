@@ -2,7 +2,21 @@
  * DOMUtils contains some convenience functions to look up information in the DOM.
  * @type {{friendlyInputNames: {}, getElementsByAttribute: Function, getAttributeValueForElement: Function, supportsHTML5Validation: Function}}
  */
-define(function () {
+
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.DOMUtils = factory();
+    }
+}(this, function () {
 
     var friendlyInputNames = {
         form: "The form",
@@ -25,11 +39,6 @@ define(function () {
         tel: "The telephone number",
         color: "The color"
     };
-
-    /*
-     Copyright Robert Nyman, http://www.robertnyman.com
-     Free to use if this text is included
-     */
 
     function getElementsByAttribute(oElm, strTagName, strAttributeName, strAttributeValue) {
         var arrElements = (strTagName == "*" && oElm.all) ? oElm.all : oElm.getElementsByTagName(strTagName);
@@ -95,4 +104,5 @@ define(function () {
         generateRandomId: generateRandomId,
         supportsHTML5Validation: supportsHTML5Validation
     };
-});
+
+}));

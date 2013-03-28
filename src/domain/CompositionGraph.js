@@ -7,7 +7,19 @@
  *
  * @type {{addNode: Function, getNodeByType: Function, cycleExists: Function, getRoot: Function, setRoot: Function, clone: Function}}
  */
-define(function () {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        if (typeof root.regulaModules === "undefined") {
+            root.regulaModules = {};
+        }
+
+        root.regulaModules.CompositionGraph = factory();
+    }
+}(this, function () {
     var typeToNodeMap = {};
 
     /* root is a special node that serves as the root of the composition tree/graph (works either way because a tree
@@ -124,4 +136,4 @@ define(function () {
         setRoot: setRoot,
         clone: clone
     };
-});
+}));
