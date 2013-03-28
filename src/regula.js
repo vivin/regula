@@ -40,8 +40,6 @@
                 debug: false
             };
 
-            ValidationService.init(config); //Make ValidationService aware of regula configuration
-
             /**
              * A simple "enum" for date formats
              * @type {{DMY: string, MDY: string, YMD: string}}
@@ -318,6 +316,15 @@
              * @returns {Array} of constraint violations.
              */
             function validate(options) {
+
+                //Initialize the validation service
+                ValidationService.init({
+                    config: config,
+                    ReverseConstraint: ConstraintService.ReverseConstraint,
+                    constraintDefinitions: ConstraintService.constraintDefinitions,
+                    boundConstraints: BindingService.getBoundConstraints()
+                });
+
                 var result = [];
 
                 if (typeof options !== "undefined" && typeof options.groups !== "undefined" && !(options.groups instanceof Array)) {
@@ -361,7 +368,6 @@
                         throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must be an array.");
                     }
                 } else {
-
                     result = ValidationService.validate(options);
                 }
 

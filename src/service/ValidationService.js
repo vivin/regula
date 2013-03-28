@@ -5,20 +5,25 @@
 define(
     [
         "utils/DOMUtils",
-        "service/ConstraintService",
         "utils/MapUtils",
-        "service/BindingService",
         "service/GroupService",
         "service/ExceptionService",
         "utils/ArrayUtils"
-    ], function (DOMUtils, ConstraintService, MapUtils, BindingService, GroupService, ExceptionService, ArrayUtils) {
+    ], function (DOMUtils, MapUtils, GroupService, ExceptionService, ArrayUtils) {
 
-        var config = {}; //Regula configuration options
+        var config = {}; //Regula configuration options. Injected from the regula module.
+        var ReverseConstraint = {}; //Reverse-lookup using constraint names. Injected from the regula module.
+        var constraintDefinitions = {}; //Constraints that have been defined. Injected from the regula module.
+        var boundConstraints = {}; //Elements and constraints that have been bound to them
+
         var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
         var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
 
-        function init(regulaConfig) {
-            config = regulaConfig;
+        function init(options) {
+            config = options.config;
+            ReverseConstraint = options.ReverseConstraint;
+            constraintDefinitions = options.constraintDefinitions;
+            boundConstraints = options.boundConstraints;
         }
 
         /**
@@ -335,7 +340,7 @@ define(
             //        console.log("composing constraints", composingConstraints);
             for (var i = 0; i < composingConstraints.length; i++) {
                 var composingConstraint = composingConstraints[i];
-                var composingConstraintName = ConstraintService.ReverseConstraint[composingConstraint.constraintType];
+                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
 
                 /*
                  Now we'll merge the parameters in the child constraints with the parameters from the parent
@@ -363,8 +368,8 @@ define(
                     var constraintViolation = {
                         group: currentGroup,
                         constraintName: composingConstraintName,
-                        custom: ConstraintService.constraintDefinitions[composingConstraintName].custom,
-                        compound: ConstraintService.constraintDefinitions[composingConstraintName].compound,
+                        custom: constraintDefinitions[composingConstraintName].custom,
+                        compound: constraintDefinitions[composingConstraintName].compound,
                         constraintParameters: composingConstraint.params,
                         failingElements: validationResult.failingElements,
                         message: errorMessage
@@ -495,7 +500,7 @@ define(
 
             //Get the actual constraint name
             if (typeof options.constraintType !== "undefined") {
-                options.constraintType = ConstraintService.ReverseConstraint[options.constraintType];
+                options.constraintType = ReverseConstraint[options.constraintType];
             }
 
             //Get the actual group name
@@ -518,11 +523,11 @@ define(
         function validateAll() {
             var constraintViolations = [];
 
-            //console.log("BoundConstraints", BindingService.getBoundConstraints());
+            //console.log("BoundConstraints", boundConstraints);
 
-            for (var group in BindingService.getBoundConstraints()) if (BindingService.getBoundConstraints().hasOwnProperty(group)) {
+            for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
 
                 for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
 
@@ -551,9 +556,9 @@ define(
             var constraintViolations = [];
             var constraintFound = false;
 
-            for (var group in BindingService.getBoundConstraints()) if (BindingService.getBoundConstraints().hasOwnProperty(group)) {
+            for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
 
                 for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
 
@@ -583,9 +588,9 @@ define(
             var constraintViolations = [];
             var elementFound = false;
 
-            for (var group in BindingService.getBoundConstraints()) if (BindingService.getBoundConstraints().hasOwnProperty(group)) {
+            for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
 
                 if (groupElements[options.elementId]) {
                     elementFound = true;
@@ -617,9 +622,9 @@ define(
             var elementFound = false;
             var constraintFound = false;
 
-            for (var group in BindingService.getBoundConstraints()) if (BindingService.getBoundConstraints().hasOwnProperty(group)) {
+            for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
                 var elementConstraints = groupElements[options.elementId];
 
                 if (elementConstraints) {
@@ -652,7 +657,7 @@ define(
             while (i < options.groups.length && successful) {
                 var group = options.groups[i];
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
                 if (groupElements) {
 
                     for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
@@ -687,7 +692,7 @@ define(
             while (i < options.groups.length && successful) {
                 var group = options.groups[i];
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
                 if (groupElements) {
                     var constraintFound = false;
 
@@ -731,7 +736,7 @@ define(
             while (i < options.groups.length && successful) {
                 var group = options.groups[i];
 
-                var groupElements = BindingService.getBoundConstraints()[group];
+                var groupElements = boundConstraints[group];
                 if (groupElements) {
 
                     var elementConstraints = groupElements[options.elementId];
@@ -786,7 +791,7 @@ define(
         function validateGroupElementConstraintCombination(group, elementId, elementConstraint) {
             //console.log(group, elementId, elementConstraint);
             var constraintViolation;
-            var groupElements = BindingService.getBoundConstraints()[group];
+            var groupElements = boundConstraints[group];
 
             if (!groupElements) {
                 throw new ExceptionService.Exception.IllegalArgumentException("Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")");
@@ -830,9 +835,9 @@ define(
                             constraintViolation = {
                                 group: group,
                                 constraintName: elementConstraint,
-                                formSpecific: ConstraintService.constraintDefinitions[elementConstraint].formSpecific,
-                                custom: ConstraintService.constraintDefinitions[elementConstraint].custom,
-                                compound: ConstraintService.constraintDefinitions[elementConstraint].compound,
+                                formSpecific: constraintDefinitions[elementConstraint].formSpecific,
+                                custom: constraintDefinitions[elementConstraint].custom,
+                                compound: constraintDefinitions[elementConstraint].compound,
                                 composingConstraintViolations: validationResult.composingConstraintViolations || [],
                                 constraintParameters: params,
                                 failingElements: validationResult.failingElements,
@@ -858,19 +863,19 @@ define(
             var element = document.getElementById(elementId);
             var composingConstraintViolations = [];
 
-            if (ConstraintService.constraintDefinitions[elementConstraint].formSpecific) {
-                failingElements = ConstraintService.constraintDefinitions[elementConstraint].validator.call(element, params);
+            if (constraintDefinitions[elementConstraint].formSpecific) {
+                failingElements = constraintDefinitions[elementConstraint].validator.call(element, params);
                 constraintPassed = failingElements.length == 0;
-            } else if (ConstraintService.constraintDefinitions[elementConstraint].compound) {
+            } else if (constraintDefinitions[elementConstraint].compound) {
                 //            console.log("is compound");
-                composingConstraintViolations = ConstraintService.constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, ConstraintService.constraintDefinitions[elementConstraint]);
+                composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint]);
                 constraintPassed = composingConstraintViolations.length == 0;
 
                 if (!constraintPassed) {
                     failingElements.push(element);
                 }
             } else {
-                constraintPassed = ConstraintService.constraintDefinitions[elementConstraint].validator.call(element, params);
+                constraintPassed = constraintDefinitions[elementConstraint].validator.call(element, params);
 
                 if (!constraintPassed) {
                     failingElements.push(element)
@@ -890,7 +895,7 @@ define(
                 failingElements: failingElements
             };
 
-            if (!ConstraintService.constraintDefinitions[elementConstraint].reportAsSingleViolation) {
+            if (!constraintDefinitions[elementConstraint].reportAsSingleViolation) {
                 validationResult.composingConstraintViolations = composingConstraintViolations;
             }
 
@@ -906,7 +911,7 @@ define(
             } else if (params["msg"]) {
                 errorMessage = params["msg"];
             } else {
-                errorMessage = ConstraintService.constraintDefinitions[elementConstraint].defaultMessage;
+                errorMessage = constraintDefinitions[elementConstraint].defaultMessage;
             }
 
             for (var param in params) if (params.hasOwnProperty(param)) {
@@ -915,9 +920,9 @@ define(
             }
 
             //If this is a compound constraint, we need to look at the parameters on each composing constraint so that we can interpolate their values
-            if (ConstraintService.constraintDefinitions[elementConstraint].compound && typeof ConstraintService.constraintDefinitions[elementConstraint].composingConstraints !== "undefined") {
-                for (var i = 0; i < ConstraintService.constraintDefinitions[elementConstraint].composingConstraints.length; i++) {
-                    var composingConstraint = ConstraintService.constraintDefinitions[elementConstraint].composingConstraints[i];
+            if (constraintDefinitions[elementConstraint].compound && typeof constraintDefinitions[elementConstraint].composingConstraints !== "undefined") {
+                for (var i = 0; i < constraintDefinitions[elementConstraint].composingConstraints.length; i++) {
+                    var composingConstraint = constraintDefinitions[elementConstraint].composingConstraints[i];
 
                     for (var param in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(param)) {
 
