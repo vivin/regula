@@ -527,12 +527,12 @@
          * @param definedParameters
          */
         function overwriteGroups(element, constraintType, definedParameters) {
-            var oldGroups = boundConstraints[GroupService.ReverseGroup[GroupService.Group.Default]][element.id][ConstraintService.ReverseConstraint[constraintType]]["groups"].split(/,/);
+            var oldGroups = boundConstraints[GroupService.ReverseGroup[GroupService.Group.Default]][element.id][ConstraintService.ReverseConstraint[constraintType]]["groups"];
 
             var newGroups = [];
 
             if (definedParameters["groups"]) {
-                newGroups = definedParameters["groups"].split(/,/);
+                newGroups = definedParameters["groups"];
             } else {
                 newGroups.push(GroupService.ReverseGroup[GroupService.Group.Default]);
             }
@@ -573,6 +573,21 @@
             __size__: 0
         };
 
+        /**
+         * ########
+         * ########
+         * We kind of muck around with the groups parameter a lot by adding the Default group into it (if it doesn't exist)
+         * and also normalizing enum integers into actual strings. Now we have a use-case where we can use the same constraint
+         * definition for multiple elements. Obviously this can wreak havoc because we've changed the group parameter. So it's
+         * better that we preserve the original value and then restore it when we are done. This is the only parameter that we
+         * really play around with; all other parameters are copied as-is. If we end up getting more parameters that we end up
+         * messing around with, we might need to rethink how we do this processing. I don't like the fact that I have group
+         * processing interleaved with all other kinds of processing. Might have to refactor and split this out at some point.
+         * #######
+         * #######
+         */
+        var originalGroups = definedParameters["groups"];
+
         /** We check to see if this was a valid/defined constraint. It wasn't so we need to return an error message **/
         if (typeof constraintType === "undefined") {
             result = {
@@ -588,18 +603,18 @@
             if (definedParameters["groups"] instanceof Array) {
 
                 /** We need to normalize the "groups" parameter that the user sends in. The user sends in the groups parameter as an array of 'enum'
-                 * values, or if it is a new constraint, a string. We need to normalize this into a string of comma-separated values. While we're
-                 * doing this, we'll also check to see if we have any invalid groups
+                 * values, or if it is a new constraint, a string. We need to normalize this into an array of just strings. While we're doing this,
+                 * we'll also check to see if we have any invalid groups
                  */
-                var definedGroups = "";
+                var normalizedGroups = [];
                 var j = 0;
 
                 while (j < definedParameters["groups"].length && result.successful) {
 
                     if (typeof definedParameters["groups"][j] == "string") {
-                        definedGroups += definedParameters["groups"][j] + ","
+                        normalizedGroups.push(definedParameters["groups"][j]); //If it's a string that push it in directly
                     } else if (typeof GroupService.ReverseGroup[definedParameters["groups"][j]] !== "undefined") {
-                        definedGroups += GroupService.ReverseGroup[definedParameters["groups"][j]] + ","
+                        normalizedGroups.push(GroupService.ReverseGroup[definedParameters["groups"][j]]); //Otherwise it's an enum, so push in the string value
                     } else {
                         result = {
                             successful: false,
@@ -612,8 +627,7 @@
                 }
 
                 if (result.successful) {
-                    definedGroups = definedGroups.replace(/,$/, "");
-                    definedParameters["groups"] = definedGroups;
+                    definedParameters["groups"] = normalizedGroups;
                 }
             } else {
                 result = {
@@ -752,6 +766,13 @@
             }
         }
 
+        /**
+         * ######
+         * Restore the original groups definition
+         * ######
+         */
+        definedParameters["groups"] = originalGroups;
+
         return result;
     }
 
@@ -763,10 +784,6 @@
      * @returns {{successful: boolean, message: string, data: null}}
      */
     function attachConstraintDefinitionToElement(element, constraintName, definedParameters) {
-        var groupParamValue;
-
-        //Regex that checks to see if Default is explicitly defined in the groups parameter
-        var re = new RegExp("^" + GroupService.ReverseGroup[GroupService.Group.Default] + "$|" + "^" + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + ",|," + GroupService.ReverseGroup[GroupService.Group.Default] + "$");
 
         var result = {
             successful: true,
@@ -777,19 +794,17 @@
         //If a "groups" parameter has not been specified, we'll create one and add "Default" to it since all elements
         //belong to the "Default" group implicitly
         if (!definedParameters["groups"]) {
-            MapUtils.put(definedParameters, "groups", GroupService.ReverseGroup[GroupService.Group.Default]);
+            MapUtils.put(definedParameters, "groups", [GroupService.ReverseGroup[GroupService.Group.Default]]);
         }
 
-        groupParamValue = definedParameters["groups"].replace(/\s/g, "");
+        var groups = definedParameters["groups"];
 
         //If a "groups" parameter was defined, but it doesn't contain the "Default" group, we add it to groupParamValue
         //explicitly and also update the "groups" parameter for this constraint
-        if (!re.test(groupParamValue)) {
-            groupParamValue = GroupService.ReverseGroup[GroupService.Group.Default] + "," + groupParamValue;
-            definedParameters["groups"] = groupParamValue;
+        if (groups.indexOf(GroupService.ReverseGroup[GroupService.Group.Default]) === -1) {
+            groups.push(GroupService.ReverseGroup[GroupService.Group.Default]);
+            definedParameters["groups"] = groups; //Not really necessary since we're going to reset this anyway
         }
-
-        var groups = groupParamValue.split(/,/);
 
         for (var i = 0; i < groups.length; i++) {
 

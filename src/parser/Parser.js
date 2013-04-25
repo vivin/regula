@@ -805,7 +805,7 @@
         }
 
         function groupDefinition(tokens) {
-            var data = "";
+            var data = [];
             var token = tokens.shift();
             var result = {
                 successful: true,
@@ -831,7 +831,7 @@
                 }
 
                 if (result.successful) {
-                    data = result.data;
+                    data.push(result.data);
 
                     //get rid of spaces
                     if (trim(peek(tokens)).length == 0) {
@@ -842,7 +842,7 @@
                         tokens.shift();
                         result = group(tokens);
 
-                        data += "," + result.data;
+                        data.push(result.data);
 
                         if (trim(peek(tokens)).length == 0) {
                             tokens.shift();

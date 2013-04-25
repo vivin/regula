@@ -16208,6 +16208,42 @@ test('Test that element has been bound to the groups specified (programmatic)', 
     deleteElements();
 });
 
+test('Test that multiple elements have been bound to the groups specified (programmatic)', function() {
+    var $text0 = createInputElement("myText0", null, "text");
+    var $text1 = createInputElement("myText1", null, "text");
+    var $text2 = createInputElement("myText2", null, "text");
+
+    regula.bind({
+        elements: [$text0.get(0), $text1.get(0), $text2.get(0)],
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank,
+             params: {groups: ["First", "Second", "Third"]}
+            }
+        ]
+    });
+
+    var constraintViolations = regula.validate({groups: [regula.Group.First]});
+
+    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations[0].group, "First", "Constraint is expected to be bound to regula.Group.First");
+    equal(constraintViolations[1].group, "First", "Constraint is expected to be bound to regula.Group.First");
+    equal(constraintViolations[2].group, "First", "Constraint is expected to be bound to regula.Group.First");
+
+    constraintViolations = regula.validate({groups: [regula.Group.Second]});
+    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations[0].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+    equal(constraintViolations[1].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+    equal(constraintViolations[2].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
+
+    constraintViolations = regula.validate({groups: [regula.Group.Third]});
+    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations[0].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+    equal(constraintViolations[1].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+    equal(constraintViolations[2].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
+
+    deleteElements();
+});
+
 test('Test that original constraints do not get overwritten when binding to element again', function() {
     var $text = createInputElement("myText", null, "text");
     $text.val(0);
@@ -16397,7 +16433,7 @@ test('Test group-overwriting behavior when overwriteConstraint is set to true (1
     });
 
     var constraintViolation = regula.validate()[0];
-    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    deepEqual(constraintViolation.constraintParameters.groups, ["First", "Fourth", "Fifth", "Default"], "Constraint must belong to the groups Default, First, Fourth, and Fifth");
     equal(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
     equal(regula.Group.Second, undefined, "Group Second must not exist");
     equal(regula.Group.Third, undefined, "Group Third must not exist");
@@ -16451,7 +16487,7 @@ test('Test group-overwriting behavior when overwriteConstraint is set to true (2
     });
 
     var constraintViolation = regula.validate()[0];
-    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    deepEqual(constraintViolation.constraintParameters.groups, ["First", "Fourth", "Fifth", "Default"], "Constraint must belong to the groups Default, First, Fourth, and Fifth");
     equal(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
     throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Second]})
@@ -16495,7 +16531,7 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (1
     });
 
     var constraintViolation = regula.validate()[0];
-    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    deepEqual(constraintViolation.constraintParameters.groups, ["First", "Fourth", "Fifth", "Default"], "Constraint must belong to the groups Default, First, Fourth, and Fifth");
     equal(regula.validate({groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
     equal(regula.Group.Second, undefined, "Group Second must not exist");
     equal(regula.Group.Third, undefined, "Group Third must not exist");
@@ -16549,7 +16585,7 @@ test('Test group-overwriting behavior when overwriteParameters is set to true (2
     });
 
     var constraintViolation = regula.validate()[0];
-    equal(constraintViolation.constraintParameters.groups, "Default,First,Fourth,Fifth", "Constraint must belong to the groups Default, First, Fourth, and Fifth");
+    deepEqual(constraintViolation.constraintParameters.groups, ["First", "Fourth", "Fifth", "Default"], "Constraint must belong to the groups Default, First, Fourth, and Fifth");
     equal(regula.validate({elementId: "myText", groups: [regula.Group.First]}).length, 1, "Constraint must belong to the group First");
     throws(function() {
         regula.validate({elementId: "myText", groups: [regula.Group.Second]})
