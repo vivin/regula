@@ -33,10 +33,14 @@
     }
 }(this, function (MapUtils, GroupService, DOMUtils, Parser, ConstraintService, ExceptionService) {
 
+    /**
+     * Keeps track of bound constraints. Keyed by Group -> Element Id -> Constraint Name
+     * @type {}
+     */
     var boundConstraints = null;
 
     /**
-     * Initializes bound constraints to their initial state only if they have not been initalized (i.e., they are null).
+     * Initializes bound constraints to their initial state only if they have not been initialized (i.e., they are null).
      */
     function initializeBoundConstraints() {
         if (boundConstraints === null) {
@@ -935,6 +939,44 @@
         }
     }
 
+    /**
+     * Checks to see if the specified element is bound. You can further refine the check by providing groups and/or
+     * constraint names.
+     * @param options
+     */
+    function isBound(options) {
+
+        var elementId = options.elementId;
+        var group = options.group;
+        var constraint = options.constraint;
+
+        //Let's see if this element is bound at all, because if it isn't we don't even need to care about the other checks
+        var bound = typeof boundConstraints[GroupService.ReverseGroup[GroupService.Group.Default]][elementId] !== "undefined";
+
+        if(bound && typeof group !== "undefined" && typeof constraint === "undefined") {
+            //Let's see if the element is bound to this specific group
+
+            var groupString = GroupService.ReverseGroup[group];
+            bound = typeof groupString !== "undefined" && typeof boundConstraints[groupString][elementId] !== "undefined";
+
+        } else if(bound && typeof group === "undefined" && typeof constraint !== "undefined") {
+            //Let's see if this element is bound to this specific constraint
+
+            var constraintString = ConstraintService.ReverseConstraint[constraint];
+            bound = typeof constraintString !== "undefined" && typeof boundConstraints[GroupService.ReverseGroup[GroupService.Group.Default]][elementId][constraintString] !== "undefined";
+
+        } else if(bound && typeof group !== "undefined" && typeof constraint !== "undefined") {
+            //Let's see if this element is bound to this specific constraint in this specific group
+
+            var groupString = GroupService.ReverseGroup[group];
+            var constraintString = ConstraintService.ReverseConstraint[constraint];
+            bound = typeof groupString !== "undefined" && typeof constraintString !== "undefined" && typeof boundConstraints[groupString][elementId] !== "undefined" && typeof boundConstraints[groupString][elementId][constraintString] !== "undefined";
+
+        }
+
+        return bound;
+    }
+
     return {
         initializeBoundConstraints: initializeBoundConstraints,
         resetBoundConstraints: resetBoundConstraints,
@@ -943,6 +985,7 @@
         bindAfterParsing: bindAfterParsing,
         bindHTML5ValidationConstraints: bindHTML5ValidationConstraints,
         bindFromOptions: bindFromOptions,
-        unbind: unbind
+        unbind: unbind,
+        isBound: isBound
     };
 }));

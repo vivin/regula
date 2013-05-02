@@ -70,6 +70,9 @@
         YMD: "YMD"
     };
 
+    //Make sure we initialize bound constraints
+    BindingService.initializeBoundConstraints();
+
     /**
      * Function that helps configure regula's behavior
      * @param options
@@ -88,8 +91,6 @@
      */
     function bind(options) {
         //console.log("in bind");
-
-        BindingService.initializeBoundConstraints();
 
         var result = {
             successful: true,
@@ -160,6 +161,42 @@
 
             BindingService.unbind(options);
         }
+    }
+
+    /**
+     * Function that lets you know if a specific element has been bound. You can check to see if the element has been bound
+     * to a specific group and/or constraint as well.
+     * @param options
+     */
+    function isBound(options) {
+        if(typeof options === "undefined") {
+            throw new ExceptionService.Exception.IllegalArgumentException("regula.isBound expects options");
+        }
+
+        var element = options.element;
+        var elementId = options.elementId;
+
+        if(typeof element === "undefined" && typeof elementId === "undefined") {
+            throw new ExceptionService.Exception.IllegalArgumentException("regula.isBound expects at the very least, either an element or elementId attribute");
+        }
+
+        if(options.hasOwnProperty("constraint") && typeof options.constraint === "undefined") {
+            throw new ExceptionService.Exception.IllegalArgumentException("Undefined constraint was supplied as a parameter")
+        }
+
+        if(options.hasOwnProperty("group") && typeof options.group === "undefined") {
+            throw new ExceptionService.Exception.IllegalArgumentException("Undefined group was supplied as a parameter");
+        }
+
+        if(typeof element !== "undefined") {
+            elementId = element.id;
+        }
+
+        return BindingService.isBound({
+            elementId: elementId,
+            group: options.group,
+            constraint: options.constraint
+        });
     }
 
     /**
@@ -398,6 +435,7 @@
         configure: configure,
         bind: bind,
         unbind: unbind,
+        isBound: isBound,
         validate: validate,
         custom: custom,
         compound: compound,

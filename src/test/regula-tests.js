@@ -16767,6 +16767,242 @@ test('Test regula.unbind() with unbound id and specified constraint', function()
     }, regula.Exception.IllegalArgumentException, "regula.unbind() must fail if provided an unbound element's id");
 });
 
+module('Test regula.isBound() to ensure that it identifies elements that have been bound to constraints and/or groups');
+
+test('Test regula.isBound() fails when no options are provided', function() {
+    throws(function() {
+        regula.isBound();
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail if no options are provided");
+});
+
+test('Test regula.isBound() fails when an empty option is provided', function() {
+    throws(function() {
+        regula.isBound({});
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail if an empty object is provided");
+});
+
+test('Test regula.isBound() returns false when an unbound element is provided', function() {
+    var $text = createInputElement("myText", null, "text");
+    ok(!regula.isBound({
+        element: $text.get(0)
+    }), "regula.isBound() must return false on an unbound element");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when an unbound elementId is provided', function() {
+    var $text = createInputElement("myText", null, "text");
+    ok(!regula.isBound({
+        elementId: "myText"
+    }), "regula.isBound() must return false on an unbound elementId");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when an unbound element and unbound constraint is provided', function() {
+    var $text = createInputElement("myText", null, "text");
+    ok(!regula.isBound({
+        element: $text.get(0),
+        constraint: regula.Constraint.Min
+    }), "regula.isBound() must return false on an unbound element and unbound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when a bound element and unbound constraint is provided', function() {
+    var $text = createInputElement("myText", "@Max(value=2)", "text");
+
+    regula.bind();
+    ok(!regula.isBound({
+        element: $text.get(0),
+        constraint: regula.Constraint.Min
+    }), "regula.isBound() must return false on a bound element and unbound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when a bound element and nonexistent constraint is provided', function() {
+    var $text = createInputElement("myText", "@Max(value=2)", "text");
+
+    throws(function() {
+        regula.isBound({
+            element: $text.get(0),
+            constraint: regula.Constraint.Nonexistent
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail when a bound element and nonexistent constraint is provided");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when a bound element and unbound group is provided (1)', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2)", "text");
+    var $text1 = createInputElement("myText1", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    ok(!regula.isBound({
+        element: $text0.get(0),
+        group: regula.Group.FirstGroup
+    }), "regula.isBound() must return false on a bound element and unbound group");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when a bound element and unbound group is provided (2)', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+    var $text1 = createInputElement("myText1", "@Max(value=2, groups=[SecondGroup])", "text");
+
+    regula.bind();
+    ok(!regula.isBound({
+        element: $text0.get(0),
+        group: regula.Group.SecondGroup
+    }), "regula.isBound() must return false on a bound element and unbound group");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when a bound element and nonexistent group is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2)", "text");
+
+    regula.bind();
+    throws(function() {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.Nonexistent
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail when a bound element and nonexistent group is provided");
+
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when an unbound element, nonexistent group, and unbound constraint is provided', function() {
+    var $text0 = createInputElement("myText0", null, "text");
+
+    regula.bind();
+    throws(function() {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.Nonexistent,
+            constraint: regula.Constraint.Min
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail on an unbound element, nonexistent group, and unbound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when a bound element, nonexistent group, and bound constraint is provided (1)', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2)", "text");
+
+    regula.bind();
+    throws(function() {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.Nonexistent,
+            constraint: regula.Constraint.Max
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail on a bound element, nonexistent group, and bound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails  when a bound element, nonexistent group, and bound constraint is provided (2)', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    throws(function() {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.Nonexistent,
+            constraint: regula.Constraint.Max
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail on a bound element, nonexistent group, and bound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns false when a bound element, bound group, and unbound constraint is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    ok(!regula.isBound({
+        element: $text0.get(0),
+        group: regula.Group.FirstGroup,
+        constraint: regula.Constraint.Min
+    }), "regula.isBound() must return false on a bound element, bound group, and unbound constraint");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when a bound element, bound group, and nonexistent constraint is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    throws(function() {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.FirstGroup,
+            constraint: regula.Constraint.Nonexistent
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail when a bound element, bound group, and nonexistent constraint is provided");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() fails when a bound element, nonexistent group, and nonexistent constraint is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    throws(function () {
+        regula.isBound({
+            element: $text0.get(0),
+            group: regula.Group.Nonexistent,
+            constraint: regula.Constraint.Nonexistent
+        });
+    }, regula.Exception.IllegalArgumentException, "regula.isBound() must fail when a bound element, nonexistent group, and nonexistent constraint is provided");
+
+    deleteElements();
+});
+
+test('Test regula.isBound() returns true when a bound element is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2)", "text");
+
+    regula.bind();
+    ok(regula.isBound({
+        element: $text0.get(0)
+    }), "regula.isBound() must return true on a bound element");
+});
+
+test('Test regula.isBound() returns true when a bound element and bound constraint is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2)", "text");
+
+    regula.bind();
+    ok(regula.isBound({
+        element: $text0.get(0),
+        constraint: regula.Constraint.Max
+    }), "regula.isBound() must return true on a bound element and bound constraint");
+});
+
+test('Test regula.isBound() returns true when a bound element and bound group is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    ok(regula.isBound({
+        element: $text0.get(0),
+        group: regula.Group.FirstGroup
+    }), "regula.isBound() must return true on a bound element and bound group");
+});
+
+test('Test regula.isBound() returns true when a bound element, bound group, and bound constraint is provided', function() {
+    var $text0 = createInputElement("myText0", "@Max(value=2, groups=[FirstGroup])", "text");
+
+    regula.bind();
+    ok(regula.isBound({
+        element: $text0.get(0),
+        group: regula.Group.FirstGroup,
+        constraint: regula.Constraint.Max
+    }), "regula.isBound() must return true on a bound element, bound group, and bound constraint");
+});
+
 module('Test regula.compound() to make sure that it returns proper error messages and creates compound constraints properly');
 
 test('Test calling regula.compound() without options', function() {

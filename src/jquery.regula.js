@@ -39,6 +39,17 @@
                 regula.unbind(options);
                 return this; //make chainable
             },
+            isBound: function(options) {
+                if(this instanceof jQuery) {
+                    if(!options) options = {};
+
+                    if(this.get().length > 0) {
+                        $.extend(true, options, { element: this.get(0) });
+                    }
+                }
+                regula.isBound(options);
+                return this; //make chainable
+            },
             validate: function(options) {
                 if (this instanceof jQuery) {
                     if(!options) options = {};
