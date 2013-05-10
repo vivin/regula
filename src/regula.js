@@ -101,10 +101,18 @@
         if (typeof options === "undefined" || !options) {
             BindingService.resetBoundConstraints();
 
-            result = BindingService.bindAfterParsing({element: null});
-            if (result.successful && config.enableHTML5Validation && DOMUtils.supportsHTML5Validation()) {
+            //We will bind HTML5 constraints first. The main reason we do this, is because the regula-equivalents of
+            //HTML5 constraints (like @HTML5Max) supersede the native HTML5 definitions. We do this because, the
+            //regula equivalents provide greater flexibility through custom error messages, labels, and groups.
+            if (config.enableHTML5Validation && DOMUtils.supportsHTML5Validation()) {
                 result = BindingService.bindHTML5ValidationConstraints({element: null});
             }
+
+            //If HTML5 binding was successful, let's look at constraints specified by the data-constraints attribute
+            if(result.successful) {
+                result = BindingService.bindAfterParsing({element: null});
+            }
+
         } else {
             var elements = options.elements;
 

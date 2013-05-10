@@ -40,6 +40,14 @@
     var boundConstraints = null;
 
     /**
+     * Keeps track of elements that were modified by regula. This usually happens when you specify an HTML5 constraint
+     * in data-constraints, but don't have the matching HTML5 attributes. In this case, regula inserts them for you.
+     *
+     * @type {}
+     */
+    var modifiedElements = {};
+
+    /**
      * Initializes bound constraints to their initial state only if they have not been initialized (i.e., they are null).
      */
     function initializeBoundConstraints() {
@@ -117,10 +125,16 @@
             element = elementsWithRegulaValidation[i];
             var tagName = element.tagName.toLowerCase();
 
-            if (tagName != "form" && tagName != "select" && tagName != "textarea" && tagName != "input") {
+            if (tagName !== "form" && tagName !== "select" && tagName !== "textarea" && tagName !== "input") {
                 result = {
                     successful: false,
                     message: tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements.",
+                    data: null
+                };
+            } else if(tagName === "input" && element.getAttribute("type") === null) {
+                result = {
+                    successful: false,
+                    message: tagName + "#" + element.id + " does not have a type attribute.",
                     data: null
                 };
             } else {
@@ -197,7 +211,7 @@
                 attribute: "type",
                 value: "url",
                 constraint: ConstraintService.Constraint.HTML5URL
-            },
+            },/*
             {
                 attribute: "type",
                 value: "number",
@@ -247,7 +261,7 @@
                 attribute: "type",
                 value: "color",
                 constraint: ConstraintService.Constraint.HTML5Color
-            },
+            },*/
             {
                 attribute: "pattern",
                 value: null,
@@ -281,7 +295,7 @@
         var typeToRegulaConstraint = {
             email: ConstraintService.Constraint.HTML5Email,
             url: ConstraintService.Constraint.HTML5URL,
-            number: ConstraintService.Constraint.HTML5Number,
+            number: ConstraintService.Constraint.HTML5Number/*,
             datetime: ConstraintService.Constraint.HTML5DateTime,
             "datetime-local": ConstraintService.Constraint.HTML5DateTimeLocal,
             date: ConstraintService.Constraint.HTML5Date,
@@ -290,7 +304,7 @@
             week: ConstraintService.Constraint.HTML5Week,
             range: ConstraintService.Constraint.HTML5Range,
             tel: ConstraintService.Constraint.HTML5Tel,
-            color: ConstraintService.Constraint.HTML5Color
+            color: ConstraintService.Constraint.HTML5Color*/
         };
 
         /**
@@ -836,8 +850,10 @@
             boundConstraints[group][element.id][constraintName] = definedParameters;
         }
 
-        //If this is an HTML5 type constraint, let's make sure that the constraint doesn't conflict with the element's type
-        //(if one has been specified) and let's attach the appropriate HTML5 attributes to the element
+        /**
+         * If this is an HTML5 type constraint, let's make sure that the constraint doesn't conflict with the element's
+         * type (if one has been specified). If so, let's attach the appropriate HTML5 attributes to the element.
+         */
         if (ConstraintService.constraintDefinitions[constraintName].html5) {
             if (element.getAttribute("type") !== null && ConstraintService.constraintDefinitions[constraintName].inputType !== null && element.getAttribute("type") !== ConstraintService.constraintDefinitions[constraintName].inputType) {
                 result = {
@@ -877,10 +893,6 @@
             for (var i = 0; i < constraint.params.length; i++) {
                 element.setAttribute(constraint.params[i], definedParameters[constraint.params[i]]);
             }
-
-            if (ConstraintService.constraintDefinitions[constraintName].inputType !== null) {
-                element.setAttribute("type", ConstraintService.constraintDefinitions[constraintName].inputType);
-            }
         }
 
         var classes = element.getAttribute("class");
@@ -888,7 +900,6 @@
         if (!/regula-modified/.test(classes)) {
             element.setAttribute("class", classes + " regula-modified");
         }
-
     }
 
     /**

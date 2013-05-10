@@ -95,7 +95,7 @@
             "HTML5Required",
             "HTML5Email",
             "HTML5URL",
-            "HTML5Number",
+          /*"HTML5Number",
             "HTML5DateTime",
             "HTML5DateTimeLocal",
             "HTML5Date",
@@ -104,9 +104,9 @@
             "HTML5Week",
             "HTML5Range",
             "HTML5Tel",
-            "HTML5Color",
-            "HTML5Pattern",
+            "HTML5Color", */
             "HTML5MaxLength",
+            "HTML5Pattern",
             "HTML5Min",
             "HTML5Max",
             "HTML5Step"
@@ -417,7 +417,7 @@
             params: [],
             defaultMessage: "{label} is not a valid URL."
         },
-
+        /*
         HTML5Number: {
             html5: true,
             inputType: "number",
@@ -546,7 +546,7 @@
             compound: false,
             params: [],
             defaultMessage: "{label} is not a valid color."
-        },
+        }, */
 
         HTML5MaxLength: {
             html5: true,
@@ -597,7 +597,7 @@
             custom: false,
             compound: false,
             params: ["step"],
-            defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
+            defaultMessage: "{label} must be equal to the minimum value or greater at increments of {step}."
         }
     };
 
