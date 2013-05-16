@@ -16100,6 +16100,16 @@ test('Test calling regula.bind() with valid input element and an HTMLElement of 
     deleteElements();
 });
 
+test('Test calling regula.bind() with input element that does not have a type', function() {
+    var input = jQuery("<input />").get(0);
+
+    throws(function() {
+        regula.bind({
+            elements: [input]
+        });
+    }, regula.Exception.BindException, "Calling regula.bind() when one of the elements does not have a type must error out");
+});
+
 test('Test calling regula.bind() with invalid constraint type', function() {
     var $input = createInputElement("myInput", null, "text");
 
@@ -18635,9 +18645,46 @@ test('Test failing HTML5 min for number', function() {
     deleteElements();
 });
 
-test('Test passing HTML5 min validation', function() {
-    var $min0 = createInputElement("min0", null, "text", {min: 5});
-    $min0.val(6);
+test('Test passing HTML5 max validation', function() {
+    var $max0 = createInputElement("max0", null, "text", {max: 5});
+    $max0.val(6);
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+
+test('Test binding to HTML5 max', function() {
+    var $max0 = createInputElement("max0", null, "number", {max: 5});
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 max without errors");
+    deleteElements();
+});
+
+test('Test failing HTML5 max for number', function() {
+    var $max0 = createInputElement("max0", null, "number", {max: 5});
+    $max0.val("6");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Max", "The failing constraint must be HTML5Max");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "max0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "The number needs to be lesser than or equal to 5.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 max validation', function() {
+    var $max0 = createInputElement("max0", null, "text", {max: 5});
+    $max0.val(3);
     regula.bind();
 
     var constraintViolations = regula.validate();
@@ -18673,6 +18720,343 @@ test('Test failing HTML5 step for number', function() {
 
 test('Test passing HTML5 step validation', function() {
     var $step0 = createInputElement("step0", null, "text", {step: 5});
+    $step0.val(10);
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+module('Test HTML5 Validation (regula equivalent)');
+
+test('Test binding to HTML5 required', function() {
+    var $text0 = createInputElement("text0", "@HTML5Required(label=\"text0\", message=\"{label} is required.\")", "text");
+
+    equal(regula.bind(), undefined, "Must be able to bind to HTML required without errors");
+
+    var required = $text0.attr("required");
+    ok(typeof required !== "undefined" && required !== false, "Element must have \"required\" attribute.");
+
+    deleteElements();
+});
+
+test('Test failing HTML5 required validation', function() {
+    var $text0 = createInputElement("text0", "@HTML5Required(label=\"text0\", message=\"{label} is required.\")", "text");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Required", "The failing constraint must be HTML5Required");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "text0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "text0 is required.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 required validation', function() {
+    var $text0 = createInputElement("text0", "@HTML5Required(label=\"text0\", message=\"{label} is required.\")", "text");
+    $text0.val("something");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 email', function() {
+    var $email0 = createInputElement("email0", "@HTML5Email(label=\"email0\", message=\"{label} needs to be an email.\")", "email");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML email without errors");
+    deleteElements();
+});
+
+test('Test binding HTML5 email to an invalid type', function() {
+    var $email0 = createInputElement("number0", "@HTML5Email(label=\"email0\", message=\"{label} needs to be an email.\")", "number");
+
+    throws(function() {
+        regula.bind();
+    }, regula.Exception.BindException, "@HTML5Email must only be bound to an \"email\"-type input.")
+
+    deleteElements();
+});
+
+test('Test failing HTML5 email validation', function() {
+    var $email0 = createInputElement("email0", "@HTML5Email(label=\"email0\", message=\"{label} needs to be an email.\")", "email");
+    $email0.val("bademail");
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Email", "The failing constraint must be HTML5Email");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "email0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "email0 needs to be an email.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 email validation', function() {
+    var $email0 = createInputElement("email0", "@HTML5Email(label=\"email0\", message=\"{label} needs to be an email.\")", "email");
+    $email0.val("email@example.com");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 URL', function() {
+    var $url0 = createInputElement("url0", "@HTML5URL(label=\"url0\", message=\"{label} needs to be a URL.\")", "url");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 URL without errors");
+    deleteElements();
+});
+
+test('Test binding HTML5 URL to an invalid type', function() {
+    var $url0 = createInputElement("url0", "@HTML5URL(label=\"url0\", message=\"{label} needs to be a URL.\")", "number");
+
+    throws(function() {
+        regula.bind();
+    }, regula.Exception.BindException, "@HTML5URL must only be bound to a \"url\"-type input.")
+
+    deleteElements();
+});
+
+test('Test failing HTML5 URL validation', function() {
+    var $url0 = createInputElement("url0", "@HTML5URL(label=\"url0\", message=\"{label} needs to be a URL.\")", "url");
+    $url0.val("derp");
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5URL", "The failing constraint must be HTML5URL");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "url0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "url0 needs to be a URL.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 URL validation', function() {
+    var $url0 = createInputElement("url0", "@HTML5URL(label=\"url0\", message=\"{label} needs to be a URL.\")", "url");
+    $url0.val("http://google.com");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 maxlength', function() {
+    var $maxlength0 = createInputElement("maxlength0", "@HTML5MaxLength(maxlength=10, label=\"maxlength0\", message=\"{label} is longer than {maxlength}.\")", "text");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 maxlength without errors");
+
+    var maxlength = $maxlength0.attr("maxlength");
+    equal(maxlength, 10, "maxlength attribute must be equal to 10.")
+
+    deleteElements();
+});
+
+/*
+
+Currently, it seems to be impossible to test this case since ValidityState#tooLong never gets set to true.
+
+test('Test failing HTML5 maxlength validation', function() {
+    var $maxlength0 = createInputElement("maxlength0", "@HTML5MaxLength(maxlength=10, label=\"maxlength0\", message=\"{label} is longer than {maxlength}.\")", "text");
+    $maxlength0.val("abcdefghijk");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5MaxLength", "The failing constraint must be HTML5MaxLength");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "maxlength0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "The URL is not a valid URL.", "Failure message must match");
+
+    deleteElements();
+});
+
+*/
+
+test('Test passing HTML5 maxlength validation', function() {
+    var $maxlength0 = createInputElement("maxlength0", "@HTML5MaxLength(maxlength=10, label=\"maxlength0\", message=\"{label} is longer than {maxlength}.\")", "text");
+    $maxlength0.val("abcdefghi");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 pattern', function() {
+    var $pattern0 = createInputElement("pattern0", "@HTML5Pattern(pattern=\"[A-Z]{3}-[0-9]{4}\", label=\"pattern0\", message=\"{label} does not match pattern {pattern}.\")", "text");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML pattern without errors");
+
+    var pattern = $pattern0.attr("pattern");
+    equal(pattern, "[A-Z]{3}-[0-9]{4}", "pattern attribute must be equal to [A-Z]{3}-[0-9]{4}.");
+
+    deleteElements();
+});
+
+test('Test failing HTML5 pattern validation', function() {
+    var $pattern0 = createInputElement("pattern0", "@HTML5Pattern(pattern=\"[A-Z]{3}-[0-9]{4}\", label=\"pattern0\", message=\"{label} does not match pattern {pattern}.\")", "text");
+    $pattern0.val("herp");
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Pattern", "The failing constraint must be HTML5Pattern");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "pattern0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "pattern0 does not match pattern [A-Z]{3}-[0-9]{4}.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 pattern validation', function() {
+    var $pattern0 = createInputElement("pattern0", "@HTML5Pattern(pattern=\"[A-Z]{3}-[0-9]{4}\", label=\"pattern0\", message=\"{label} does not match pattern {pattern}.\")", "text");
+    $pattern0.val("NCC-1701");
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 min', function() {
+    var $min0 = createInputElement("min0", "@HTML5Min(min=5, label=\"min0\", message=\"{label} needs to be greater than or equal to {min}.\")", "number");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 min without errors");
+
+    var min = $min0.attr("min");
+    equal(min, 5, "min attribute must be equal to 5.");
+
+    deleteElements();
+});
+
+test('Test failing HTML5 min for number', function() {
+    var $min0 = createInputElement("min0", "@HTML5Min(min=5, label=\"min0\", message=\"{label} needs to be greater than or equal to {min}.\")", "number");
+    $min0.val("3");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Min", "The failing constraint must be HTML5Min");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "min0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "min0 needs to be greater than or equal to 5.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 min validation', function() {
+    var $min0 = createInputElement("min0", "@HTML5Min(min=5, label=\"min0\", message=\"{label} needs to be greater than or equal to {min}.\")", "number");
+    $min0.val(6);
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 max', function() {
+    var $max0 = createInputElement("max0", "@HTML5Max(max=5, label=\"max0\", message=\"{label} needs to be lesser than or equal to {max}.\")", "number");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 max without errors");
+
+    var max = $max0.attr("max");
+    equal(max, 5, "max attribute must be equal to 5.");
+
+    deleteElements();
+});
+
+test('Test failing HTML5 max for number', function() {
+    var $max0 = createInputElement("max0", "@HTML5Max(max=5, label=\"max0\", message=\"{label} needs to be lesser than or equal to {max}.\")", "number");
+    $max0.val("6");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Max", "The failing constraint must be HTML5Max");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "max0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "max0 needs to be lesser than or equal to 5.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 max validation', function() {
+    var $max0 = createInputElement("max0", "@HTML5Max(max=5, label=\"max0\", message=\"{label} needs to be lesser than or equal to {max}.\")", "number");
+    $max0.val(3);
+    regula.bind();
+
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 0, "There must not be any constraint violations");
+
+    deleteElements();
+});
+
+test('Test binding to HTML5 step', function() {
+    var $step0 = createInputElement("step0", "@HTML5Step(step=5, label=\"step0\", message=\"{label} must be at steps of {step}.\")", "number");
+    equal(regula.bind(), undefined, "Must be able to bind to HTML5 step without errors");
+
+    var step = $step0.attr("step");
+    equal(step, 5, "step attribute must be equal to 5.");
+
+    deleteElements();
+});
+
+test('Test failing HTML5 step for number', function() {
+    var $step0 = createInputElement("step0", "@HTML5Step(step=5, label=\"step0\", message=\"{label} must be at steps of {step}.\")", "number");
+    $step0.val("3");
+
+    regula.bind();
+
+    var constraintViolation = regula.validate()[0];
+    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+    equal(constraintViolation.compound, false, "This must not be a compound constraint");
+    equal(constraintViolation.constraintName, "HTML5Step", "The failing constraint must be HTML5Step");
+    equal(constraintViolation.custom, false, "This must not be a custom constraint");
+    equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+    equal(constraintViolation.failingElements[0].id, "step0", "The id of the failing element must match expected value");
+    equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+    equal(constraintViolation.message, "step0 must be at steps of 5.", "Failure message must match");
+
+    deleteElements();
+});
+
+test('Test passing HTML5 step validation', function() {
+    var $step0 = createInputElement("step0", "@HTML5Step(step=5, label=\"step0\", message=\"{label} must be at steps of {step}.\")", "number");
     $step0.val(10);
     regula.bind();
 

@@ -584,7 +584,7 @@
             custom: false,
             compound: false,
             params: ["max"],
-            defaultMessage: "{label} must be greater than or equal to {max}."
+            defaultMessage: "{label} needs to be lesser than or equal to {max}."
         },
 
         HTML5Step: {
