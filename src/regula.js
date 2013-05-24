@@ -230,6 +230,7 @@
                 formSpecific = (typeof options.formSpecific === "undefined") ? ConstraintService.constraintDefinitions[name].formSpecific : options.formSpecific;
             }
 
+            var async = ConstraintService.constraintDefinitions[name].custom && typeof options.async !== "undefined" ? options.async : ConstraintService.constraintDefinitions[name].async;
             var validator = ConstraintService.constraintDefinitions[name].custom && !ConstraintService.constraintDefinitions[name].compound ? options.validator || ConstraintService.constraintDefinitions[name].validator : ConstraintService.constraintDefinitions[name].validator;
             var params = ConstraintService.constraintDefinitions[name].custom ? options.params || ConstraintService.constraintDefinitions[name].params : ConstraintService.constraintDefinitions[name].params;
             var defaultMessage = options.defaultMessage || ConstraintService.constraintDefinitions[name].defaultMessage;
@@ -253,6 +254,7 @@
             }
 
             ConstraintService.override({
+                async: async,
                 formSpecific: formSpecific,
                 name: name,
                 constraintType: options.constraintType,
@@ -279,6 +281,7 @@
         var validator = options.validator;
         var params = options.params || [];
         var defaultMessage = options.defaultMessage || "";
+        var async = typeof options.async === "undefined" ? false : options.async;
 
         /* handle attributes. throw exceptions if they are not sane */
 
@@ -317,6 +320,7 @@
             throw new ExceptionService.Exception.IllegalArgumentException("There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override");
         } else {
             ConstraintService.custom({
+                async: async,
                 name: name,
                 formSpecific: formSpecific,
                 validator: validator,
