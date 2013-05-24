@@ -18374,7 +18374,7 @@ test('Test calling regula.validate() with elements, undefined group, and constra
 });
 
 test('Test calling regula.validate() with elements, groups, and constraint', function() {
-    var $text0 = createInputElement("text0", "@Numeric(groups=[FirstGroup]) @Email(groups=[SecondGroup])", "text");
+    var $text0 = createInputElement("text0", "@Numeric(groups=[FirstGroup]) @Email(groups=[FirstGroup, SecondGroup])", "text");
     var $text1 = createInputElement("text1", "@Email(groups=[FirstGroup, SecondGroup])", "text");
     var $text2 = createInputElement("text2", "@Email(groups=[FirstGroup, SecondGroup])", "text");
 
@@ -18385,7 +18385,7 @@ test('Test calling regula.validate() with elements, groups, and constraint', fun
         groups: [regula.Group.SecondGroup, regula.Group.FirstGroup]
     });
 
-    equal(constraintViolations.length, 3, "There should only be two constraint-violations");
+    equal(constraintViolations.length, 3, "There should only be three constraint-violations");
     equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
     equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
     equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");

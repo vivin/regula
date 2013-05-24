@@ -114,6 +114,7 @@
 
     var constraintDefinitions = {
         Checked: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.checked,
@@ -125,6 +126,7 @@
         },
 
         Selected: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.selected,
@@ -136,6 +138,7 @@
         },
 
         Max: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.max,
@@ -147,6 +150,7 @@
         },
 
         Min: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.min,
@@ -158,6 +162,7 @@
         },
 
         Range: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.range,
@@ -169,6 +174,7 @@
         },
 
         NotBlank: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.notBlank,
@@ -180,6 +186,7 @@
         },
 
         Blank: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.blank,
@@ -191,6 +198,7 @@
         },
 
         Pattern: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.matches,
@@ -202,6 +210,7 @@
         },
 
         Email: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.email,
@@ -213,6 +222,7 @@
         },
 
         Alpha: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.alpha,
@@ -224,6 +234,7 @@
         },
 
         Numeric: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.numeric,
@@ -235,6 +246,7 @@
         },
 
         AlphaNumeric: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.alphaNumeric,
@@ -246,6 +258,7 @@
         },
 
         Integer: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.integer,
@@ -257,6 +270,7 @@
         },
 
         Real: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.real,
@@ -268,6 +282,7 @@
         },
 
         CompletelyFilled: {
+            async: false,
             html5: false,
             formSpecific: true,
             validator: ValidationService.Validator.completelyFilled,
@@ -279,6 +294,7 @@
         },
 
         PasswordsMatch: {
+            async: false,
             html5: false,
             formSpecific: true,
             validator: ValidationService.Validator.passwordsMatch,
@@ -290,6 +306,7 @@
         },
 
         Required: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.required,
@@ -301,6 +318,7 @@
         },
 
         Length: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.length,
@@ -312,6 +330,7 @@
         },
 
         Digits: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.digits,
@@ -323,6 +342,7 @@
         },
 
         Past: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.past,
@@ -334,6 +354,7 @@
         },
 
         Future: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.future,
@@ -346,6 +367,7 @@
 
         Step: {
             /* TODO:  implement */
+            async: false,
             html5: false,
             formSpecific: false,
             constraintType: Constraint.Step,
@@ -357,6 +379,7 @@
 
         URL: {
             /* TODO: implement */
+            async: false,
             html5: false,
             formSpecific: false,
             constraintType: Constraint.URL,
@@ -367,6 +390,7 @@
         },
 
         HTML5Required: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "required",
@@ -380,6 +404,7 @@
         },
 
         HTML5Email: {
+            async: false,
             html5: true,
             inputType: "email",
             attribute: null,
@@ -393,6 +418,7 @@
         },
 
         HTML5Pattern: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "pattern",
@@ -406,6 +432,7 @@
         },
 
         HTML5URL: {
+            async: false,
             html5: true,
             inputType: "url",
             attribute: null,
@@ -549,6 +576,7 @@
         }, */
 
         HTML5MaxLength: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "maxlength",
@@ -562,6 +590,7 @@
         },
 
         HTML5Min: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "min",
@@ -575,6 +604,7 @@
         },
 
         HTML5Max: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "max",
@@ -588,6 +618,7 @@
         },
 
         HTML5Step: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "step",
@@ -649,6 +680,7 @@
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
         constraintDefinitions[options.name] = {
+            async: options.async,
             formSpecific: options.formSpecific,
             validator: options.validator,
             constraintType: Constraint[options.name],
@@ -661,6 +693,7 @@
     }
 
     /**
+     * TODO: figure out how async constraints work here
      * Adds a compound constraint
      * @param options
      */
