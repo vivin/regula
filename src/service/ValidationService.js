@@ -59,7 +59,7 @@
             var result = false;
 
             if (this.type.toLowerCase() === "radio" && this.name.replace(/\s/g, "") !== "") {
-                var elements = DOMUtils.getElementsByAttribute(document.body, "input", "name", this.name);
+                var elements = DOMUtils.getElementsByAttribute(document.body, "input", "name", this.name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"));
 
                 var i = 0;
                 while (i < elements.length && !result) {

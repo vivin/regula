@@ -10293,6 +10293,26 @@ test('Test @Checked against checked radio-button group (passing, markup)', funct
     deleteElements();
 });
 
+test('Test @Checked against checked radio-button group using square brackets in name', function() {
+    var $radio0 = createInputElement("radio0", "@Checked", "radio");
+    $radio0.attr("name", "Awesome[Radios]");
+
+    var $radio1 = createInputElement("radio1", null, "radio");
+    $radio1.attr("name", "Awesome[Radios]");
+
+    var $radio2 = createInputElement("radio2", null, "radio");
+    $radio2.attr("name", "Awesome[Radios]");
+    $radio2.attr("checked", "true");
+
+    var $radio3 = createInputElement("radio3", null, "radio");
+    $radio3.attr("name", "Awesome[Radios]");
+
+    regula.bind();
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
+
+    deleteElements();
+});
+
 test('Test @Checked against checked radio-button group (passing, programmatic)', function() {
     var $radio0 = createInputElement("radio0", null, "radio");
     $radio0.attr("name", "AwesomeRadios");
