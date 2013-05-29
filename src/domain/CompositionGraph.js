@@ -5,7 +5,7 @@
  * Since cycles in the constraint-composition graph will lead to infinite loops, I need to detect them and throw
  * an exception.
  *
- * @type {{addNode: Function, getNodeByType: Function, cycleExists: Function, getRoot: Function, setRoot: Function, clone: Function}}
+ * @type {{addNode: Function, getNodeByType: Function, analyze: Function, getRoot: Function, setRoot: Function, clone: Function}}
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -73,25 +73,23 @@
         return typeToNodeMap[type];
     }
 
-    function cycleExists(startNode) {
-        var result = (function (node, path) {
+    function analyze(startNode) {
+        var result = (function traverse(node, path) {
 
             var result = {
-                cycleExists: false,
+                cycle: false,
+                async: false,
                 path: path
             };
 
             if (node.visited) {
-                result = {
-                    cycleExists: true,
-                    path: path
-                };
+                result.cycle = true;
             } else {
                 node.visited = true;
 
                 var i = 0;
-                while (i < node.children.length && !result.cycleExists) {
-                    result = arguments.callee(node.children[i], path + "." + node.children[i].name);
+                while (i < node.children.length && !result.analyze) {
+                    result = traverse(node.children[i], path + "." + node.children[i].name);
                     i++;
                 }
             }
@@ -99,7 +97,7 @@
             return result;
         }(startNode, startNode.name));
 
-        if (!result.cycleExists) {
+        if (!result.analyze) {
             clearVisited();
         }
 
@@ -131,7 +129,7 @@
         addNode: addNode,
         removeChildren: removeChildren,
         getNodeByType: getNodeByType,
-        cycleExists: cycleExists,
+        analyze: analyze,
         getRoot: getRoot,
         setRoot: setRoot,
         clone: clone
