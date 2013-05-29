@@ -59,7 +59,7 @@
             var result = false;
 
             if (this.type.toLowerCase() === "radio" && this.name.replace(/\s/g, "") !== "") {
-                var elements = DOMUtils.getElementsByAttribute(document.body, "input", "name", this.name);
+                var elements = DOMUtils.getElementsByAttribute(document.body, "input", "name", this.name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"));
 
                 var i = 0;
                 while (i < elements.length && !result) {
@@ -905,7 +905,7 @@
         var name = element.name.replace(/\s/g, "");
         if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
             validatedRadioGroups[name][elementConstraint] = true; //mark this radio group as validated
-            failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
+            failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")); //let's set failing elements to all elements of the radio group
         }
 
         var validationResult = {

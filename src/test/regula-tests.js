@@ -10293,6 +10293,26 @@ test('Test @Checked against checked radio-button group (passing, markup)', funct
     deleteElements();
 });
 
+test('Test @Checked against checked radio-button group using square brackets in name', function() {
+    var $radio0 = createInputElement("radio0", "@Checked", "radio");
+    $radio0.attr("name", "Awesome[Radios]");
+
+    var $radio1 = createInputElement("radio1", null, "radio");
+    $radio1.attr("name", "Awesome[Radios]");
+
+    var $radio2 = createInputElement("radio2", null, "radio");
+    $radio2.attr("name", "Awesome[Radios]");
+    $radio2.attr("checked", "true");
+
+    var $radio3 = createInputElement("radio3", null, "radio");
+    $radio3.attr("name", "Awesome[Radios]");
+
+    regula.bind();
+    equal(regula.validate().length, 0, "The @Checked constraint must not fail against a checked radio-button group");
+
+    deleteElements();
+});
+
 test('Test @Checked against checked radio-button group (passing, programmatic)', function() {
     var $radio0 = createInputElement("radio0", null, "radio");
     $radio0.attr("name", "AwesomeRadios");
@@ -10331,6 +10351,27 @@ test('Test @Checked against radio-button group where each element has the constr
 
     var $radio3 = createInputElement("radio3", "@Checked", "radio");
     $radio3.attr("name", "AwesomeRadios");
+
+    regula.bind();
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
+    equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
+
+    deleteElements();
+});
+
+test('Test @Checked against radio-button with square brackets in name', function() {
+    var $radio0 = createInputElement("radio0", "@Checked", "radio");
+    $radio0.attr("name", "Awesome[Radios]");
+
+    var $radio1 = createInputElement("radio1", "@Checked", "radio");
+    $radio1.attr("name", "Awesome[Radios]");
+
+    var $radio2 = createInputElement("radio2", "@Checked", "radio");
+    $radio2.attr("name", "Awesome[Radios]");
+
+    var $radio3 = createInputElement("radio3", "@Checked", "radio");
+    $radio3.attr("name", "Awesome[Radios]");
 
     regula.bind();
     var constraintViolations = regula.validate();
