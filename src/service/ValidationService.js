@@ -349,62 +349,132 @@
      * @param params - parameters for the constraint
      * @param currentGroup - the group that is currently being validated
      * @param compoundConstraint - the constraint that is currently being validated
+     * @param callback - optional parameter that is sent in if the compound constraint is asynchronous.
      * @return {Array} - an array of constraint violations
      */
-    function compoundValidator(params, currentGroup, compoundConstraint) {
-        //        console.log(params, currentGroup, compoundConstraint);
-        var composingConstraints = compoundConstraint.composingConstraints;
-        var constraintViolations = [];
-        //        console.log("composing constraints", composingConstraints);
-        for (var i = 0; i < composingConstraints.length; i++) {
-            var composingConstraint = composingConstraints[i];
-            var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+    function compoundValidator(params, currentGroup, compoundConstraint, callback) {
 
-            /*
-             Now we'll merge the parameters in the child constraints with the parameters from the parent
-             constraint
-             */
-
+        function mergeParams(composingConstraintParams, compoundConstraintParams) {
             var mergedParams = {};
 
-            for (var paramName in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(paramName) && paramName != "__size__") {
-                MapUtils.put(mergedParams, paramName, composingConstraint.params[paramName]);
+            for (var paramName in composingConstraintParams) if (composingConstraintParams.hasOwnProperty(paramName) && paramName != "__size__") {
+                MapUtils.put(mergedParams, paramName, composingConstraintParams[paramName]);
             }
 
             /* we're only going to override if the compound constraint was defined with required params */
-            if (compoundConstraint.params.length > 0) {
+            if (compoundConstraintParams.length > 0) {
                 for (var paramName in params) if (params.hasOwnProperty(paramName) && paramName != "__size__") {
                     MapUtils.put(mergedParams, paramName, params[paramName]);
                 }
             }
 
-            var validationResult = runValidatorFor(currentGroup, this.id, composingConstraintName, mergedParams);
+            return mergedParams;
+        }
 
-            var errorMessage = "";
-            if (!validationResult.constraintPassed) {
-                errorMessage = interpolateConstraintDefaultMessage(this.id, composingConstraintName, mergedParams);
-                var constraintViolation = {
-                    group: currentGroup,
-                    constraintName: composingConstraintName,
-                    custom: constraintDefinitions[composingConstraintName].custom,
-                    compound: constraintDefinitions[composingConstraintName].compound,
-                    constraintParameters: composingConstraint.params,
-                    failingElements: validationResult.failingElements,
-                    message: errorMessage
-                };
+        function processValidationResult(validationResult, id, currentGroup, composingConstraint, mergedParams) {
+            var constraintName = ReverseConstraint[composingConstraint.constraintType];
 
-                if (!compoundConstraint.reportAsSingleViolation) {
-                    constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
-                }
+            var errorMessage = interpolateConstraintDefaultMessage(id, constraintName, mergedParams);
+            var constraintViolation = {
+                group: currentGroup,
+                constraintName: constraintName,
+                custom: constraintDefinitions[constraintName].custom,
+                compound: constraintDefinitions[constraintName].compound,
+                constraintParameters: composingConstraint.params,
+                failingElements: validationResult.failingElements,
+                message: errorMessage
+            };
 
-                constraintViolations.push(constraintViolation);
+            if (!compoundConstraint.reportAsSingleViolation) {
+                constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
             }
-            //            console.log("finish validation");
-            if (config.enableHTML5Validation) {
-                for (var j = 0; j < validationResult.failingElements.length; j++) {
-                    validationResult.failingElements[j].setCustomValidity(errorMessage);
+
+            return constraintViolation;
+        }
+
+        var synchronousComposingConstraints = [];
+        var asynchronousComposingConstraints = [];
+
+        for(var i = 0; i < compoundConstraint.composingConstraints.length; i++) {
+            var constraint = compoundConstraint.composingConstraints[i];
+            var constraintName = ReverseConstraint[constraint.constraintType];
+
+            if(constraintDefinitions[constraintName].async) {
+                asynchronousComposingConstraints.push(constraint);
+            } else {
+                synchronousComposingConstraints.push(constraint);
+            }
+
+        }
+
+        var constraintViolations = null;
+        var _this = this;
+
+
+        if(synchronousComposingConstraints.length > 0) {
+            constraintViolations = [];
+
+            for (var i = 0; i < synchronousComposingConstraints.length; i++) {
+                var composingConstraint = synchronousComposingConstraints[i];
+                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+
+                /*
+                 Now we'll merge the parameters in the child constraints with the parameters from the parent
+                 constraint
+                 */
+                var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+                var validationResult = runValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams);
+
+                if(!validationResult.constraintPassed) {
+                    var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, composingConstraint, mergedParams);
+
+                    if (config.enableHTML5Validation) {
+                        for (var j = 0; j < validationResult.failingElements.length; j++) {
+                            validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                        }
+                    }
+
+                    constraintViolations.push(constraintViolation);
                 }
             }
+        }
+
+        if(asynchronousComposingConstraints.length > 0) {
+            if(constraintViolations === null) {
+                constraintViolations = [];
+            }
+
+            (function validateComposingConstraint(i) {
+                if(i < asynchronousComposingConstraints.length) {
+                    var composingConstraint = synchronousComposingConstraints[i];
+                    var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+
+                    /*
+                     Now we'll merge the parameters in the child constraints with the parameters from the parent
+                     constraint
+                     */
+                    var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+                    asynchronouslyRunValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams, function(validationResult) {
+
+                        if(!validationResult.constraintPassed) {
+                            var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, composingConstraint, mergedParams);
+
+                            if (config.enableHTML5Validation) {
+                                for (var j = 0; j < validationResult.failingElements.length; j++) {
+                                    validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                                }
+                            }
+
+                            constraintViolations.push(constraintViolation);
+                        }
+
+                        validateComposingConstraint(i++);
+
+                    });
+                } else {
+                    callback(constraintViolations);
+                }
+            })(0);
         }
 
         return constraintViolations;
@@ -544,7 +614,7 @@
         return functionTable[generateKey(options)](options);
     }
 
-    function validateAll() {
+    function validateAll(options) {
         var constraintViolations = null;
         var constraintsToValidate = {
             async: false,
@@ -578,6 +648,8 @@
             if(!options.callback) {
                 throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
             }
+
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -618,7 +690,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateConstraintContexts(constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -658,7 +734,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateConstraintContexts(constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -698,7 +778,11 @@
         if(!constraintsToValidate.async) {
            constraintViolations = validateConstraintContexts(constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -746,7 +830,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -803,7 +891,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
         }
 
         return constraintViolations; //Doing this just for a consistent return point. Will be empty for async validation
@@ -857,7 +949,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
         }
 
         return constraintViolations; //Doing this just for a consistent return point. Will be empty for async validation
@@ -890,7 +986,11 @@
         if(!constraintsToValidate.async) {
             constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
         } else {
-            //Do the async thing
+            if(!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
         }
 
         return constraintViolations;
@@ -952,12 +1052,12 @@
                 var context = constraintsToValidate.contexts[i];
                 asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
                     constraintViolations.push(constraintViolation);
-                    i++;
+                    validateContext(i++);
                 });
             } else {
                 callback(constraintViolations);
             }
-        })(0)
+        })(0);
     }
 
     function validateGroupedConstraintContexts(groups, independent, constraintsToValidate) {
@@ -986,7 +1086,37 @@
         return constraintViolations;
     }
 
-     function validateGroupElementConstraintCombination(group, elementId, elementConstraint, params) {
+    function asynchronouslyValidateGroupedConstraintContexts(groups, independent, constraintsToValidate, callback) {
+        var constraintViolations = [];
+        var successful = true;
+
+        (function validateGroupedContexts(i, j) {
+            if(i < groups.length && successful) {
+                var group = groups[i];
+                var contexts = constraintsToValidate.groupedContexts[group];
+
+                if(j < contexts.length) {
+                    var context = constraintsToValidate.contexts[j];
+                    asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
+                        constraintViolations.push(constraintViolation);
+                        j++;
+
+                        if(j > contexts.length) {
+                            j = 0;
+                            successful = (constraintViolations.length == 0) || (independent && constraintViolations.length != 0);
+                            i++;
+                        }
+
+                        validateGroupedContexts(i, j);
+                    });
+                }
+            } else {
+                callback(constraintViolations);
+            }
+        }(0, 0));
+    }
+
+    function validateGroupElementConstraintCombination(group, elementId, elementConstraint, params) {
         //console.log(group, elementId, elementConstraint);
         var constraintViolation;
         var element = document.getElementById(elementId);
@@ -1101,7 +1231,7 @@
             constraintPassed = failingElements.length == 0;
         } else if (constraintDefinitions[elementConstraint].compound) {
             //            console.log("is compound");
-            composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint]);
+            composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], null);
             constraintPassed = composingConstraintViolations.length == 0;
 
             if (!constraintPassed) {

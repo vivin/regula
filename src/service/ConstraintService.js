@@ -638,6 +638,8 @@
      * @param options
      */
     function override(options) {
+        var async = constraintDefinitions[options.name].async;
+
         if (options.compound) {
             verifyComposingConstraints(options.name, options.composingConstraints, options.params);
 
@@ -652,14 +654,17 @@
             updateCompositionGraph(options.name, options.composingConstraints);
 
             /* we need to see if a cycle exists in our graph */
-            var result = CompositionGraph.cycleExists(CompositionGraph.getNodeByType(options.constraintType));
-            if (result.cycleExists) {
+            var result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType));
+            if (result.cycle) {
                 CompositionGraph.setRoot(root);
                 throw new ExceptionService.Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
             }
+
+            async = result.async;
         }
 
         constraintDefinitions[options.name] = {
+            async: async,
             formSpecific: options.formSpecific,
             constraintType: Constraint[options.name],
             custom: true,
@@ -700,9 +705,20 @@
     function compound(options) {
         verifyComposingConstraints(options.name, options.constraints, options.params);
 
+        var async = false;
+        var i = 0;
+        while(i < options.constraints.length && !async) {
+            var constraint = options.constraints[i];
+            var constraintName = ReverseConstraint[constraint.constraintType];
+            async = async || constraintDefinitions[constraintName].async
+
+            i++;
+        }
+
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
         constraintDefinitions[options.name] = {
+            async: async,
             formSpecific: options.formSpecific,
             constraintType: Constraint[options.name],
             custom: true,
@@ -830,7 +846,7 @@
         var graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
 
         if (graphNode == null) {
-            CompositionGraph.addNode(Constraint[constraintName], constraintName, null);
+            CompositionGraph.addNode(Constraint[constraintName], constraintName, constraintDefinitions[constraintName].async, null);
             graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
         }
 
@@ -841,7 +857,7 @@
             var composingConstraint = constraintDefinitions[composingConstraintName];
 
             if (composingConstraint.compound) {
-                CompositionGraph.addNode(composingConstraint.constraintType, ReverseConstraint[composingConstraint.constraintType], graphNode);
+                CompositionGraph.addNode(composingConstraint.constraintType, ReverseConstraint[composingConstraint.constraintType], constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]].async, graphNode);
             }
         }
     }

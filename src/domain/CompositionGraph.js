@@ -10,7 +10,9 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(factory);
+        define([
+            "service/ConstraintService"
+        ], factory);
     } else {
         // Browser globals
         if (typeof root.regulaModules === "undefined") {
@@ -30,14 +32,16 @@
         visited: false,
         name: "RootNode",
         type: -1,
+        async: false,
         children: []
     };
 
-    function addNode(type, name, parent) {
+    function addNode(type, name, async, parent) {
         var newNode = typeToNodeMap[type] == null ? {
             visited: false,
             name: name,
             type: type,
+            async: async,
             children: []
         } : typeToNodeMap[type];
 
@@ -59,6 +63,7 @@
             visited: node.visited,
             name: node.name,
             type: node.type,
+            async: node.async,
             children: []
         };
 
@@ -78,7 +83,7 @@
 
             var result = {
                 cycle: false,
-                async: false,
+                async: node.async,
                 path: path
             };
 
@@ -88,8 +93,14 @@
                 node.visited = true;
 
                 var i = 0;
-                while (i < node.children.length && !result.analyze) {
-                    result = traverse(node.children[i], path + "." + node.children[i].name);
+                while (i < node.children.length && !result.cycle) {
+                    var _result = traverse(node.children[i], path + "." + node.children[i].name);
+                    result = {
+                        cycle: _result.cycle,
+                        async: result.async || _result.async,
+                        path: _result.path
+                    };
+
                     i++;
                 }
             }
@@ -97,7 +108,7 @@
             return result;
         }(startNode, startNode.name));
 
-        if (!result.analyze) {
+        if (!result.cycle) {
             clearVisited();
         }
 
