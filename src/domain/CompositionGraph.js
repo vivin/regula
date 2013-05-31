@@ -10,9 +10,7 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define([
-            "service/ConstraintService"
-        ], factory);
+        define(factory);
     } else {
         // Browser globals
         if (typeof root.regulaModules === "undefined") {
