@@ -3,6 +3,10 @@
  * @type {{Validator: {}, compoundValidator: Function, validate: Function, runValidatorFor: Function, interpolateConstraintDefaultMessage: Function}}
  */
 
+//TODO: We still have an issue to fix. Consider a compound constraint that contains another compound constraint. Assume
+//TODO: that we override the second constraint such that it contains an asynchronous constraint. This means that the
+//TODO: parent constraint must also be marked async, but currently this is not the case. We will have to fix this.
+
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.

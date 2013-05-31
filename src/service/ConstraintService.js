@@ -654,13 +654,18 @@
             updateCompositionGraph(options.name, options.composingConstraints);
 
             /* we need to see if a cycle exists in our graph */
-            var result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType));
+            var result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "down");
             if (result.cycle) {
                 CompositionGraph.setRoot(root);
                 throw new ExceptionService.Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
             }
 
             async = result.async;
+
+            if(CompositionGraph.hasParent(CompositionGraph.getNodeByType(options.constraintType))) {
+                result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "up");
+                async = result.async;
+            }
         }
 
         constraintDefinitions[options.name] = {

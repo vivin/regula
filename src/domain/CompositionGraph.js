@@ -33,6 +33,7 @@
         name: "RootNode",
         type: -1,
         async: false,
+        parent: null,
         children: []
     };
 
@@ -42,6 +43,7 @@
             name: name,
             type: type,
             async: async,
+            parent: parent,
             children: []
         } : typeToNodeMap[type];
 
@@ -55,20 +57,21 @@
     }
 
     function clone() {
-        return _clone(root);
+        return _clone(root, null);
     }
 
-    function _clone(node) {
+    function _clone(node, parent) {
         var cloned = {
             visited: node.visited,
             name: node.name,
             type: node.type,
             async: node.async,
+            parent: parent,
             children: []
         };
 
         for (var i = 0; i < node.children.length; i++) {
-            cloned.children[cloned.children.length] = _clone(node.children[i]);
+            cloned.children[cloned.children.length] = _clone(node.children[i], cloned);
         }
 
         return cloned;
@@ -78,7 +81,7 @@
         return typeToNodeMap[type];
     }
 
-    function analyze(startNode) {
+    function analyze(startNode, direction) {
         var result = (function traverse(node, path) {
 
             var result = {
@@ -92,16 +95,27 @@
             } else {
                 node.visited = true;
 
-                var i = 0;
-                while (i < node.children.length && !result.cycle) {
-                    var _result = traverse(node.children[i], path + "." + node.children[i].name);
-                    result = {
-                        cycle: _result.cycle,
-                        async: result.async || _result.async,
-                        path: _result.path
-                    };
+                if(direction === "down") {
+                    var i = 0;
+                    while (i < node.children.length && !result.cycle) {
+                        var _result = traverse(node.children[i], path + "." + node.children[i].name);
+                        result = {
+                            cycle: _result.cycle,
+                            async: result.async || _result.async,
+                            path: _result.path
+                        };
 
-                    i++;
+                        i++;
+                    }
+                } else if(direction === "up") {
+                    if(node.parent !== null) {
+                        var _result = traverse(node.parent, path + "." + node.parent.name);
+                        result = {
+                            cycle: _result.cycle,
+                            async: result.async || _result.async,
+                            path: _result.path
+                        };
+                    }
                 }
             }
 
@@ -113,6 +127,10 @@
         }
 
         return result;
+    }
+
+    function hasParent(node) {
+        return node.parent !== null;
     }
 
     function removeChildren(node) {
@@ -138,6 +156,7 @@
 
     return {
         addNode: addNode,
+        hasParent: hasParent,
         removeChildren: removeChildren,
         getNodeByType: getNodeByType,
         analyze: analyze,
