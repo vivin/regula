@@ -380,6 +380,7 @@
                 constraintName: constraintName,
                 custom: constraintDefinitions[constraintName].custom,
                 compound: constraintDefinitions[constraintName].compound,
+                async: constraintDefinitions[constraintName].async,
                 constraintParameters: composingConstraint.params,
                 failingElements: validationResult.failingElements,
                 message: errorMessage
@@ -468,7 +469,7 @@
                             constraintViolations.push(constraintViolation);
                         }
 
-                        validateComposingConstraint(i++);
+                        validateComposingConstraint(++i);
 
                     });
                 } else {
@@ -615,10 +616,9 @@
     }
 
     function validateAll(options) {
-        var constraintViolations = null;
         var constraintsToValidate = {
-            async: false,
-            contexts : []
+            asyncContexts: [],
+            syncContexts: []
         };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
@@ -635,32 +635,25 @@
 
                     for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
                         var context = createConstraintValidationContext(group, elementId, elementConstraint);
-                        constraintsToValidate.contexts.push(context);
-                        constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+
+                        if(context.async) {
+                            constraintsToValidate.asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.syncContexts.push(context);
+                        }
                     }
                 }
             }
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateConstraintContexts(constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations;
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateConstraint(options) {
-        var constraintViolations = [];
         var constraintFound = false;
         var constraintsToValidate = {
-            async: false,
-            contexts : []
+            asyncContexts: [],
+            syncContexts: []
         };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
@@ -675,8 +668,12 @@
                     constraintFound = true;
 
                     var context = createConstraintValidationContext(group, elementId, options.constraintType);
-                    constraintsToValidate.contexts.push(context);
-                    constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+
+                    if(context.async) {
+                        constraintsToValidate.asyncContexts.push(context);
+                    } else {
+                        constraintsToValidate.syncContexts.push(context);
+                    }
                 }
             }
         }
@@ -687,25 +684,14 @@
             throw new ExceptionService.Exception.IllegalArgumentException("Constraint " + options.constraintType + " has not been bound to any element. " + ExceptionService.explodeParameters(options));
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateConstraintContexts(constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations;
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateElement(options) {
-        var constraintViolations = null;
         var elementFound = false;
         var constraintsToValidate = {
-            async: false,
-            contexts : []
+            asyncContexts: [],
+            syncContexts: []
         };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
@@ -718,8 +704,12 @@
 
                 for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
                     var context = createConstraintValidationContext(group, options.elementId, elementConstraint);
-                    constraintsToValidate.contexts.push(context);
-                    constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+
+                    if(context.async) {
+                        constraintsToValidate.asyncContexts.push(context);
+                    } else {
+                        constraintsToValidate.syncContexts.push(context);
+                    }
                 }
             }
         }
@@ -731,26 +721,15 @@
             throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been bound to element with id " + options.elementId + ". " + ExceptionService.explodeParameters(options));
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateConstraintContexts(constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations;
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateElementWithConstraint(options) {
-        var constraintViolations = null;
         var elementFound = false;
         var constraintFound = false;
         var constraintsToValidate = {
-            async: false,
-            contexts : []
+            asyncContexts: [],
+            syncContexts: []
         };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
@@ -765,8 +744,11 @@
                     constraintFound = true;
 
                     var context = createConstraintValidationContext(group, options.elementId, options.constraintType);
-                    constraintsToValidate.contexts.push(context);
-                    constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+                    if(context.async) {
+                        constraintsToValidate.asyncContexts.push(context);
+                    } else {
+                        constraintsToValidate.syncContexts.push(context);
+                    }
                 }
             }
         }
@@ -775,26 +757,15 @@
             throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + ExceptionService.explodeParameters(options));
         }
 
-        if(!constraintsToValidate.async) {
-           constraintViolations = validateConstraintContexts(constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateConstraintContexts(constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations;
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateGroups(options) {
-        var constraintViolations = null;
+        var async = false;
 
         //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
         //independent or dependent group-validation.
         var constraintsToValidate = {
-            async: false,
             groupedContexts: {}
         };
 
@@ -813,11 +784,18 @@
                         var context = createConstraintValidationContext(group, elementId, elementConstraint);
 
                         if(!constraintsToValidate.groupedContexts[group]) {
-                            constraintsToValidate.groupedContexts[group] = [];
+                            constraintsToValidate.groupedContexts[group] = {
+                                asyncContexts: [],
+                                syncContexts: []
+                            };
                         }
 
-                        constraintsToValidate.groupedContexts[group].push(context);
-                        constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+                        if(constraintsToValidate.async) {
+                            async = true;
+                            constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+                        }
                     }
                 }
             } else {
@@ -827,26 +805,15 @@
             i++;
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations;
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
 
     function validateGroupsWithConstraint(options) {
-        var constraintViolations = null;
+        var async = false;
 
         //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
         //independent or dependent group-validation.
         var constraintsToValidate = {
-            async: false,
             groupedContexts: {}
         };
 
@@ -866,12 +833,20 @@
                         constraintFound = true;
 
                         var context = createConstraintValidationContext(group, elementId, options.constraintType);
+
                         if(!constraintsToValidate.groupedContexts[group]) {
-                            constraintsToValidate.groupedContexts[group] = [];
+                            constraintsToValidate.groupedContexts[group] = {
+                                asyncContexts: [],
+                                syncContexts: []
+                            };
                         }
 
-                        constraintsToValidate.groupedContexts[group].push(context);
-                        constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+                        if(constraintsToValidate.async) {
+                            async = true;
+                            constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+                        }
                     }
                 }
 
@@ -888,27 +863,16 @@
             i++;
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations; //Doing this just for a consistent return point. Will be empty for async validation
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
 
     function validateGroupsWithElement(options) {
-        var constraintViolations = null;
         var notFound = [];
+        var async = false;
 
         //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
         //independent or dependent group-validation.
         var constraintsToValidate = {
-            async: false,
             groupedContexts: {}
         };
 
@@ -926,11 +890,18 @@
                         var context = createConstraintValidationContext(group, options.elementId, elementConstraint);
 
                         if(!constraintsToValidate.groupedContexts[group]) {
-                            constraintsToValidate.groupedContexts[group] = [];
+                            constraintsToValidate.groupedContexts[group] = {
+                                asyncContexts: [],
+                                syncContexts: []
+                            };
                         }
 
-                        constraintsToValidate.groupedContexts[group].push(context);
-                        constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+                        if(constraintsToValidate.async) {
+                            async = true;
+                            constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+                        }
                     }
                 } else {
                     notFound.push(group);
@@ -946,26 +917,15 @@
             throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found in the following group(s): )[" + ArrayUtils.explode(notFound, ",").replace(/,/g, ", ") + "]. " + ExceptionService.explodeParameters(options));
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
-        } else {
-            if(!options.callback) {
-                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
-            }
-
-            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
-        }
-
-        return constraintViolations; //Doing this just for a consistent return point. Will be empty for async validation
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
 
     function validateGroupsElementWithConstraint(options) {
-        var constraintViolations = null;
+        var async = false;
 
         //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
         //independent or dependent group-validation.
         var constraintsToValidate = {
-            async: false,
             groupedContexts: {}
         };
 
@@ -975,22 +935,86 @@
             var context = createConstraintValidationContext(group, options.elementId, options.constraintType);
 
             if(!constraintsToValidate.groupedContexts[group]) {
-                constraintsToValidate.groupedContexts[group] = [];
+                constraintsToValidate.groupedContexts[group] = {
+                    asyncContexts: [],
+                    syncContexts: []
+                };
             }
 
-            constraintsToValidate.groupedContexts[group].push(context);
-            constraintsToValidate.async = constraintsToValidate.async || context.async; //If even one of these is asynchronous, we need to know
+            if(constraintsToValidate.async) {
+                async = true;
+                constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+            } else {
+                constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+            }
+
             i++;
         }
 
-        if(!constraintsToValidate.async) {
-            constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
-        } else {
-            if(!options.callback) {
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
+    }
+
+    function processConstraintsToValidate(constraintsToValidate, options) {
+        var constraintViolations = [];
+
+        if (constraintsToValidate.syncContexts.length > 0) {
+            constraintViolations = validateConstraintContexts(constraintsToValidate);
+        }
+
+        if (constraintsToValidate.asyncContexts.length > 0) {
+            if (!options.callback) {
                 throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
             }
 
-            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, options.callback);
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, function (asynchronousConstraintViolations) {
+                if (constraintViolations.length > 0) {
+                    constraintViolations.concat(asynchronousConstraintViolations);
+                } else {
+                    constraintViolations = asynchronousConstraintViolations;
+                }
+
+                options.callback(constraintViolations);
+            });
+        }
+
+        return constraintViolations;
+    }
+
+    function processGroupedConstraintsToValidate(options, constraintsToValidate, async) {
+        var constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
+
+        if (async) {
+            if (!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            /**
+             * If the validation is dependent, it means that if one of the provided groups failed validation, then the
+             * other groups will not be validated. Since we have segmented our validation so that we validate synchronous
+             * constraints first, we can check to see what group (if any) failed. This means that we don't really need
+             * to validate any of the other groups asynchronously either; we only need to asynchronously validate the group
+             * that failed. To do this, we modify the "constraintsToValidate" structure so that it only contains those
+             * constraints that belong to the failed group.
+             */
+            if (!options.independent) {
+                if (constraintViolations.length > 0) {
+                    var failedGroup = constraintViolations[0].group;
+                    var failedGroupContexts = constraintsToValidate.groupedContexts[failedGroup];
+
+                    constraintsToValidate.groupedContexts = {};
+                    constraintsToValidate.groupedContexts[failedGroup] = failedGroupContexts;
+                }
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, function (asynchronousConstraintViolations) {
+                if (constraintViolations.length > 0) {
+                    constraintViolations.concat(asynchronousConstraintViolations);
+                } else {
+                    constraintViolations = asynchronousConstraintViolations;
+                }
+
+                options.callback(asynchronousConstraintViolations);
+            });
         }
 
         return constraintViolations;
@@ -1025,8 +1049,8 @@
         var constraintViolations = [];
 
         var i = 0;
-        while (i < constraintsToValidate.contexts.length) {
-            var context = constraintsToValidate.contexts[i];
+        while (i < constraintsToValidate.syncContexts.length) {
+            var context = constraintsToValidate.syncContexts[i];
             var constraintViolation = validateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params);
 
             if (constraintViolation) {
@@ -1048,11 +1072,15 @@
         var constraintViolations = [];
 
         (function validateContext(i) {
-            if(i < constraintsToValidate.contexts.length) {
-                var context = constraintsToValidate.contexts[i];
+            console.log("i", i);
+            if(i < constraintsToValidate.asyncContexts.length) {
+                var context = constraintsToValidate.asyncContexts[i];
                 asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
-                    constraintViolations.push(constraintViolation);
-                    validateContext(i++);
+                    if(constraintViolation) {
+                        constraintViolations.push(constraintViolation);
+                    }
+
+                    validateContext(++i);
                 });
             } else {
                 callback(constraintViolations);
@@ -1068,7 +1096,7 @@
         while (i < groups.length && successful) {
 
             var group = groups[i];
-            var contexts = constraintsToValidate.groupedContexts[group];
+            var contexts = constraintsToValidate.groupedContexts[group].syncContexts;
 
             for (var j = 0; j < contexts.length; j++) {
                 var context = contexts[j];
@@ -1093,10 +1121,10 @@
         (function validateGroupedContexts(i, j) {
             if(i < groups.length && successful) {
                 var group = groups[i];
-                var contexts = constraintsToValidate.groupedContexts[group];
+                var contexts = constraintsToValidate.groupedContexts[group].asyncContexts;
 
                 if(j < contexts.length) {
-                    var context = constraintsToValidate.contexts[j];
+                    var context = contexts[j];
                     asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
                         constraintViolations.push(constraintViolation);
                         j++;
@@ -1113,7 +1141,7 @@
             } else {
                 callback(constraintViolations);
             }
-        }(0, 0));
+        })(0, 0);
     }
 
     function validateGroupElementConstraintCombination(group, elementId, elementConstraint, params) {
@@ -1151,6 +1179,7 @@
                     formSpecific: constraintDefinitions[elementConstraint].formSpecific,
                     custom: constraintDefinitions[elementConstraint].custom,
                     compound: constraintDefinitions[elementConstraint].compound,
+                    async: constraintDefinitions[elementConstraint].async,
                     composingConstraintViolations: validationResult.composingConstraintViolations || [],
                     constraintParameters: params,
                     failingElements: validationResult.failingElements,
@@ -1202,6 +1231,7 @@
                         formSpecific: constraintDefinitions[elementConstraint].formSpecific,
                         custom: constraintDefinitions[elementConstraint].custom,
                         compound: constraintDefinitions[elementConstraint].compound,
+                        async: constraintDefinitions[elementConstraint].async,
                         composingConstraintViolations: validationResult.composingConstraintViolations || [],
                         constraintParameters: params,
                         failingElements: validationResult.failingElements,

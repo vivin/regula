@@ -12,12 +12,12 @@ var url = require("url");
 var sleep = require("sleep");
 
 http.createServer(function(request, response) {
-    var fail = false;
+    var pass = false;
     var parameterMap = url.parse(request.url, true).query;
 
-    if(parameterMap.fail === "true") {
+    if(parameterMap.pass === "true") {
         util.puts("Request received to fail.");
-        fail = true;
+        pass = true;
     } else {
         util.puts("Request received to pass.");
     }
@@ -26,8 +26,8 @@ http.createServer(function(request, response) {
     util.puts("Sleeping for " + seconds + " seconds.");
     sleep.sleep(seconds)
 
-    response.writeHeader(200, {"Content-Type": "application/json"})
-    response.write(JSON.stringify({fail: fail}));
+    response.writeHeader(200, {"Content-Type": "application/javascript"})
+    response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
     response.end();
 }).listen(8888);
 

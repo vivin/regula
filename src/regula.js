@@ -382,9 +382,10 @@
     /**
      * Function that performs constraint validation on bound elements.
      * @param options
+     * @param callback - Required for asynchronous-constraint validation
      * @returns {Array} of constraint violations.
      */
-    function validate(options) {
+    function validate(options, callback) {
 
         //Initialize the validation service
         ValidationService.init({
@@ -406,6 +407,16 @@
 
         if (typeof options !== "undefined" && options.hasOwnProperty("constraintType") && typeof options.constraintType === "undefined") {
             throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If a constraintType attribute is provided, it cannot be undefined.");
+        }
+
+        if(typeof callback === "undefined" && typeof options === "function") {
+            options = {
+                callback: options
+            };
+        }
+
+        if(typeof callback !== "undefined") {
+            options.callback = callback;
         }
 
         if (typeof options !== "undefined" && typeof options.elements !== "undefined") {

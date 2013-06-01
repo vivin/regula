@@ -19106,3 +19106,76 @@ test('Test passing HTML5 step validation', function() {
 
     deleteElements();
 });
+
+module("Test Asynchronous Validation");
+
+var asyncTestServerURL = "http://localhost:8888";
+
+asyncTest('Test creating and using a failing, custom, asynchronous constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    console.log("in callback", data);
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + randomSuffix, "The failing constraint must be CustomConstraint" + randomSuffix);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "text0", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a passing, custom, asynchronous constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    console.log("in callback", data);
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 0, "There must not be any constraint violations");
+        deleteElements();
+        start();
+    });
+});
+
