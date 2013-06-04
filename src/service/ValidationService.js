@@ -1070,22 +1070,24 @@
 
     function asynchronouslyValidateConstraintContexts(constraintsToValidate, callback) {
         var constraintViolations = [];
+        var numContextsProcessed = 0;
 
-        (function validateContext(i) {
-            console.log("i", i);
-            if(i < constraintsToValidate.asyncContexts.length) {
-                var context = constraintsToValidate.asyncContexts[i];
-                asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
-                    if(constraintViolation) {
-                        constraintViolations.push(constraintViolation);
-                    }
+        for(var i = 0; i < constraintsToValidate.asyncContexts.length; i++) {
+            var context = constraintsToValidate.asyncContexts[i];
+            asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, validationHandler);
+        }
 
-                    validateContext(++i);
-                });
-            } else {
+        function validationHandler(constraintViolation) {
+            numContextsProcessed++;
+
+            if(constraintViolation) {
+                constraintViolations.push(constraintViolation);
+            }
+
+            if(numContextsProcessed === constraintsToValidate.asyncContexts.length) {
                 callback(constraintViolations);
             }
-        })(0);
+        }
     }
 
     function validateGroupedConstraintContexts(groups, independent, constraintsToValidate) {

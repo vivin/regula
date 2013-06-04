@@ -23,12 +23,13 @@ http.createServer(function(request, response) {
     }
 
     var seconds = Math.floor(Math.random() * 3) + 1;
-    util.puts("Sleeping for " + seconds + " seconds.");
-    sleep.sleep(seconds)
-
-    response.writeHeader(200, {"Content-Type": "application/javascript"})
-    response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
-    response.end();
+    util.puts("Waiting for " + seconds + " seconds to elapse.");
+    setTimeout(function() {
+        util.puts("Done waiting.");
+        response.writeHeader(200, {"Content-Type": "application/javascript"})
+        response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
+        response.end();
+    }, seconds * 1000)
 }).listen(8888);
 
-util.puts("Server running in 8888");
+util.puts("Server running on port 8888.");

@@ -19179,3 +19179,41 @@ asyncTest('Test creating and using a passing, custom, asynchronous constraint', 
     });
 });
 
+asyncTest('Test creating and using multiple asynchronous constraints', function() {
+    var results = [false, true, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 5; i++) {
+        suffixes.push(randomNumber());
+        (function(i) {
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: true,
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: function(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[i]},
+                        success: function(data) {
+                            console.log("in callback", data);
+                            callback(data.pass)
+                        }
+                    });
+                }
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i], "text");
+    }
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        console.log(constraintViolations);
+        equal(constraintViolations.length, 3, "There must be three constraint violations");
+        deleteElements();
+        start();
+    });
+});
+
