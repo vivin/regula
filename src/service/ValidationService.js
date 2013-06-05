@@ -34,8 +34,8 @@
     var constraintDefinitions = {}; //Constraints that have been defined. Injected from the regula module.
     var boundConstraints = {}; //Elements and constraints that have been bound to them
 
-    var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
-    var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
+    var processedConstraints = {}; //Keeps track of constraints that have already been processed into contexts for a validation run. Cleared out each time validation is run.
+    var processedRadioGroups = {}; //Keeps track of constraints that have already been processed into contexts for a validation run, on radio groups. Cleared out each time validation is run.
 
     function init(options) {
         config = options.config;
@@ -549,8 +549,8 @@
      */
     function validate(options) {
 
-        validatedConstraints = {}; //clear these out on every run
-        validatedRadioGroups = {}; //clear these out on every run
+        processedConstraints = {}; //clear these out on every run
+        processedRadioGroups = {}; //clear these out on every run
 
         //generates a key that can be used with the function table to call the correct auxiliary validator function
         //(see below for more details)
@@ -646,6 +646,7 @@
             }
         }
 
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
         return processConstraintsToValidate(constraintsToValidate, options);
     }
 
@@ -684,6 +685,7 @@
             throw new ExceptionService.Exception.IllegalArgumentException("Constraint " + options.constraintType + " has not been bound to any element. " + ExceptionService.explodeParameters(options));
         }
 
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
         return processConstraintsToValidate(constraintsToValidate, options);
     }
 
@@ -721,6 +723,7 @@
             throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been bound to element with id " + options.elementId + ". " + ExceptionService.explodeParameters(options));
         }
 
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
         return processConstraintsToValidate(constraintsToValidate, options);
     }
 
@@ -757,6 +760,7 @@
             throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + ExceptionService.explodeParameters(options));
         }
 
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
         return processConstraintsToValidate(constraintsToValidate, options);
     }
 
@@ -790,7 +794,7 @@
                             };
                         }
 
-                        if(constraintsToValidate.async) {
+                        if(context.async) {
                             async = true;
                             constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
                         } else {
@@ -804,6 +808,10 @@
 
             i++;
         }
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
 
         return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
@@ -841,7 +849,7 @@
                             };
                         }
 
-                        if(constraintsToValidate.async) {
+                        if(context.async) {
                             async = true;
                             constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
                         } else {
@@ -862,6 +870,10 @@
 
             i++;
         }
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
 
         return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
@@ -896,7 +908,7 @@
                             };
                         }
 
-                        if(constraintsToValidate.async) {
+                        if(context.async) {
                             async = true;
                             constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
                         } else {
@@ -916,6 +928,10 @@
         if (notFound.length > 0) {
             throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found in the following group(s): )[" + ArrayUtils.explode(notFound, ",").replace(/,/g, ", ") + "]. " + ExceptionService.explodeParameters(options));
         }
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
 
         return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
@@ -941,7 +957,7 @@
                 };
             }
 
-            if(constraintsToValidate.async) {
+            if(context.async) {
                 async = true;
                 constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
             } else {
@@ -951,7 +967,127 @@
             i++;
         }
 
+        console.log("before duplicate", constraintsToValidate);
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
+
         return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
+    }
+
+    function hasConstraintBeenValidated(context) {
+        var validated = true;
+
+        if (!processedConstraints[context.elementId]) {
+            processedConstraints[context.elementId] = {};
+        }
+
+        var element = document.getElementById(context.elementId);
+        var name = element.name.replace(/\s/g, "");
+
+        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            if (!processedRadioGroups[name]) {
+                processedRadioGroups[name] = {};
+            }
+        } else {
+            processedRadioGroups[name] = {}; //we don't really care about this if what we're looking at is not a radio button
+        }
+
+        if (!processedConstraints[context.elementId][context.elementConstraint] && !processedRadioGroups[name][context.elementConstraint]) {
+            validated = false;
+
+            processedConstraints[context.elementId][context.elementConstraint] = true; //mark this element constraint as validated
+            if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+                processedRadioGroups[name][context.elementConstraint] = true; //mark this radio group as validated
+            }
+        }
+
+        return validated;
+    }
+
+    function removeDuplicateContexts(constraintsToValidate) {
+        var uniqueConstraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
+
+        for(var i = 0; i < constraintsToValidate.syncContexts.length; i++) {
+            var context = constraintsToValidate.syncContexts[i];
+            if(!hasConstraintBeenValidated(context)) {
+                uniqueConstraintsToValidate.syncContexts.push(context);
+            }
+        }
+
+        for(var i = 0; i < constraintsToValidate.asyncContexts.length; i++) {
+            var context = constraintsToValidate.asyncContexts[i];
+            if(!hasConstraintBeenValidated(context)) {
+                uniqueConstraintsToValidate.asyncContexts.push(context);
+            }
+        }
+
+        return uniqueConstraintsToValidate;
+    }
+
+    function removeDuplicateGroupedContexts(constraintsToValidate) {
+
+        //We keep track of groups here because we need to tell the calling function which groups we encountered. This is
+        //because it is possible that some groups may end up being not validated at all because those elements and
+        //and constraints that are part of the group may have already shown up in a previous group. Hence, if we do not
+        //redefine the "groups" property in options, in the calling function, we will end up trying to validate groups
+        //that do not have any constraint contexts associated with them, and this will lead to errors (i.e., the
+        //syncContexts and asyncContexts will not exist and will be "undefined").
+
+        var groups = [];
+        var uniqueConstraintsToValidate = {
+            groupedContexts: {}
+        };
+
+        for(var group in constraintsToValidate.groupedContexts) if(constraintsToValidate.groupedContexts.hasOwnProperty(group)) {
+
+            for(var i = 0; i < constraintsToValidate.groupedContexts[group].syncContexts.length; i++) {
+                var context = constraintsToValidate.groupedContexts[group].syncContexts[i];
+                if(!hasConstraintBeenValidated(context)) {
+                    if(!uniqueConstraintsToValidate.groupedContexts[group]) {
+                        uniqueConstraintsToValidate.groupedContexts[group] = {
+                            asyncContexts: [],
+                            syncContexts: []
+                        };
+                    }
+
+                    uniqueConstraintsToValidate.groupedContexts[group].syncContexts.push(context);
+
+                    if(groups.indexOf(group) == -1) {
+                        groups.push(group);
+                    }
+                }
+            }
+
+            for(var i = 0; i < constraintsToValidate.groupedContexts[group].asyncContexts.length; i++) {
+                var context = constraintsToValidate.groupedContexts[group].asyncContexts[i];
+                if(!hasConstraintBeenValidated(context)) {
+                    if(!uniqueConstraintsToValidate.groupedContexts[group]) {
+                        uniqueConstraintsToValidate.groupedContexts[group] = {
+                            asyncContexts: [],
+                            syncContexts: []
+                        };
+                    }
+
+                    uniqueConstraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+
+                    if(groups.indexOf(group) == -1) {
+                        groups.push(group);
+                    }
+                }
+            }
+        }
+
+        console.log(uniqueConstraintsToValidate);
+
+        return {
+            groups: groups,
+            uniqueConstraintsToValidate: uniqueConstraintsToValidate
+        };
     }
 
     function processConstraintsToValidate(constraintsToValidate, options) {
@@ -968,7 +1104,7 @@
 
             asynchronouslyValidateConstraintContexts(constraintsToValidate, function (asynchronousConstraintViolations) {
                 if (constraintViolations.length > 0) {
-                    constraintViolations.concat(asynchronousConstraintViolations);
+                    constraintViolations = constraintViolations.concat(asynchronousConstraintViolations);
                 } else {
                     constraintViolations = asynchronousConstraintViolations;
                 }
@@ -1008,12 +1144,12 @@
 
             asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, function (asynchronousConstraintViolations) {
                 if (constraintViolations.length > 0) {
-                    constraintViolations.concat(asynchronousConstraintViolations);
+                    constraintViolations = constraintViolations.concat(asynchronousConstraintViolations);
                 } else {
                     constraintViolations = asynchronousConstraintViolations;
                 }
 
-                options.callback(asynchronousConstraintViolations);
+                options.callback(constraintViolations);
             });
         }
 
@@ -1120,57 +1256,71 @@
         var constraintViolations = [];
         var successful = true;
 
-        (function validateGroupedContexts(i, j) {
+        (function validateGroupedContexts(i) {
             if(i < groups.length && successful) {
                 var group = groups[i];
                 var contexts = constraintsToValidate.groupedContexts[group].asyncContexts;
+                var numContextsProcessed = 0;
 
-                if(j < contexts.length) {
+                for(var j = 0; j < contexts.length; j++) {
                     var context = contexts[j];
-                    asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, function(constraintViolation) {
+                    asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, validationHandler);
+                }
+
+                function validationHandler(constraintViolation) {
+                    numContextsProcessed++;
+
+                    if(constraintViolation) {
                         constraintViolations.push(constraintViolation);
-                        j++;
+                    }
 
-                        if(j > contexts.length) {
-                            j = 0;
-                            successful = (constraintViolations.length == 0) || (independent && constraintViolations.length != 0);
-                            i++;
-                        }
-
-                        validateGroupedContexts(i, j);
-                    });
+                    if(numContextsProcessed === contexts.length) {
+                        successful = (constraintViolations.length === 0) || (independent && constraintViolations.length != 0);
+                        validateGroupedContexts(++i);
+                    }
                 }
             } else {
                 callback(constraintViolations);
             }
-        })(0, 0);
+        })(0);
     }
 
     function validateGroupElementConstraintCombination(group, elementId, elementConstraint, params) {
-        //console.log(group, elementId, elementConstraint);
         var constraintViolation;
-        var element = document.getElementById(elementId);
-        var name = element.name.replace(/\s/g, "");
 
-        //If this constraint hasn't been validated before, initialize a map for it
-        if(!validatedConstraints[elementId]) {
-            validatedConstraints[elementId] = {};
+        var validationResult = runValidatorFor(group, elementId, elementConstraint, params);
+
+        var errorMessage = "";
+        if (!validationResult.constraintPassed) {
+            errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
+
+            constraintViolation = {
+                group: group,
+                constraintName: elementConstraint,
+                formSpecific: constraintDefinitions[elementConstraint].formSpecific,
+                custom: constraintDefinitions[elementConstraint].custom,
+                compound: constraintDefinitions[elementConstraint].compound,
+                async: constraintDefinitions[elementConstraint].async,
+                composingConstraintViolations: validationResult.composingConstraintViolations || [],
+                constraintParameters: params,
+                failingElements: validationResult.failingElements,
+                message: errorMessage
+            };
         }
 
-        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-            if (!validatedRadioGroups[name]) {
-                validatedRadioGroups[name] = {};
+        if (config.enableHTML5Validation) {
+            for (var i = 0; i < validationResult.failingElements.length; i++) {
+                validationResult.failingElements[i].setCustomValidity("");
             }
-        } else {
-            name = "__dontcare__";
-            validatedRadioGroups[name] = {}; //we really don't care about this if what we're looking at is not a radio button
         }
 
-        //Validate this constraint only if we haven't already validated it during this validation run
-        if (!validatedConstraints[elementId][elementConstraint] && !validatedRadioGroups[name][elementConstraint]) {
-            //console.log("Going to run validator for:", group, elementId, elementConstraint, params);
-            var validationResult = runValidatorFor(group, elementId, elementConstraint, params);
+        return constraintViolation;
+    }
 
+    function asynchronouslyValidateGroupElementConstraintCombination(group, elementId, elementConstraint, params, callback) {
+        var constraintViolation;
+
+        asynchronouslyRunValidatorFor(group, elementId, elementConstraint, params, function(validationResult) {
             var errorMessage = "";
             if (!validationResult.constraintPassed) {
                 errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
@@ -1194,62 +1344,9 @@
                     validationResult.failingElements[i].setCustomValidity("");
                 }
             }
-        }
 
-        return constraintViolation;
-    }
-
-    function asynchronouslyValidateGroupElementConstraintCombination(group, elementId, elementConstraint, params, callback) {
-        //console.log(group, elementId, elementConstraint);
-        var constraintViolation;
-        var element = document.getElementById(elementId);
-        var name = element.name.replace(/\s/g, "");
-
-        //If this constraint hasn't been validated before, initialize a map for it
-        if(!validatedConstraints[elementId]) {
-            validatedConstraints[elementId] = {};
-        }
-
-        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-            if (!validatedRadioGroups[name]) {
-                validatedRadioGroups[name] = {};
-            }
-        } else {
-            name = "__dontcare__";
-            validatedRadioGroups[name] = {}; //we really don't care about this if what we're looking at is not a radio button
-        }
-
-        //Validate this constraint only if we haven't already validated it during this validation run
-        if (!validatedConstraints[elementId][elementConstraint] && !validatedRadioGroups[name][elementConstraint]) {
-            //console.log("Going to run validator for:", group, elementId, elementConstraint, params);
-            asynchronouslyRunValidatorFor(group, elementId, elementConstraint, params, function(validationResult) {
-                var errorMessage = "";
-                if (!validationResult.constraintPassed) {
-                    errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
-
-                    constraintViolation = {
-                        group: group,
-                        constraintName: elementConstraint,
-                        formSpecific: constraintDefinitions[elementConstraint].formSpecific,
-                        custom: constraintDefinitions[elementConstraint].custom,
-                        compound: constraintDefinitions[elementConstraint].compound,
-                        async: constraintDefinitions[elementConstraint].async,
-                        composingConstraintViolations: validationResult.composingConstraintViolations || [],
-                        constraintParameters: params,
-                        failingElements: validationResult.failingElements,
-                        message: errorMessage
-                    };
-                }
-
-                if (config.enableHTML5Validation) {
-                    for (var i = 0; i < validationResult.failingElements.length; i++) {
-                        validationResult.failingElements[i].setCustomValidity("");
-                    }
-                }
-
-                callback(constraintViolation);
-            });
-        }
+            callback(constraintViolation);
+        });
     }
 
     function runValidatorFor(currentGroup, elementId, elementConstraint, params) {
@@ -1262,7 +1359,6 @@
             failingElements = constraintDefinitions[elementConstraint].validator.call(element, params);
             constraintPassed = failingElements.length == 0;
         } else if (constraintDefinitions[elementConstraint].compound) {
-            //            console.log("is compound");
             composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], null);
             constraintPassed = composingConstraintViolations.length == 0;
 
@@ -1277,11 +1373,8 @@
             }
         }
 
-        validatedConstraints[elementId][elementConstraint] = true; //mark this element constraint as validated
-
         var name = element.name.replace(/\s/g, "");
         if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-            validatedRadioGroups[name][elementConstraint] = true; //mark this radio group as validated
             failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")); //let's set failing elements to all elements of the radio group
         }
 
@@ -1328,11 +1421,8 @@
         }
 
         function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
-            validatedConstraints[elementId][elementConstraint] = true; //mark this element constraint as validated
-
             var name = element.name.replace(/\s/g, "");
             if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-                validatedRadioGroups[name][elementConstraint] = true; //mark this radio group as validated
                 failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
             }
 
