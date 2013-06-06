@@ -17525,6 +17525,56 @@ test('Test that composing constraints and parameters have been properly bound to
     deleteElements();
 });
 
+test('Test that creating a compound constraint with an asynchronous constraint makes the compound constraint asynchronous as well', function() {
+    regula.custom({
+        name: "AsyncConstraint0",
+        async: true,
+        validator: function(params, callback) {
+            callback(false);
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint102",
+        constraints: [
+            {constraintType: regula.Constraint.NotEmpty},
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.AsyncConstraint0}
+        ]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions.CompoundConstraint102.async, "A compound constraint with one or more asynchronous constraints must also be asynchronous.");
+});
+
+test('Test that creating a compound constraint that contains an asynchronous compound constraint makes the parent compound constraint asynchronous as well', function() {
+    regula.custom({
+        name: "AsyncConstraint1",
+        async: true,
+        validator: function(params, callback) {
+            callback(false);
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint103",
+        constraints: [
+            {constraintType: regula.Constraint.NotEmpty},
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.AsyncConstraint1}
+        ]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint104",
+        constraints: [
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.CompoundConstraint103}
+        ]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions.CompoundConstraint104.async, "A compound constraint with one or more asynchronous constraints must also be asynchronous.");
+});
+
 module('Test regula.override() to make sure that it returns proper error messages and creates compound constraints properly');
 
 test('Test calling regula.override() without any options', function() {
@@ -17908,11 +17958,6 @@ test('Test that you can override everything on a custom constraint', function() 
 
     deleteElements();
 });
-
-/*
- * TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override(). This will be kind of an integration test.
- * TODO: You want to make sure that things like parameter interpolation, parameters, etc. all work. Some of these have already been done. You just have to do the others.
- * */
 
 module('Test regula.validate()');
 
