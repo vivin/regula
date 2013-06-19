@@ -20,6 +20,10 @@
         root.regulaModules.CompositionGraph = factory();
     }
 }(this, function () {
+
+    /*
+    We need one node per constraint-type.
+     */
     var typeToNodeMap = {};
 
     /* root is a special node that serves as the root of the composition tree/graph (works either way because a tree
@@ -31,48 +35,65 @@
         name: "RootNode",
         type: -1,
         async: false,
-        parent: null,
+        parents: [],
         children: []
     };
 
-    function addNode(type, name, async, parent) {
-        var newNode = typeToNodeMap[type] == null ? {
+    function addNode(options) {
+        var type = options.type;
+        var name = options.name;
+        var async = options.async;
+        var parent = options.parent;
+
+        var newNode = typeof typeToNodeMap[type] === "undefined" ? {
             visited: false,
             name: name,
             type: type,
             async: async,
-            parent: parent,
+            parents: [],
             children: []
         } : typeToNodeMap[type];
 
         if (parent == null) {
-            root.children[root.children.length] = newNode;
+            root.children.push(newNode);
         } else {
-            parent.children[parent.children.length] = newNode;
+            parent.children.push(newNode);
+            newNode.parents.push(parent);
         }
 
         typeToNodeMap[type] = newNode;
     }
 
     function clone() {
-        return _clone(root, null);
-    }
+        var clonedTypeToNodeMap = {};
 
-    function _clone(node, parent) {
-        var cloned = {
-            visited: node.visited,
-            name: node.name,
-            type: node.type,
-            async: node.async,
-            parent: parent,
-            children: []
+        var clonedRoot = (function _clone(node, parent) {
+            var cloned = typeof clonedTypeToNodeMap[node.type] === "undefined" ? {
+                visited: node.visited,
+                name: node.name,
+                type: node.type,
+                async: node.async,
+                parents: [],
+                children: []
+            } : clonedTypeToNodeMap[node.type];
+
+            if(parent !== null) {
+                cloned.parents.push(parent);
+            }
+
+            for (var i = 0; i < node.children.length; i++) {
+                cloned.children.push(_clone(node.children[i], cloned));
+            }
+
+            clonedTypeToNodeMap[node.type] = cloned;
+
+            return cloned;
+        })(root, null);
+
+        return {
+            typeToNodeMap: clonedTypeToNodeMap,
+            root: clonedRoot
         };
-
-        for (var i = 0; i < node.children.length; i++) {
-            cloned.children[cloned.children.length] = _clone(node.children[i], cloned);
-        }
-
-        return cloned;
     }
 
     function getNodeByType(type) {
@@ -93,27 +114,25 @@
             } else {
                 node.visited = true;
 
-                if(direction === "down") {
-                    var i = 0;
-                    while (i < node.children.length && !result.cycle) {
-                        var _result = traverse(node.children[i], path + "." + node.children[i].name);
-                        result = {
-                            cycle: _result.cycle,
-                            async: result.async || _result.async,
-                            path: _result.path
-                        };
+                var nodes;
 
-                        i++;
-                    }
+                if(direction === "down") {
+                    nodes = node.children;
+
                 } else if(direction === "up") {
-                    if(node.parent !== null) {
-                        var _result = traverse(node.parent, path + "." + node.parent.name);
-                        result = {
-                            cycle: _result.cycle,
-                            async: result.async || _result.async,
-                            path: _result.path
-                        };
-                    }
+                    nodes = node.parents;
+                }
+
+                var i = 0;
+                while (i < nodes.length && !result.cycle) {
+                    var _result = traverse(nodes[i], path + "." + nodes[i].name);
+                    result = {
+                        cycle: _result.cycle,
+                        async: result.async || _result.async,
+                        path: _result.path
+                    };
+
+                    i++;
                 }
             }
 
@@ -127,8 +146,8 @@
         return result;
     }
 
-    function hasParent(node) {
-        return node.parent !== null;
+    function hasParents(node) {
+        return node.parents.length > 0;
     }
 
     function removeChildren(node) {
@@ -152,14 +171,20 @@
         root = newRoot;
     }
 
+    function initializeFromClone(clone) {
+        typeToNodeMap = clone.typeToNodeMap;
+        root = clone.root;
+    }
+
     return {
         addNode: addNode,
-        hasParent: hasParent,
+        hasParents: hasParents,
         removeChildren: removeChildren,
         getNodeByType: getNodeByType,
         analyze: analyze,
         getRoot: getRoot,
         setRoot: setRoot,
-        clone: clone
+        clone: clone,
+        initializeFromClone: initializeFromClone
     };
 }));

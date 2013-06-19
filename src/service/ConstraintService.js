@@ -648,7 +648,7 @@
              * modified the graph to contain a cycle. A more robust solution would be to clone the composition graph and
              * restore it if we find out that it contains a cycle
              */
-            var root = CompositionGraph.clone();
+            var clone = CompositionGraph.clone();
 
             /* now let's update our graph */
             updateCompositionGraph(options.name, options.composingConstraints);
@@ -656,13 +656,13 @@
             /* we need to see if a cycle exists in our graph */
             var result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "down");
             if (result.cycle) {
-                CompositionGraph.setRoot(root);
+                CompositionGraph.initializeFromClone(clone);
                 throw new ExceptionService.Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
             }
 
             async = result.async;
 
-            if(CompositionGraph.hasParent(CompositionGraph.getNodeByType(options.constraintType))) {
+            if(CompositionGraph.hasParents(CompositionGraph.getNodeByType(options.constraintType))) {
                 result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "up");
                 async = result.async;
             }
@@ -851,7 +851,12 @@
         var graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
 
         if (graphNode == null) {
-            CompositionGraph.addNode(Constraint[constraintName], constraintName, constraintDefinitions[constraintName].async, null);
+            CompositionGraph.addNode({
+                type: Constraint[constraintName],
+                name: constraintName,
+                async: constraintDefinitions[constraintName].async,
+                parent: null
+            });
             graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
         }
 
@@ -861,9 +866,12 @@
             var composingConstraintName = ReverseConstraint[composingConstraints[i].constraintType];
             var composingConstraint = constraintDefinitions[composingConstraintName];
 
-            if (composingConstraint.compound) {
-                CompositionGraph.addNode(composingConstraint.constraintType, ReverseConstraint[composingConstraint.constraintType], constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]].async, graphNode);
-            }
+            CompositionGraph.addNode({
+                type: composingConstraint.constraintType,
+                name: ReverseConstraint[composingConstraint.constraintType],
+                async: constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]].async,
+                parent: graphNode
+            });
         }
     }
 
