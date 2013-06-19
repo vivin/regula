@@ -638,7 +638,10 @@
      * @param options
      */
     function override(options) {
-        var async = constraintDefinitions[options.name].async;
+        var async = typeof options.async === "undefined" ? constraintDefinitions[options.name].async : options.async;
+
+        //Node representing the constraint in the composition graph
+        var graphNode = CompositionGraph.getNodeByType(options.constraintType);
 
         if (options.compound) {
             verifyComposingConstraints(options.name, options.composingConstraints, options.params);
@@ -654,18 +657,51 @@
             updateCompositionGraph(options.name, options.composingConstraints);
 
             /* we need to see if a cycle exists in our graph */
-            var result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "down");
+
+
+            var result = CompositionGraph.analyze(graphNode);
             if (result.cycle) {
                 CompositionGraph.initializeFromClone(clone);
                 throw new ExceptionService.Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
             }
 
-            async = result.async;
+            /*
+             * We need to determine the state of the async flag now. First we will assume that none of the composing
+             * constraints is asynchronous. We will then iterate over all composing constraints to determine if at
+             * least one of them is asynchronous. At the end of the loop we'll know what the value of the async flag
+             * is supposed to be.
+             */
 
-            if(CompositionGraph.hasParents(CompositionGraph.getNodeByType(options.constraintType))) {
-                result = CompositionGraph.analyze(CompositionGraph.getNodeByType(options.constraintType), "up");
-                async = result.async;
+            async = false;
+            var i = 0;
+            while(i < options.composingConstraints.length && !async) {
+                var composingConstraint = options.composingConstraints[i];
+                var constraintDefinition = constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]];
+                async = constraintDefinition.async;
+                i++;
             }
+        }
+
+        //graphNode can be null if this constraint hasn't been used in a composing constraint
+        if(graphNode !== null) {
+            /*
+             * We will need to propagate the value of the async flag to this constraint's parents (if any). The reason is
+             * that if the state of the async flag has changed for this constraint, any compound constraint that uses this
+             * constraint as a composing constraint, must have its async flag reflect the change as well.
+             */
+            (function propagateAsync(node) {
+                for(var i = 0; i < node.parents.length; i++) {
+                    var parent = node.parents[i];
+
+                    if(parent.type !== CompositionGraph.ROOT) {
+                        var constraintName = ReverseConstraint[parent.type];
+                        var constraintDefinition = constraintDefinitions[constraintName];
+                        constraintDefinition.async = async;
+
+                        propagateAsync(parent);
+                    }
+                }
+            })(graphNode);
         }
 
         constraintDefinitions[options.name] = {
@@ -703,7 +739,6 @@
     }
 
     /**
-     * TODO: figure out how async constraints work here
      * Adds a compound constraint
      * @param options
      */
@@ -854,14 +889,30 @@
             CompositionGraph.addNode({
                 type: Constraint[constraintName],
                 name: constraintName,
-                async: constraintDefinitions[constraintName].async,
                 parent: null
             });
             graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
         }
 
-        //First we have to remove the existing children
-        CompositionGraph.removeChildren(graphNode);
+        //First we have to remove this node from each of the children's parent list
+        //This is O(n^2) ugh... should be a better way to do this. Also... all of this
+        //should probably be abstracted behind a function of some kind in CompositionGraph...
+        for(var i = 0; i < graphNode.children.length; i++) {
+            var childNode = graphNode.children[i];
+            var parents = [];
+            for(var j = 0; j < childNode.parents.length; j++) {
+                if(childNode.parents[j] !== graphNode) {
+                    parents.push(childNode.parents[j]);
+                }
+            }
+
+            childNode.parents = parents;
+        }
+
+        //Now remove all children from this node.
+        graphNode.children = [];
+
+        //Now add all the new children (i.e., composing constraints)
         for (var i = 0; i < composingConstraints.length; i++) {
             var composingConstraintName = ReverseConstraint[composingConstraints[i].constraintType];
             var composingConstraint = constraintDefinitions[composingConstraintName];
@@ -869,7 +920,6 @@
             CompositionGraph.addNode({
                 type: composingConstraint.constraintType,
                 name: ReverseConstraint[composingConstraint.constraintType],
-                async: constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]].async,
                 parent: graphNode
             });
         }
@@ -883,17 +933,12 @@
      * @param params
      */
     function verifyComposingConstraints(name, constraints, params) {
-        var constraintList = [];
 
         for (var i = 0; i < constraints.length; i++) {
             if (typeof constraints[i].constraintType === "undefined") {
                 throw new ExceptionService.Exception.ConstraintDefinitionException("In compound constraint " + name + ": A composing constraint has no constraint type specified.")
-            } else {
-                constraintList.push(constraintDefinitions[ReverseConstraint[constraints[i].constraintType]]);
             }
-        }
 
-        for (var i = 0; i < constraints.length; i++) {
             var constraint = constraints[i];
             var constraintName = ReverseConstraint[constraint.constraintType];
             var definedParameters = {

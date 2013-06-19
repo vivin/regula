@@ -17889,10 +17889,10 @@ test('Test that overriding a synchronous compound-constraint by adding an asynch
     });
 
     ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint" + randomSuffix].async, "A compound constraint overridden with one or more asynchronous constraints must also be asynchronous.");
+
+    deleteElements();
 });
 
-/*
-TODO:fix test
 test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (1)', function() {
     var randomSuffix = randomNumber();
 
@@ -17943,7 +17943,156 @@ test('Test that overriding a synchronous constraint (used in compound constraint
     ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
     ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
     ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
-}); */
+
+    deleteElements();
+});
+
+test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint1" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint2" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint3" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.custom({
+        name: "AsyncConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The constraint failed",
+        validator: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix],
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["AsyncConstraint" + randomSuffix]
+        }]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint3" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+
+    deleteElements();
+});
+
+
+test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (3)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint1" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint2" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint3" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint4" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.custom({
+        name: "AsyncConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The constraint failed",
+        validator: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix],
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["AsyncConstraint" + randomSuffix]
+        }]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint3" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint4" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+
+    deleteElements();
+});
 
 test('Test that calling regula.override() on a built-in constraint only results in overriding the default message', function() {
     regula.override({

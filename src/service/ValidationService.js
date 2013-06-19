@@ -967,8 +967,6 @@
             i++;
         }
 
-        console.log("before duplicate", constraintsToValidate);
-
         var result = removeDuplicateGroupedContexts(constraintsToValidate);
         options.groups = result.groups;
         constraintsToValidate = result.uniqueConstraintsToValidate;
@@ -1081,8 +1079,6 @@
                 }
             }
         }
-
-        console.log(uniqueConstraintsToValidate);
 
         return {
             groups: groups,
