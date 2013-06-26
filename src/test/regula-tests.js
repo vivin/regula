@@ -20067,3 +20067,115 @@ asyncTest('Test creating and using a mix of synchronous and asynchronous constra
         start();
     });
 });
+
+asyncTest('Test validating a compound constraint that contains a mix of synchronous and asynchronous constraints', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint1" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint2" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint0" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint1" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return true;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint2" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [
+            {constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint2" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint2" + randomSuffix]},
+        ]
+    });
+
+    var $text = createInputElement("text", "@CompoundConstraint0" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "CompoundConstraint0" + randomSuffix, "The constraint name must match");
+        equal(constraintViolation.composingConstraintViolations.length, 4, "There must be four composing-constraint violations");
+
+        equal(constraintViolation.composingConstraintViolations[0].constraintName, "SyncConstraint0" + randomSuffix, "Synchronous composing-constraint does not match");
+        equal(constraintViolation.composingConstraintViolations[1].constraintName, "SyncConstraint2" + randomSuffix, "Synchronous composing-constraint does not match");
+
+        var firstAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[2];
+        var secondAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[3];
+
+        //Order is not guaranteed, hence we have to check both possibilities
+        ok((firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "First asynchronous composing constraint does not match");
+        ok((secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "Second asynchronous composing constraint does not match");
+
+        deleteElements();
+        start();
+    });
+});
+
+
