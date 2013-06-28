@@ -230,6 +230,7 @@
                 formSpecific = (typeof options.formSpecific === "undefined") ? ConstraintService.constraintDefinitions[name].formSpecific : options.formSpecific;
             }
 
+            var async = ConstraintService.constraintDefinitions[name].custom && typeof options.async !== "undefined" ? options.async : ConstraintService.constraintDefinitions[name].async;
             var validator = ConstraintService.constraintDefinitions[name].custom && !ConstraintService.constraintDefinitions[name].compound ? options.validator || ConstraintService.constraintDefinitions[name].validator : ConstraintService.constraintDefinitions[name].validator;
             var params = ConstraintService.constraintDefinitions[name].custom ? options.params || ConstraintService.constraintDefinitions[name].params : ConstraintService.constraintDefinitions[name].params;
             var defaultMessage = options.defaultMessage || ConstraintService.constraintDefinitions[name].defaultMessage;
@@ -253,6 +254,7 @@
             }
 
             ConstraintService.override({
+                async: async,
                 formSpecific: formSpecific,
                 name: name,
                 constraintType: options.constraintType,
@@ -279,6 +281,7 @@
         var validator = options.validator;
         var params = options.params || [];
         var defaultMessage = options.defaultMessage || "";
+        var async = typeof options.async === "undefined" ? false : options.async;
 
         /* handle attributes. throw exceptions if they are not sane */
 
@@ -317,6 +320,7 @@
             throw new ExceptionService.Exception.IllegalArgumentException("There is already a constraint called " + name + ". If you wish to override this constraint, use regula.override");
         } else {
             ConstraintService.custom({
+                async: async,
                 name: name,
                 formSpecific: formSpecific,
                 validator: validator,
@@ -378,9 +382,10 @@
     /**
      * Function that performs constraint validation on bound elements.
      * @param options
+     * @param callback - Required for asynchronous-constraint validation
      * @returns {Array} of constraint violations.
      */
-    function validate(options) {
+    function validate(options, callback) {
 
         //Initialize the validation service
         ValidationService.init({
@@ -404,6 +409,16 @@
             throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If a constraintType attribute is provided, it cannot be undefined.");
         }
 
+        if(typeof callback === "undefined" && typeof options === "function") {
+            options = {
+                callback: options
+            };
+        }
+
+        if(typeof callback !== "undefined") {
+            options.callback = callback;
+        }
+
         if (typeof options !== "undefined" && typeof options.elements !== "undefined") {
 
             if (options.elements instanceof Array) {
@@ -412,23 +427,8 @@
                     throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must not be empty.");
                 }
 
-                /*
-                 Since we redefine options.constraintType and options.groups in ValidationService.validate(), we need to preserve their original values so that
-                 we can use them on each run
-                 */
+                result = ValidationService.validate(options);
 
-                var originalConstraintType = options.constraintType;
-                var originalGroups = options.groups;
-
-                result = [];
-                for (var i = 0; i < options.elements.length; i++) {
-                    options.elementId = options.elements[i].id;
-
-                    result = result.concat(ValidationService.validate(options));
-
-                    options.constraintType = originalConstraintType;
-                    options.groups = originalGroups;
-                }
             } else {
                 throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must be an array.");
             }

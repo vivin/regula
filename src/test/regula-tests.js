@@ -10243,7 +10243,9 @@ test('Test @Checked against checked radio-button group (failing, markup)', funct
     $radio3.attr("name", "AwesomeRadios");
 
     regula.bind();
-    equal(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
 
     deleteElements();
 });
@@ -16275,19 +16277,19 @@ test('Test that multiple elements have been bound to the groups specified (progr
 
     var constraintViolations = regula.validate({groups: [regula.Group.First]});
 
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "First", "Constraint is expected to be bound to regula.Group.First");
     equal(constraintViolations[1].group, "First", "Constraint is expected to be bound to regula.Group.First");
     equal(constraintViolations[2].group, "First", "Constraint is expected to be bound to regula.Group.First");
 
     constraintViolations = regula.validate({groups: [regula.Group.Second]});
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
     equal(constraintViolations[1].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
     equal(constraintViolations[2].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
 
     constraintViolations = regula.validate({groups: [regula.Group.Third]});
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
     equal(constraintViolations[1].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
     equal(constraintViolations[2].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
@@ -16677,7 +16679,7 @@ test('Test regula.unbind() with empty options parameter', function() {
 });
 
 test('Test regula.unbind() with invalid elements parameter', function() {
-    raises(function() {
+    throws(function() {
         regula.unbind({
             elements: "string"
         });
@@ -16744,10 +16746,10 @@ test('Test regula.unbind() with elements parameter', function() {
     });
 
     equal(regula.validate().length, 0, "All bound elements must have been unbound");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText0"})
     }, regula.Exception.IllegalArgumentException, "Calling regula.validate with an unbound element's id must result in an error");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText1"})
     }, regula.Exception.IllegalArgumentException, "Calling regula.validate with an unbound element's id must result in an error");
 
@@ -17525,6 +17527,56 @@ test('Test that composing constraints and parameters have been properly bound to
     deleteElements();
 });
 
+test('Test that creating a compound constraint with an asynchronous constraint makes the compound constraint asynchronous as well', function() {
+    regula.custom({
+        name: "AsyncConstraint0",
+        async: true,
+        validator: function(params, callback) {
+            callback(false);
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint102",
+        constraints: [
+            {constraintType: regula.Constraint.NotEmpty},
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.AsyncConstraint0}
+        ]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions.CompoundConstraint102.async, "A compound constraint with one or more asynchronous constraints must also be asynchronous.");
+});
+
+test('Test that creating a compound constraint that contains an asynchronous compound constraint makes the parent compound constraint asynchronous as well', function() {
+    regula.custom({
+        name: "AsyncConstraint1",
+        async: true,
+        validator: function(params, callback) {
+            callback(false);
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint103",
+        constraints: [
+            {constraintType: regula.Constraint.NotEmpty},
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.AsyncConstraint1}
+        ]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint104",
+        constraints: [
+            {constraintType: regula.Constraint.Email},
+            {constraintType: regula.Constraint.CompoundConstraint103}
+        ]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions.CompoundConstraint104.async, "A compound constraint with one or more asynchronous constraints must also be asynchronous.");
+});
+
 module('Test regula.override() to make sure that it returns proper error messages and creates compound constraints properly');
 
 test('Test calling regula.override() without any options', function() {
@@ -17805,6 +17857,245 @@ test('Test successful regula.override() on a compound constraint', function() {
     );
 });
 
+test('Test that overriding a synchronous compound-constraint by adding an asynchronous constraint to its composing constraint makes the overridden constraint asynchronous', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Numeric
+        }]
+    });
+
+    var randomAsyncConstraintSuffix = randomNumber();
+    regula.custom({
+        name: "AsynchronousConstraint" + randomAsyncConstraintSuffix,
+        async: true,
+        defaultMessage: "The constraint failed",
+        validator: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CompoundConstraint" + randomSuffix],
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Numeric
+        }, {
+            constraintType: regula.Constraint["AsynchronousConstraint" + randomAsyncConstraintSuffix]
+        }]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint" + randomSuffix].async, "A compound constraint overridden with one or more asynchronous constraints must also be asynchronous.");
+
+    deleteElements();
+});
+
+test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: false,
+        defaultMessage: "The constraint failed",
+        validator: function(params) {
+            return true;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CustomConstraint" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint1" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CustomConstraint" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint2" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CustomConstraint" + randomSuffix]
+        }]
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CustomConstraint" + randomSuffix],
+        async: true,
+        validate: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+
+    deleteElements();
+});
+
+test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint1" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint2" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint3" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.custom({
+        name: "AsyncConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The constraint failed",
+        validator: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix],
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["AsyncConstraint" + randomSuffix]
+        }]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint3" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+
+    deleteElements();
+});
+
+
+test('Test that overriding a synchronous constraint (used in compound constraints) to be asynchronous, makes the parent compound constraints asynchronous (3)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint1" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint2" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint3" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.compound({
+        name: "CompoundConstraint4" + randomSuffix,
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint["CompoundConstraint1" + randomSuffix]
+        }]
+    });
+
+    regula.custom({
+        name: "AsyncConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The constraint failed",
+        validator: function(params, callback) {
+            callback(true);
+        }
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CompoundConstraint0" + randomSuffix],
+        constraints: [{
+            constraintType: regula.Constraint.NotBlank
+        }, {
+            constraintType: regula.Constraint.Email
+        }, {
+            constraintType: regula.Constraint["AsyncConstraint" + randomSuffix]
+        }]
+    });
+
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint0" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint1" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint2" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint3" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+    ok(regula._modules.ConstraintService.constraintDefinitions["CompoundConstraint4" + randomSuffix].async, "Parent compound constraint must be asynchronous.");
+
+    deleteElements();
+});
+
 test('Test that calling regula.override() on a built-in constraint only results in overriding the default message', function() {
     regula.override({
         constraintType: regula.Constraint.Range,
@@ -17909,11 +18200,6 @@ test('Test that you can override everything on a custom constraint', function() 
     deleteElements();
 });
 
-/*
- * TODO: Test regula.validate(): custom label, message, groups, and interpolation. Test in conjunction with regula.custom() and regula.compound() and regula.override(). This will be kind of an integration test.
- * TODO: You want to make sure that things like parameter interpolation, parameters, etc. all work. Some of these have already been done. You just have to do the others.
- * */
-
 module('Test regula.validate()');
 
 test('Test that regula.validate() doesn\'t error out after a bound element has been deleted', function() {
@@ -17944,6 +18230,30 @@ test('Test calling regula.validate() with empty groups attribute', function() {
     throws(function() {
         regula.validate({groups: []});
     }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with an empty groups attribute should error out");
+});
+
+test('Test that attempting to validate an element that has not been bound to the specified constraint results in an error', function() {
+    throws(function() {
+        regula.validate({
+            elementId: "text1",
+            constraintType: regula.Constraint.Email
+        })
+    }, regula.Exception.IllegalArgumentException, "Trying to validate a constraint that has not been bound to the specified element-group combination should result in an exception.");
+});
+
+test('Test that attempting to validate an element that has not been bound to the specified constraint in the specified group results in an error', function() {
+    var $text0 = createInputElement("text0", "@NotBlank(groups=[FirstGroup])", "text");
+    var $text1 = createInputElement("text1", "@NotBlank(groups=[SecondGroup])", "text");
+
+    regula.bind();
+
+    throws(function() {
+        regula.validate({
+            elementId: "text1",
+            constraintType: regula.Constraint.NotBlank,
+            groups: [regula.Group.FirstGroup]
+        })
+    }, regula.Exception.IllegalArgumentException, "Trying to validate a constraint that has not been bound to the specified element-group combination should result in an exception.");
 });
 
 test('Test calling regula.validate() with groups attribute (1)', function() {
@@ -18124,11 +18434,11 @@ test('Test calling regula.validate() with an invalid constraint type', function(
 test('Test calling regula.validate() with a constraint that hasn\'t been bound to any element', function() {
     regula.unbind();
 
-    throws(function() {
-        regula.validate({
-            constraintType: regula.Constraint.AlphaNumeric
-        });
-    }, regula.Exception.IllegalArgumentException, "Calling validate with a constraint type that hasn't been bound to any element should error out");
+    var constraintViolations = regula.validate({
+        constraintType: regula.Constraint.AlphaNumeric
+    });
+
+    equal(constraintViolations.length, 0, "Calling regula.validate() with a constraint that hasn't been bound to any element must not error out or return any violations");
 });
 
 test('Test calling requla.validate() with elementId', function() {
@@ -18318,7 +18628,7 @@ test('Test calling regula.validate() with undefined group and elements', functio
             groups: [regula.Group.SecondGroup, regula.Group.FakeGroup],
             elements: [$text0.get(0), $text1.get(0)]
         });
-    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with undefined group and elements should error out");;
+    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with undefined group and elements should error out");
 
     deleteElements();
 });
@@ -18415,7 +18725,7 @@ test('Test calling regula.validate() with elements, undefined group, and constra
 });
 
 test('Test calling regula.validate() with elements, groups, and constraint', function() {
-    var $text0 = createInputElement("text0", "@Numeric(groups=[FirstGroup]) @Email(groups=[SecondGroup])", "text");
+    var $text0 = createInputElement("text0", "@Numeric(groups=[FirstGroup]) @Email(groups=[FirstGroup, SecondGroup])", "text");
     var $text1 = createInputElement("text1", "@Email(groups=[FirstGroup, SecondGroup])", "text");
     var $text2 = createInputElement("text2", "@Email(groups=[FirstGroup, SecondGroup])", "text");
 
@@ -18426,7 +18736,7 @@ test('Test calling regula.validate() with elements, groups, and constraint', fun
         groups: [regula.Group.SecondGroup, regula.Group.FirstGroup]
     });
 
-    equal(constraintViolations.length, 3, "There should only be two constraint-violations");
+    equal(constraintViolations.length, 3, "There should only be three constraint-violations");
     equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
     equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
     equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
@@ -18823,7 +19133,7 @@ test('Test binding HTML5 email to an invalid type', function() {
 
     throws(function() {
         regula.bind();
-    }, regula.Exception.BindException, "@HTML5Email must only be bound to an \"email\"-type input.")
+    }, regula.Exception.BindException, "@HTML5Email must only be bound to an \"email\"-type input.");
 
     deleteElements();
 });
@@ -18868,7 +19178,7 @@ test('Test binding HTML5 URL to an invalid type', function() {
 
     throws(function() {
         regula.bind();
-    }, regula.Exception.BindException, "@HTML5URL must only be bound to a \"url\"-type input.")
+    }, regula.Exception.BindException, "@HTML5URL must only be bound to a \"url\"-type input.");
 
     deleteElements();
 });
@@ -18907,7 +19217,7 @@ test('Test binding to HTML5 maxlength', function() {
     equal(regula.bind(), undefined, "Must be able to bind to HTML5 maxlength without errors");
 
     var maxlength = $maxlength0.attr("maxlength");
-    equal(maxlength, 10, "maxlength attribute must be equal to 10.")
+    equal(maxlength, 10, "maxlength attribute must be equal to 10.");
 
     deleteElements();
 });
@@ -19105,4 +19415,1573 @@ test('Test passing HTML5 step validation', function() {
     equal(constraintViolations.length, 0, "There must not be any constraint violations");
 
     deleteElements();
+});
+
+module("Test Asynchronous Validation");
+
+var asyncTestServerURL = "http://localhost:8888";
+
+asyncTest('Test creating and using a failing, custom, asynchronous constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + randomSuffix, "The failing constraint must be CustomConstraint" + randomSuffix);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "text0", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "Default", "The constraint must be in the Default group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+test('Test that validating an asynchronous constraint without supplying a callback, results in an exception', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix, "text");
+    regula.bind();
+    throws(regula.validate, regula.Exception.IllegalArgumentException, "Validating asynchronous constraints without providing a callback must result in an error.");
+
+    deleteElements();
+});
+
+asyncTest('Test creating and using a passing, custom, asynchronous constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 0, "There must not be any constraint violations");
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using an asynchronous form-specific constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        formSpecific: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    var result = [];
+
+                    if(!data.pass) {
+                        result = [jQuery("#password0").get(0), jQuery("#password1").get(0)]
+                    }
+
+                    callback(result);
+                }
+            });
+        }
+    });
+
+    var $form = createFormElement("myForm", "@CustomConstraint" + randomSuffix);
+    var $password0 = createInputElement("password0", null, "password");
+    var $password1 = createInputElement("password1", null, "password");
+
+    $form.append($password0);
+    $form.append($password1);
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolations.length, 1, "There must be one constraint-violation");
+        equal(constraintViolation.constraintName, "CustomConstraint" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolation.formSpecific, "This must be a form-specific constraint");
+        equal(constraintViolation.failingElements.length, 2, "There must be two failing elements");
+        equal(constraintViolation.failingElements[0].id, "password0", "The id does not match");
+        equal(constraintViolation.failingElements[1].id, "password1", "The id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test failing asynchronous test for radio-button group', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $radio0 = createInputElement("radio0", "@CustomConstraint" + randomSuffix, "radio");
+    $radio0.attr("name", "AwesomeRadios");
+
+    var $radio1 = createInputElement("radio1", "@CustomConstraint" + randomSuffix, "radio");
+    $radio1.attr("name", "AwesomeRadios");
+
+    var $radio2 = createInputElement("radio2", "@CustomConstraint" + randomSuffix, "radio");
+    $radio2.attr("name", "AwesomeRadios");
+
+    var $radio3 = createInputElement("radio3", "@CustomConstraint" + randomSuffix, "radio");
+    $radio3.attr("name", "AwesomeRadios");
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
+        equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
+
+        deleteElements();
+        start();
+    });
+
+});
+
+asyncTest('Test creating and using multiple asynchronous constraints', function() {
+    var results = [false, true, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 5; i++) {
+        suffixes.push(randomNumber());
+        (function(i) {
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: true,
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: function(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[i]},
+                        success: function(data) {
+                            callback(data.pass)
+                        }
+                    });
+                }
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i], "text");
+    }
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 3, "There must be three constraint violations");
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a mix of synchronous and asynchronous constraints', function() {
+    var results = [false, true, false, false, true,
+                   true, false, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 10; i++) {
+        suffixes.push(randomNumber());
+
+        (function(i) {
+            function syncValidator() {
+                return results[i];
+            }
+
+            function asyncValidator(params, callback) {
+                jQuery.ajax({
+                    url: asyncTestServerURL,
+                    dataType: "jsonp",
+                    data: {pass: results[i]},
+                    success: function(data) {
+                        callback(data.pass)
+                    }
+                });
+            }
+
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: (i < 5),
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: (i < 5) ? asyncValidator : syncValidator
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i], "text");
+    }
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 6, "There must be three constraint violations");
+
+        var syncFailures = 0;
+        var asyncFailures = 0;
+
+        for(var i = 0; i < constraintViolations.length; i++) {
+            constraintViolations[i].async ? asyncFailures++ : syncFailures++;
+        }
+
+        equal(asyncFailures, 3, "There must be three asynchronous-constraint failures");
+        equal(syncFailures, 3, "There must be three synchronous-constraint failures");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a single asynchronous constraint, which is validated using its group', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@CustomConstraint" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + randomSuffix, "The failing constraint must be CustomConstraint" + randomSuffix);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "text0", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a multiple asynchronous constraints, which are validated using their group', function() {
+    var results = [false, true, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 5; i++) {
+        suffixes.push(randomNumber());
+        (function(i) {
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: true,
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: function(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[i]},
+                        success: function(data) {
+                            callback(data.pass)
+                        }
+                    });
+                }
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i] + "(groups=[FirstGroup])", "text");
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup]}, function(constraintViolations) {
+        equal(constraintViolations.length, 3, "There must be three constraint violations");
+
+        var groupCount = 0;
+        for(var i = 0; i < constraintViolations.length; i++) {
+            constraintViolations[i].group === "FirstGroup" && groupCount++;
+        }
+
+        equal(groupCount, 3, "All constraint violations must be from the \"FirstGroup\" group.");
+
+        deleteElements();
+        start();
+    });
+});
+
+test('Test that validating grouped constraints without providing a callback, results in an exception', function() {
+    var results = [false, true, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 5; i++) {
+        suffixes.push(randomNumber());
+        (function(i) {
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: true,
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: function(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[i]},
+                        success: function(data) {
+                            callback(data.pass)
+                        }
+                    });
+                }
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i] + "(groups=[FirstGroup])", "text");
+    }
+
+    regula.bind();
+    throws(function() {
+        regula.validate({groups: [regula.Group.FirstGroup]});
+    }, regula.Exception.IllegalArgumentException, 'Validating grouped constraints without providing a callback must result in an exception');
+
+    deleteElements();
+});
+
+asyncTest('Test creating and using a mix of grouped, multiple asynchronous and synchronous constraints', function() {
+    var results = [false, true, false, false, true,
+                   true, false, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 10; i++) {
+        suffixes.push(randomNumber());
+
+        (function(i) {
+            function syncValidator() {
+                return results[i];
+            }
+
+            function asyncValidator(params, callback) {
+                jQuery.ajax({
+                    url: asyncTestServerURL,
+                    dataType: "jsonp",
+                    data: {pass: results[i]},
+                    success: function(data) {
+                        callback(data.pass)
+                    }
+                });
+            }
+
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: (i < 5),
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: (i < 5) ? asyncValidator : syncValidator
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i] + "(groups=[FirstGroup])", "text");
+    }
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 6, "There must be three constraint violations");
+
+        var syncFailures = 0;
+        var asyncFailures = 0;
+
+        for(var i = 0; i < constraintViolations.length; i++) {
+            constraintViolations[i].async ? asyncFailures++ : syncFailures++;
+        }
+
+        equal(asyncFailures, 3, "There must be three asynchronous-constraint failures");
+        equal(syncFailures, 3, "There must be three synchronous-constraint failures");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a mix of multiple asynchronous and synchronous constraints, which are validated using their group', function() {
+    var results = [false, true, false, false, true,
+                   true, false, false, false, true];
+    var suffixes = [];
+    var elements = {};
+
+    for(var i = 0; i < 10; i++) {
+        suffixes.push(randomNumber());
+
+        (function(i) {
+            function syncValidator() {
+                return results[i];
+            }
+
+            function asyncValidator(params, callback) {
+                jQuery.ajax({
+                    url: asyncTestServerURL,
+                    dataType: "jsonp",
+                    data: {pass: results[i]},
+                    success: function(data) {
+                        callback(data.pass)
+                    }
+                });
+            }
+
+            regula.custom({
+                name: "CustomConstraint" + suffixes[i],
+                async: (i < 5),
+                defaultMessage: "The asynchronous constraint failed.",
+                validator: (i < 5) ? asyncValidator : syncValidator
+            });
+        })(i);
+
+        elements["$text" + i] = createInputElement("text" + i, "@CustomConstraint" + suffixes[i] + "(groups=[FirstGroup])", "text");
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup]}, function(constraintViolations) {
+        equal(constraintViolations.length, 6, "There must be three constraint violations");
+
+        var syncFailures = 0;
+        var asyncFailures = 0;
+
+        for(var i = 0; i < constraintViolations.length; i++) {
+            constraintViolations[i].async ? asyncFailures++ : syncFailures++;
+        }
+
+        equal(asyncFailures, 3, "There must be three asynchronous-constraint failures");
+        equal(syncFailures, 3, "There must be three synchronous-constraint failures");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using multiple asynchronous constraints that are grouped, with dependent validation (1)', function() {
+    var results = {
+        FirstGroup:  [false, true, true],
+        SecondGroup: [true, false, true],
+        ThirdGroup:  [true, true, false]
+    };
+
+    var suffixes = {
+        FirstGroup: [],
+        SecondGroup: [],
+        ThirdGroup: []
+    };
+
+    for(var group in results) {
+        for(var i = 0; i < results[group].length; i++) {
+            (function(i, group) {
+                var suffix = randomNumber();
+                suffixes[group].push(suffix);
+
+                regula.custom({
+                    name: "CustomConstraint" + suffix,
+                    async: true,
+                    defaultMessage: "The asynchronous constraint failed.",
+                    validator: function(params, callback) {
+                        jQuery.ajax({
+                            url: asyncTestServerURL,
+                            dataType: "jsonp",
+                            data: {pass: results[group][i]},
+                            success: function(data) {
+                                callback(data.pass);
+                            }
+                        });
+                    }
+                });
+
+                createInputElement("text" + group + i, "@CustomConstraint" + suffix + "(groups=[" + group + "])", "text");
+
+            })(i, group)
+        }
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.ThirdGroup], independent: false}, function(constraintViolations) {
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + suffixes.FirstGroup[0], "The failing constraint must be CustomConstraint" + suffixes.FirstGroup[0]);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "textFirstGroup0", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using multiple asynchronous constraints that are grouped, with dependent validation (2)', function() {
+    var results = {
+        FirstGroup:  [true, true, true],
+        SecondGroup: [true, false, true],
+        ThirdGroup:  [true, true, false]
+    };
+
+    var suffixes = {
+        FirstGroup: [],
+        SecondGroup: [],
+        ThirdGroup: []
+    };
+
+    for(var group in results) {
+        for(var i = 0; i < results[group].length; i++) {
+            (function(i, group) {
+                var suffix = randomNumber();
+                suffixes[group].push(suffix);
+
+                regula.custom({
+                    name: "CustomConstraint" + suffix,
+                    async: true,
+                    defaultMessage: "The asynchronous constraint failed.",
+                    validator: function(params, callback) {
+                        jQuery.ajax({
+                            url: asyncTestServerURL,
+                            dataType: "jsonp",
+                            data: {pass: results[group][i]},
+                            success: function(data) {
+                                callback(data.pass);
+                            }
+                        });
+                    }
+                });
+
+                createInputElement("text" + group + i, "@CustomConstraint" + suffix + "(groups=[" + group + "])", "text");
+
+            })(i, group)
+        }
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.ThirdGroup], independent: false}, function(constraintViolations) {
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + suffixes.SecondGroup[1], "The failing constraint must be CustomConstraint" + suffixes.SecondGroup[1]);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "textSecondGroup1", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "SecondGroup", "The constraint must be in the SecondGroup group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using multiple asynchronous constraints that are grouped, with independent validation', function() {
+    var results = {
+        FirstGroup:  [false, true, true],
+        SecondGroup: [true, false, true],
+        ThirdGroup:  [true, true, false]
+    };
+
+    for(var group in results) {
+        for(var i = 0; i < results[group].length; i++) {
+            (function(i, group) {
+                var suffix = randomNumber();
+
+                regula.custom({
+                    name: "CustomConstraint" + suffix,
+                    async: true,
+                    defaultMessage: "The asynchronous constraint failed.",
+                    validator: function(params, callback) {
+                        jQuery.ajax({
+                            url: asyncTestServerURL,
+                            dataType: "jsonp",
+                            data: {pass: results[group][i]},
+                            success: function(data) {
+                                callback(data.pass);
+                            }
+                        });
+                    }
+                });
+
+                createInputElement("text" + group + i, "@CustomConstraint" + suffix + "(groups=[" + group + "])", "text");
+
+            })(i, group)
+        }
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.ThirdGroup], independent: true}, function(constraintViolations) {
+        equal(constraintViolations.length, 3, "There must be one constraint violation");
+        equal(constraintViolations[0].group, "FirstGroup", "The first failing constraint must be part of the FirstGroup");
+        equal(constraintViolations[1].group, "SecondGroup", "The first failing constraint must be part of the SecondGroup");
+        equal(constraintViolations[2].group, "ThirdGroup", "The first failing constraint must be part of the ThirdGroup");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a mix of synchronous and asynchronous constraints that are grouped, with dependent validation (1)', function() {
+    var results = {
+        FirstGroup:  [false, true, true, false, true, true],
+        SecondGroup: [true, false, true, true, false, true],
+        ThirdGroup:  [true, true, false, true, true, false]
+    };
+
+    var suffixes = {
+        FirstGroup: [],
+        SecondGroup: [],
+        ThirdGroup: []
+    };
+
+    for(var group in results) {
+        for(var i = 0; i < results[group].length; i++) {
+            (function(i, group) {
+                var suffix = randomNumber();
+                suffixes[group].push(suffix);
+
+                var async = (i < 3);
+                function syncValidator() {
+                    return results[group][i];
+                }
+
+                function asyncValidator(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[group][i]},
+                        success: function(data) {
+                            callback(data.pass)
+                        }
+                    });
+                }
+
+                regula.custom({
+                    name: "CustomConstraint" + suffix,
+                    async: async,
+                    defaultMessage: "The asynchronous constraint failed.",
+                    validator: async ? asyncValidator : syncValidator
+                });
+
+                createInputElement("text" + group + i, "@CustomConstraint" + suffix + "(groups=[" + group + "])", "text");
+
+            })(i, group)
+        }
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.ThirdGroup], independent: false}, function(constraintViolations) {
+        equal(constraintViolations.length, 2, "There must be two constraint violations");
+
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + suffixes.FirstGroup[3], "The failing constraint must be CustomConstraint" + suffixes.FirstGroup[3]);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, false, "This must not be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "textFirstGroup3", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        constraintViolation = constraintViolations[1];
+        equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
+        equal(constraintViolation.compound, false, "This must not be a compound constraint");
+        equal(constraintViolation.constraintName, "CustomConstraint" + suffixes.FirstGroup[0], "The failing constraint must be CustomConstraint" + suffixes.FirstGroup[0]);
+        equal(constraintViolation.custom, true, "This must not be a custom constraint");
+        equal(constraintViolation.async, true, "This must be an asynchronous constraint");
+        equal(constraintViolation.failingElements.length, 1, "There must be one failing element");
+        equal(constraintViolation.failingElements[0].id, "textFirstGroup0", "The id of the failing element must match expected value");
+        equal(constraintViolation.group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolation.message, "The asynchronous constraint failed.", "Failure message must match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test creating and using a mix of synchronous and asynchronous constraints that are grouped, with dependent validation (2)', function() {
+    var results = {
+        FirstGroup:  [false, true, true, false, true, true],
+        SecondGroup: [true, false, true, true, false, true],
+        ThirdGroup:  [true, true, false, true, true, false]
+    };
+
+    var suffixes = {
+        FirstGroup: [],
+        SecondGroup: [],
+        ThirdGroup: []
+    };
+
+    for(var group in results) {
+        for(var i = 0; i < results[group].length; i++) {
+            (function(i, group) {
+                var suffix = randomNumber();
+                suffixes[group].push(suffix);
+
+                var async = (i < 3);
+                function syncValidator() {
+                    return results[group][i];
+                }
+
+                function asyncValidator(params, callback) {
+                    jQuery.ajax({
+                        url: asyncTestServerURL,
+                        dataType: "jsonp",
+                        data: {pass: results[group][i]},
+                        success: function(data) {
+                            callback(data.pass)
+                        }
+                    });
+                }
+
+                regula.custom({
+                    name: "CustomConstraint" + suffix,
+                    async: async,
+                    defaultMessage: "The asynchronous constraint failed.",
+                    validator: async ? asyncValidator : syncValidator
+                });
+
+                createInputElement("text" + group + i, "@CustomConstraint" + suffix + "(groups=[" + group + "])", "text");
+
+            })(i, group)
+        }
+    }
+
+    regula.bind();
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup, regula.Group.ThirdGroup], independent: true}, function(constraintViolations) {
+        equal(constraintViolations.length, 6, "There must be six constraint violation");
+        equal(constraintViolations[0].group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolations[0].async, false, "The constraint must not be asynchronous");
+        equal(constraintViolations[0].failingElements[0].id, "textFirstGroup3", "The id of the failing element must match expected value");
+        equal(constraintViolations[3].group, "FirstGroup", "The constraint must be in the FirstGroup group");
+        equal(constraintViolations[3].async, true, "The constraint must be asynchronous");
+        equal(constraintViolations[3].failingElements[0].id, "textFirstGroup0", "The id of the failing element must match expected value");
+
+        equal(constraintViolations[1].group, "SecondGroup", "The constraint must be in the SecondGroup group");
+        equal(constraintViolations[1].async, false, "The constraint must not be asynchronous");
+        equal(constraintViolations[1].failingElements[0].id, "textSecondGroup4", "The id of the failing element must match expected value");
+        equal(constraintViolations[4].group, "SecondGroup", "The constraint must be in the SecondGroup group");
+        equal(constraintViolations[4].async, true, "The constraint must be asynchronous");
+        equal(constraintViolations[4].failingElements[0].id, "textSecondGroup1", "The id of the failing element must match expected value");
+
+        equal(constraintViolations[2].group, "ThirdGroup", "The constraint must be in the ThirdGroup group");
+        equal(constraintViolations[2].async, false, "The constraint must not be asynchronous");
+        equal(constraintViolations[2].failingElements[0].id, "textThirdGroup5", "The id of the failing element must match expected value");
+        equal(constraintViolations[5].group, "ThirdGroup", "The constraint must be in the ThirdGroup group");
+        equal(constraintViolations[5].async, true, "The constraint must be asynchronous");
+        equal(constraintViolations[5].failingElements[0].id, "textThirdGroup2", "The id of the failing element must match expected value");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test validating a compound constraint that contains a mix of synchronous and asynchronous constraints', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint1" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint2" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint0" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint1" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return true;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint2" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [
+            {constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint2" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint2" + randomSuffix]}
+        ]
+    });
+
+    var $text = createInputElement("text", "@CompoundConstraint0" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "CompoundConstraint0" + randomSuffix, "The constraint name must match");
+        equal(constraintViolation.composingConstraintViolations.length, 4, "There must be four composing-constraint violations");
+
+        equal(constraintViolation.composingConstraintViolations[0].constraintName, "SyncConstraint0" + randomSuffix, "Synchronous composing-constraint does not match");
+        equal(constraintViolation.composingConstraintViolations[1].constraintName, "SyncConstraint2" + randomSuffix, "Synchronous composing-constraint does not match");
+
+        var firstAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[2];
+        var secondAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[3];
+
+        //Order is not guaranteed, hence we have to check both possibilities
+        ok((firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "First asynchronous composing constraint does not match");
+        ok((secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "Second asynchronous composing constraint does not match");
+
+        deleteElements();
+        start();
+    });
+});
+
+asyncTest('Test validating a compound constraint that only contains asynchronous constraints', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint1" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint2" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [
+            {constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint2" + randomSuffix]}
+        ]
+    });
+
+    var $text = createInputElement("text", "@CompoundConstraint0" + randomSuffix, "text");
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "CompoundConstraint0" + randomSuffix, "The constraint name must match");
+        equal(constraintViolation.composingConstraintViolations.length, 2, "There must be four composing-constraint violations");
+
+        var firstAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[0];
+        var secondAsyncComposingConstraintViolation = constraintViolation.composingConstraintViolations[1];
+
+        //Order is not guaranteed, hence we have to check both possibilities
+        ok((firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (firstAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "First asynchronous composing constraint does not match");
+        ok((secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint0" + randomSuffix) || (secondAsyncComposingConstraintViolation.constraintName === "AsyncConstraint2" + randomSuffix), "Second asynchronous composing constraint does not match");
+
+        deleteElements();
+        start();
+    });
+});
+
+test('Test that validating an asynchronous compound-constraint without a callback, throws an exception', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint1" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: true},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "AsyncConstraint2" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint0" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint1" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return true;
+        }
+    });
+
+    regula.custom({
+        name: "SyncConstraint2" + randomSuffix,
+        defaultMessage: "The synchronous constraint failed.",
+        validator: function(params) {
+            return false;
+        }
+    });
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [
+            {constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["AsyncConstraint2" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint0" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint1" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint2" + randomSuffix]}
+        ]
+    });
+
+    var $text = createInputElement("text", "@CompoundConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    throws(regula.validate, regula.Exception.IllegalArgumentException, "Validating asynchronous constraints without providing a callback must result in an exception");
+
+    deleteElements();
+});
+
+asyncTest('Test validating asynchronous constraints by element (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({elements: [$text0.get(0)]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by element (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    var $text1 = createInputElement("text1", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({elements: [$text0.get(0), $text1.get(0)]}, function(constraintViolations) {
+        console.log(constraintViolations);
+        equal(constraintViolations.length, 2, "There must be one constraint violation");
+        equal(constraintViolations[0].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolations[1].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolations[0].failingElements[0].id === "text0" || constraintViolations[0].failingElements[0].id === "text1", "Element id does not match");
+        ok(constraintViolations[1].failingElements[0].id === "text0" || constraintViolations[1].failingElements[0].id === "text1", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraint by element id', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({elementId: "text0"}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by constraint (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by constraint (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    var $text1 = createInputElement("text1", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        equal(constraintViolations.length, 2, "There must be one constraint violation");
+        equal(constraintViolations[0].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolations[1].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolations[0].failingElements[0].id === "text0" || constraintViolations[0].failingElements[0].id === "text1", "Element id does not match");
+        ok(constraintViolations[1].failingElements[0].id === "text0" || constraintViolations[1].failingElements[0].id === "text1", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by element and constraint (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({elements: [$text0.get(0)], constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by element and constraint (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate({elementId: "text0", constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by groups and element (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+
+    regula.validate({elementId: "text0", groups: [regula.Group.FirstGroup]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+        equal(constraintViolation.group, "FirstGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by groups and element (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    var $text1 = createInputElement("text1", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+
+    regula.validate({elements: [$text0.get(0), $text1.get(0)], groups: [regula.Group.FirstGroup]}, function(constraintViolations) {
+        equal(constraintViolations.length, 2, "There must be one constraint violation");
+        equal(constraintViolations[0].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolations[1].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolations[0].failingElements[0].id === "text0" || constraintViolations[0].failingElements[0].id === "text1", "Element id does not match");
+        ok(constraintViolations[1].failingElements[0].id === "text0" || constraintViolations[1].failingElements[0].id === "text1", "Element id does not match");
+        equal(constraintViolations[0].group, "FirstGroup", "Group does not match");
+        equal(constraintViolations[1].group, "FirstGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by groups, element, and constraint (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+
+    regula.validate({elementId: "text0", groups: [regula.Group.FirstGroup], constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+        equal(constraintViolation.group, "FirstGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validation asynchronous constraints by group and constraint (1)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+
+    regula.validate({groups: [regula.Group.FirstGroup], constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+        equal(constraintViolation.group, "FirstGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validation asynchronous constraints by group and constraint (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    var $text1 = createInputElement("text1", "@AsyncConstraint0" + randomSuffix + "(groups=[SecondGroup])", "text");
+    regula.bind();
+
+    regula.validate({groups: [regula.Group.FirstGroup, regula.Group.SecondGroup], constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        equal(constraintViolations.length, 2, "There must be one constraint violation");
+        equal(constraintViolations[0].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolations[1].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolations[0].failingElements[0].id === "text0" || constraintViolations[0].failingElements[0].id === "text1", "Element id does not match");
+        ok(constraintViolations[1].failingElements[0].id === "text0" || constraintViolations[1].failingElements[0].id === "text1", "Element id does not match");
+        equal(constraintViolations[0].group, "FirstGroup", "Group does not match");
+        equal(constraintViolations[1].group, "SecondGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test validating asynchronous constraints by groups, element, and constraint (2)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix + "(groups=[FirstGroup])", "text");
+    regula.bind();
+
+    regula.validate({elements: [$text0.get(0)], groups: [regula.Group.FirstGroup], constraintType: regula.Constraint["AsyncConstraint0" + randomSuffix]}, function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+
+        equal(constraintViolations.length, 1, "There must be one constraint violation");
+        equal(constraintViolation.constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
+        equal(constraintViolation.failingElements[0].id, "text0", "Element id does not match");
+        equal(constraintViolation.group, "FirstGroup", "Group does not match");
+
+        deleteElements();
+        start();
+    })
 });
