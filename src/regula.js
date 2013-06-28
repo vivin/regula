@@ -429,23 +429,6 @@
 
                 result = ValidationService.validate(options);
 
-                /*
-                 Since we redefine options.constraintType and options.groups in ValidationService.validate(), we need to preserve their original values so that
-                 we can use them on each run
-                 */
-/*
-                var originalConstraintType = options.constraintType;
-                var originalGroups = options.groups;
-
-                result = [];
-                for (var i = 0; i < options.elements.length; i++) {
-                    options.elementId = options.elements[i].id;
-
-                    result = result.concat(ValidationService.validate(options));
-
-                    options.constraintType = originalConstraintType;
-                    options.groups = originalGroups;
-                } */
             } else {
                 throw new ExceptionService.Exception.IllegalArgumentException("regula.validate: If an elements attribute is provided, it must be an array.");
             }
