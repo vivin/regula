@@ -114,6 +114,7 @@
 
     var constraintDefinitions = {
         Checked: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.checked,
@@ -125,6 +126,7 @@
         },
 
         Selected: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.selected,
@@ -136,6 +138,7 @@
         },
 
         Max: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.max,
@@ -147,6 +150,7 @@
         },
 
         Min: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.min,
@@ -158,6 +162,7 @@
         },
 
         Range: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.range,
@@ -169,6 +174,7 @@
         },
 
         NotBlank: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.notBlank,
@@ -180,6 +186,7 @@
         },
 
         Blank: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.blank,
@@ -191,6 +198,7 @@
         },
 
         Pattern: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.matches,
@@ -202,6 +210,7 @@
         },
 
         Email: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.email,
@@ -213,6 +222,7 @@
         },
 
         Alpha: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.alpha,
@@ -224,6 +234,7 @@
         },
 
         Numeric: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.numeric,
@@ -235,6 +246,7 @@
         },
 
         AlphaNumeric: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.alphaNumeric,
@@ -246,6 +258,7 @@
         },
 
         Integer: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.integer,
@@ -257,6 +270,7 @@
         },
 
         Real: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.real,
@@ -268,6 +282,7 @@
         },
 
         CompletelyFilled: {
+            async: false,
             html5: false,
             formSpecific: true,
             validator: ValidationService.Validator.completelyFilled,
@@ -279,6 +294,7 @@
         },
 
         PasswordsMatch: {
+            async: false,
             html5: false,
             formSpecific: true,
             validator: ValidationService.Validator.passwordsMatch,
@@ -290,6 +306,7 @@
         },
 
         Required: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.required,
@@ -301,6 +318,7 @@
         },
 
         Length: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.length,
@@ -312,6 +330,7 @@
         },
 
         Digits: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.digits,
@@ -323,6 +342,7 @@
         },
 
         Past: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.past,
@@ -334,6 +354,7 @@
         },
 
         Future: {
+            async: false,
             html5: false,
             formSpecific: false,
             validator: ValidationService.Validator.future,
@@ -346,6 +367,7 @@
 
         Step: {
             /* TODO:  implement */
+            async: false,
             html5: false,
             formSpecific: false,
             constraintType: Constraint.Step,
@@ -357,6 +379,7 @@
 
         URL: {
             /* TODO: implement */
+            async: false,
             html5: false,
             formSpecific: false,
             constraintType: Constraint.URL,
@@ -367,6 +390,7 @@
         },
 
         HTML5Required: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "required",
@@ -380,6 +404,7 @@
         },
 
         HTML5Email: {
+            async: false,
             html5: true,
             inputType: "email",
             attribute: null,
@@ -393,6 +418,7 @@
         },
 
         HTML5Pattern: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "pattern",
@@ -406,6 +432,7 @@
         },
 
         HTML5URL: {
+            async: false,
             html5: true,
             inputType: "url",
             attribute: null,
@@ -549,6 +576,7 @@
         }, */
 
         HTML5MaxLength: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "maxlength",
@@ -562,6 +590,7 @@
         },
 
         HTML5Min: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "min",
@@ -575,6 +604,7 @@
         },
 
         HTML5Max: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "max",
@@ -588,6 +618,7 @@
         },
 
         HTML5Step: {
+            async: false,
             html5: true,
             inputType: null,
             attribute: "step",
@@ -607,6 +638,11 @@
      * @param options
      */
     function override(options) {
+        var async = typeof options.async === "undefined" ? constraintDefinitions[options.name].async : options.async;
+
+        //Node representing the constraint in the composition graph
+        var graphNode = CompositionGraph.getNodeByType(options.constraintType);
+
         if (options.compound) {
             verifyComposingConstraints(options.name, options.composingConstraints, options.params);
 
@@ -615,20 +651,61 @@
              * modified the graph to contain a cycle. A more robust solution would be to clone the composition graph and
              * restore it if we find out that it contains a cycle
              */
-            var root = CompositionGraph.clone();
+            var clone = CompositionGraph.clone();
 
             /* now let's update our graph */
             updateCompositionGraph(options.name, options.composingConstraints);
 
             /* we need to see if a cycle exists in our graph */
-            var result = CompositionGraph.cycleExists(CompositionGraph.getNodeByType(options.constraintType));
-            if (result.cycleExists) {
-                CompositionGraph.setRoot(root);
+
+
+            var result = CompositionGraph.analyze(graphNode);
+            if (result.cycle) {
+                CompositionGraph.initializeFromClone(clone);
                 throw new ExceptionService.Exception.ConstraintDefinitionException("regula.override: The overriding composing-constraints you have specified have created a cyclic composition: " + result.path);
+            }
+
+            /*
+             * We need to determine the state of the async flag now. First we will assume that none of the composing
+             * constraints is asynchronous. We will then iterate over all composing constraints to determine if at
+             * least one of them is asynchronous. At the end of the loop we'll know what the value of the async flag
+             * is supposed to be.
+             */
+
+            async = false;
+            var i = 0;
+            while(i < options.composingConstraints.length && !async) {
+                var composingConstraint = options.composingConstraints[i];
+                var constraintDefinition = constraintDefinitions[ReverseConstraint[composingConstraint.constraintType]];
+                async = constraintDefinition.async;
+                i++;
             }
         }
 
+        //graphNode can be null if this constraint hasn't been used in a composing constraint
+        if(graphNode !== null) {
+            /*
+             * We will need to propagate the value of the async flag to this constraint's parents (if any). The reason is
+             * that if the state of the async flag has changed for this constraint, any compound constraint that uses this
+             * constraint as a composing constraint, must have its async flag reflect the change as well.
+             */
+            (function propagateAsync(node) {
+                for(var i = 0; i < node.parents.length; i++) {
+                    var parent = node.parents[i];
+
+                    if(parent.type !== CompositionGraph.ROOT) {
+                        var constraintName = ReverseConstraint[parent.type];
+                        var constraintDefinition = constraintDefinitions[constraintName];
+                        constraintDefinition.async = async;
+
+                        propagateAsync(parent);
+                    }
+                }
+            })(graphNode);
+        }
+
         constraintDefinitions[options.name] = {
+            async: async,
             formSpecific: options.formSpecific,
             constraintType: Constraint[options.name],
             custom: true,
@@ -649,6 +726,7 @@
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
         constraintDefinitions[options.name] = {
+            async: options.async,
             formSpecific: options.formSpecific,
             validator: options.validator,
             constraintType: Constraint[options.name],
@@ -667,9 +745,20 @@
     function compound(options) {
         verifyComposingConstraints(options.name, options.constraints, options.params);
 
+        var async = false;
+        var i = 0;
+        while(i < options.constraints.length && !async) {
+            var constraint = options.constraints[i];
+            var constraintName = ReverseConstraint[constraint.constraintType];
+            async = async || constraintDefinitions[constraintName].async;
+
+            i++;
+        }
+
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
         constraintDefinitions[options.name] = {
+            async: async,
             formSpecific: options.formSpecific,
             constraintType: Constraint[options.name],
             custom: true,
@@ -797,19 +886,42 @@
         var graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
 
         if (graphNode == null) {
-            CompositionGraph.addNode(Constraint[constraintName], constraintName, null);
+            CompositionGraph.addNode({
+                type: Constraint[constraintName],
+                name: constraintName,
+                parent: null
+            });
             graphNode = CompositionGraph.getNodeByType(Constraint[constraintName]);
         }
 
-        //First we have to remove the existing children
-        CompositionGraph.removeChildren(graphNode);
+        //First we have to remove this node from each of the children's parent list
+        //This is O(n^2) ugh... should be a better way to do this. Also... all of this
+        //should probably be abstracted behind a function of some kind in CompositionGraph...
+        for(var i = 0; i < graphNode.children.length; i++) {
+            var childNode = graphNode.children[i];
+            var parents = [];
+            for(var j = 0; j < childNode.parents.length; j++) {
+                if(childNode.parents[j] !== graphNode) {
+                    parents.push(childNode.parents[j]);
+                }
+            }
+
+            childNode.parents = parents;
+        }
+
+        //Now remove all children from this node.
+        graphNode.children = [];
+
+        //Now add all the new children (i.e., composing constraints)
         for (var i = 0; i < composingConstraints.length; i++) {
             var composingConstraintName = ReverseConstraint[composingConstraints[i].constraintType];
             var composingConstraint = constraintDefinitions[composingConstraintName];
 
-            if (composingConstraint.compound) {
-                CompositionGraph.addNode(composingConstraint.constraintType, ReverseConstraint[composingConstraint.constraintType], graphNode);
-            }
+            CompositionGraph.addNode({
+                type: composingConstraint.constraintType,
+                name: ReverseConstraint[composingConstraint.constraintType],
+                parent: graphNode
+            });
         }
     }
 
@@ -821,17 +933,12 @@
      * @param params
      */
     function verifyComposingConstraints(name, constraints, params) {
-        var constraintList = [];
 
         for (var i = 0; i < constraints.length; i++) {
             if (typeof constraints[i].constraintType === "undefined") {
                 throw new ExceptionService.Exception.ConstraintDefinitionException("In compound constraint " + name + ": A composing constraint has no constraint type specified.")
-            } else {
-                constraintList.push(constraintDefinitions[ReverseConstraint[constraints[i].constraintType]]);
             }
-        }
 
-        for (var i = 0; i < constraints.length; i++) {
             var constraint = constraints[i];
             var constraintName = ReverseConstraint[constraint.constraintType];
             var definedParameters = {

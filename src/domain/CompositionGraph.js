@@ -5,7 +5,7 @@
  * Since cycles in the constraint-composition graph will lead to infinite loops, I need to detect them and throw
  * an exception.
  *
- * @type {{addNode: Function, getNodeByType: Function, cycleExists: Function, getRoot: Function, setRoot: Function, clone: Function}}
+ * @type {{addNode: Function, getNodeByType: Function, analyze: Function, getRoot: Function, setRoot: Function, clone: Function}}
  */
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
@@ -20,78 +20,99 @@
         root.regulaModules.CompositionGraph = factory();
     }
 }(this, function () {
+
+    /*
+    We need one node per constraint-type.
+     */
     var typeToNodeMap = {};
 
     /* root is a special node that serves as the root of the composition tree/graph (works either way because a tree
-     is a special case of a graph)
+     is a special case of a graph).
      */
 
     var root = {
         visited: false,
         name: "RootNode",
-        type: -1,
+        type: -1, //constraint type
+        parents: [],
         children: []
     };
 
-    function addNode(type, name, parent) {
-        var newNode = typeToNodeMap[type] == null ? {
+    function addNode(options) {
+        var type = options.type;
+        var name = options.name;
+        var parent = options.parent;
+
+        var newNode = typeof typeToNodeMap[type] === "undefined" ? {
             visited: false,
             name: name,
             type: type,
+            parents: [],
             children: []
         } : typeToNodeMap[type];
 
         if (parent == null) {
-            root.children[root.children.length] = newNode;
+            root.children.push(newNode);
         } else {
-            parent.children[parent.children.length] = newNode;
+            parent.children.push(newNode);
+            newNode.parents.push(parent);
         }
 
         typeToNodeMap[type] = newNode;
     }
 
     function clone() {
-        return _clone(root);
-    }
+        var clonedTypeToNodeMap = {};
 
-    function _clone(node) {
-        var cloned = {
-            visited: node.visited,
-            name: node.name,
-            type: node.type,
-            children: []
+        var clonedRoot = (function _clone(node, parent) {
+            var cloned = typeof clonedTypeToNodeMap[node.type] === "undefined" ? {
+                visited: node.visited,
+                name: node.name,
+                type: node.type,
+                parents: [],
+                children: []
+            } : clonedTypeToNodeMap[node.type];
+
+            if(parent !== null) {
+                cloned.parents.push(parent);
+            }
+
+            for (var i = 0; i < node.children.length; i++) {
+                cloned.children.push(_clone(node.children[i], cloned));
+            }
+
+            clonedTypeToNodeMap[node.type] = cloned;
+
+            return cloned;
+        })(root, null);
+
+        return {
+            typeToNodeMap: clonedTypeToNodeMap,
+            root: clonedRoot
         };
-
-        for (var i = 0; i < node.children.length; i++) {
-            cloned.children[cloned.children.length] = _clone(node.children[i]);
-        }
-
-        return cloned;
     }
 
     function getNodeByType(type) {
-        return typeToNodeMap[type];
+        var node = typeToNodeMap[type];
+        return typeof node === "undefined" ? null : node;
     }
 
-    function cycleExists(startNode) {
-        var result = (function (node, path) {
+    function analyze(startNode) {
+        var result = (function traverse(node, path) {
 
             var result = {
-                cycleExists: false,
+                cycle: false,
                 path: path
             };
 
             if (node.visited) {
-                result = {
-                    cycleExists: true,
-                    path: path
-                };
+                result.cycle = true;
             } else {
                 node.visited = true;
 
                 var i = 0;
-                while (i < node.children.length && !result.cycleExists) {
-                    result = arguments.callee(node.children[i], path + "." + node.children[i].name);
+                while (i < node.children.length && !result.cycle) {
+                    result = traverse(node.children[i], path + "." + node.children[i].name);
                     i++;
                 }
             }
@@ -99,22 +120,18 @@
             return result;
         }(startNode, startNode.name));
 
-        if (!result.cycleExists) {
+        if (!result.cycle) {
             clearVisited();
         }
 
         return result;
     }
 
-    function removeChildren(node) {
-        node.children = [];
-    }
-
     function clearVisited() {
-        (function (node) {
+        (function clear(node) {
             node.visited = false;
             for (var i = 0; i < node.children.length; i++) {
-                arguments.callee(node.children[i]);
+                clear(node.children[i]);
             }
         }(root));
     }
@@ -127,13 +144,19 @@
         root = newRoot;
     }
 
+    function initializeFromClone(clone) {
+        typeToNodeMap = clone.typeToNodeMap;
+        root = clone.root;
+    }
+
     return {
+        ROOT: -1,
         addNode: addNode,
-        removeChildren: removeChildren,
         getNodeByType: getNodeByType,
-        cycleExists: cycleExists,
+        analyze: analyze,
         getRoot: getRoot,
         setRoot: setRoot,
-        clone: clone
+        clone: clone,
+        initializeFromClone: initializeFromClone
     };
 }));

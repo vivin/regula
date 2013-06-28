@@ -34,8 +34,8 @@
     var constraintDefinitions = {}; //Constraints that have been defined. Injected from the regula module.
     var boundConstraints = {}; //Elements and constraints that have been bound to them
 
-    var validatedConstraints = {}; //Keeps track of constraints that have already been validated for a validation run. Cleared out each time validation is run.
-    var validatedRadioGroups = {}; //Keeps track of constraints that have already been validated for a validation run, on radio groups. Cleared out each time validation is run.
+    var processedConstraints = {}; //Keeps track of constraints that have already been processed into contexts for a validation run. Cleared out each time validation is run.
+    var processedRadioGroups = {}; //Keeps track of constraints that have already been processed into contexts for a validation run, on radio groups. Cleared out each time validation is run.
 
     function init(options) {
         config = options.config;
@@ -349,60 +349,131 @@
      * @param params - parameters for the constraint
      * @param currentGroup - the group that is currently being validated
      * @param compoundConstraint - the constraint that is currently being validated
+     * @param callback - optional parameter that is sent in if the compound constraint is asynchronous.
      * @return {Array} - an array of constraint violations
      */
-    function compoundValidator(params, currentGroup, compoundConstraint) {
-        //        console.log(params, currentGroup, compoundConstraint);
-        var composingConstraints = compoundConstraint.composingConstraints;
-        var constraintViolations = [];
-        //        console.log("composing constraints", composingConstraints);
-        for (var i = 0; i < composingConstraints.length; i++) {
-            var composingConstraint = composingConstraints[i];
-            var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+    function compoundValidator(params, currentGroup, compoundConstraint, callback) {
 
-            /*
-             Now we'll merge the parameters in the child constraints with the parameters from the parent
-             constraint
-             */
-
+        function mergeParams(composingConstraintParams, compoundConstraintParams) {
             var mergedParams = {};
 
-            for (var paramName in composingConstraint.params) if (composingConstraint.params.hasOwnProperty(paramName) && paramName != "__size__") {
-                MapUtils.put(mergedParams, paramName, composingConstraint.params[paramName]);
+            for (var paramName in composingConstraintParams) if (composingConstraintParams.hasOwnProperty(paramName) && paramName != "__size__") {
+                MapUtils.put(mergedParams, paramName, composingConstraintParams[paramName]);
             }
 
             /* we're only going to override if the compound constraint was defined with required params */
-            if (compoundConstraint.params.length > 0) {
+            if (compoundConstraintParams.length > 0) {
                 for (var paramName in params) if (params.hasOwnProperty(paramName) && paramName != "__size__") {
                     MapUtils.put(mergedParams, paramName, params[paramName]);
                 }
             }
 
-            var validationResult = runValidatorFor(currentGroup, this.id, composingConstraintName, mergedParams);
+            return mergedParams;
+        }
 
-            var errorMessage = "";
-            if (!validationResult.constraintPassed) {
-                errorMessage = interpolateConstraintDefaultMessage(this.id, composingConstraintName, mergedParams);
-                var constraintViolation = {
-                    group: currentGroup,
-                    constraintName: composingConstraintName,
-                    custom: constraintDefinitions[composingConstraintName].custom,
-                    compound: constraintDefinitions[composingConstraintName].compound,
-                    constraintParameters: composingConstraint.params,
-                    failingElements: validationResult.failingElements,
-                    message: errorMessage
-                };
+        function processValidationResult(validationResult, id, currentGroup, mergedParams) {
+            var constraintName = ReverseConstraint[composingConstraint.constraintType];
 
-                if (!compoundConstraint.reportAsSingleViolation) {
-                    constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
+            var errorMessage = interpolateConstraintDefaultMessage(id, constraintName, mergedParams);
+            var constraintViolation = {
+                group: currentGroup,
+                constraintName: validationResult.constraintName,
+                custom: constraintDefinitions[constraintName].custom,
+                compound: constraintDefinitions[constraintName].compound,
+                async: constraintDefinitions[constraintName].async,
+                constraintParameters: composingConstraint.params,
+                failingElements: validationResult.failingElements,
+                message: errorMessage
+            };
+
+            if (!compoundConstraint.reportAsSingleViolation) {
+                constraintViolation.composingConstraintViolations = validationResult.composingConstraintViolations || [];
+            }
+
+            return constraintViolation;
+        }
+
+        var synchronousComposingConstraints = [];
+        var asynchronousComposingConstraints = [];
+
+        for(var i = 0; i < compoundConstraint.composingConstraints.length; i++) {
+            var constraint = compoundConstraint.composingConstraints[i];
+            var constraintName = ReverseConstraint[constraint.constraintType];
+
+            if(constraintDefinitions[constraintName].async) {
+                asynchronousComposingConstraints.push(constraint);
+            } else {
+                synchronousComposingConstraints.push(constraint);
+            }
+
+        }
+
+        var constraintViolations = null;
+        var _this = this;
+
+
+        if(synchronousComposingConstraints.length > 0) {
+            constraintViolations = [];
+
+            for (var i = 0; i < synchronousComposingConstraints.length; i++) {
+                var composingConstraint = synchronousComposingConstraints[i];
+                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+
+                /*
+                 Now we'll merge the parameters in the child constraints with the parameters from the parent
+                 constraint
+                 */
+                var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+                var validationResult = runValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams);
+
+                if(!validationResult.constraintPassed) {
+                    var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
+
+                    if (config.enableHTML5Validation) {
+                        for (var j = 0; j < validationResult.failingElements.length; j++) {
+                            validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                        }
+                    }
+
+                    constraintViolations.push(constraintViolation);
+                }
+            }
+        }
+
+        if(asynchronousComposingConstraints.length > 0) {
+            if(constraintViolations === null) {
+                constraintViolations = [];
+            }
+
+            var numberConstraintsValidated = 0;
+
+            for(var i = 0; i < asynchronousComposingConstraints.length; i++) {
+                var composingConstraint = asynchronousComposingConstraints[i];
+                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+                var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+
+                asynchronouslyRunValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams, validationHandler);
+            }
+
+            function validationHandler(validationResult) {
+                if(!validationResult.constraintPassed) {
+
+                    //We need to know which constraint was validated.
+                    var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
+
+                    if (config.enableHTML5Validation) {
+                        for (var j = 0; j < validationResult.failingElements.length; j++) {
+                            validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                        }
+                    }
+
+                    constraintViolations.push(constraintViolation);
                 }
 
-                constraintViolations.push(constraintViolation);
-            }
-            //            console.log("finish validation");
-            if (config.enableHTML5Validation) {
-                for (var j = 0; j < validationResult.failingElements.length; j++) {
-                    validationResult.failingElements[j].setCustomValidity(errorMessage);
+                numberConstraintsValidated++;
+
+                if(numberConstraintsValidated === asynchronousComposingConstraints.length) {
+                    callback(constraintViolations);
                 }
             }
         }
@@ -470,16 +541,22 @@
         return !this.validity.typeMismatch;
     }
 
+    /**
+     * TODO: comment this better, especially the individual combination of validations. It's not immediately straightfoward and a description
+     * of the logical flow of the code would be very helpful.
+     * @param options
+     * @returns {*}
+     */
     function validate(options) {
 
-        validatedConstraints = {}; //clear these out on every run
-        validatedRadioGroups = {}; //clear these out on every run
+        processedConstraints = {}; //clear these out on every run
+        processedRadioGroups = {}; //clear these out on every run
 
         //generates a key that can be used with the function table to call the correct auxiliary validator function
         //(see below for more details)
         function generateKey(options) {
             var groups = options.groups || null;
-            var elementId = options.elementId || null;
+            var elementId = options.elementIds || null;
             var constraintType = (typeof options.constraintType === "undefined" ? null : options.constraintType) || null;
             var key = "";
             key += (groups == null) ? "0" : "1";
@@ -496,12 +573,12 @@
         var functionTable = {
             "000": validateAll,
             "001": validateConstraint,
-            "010": validateElement,
-            "011": validateElementWithConstraint,
+            "010": validateElements,
+            "011": validateElementsWithConstraint,
             "100": validateGroups,
             "101": validateGroupsWithConstraint,
-            "110": validateGroupsWithElement,
-            "111": validateGroupsElementWithConstraint
+            "110": validateGroupsWithElements,
+            "111": validateGroupsElementsWithConstraint
         };
 
         //if no arguments were passed in, we initialize options to an empty map
@@ -522,7 +599,7 @@
         }
 
         //Get the actual group name
-        if (options.groups) {
+        if (typeof options.groups !== "undefined") {
 
             //We're going to create a new array and assign that to options.groups. This array will contain the actual group
             //names of the groups. The reason we do this is because in validate() we store a reference to the original groups
@@ -535,13 +612,24 @@
             }
         }
 
+        if (typeof options.elements !== "undefined") {
+            options.elementIds = [];
+            for(var i = 0; i < options.elements.length; i++) {
+                options.elementIds.push(options.elements[i].id);
+            }
+
+        } else if(typeof options.elementId !== "undefined") {
+            options.elementIds = [options.elementId];
+        }
+
         return functionTable[generateKey(options)](options);
     }
 
-    function validateAll() {
-        var constraintViolations = [];
-
-        //console.log("BoundConstraints", boundConstraints);
+    function validateAll(options) {
+        var constraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
@@ -556,23 +644,27 @@
                     var elementConstraints = groupElements[elementId];
 
                     for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
+                        var context = createConstraintValidationContext(group, elementId, elementConstraint);
 
-                        var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
-
-                        if (constraintViolation) {
-                            constraintViolations.push(constraintViolation);
+                        if(context.async) {
+                            constraintsToValidate.asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.syncContexts.push(context);
                         }
                     }
                 }
             }
         }
 
-        return constraintViolations;
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateConstraint(options) {
-        var constraintViolations = [];
-        var constraintFound = false;
+        var constraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
@@ -583,111 +675,142 @@
                 var elementConstraints = groupElements[elementId];
 
                 if (elementConstraints[options.constraintType]) {
-                    constraintFound = true;
-                    var constraintViolation = validateGroupElementConstraintCombination(group, elementId, options.constraintType);
+                    var context = createConstraintValidationContext(group, elementId, options.constraintType);
 
-                    if (constraintViolation) {
-                        constraintViolations.push(constraintViolation);
+                    if(context.async) {
+                        constraintsToValidate.asyncContexts.push(context);
+                    } else {
+                        constraintsToValidate.syncContexts.push(context);
                     }
                 }
             }
         }
 
-        //We want to let the user know if they used a constraint that has not been defined anywhere. Otherwise, this
-        //function returns zero validation results, which can be (incorrectly) interpreted as a successful validation
-        if (!constraintFound) {
-            throw new ExceptionService.Exception.IllegalArgumentException("Constraint " + options.constraintType + " has not been bound to any element. " + ExceptionService.explodeParameters(options));
-        }
-
-        return constraintViolations;
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
-    function validateElement(options) {
-        var constraintViolations = [];
-        var elementFound = false;
+    function validateElements(options) {
+        var unboundElements = [];
+
+        var constraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
             var groupElements = boundConstraints[group];
 
-            if (groupElements[options.elementId]) {
-                elementFound = true;
-                var elementConstraints = groupElements[options.elementId];
+            for(var i = 0; i < options.elementIds.length; i++) {
 
-                for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
+                var elementId = options.elementIds[i];
+                var elementConstraints = groupElements[elementId];
 
-                    var constraintViolation = validateGroupElementConstraintCombination(group, options.elementId, elementConstraint);
+                if (typeof elementConstraints !== "undefined") {
 
-                    if (constraintViolation) {
-                        constraintViolations.push(constraintViolation);
+                    for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
+                        var context = createConstraintValidationContext(group, elementId, elementConstraint);
+
+                        if(context.async) {
+                            constraintsToValidate.asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.syncContexts.push(context);
+                        }
                     }
+                } else {
+                    unboundElements.push(elementId);
                 }
             }
         }
 
-        //We want to let the user know if they use an element that does not have any element bound to it. Otherwise, this
+        //We want to let the user know if they use an element that does not have any constraints bound to it. Otherwise, this
         //function returns zero results, which can be (incorrectly) interpreted as a successful validation
-
-        if (!elementFound) {
-            throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been bound to element with id " + options.elementId + ". " + ExceptionService.explodeParameters(options));
+        if (unboundElements.length > 0) {
+            throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been bound to the specified elements: " + ArrayUtils.explode(unboundElements) + ". " + ExceptionService.explodeParameters(options));
         }
 
-        return constraintViolations;
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
-    function validateElementWithConstraint(options) {
-        var constraintViolations = [];
-        var elementFound = false;
-        var constraintFound = false;
+    function validateElementsWithConstraint(options) {
+        var unboundElements = [];
+        var constraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
 
         for (var group in boundConstraints) if (boundConstraints.hasOwnProperty(group)) {
 
             var groupElements = boundConstraints[group];
-            var elementConstraints = groupElements[options.elementId];
 
-            if (elementConstraints) {
-                elementFound = true;
+            for(var i = 0; i < options.elementIds.length; i++) {
+                var elementId = options.elementIds[i];
 
-                if (elementConstraints[options.constraintType]) {
-                    constraintFound = true;
+                var elementConstraints = groupElements[elementId];
 
-                    var constraintViolation = validateGroupElementConstraintCombination(group, options.elementId, options.constraintType);
+                if (typeof elementConstraints !== "undefined") {
 
-                    if (constraintViolation) {
-                        constraintViolations.push(constraintViolation);
+                    var context = createConstraintValidationContext(group, elementId, options.constraintType);
+
+                    if(context.async) {
+                        constraintsToValidate.asyncContexts.push(context);
+                    } else {
+                        constraintsToValidate.syncContexts.push(context);
                     }
+                } else {
+                    unboundElements.push(elementId);
                 }
             }
         }
 
-        if (!elementFound || !constraintFound) {
-            throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found with the constraint " + options.constraintType + " bound to it. " + ExceptionService.explodeParameters(options));
+        //We want to let the user know if they use an element that does not have any constraints bound to it. Otherwise, this
+        //function returns zero results, which can be (incorrectly) interpreted as a successful validation
+        if (unboundElements.length > 0) {
+            throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been bound to the specified elements: " + ArrayUtils.explode(unboundElements) + ". " + ExceptionService.explodeParameters(options));
         }
 
-        return constraintViolations;
+        constraintsToValidate = removeDuplicateContexts(constraintsToValidate);
+        return processConstraintsToValidate(constraintsToValidate, options);
     }
 
     function validateGroups(options) {
-        var constraintViolations = [];
+        var async = false;
+
+        //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
+        //independent or dependent group-validation.
+        var constraintsToValidate = {
+            groupedContexts: {}
+        };
 
         var i = 0;
-        var successful = true;
-        while (i < options.groups.length && successful) {
+        while (i < options.groups.length) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
-            if (groupElements) {
+
+            if (typeof groupElements !== "undefined") {
 
                 for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
 
                     var elementConstraints = groupElements[elementId];
 
                     for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
+                        var context = createConstraintValidationContext(group, elementId, elementConstraint);
 
-                        var constraintViolation = validateGroupElementConstraintCombination(group, elementId, elementConstraint);
+                        if(!constraintsToValidate.groupedContexts[group]) {
+                            constraintsToValidate.groupedContexts[group] = {
+                                asyncContexts: [],
+                                syncContexts: []
+                            };
+                        }
 
-                        if (constraintViolation) {
-                            constraintViolations.push(constraintViolation);
+                        if(context.async) {
+                            async = true;
+                            constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.groupedContexts[group].syncContexts.push(context);
                         }
                     }
                 }
@@ -696,22 +819,30 @@
             }
 
             i++;
-            successful = (constraintViolations.length == 0) || (options.independent && constraintViolations.length != 0);
         }
 
-        return constraintViolations;
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
+
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
 
     function validateGroupsWithConstraint(options) {
-        var constraintViolations = [];
+        var async = false;
+
+        //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
+        //independent or dependent group-validation.
+        var constraintsToValidate = {
+            groupedContexts: {}
+        };
 
         var i = 0;
-        var successful = true;
-        while (i < options.groups.length && successful) {
+        while (i < options.groups.length) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
-            if (groupElements) {
+            if (typeof groupElements !== "undefined") {
                 var constraintFound = false;
 
                 for (var elementId in groupElements) if (groupElements.hasOwnProperty(elementId)) {
@@ -720,10 +851,21 @@
 
                     if (elementConstraints[options.constraintType]) {
                         constraintFound = true;
-                        var constraintViolation = validateGroupElementConstraintCombination(group, elementId, options.constraintType);
 
-                        if (constraintViolation) {
-                            constraintViolations.push(constraintViolation);
+                        var context = createConstraintValidationContext(group, elementId, options.constraintType);
+
+                        if(!constraintsToValidate.groupedContexts[group]) {
+                            constraintsToValidate.groupedContexts[group] = {
+                                asyncContexts: [],
+                                syncContexts: []
+                            };
+                        }
+
+                        if(context.async) {
+                            async = true;
+                            constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                        } else {
+                            constraintsToValidate.groupedContexts[group].syncContexts.push(context);
                         }
                     }
                 }
@@ -739,140 +881,492 @@
             }
 
             i++;
-            successful = (constraintViolations.length == 0) || (options.independent && constraintViolations.length != 0);
         }
 
-        return constraintViolations;
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
+
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
     }
 
-    function validateGroupsWithElement(options) {
-        var constraintViolations = [];
+    function validateGroupsWithElements(options) {
         var notFound = [];
+        var unboundElements = [];
+        var async = false;
+
+        //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
+        //independent or dependent group-validation.
+        var constraintsToValidate = {
+            groupedContexts: {}
+        };
 
         var i = 0;
-        var successful = true;
-        while (i < options.groups.length && successful) {
+        while (i < options.groups.length) {
             var group = options.groups[i];
 
             var groupElements = boundConstraints[group];
             if (groupElements) {
 
-                var elementConstraints = groupElements[options.elementId];
+                for(var j = 0; j < options.elementIds.length; j++) {
+                    var elementId = options.elementIds[j];
 
-                if (elementConstraints) {
-                    for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
+                    var elementConstraints = groupElements[elementId];
 
-                        var constraintViolation = validateGroupElementConstraintCombination(group, options.elementId, elementConstraint);
+                    if (elementConstraints) {
+                        for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
 
-                        if (constraintViolation) {
-                            constraintViolations.push(constraintViolation);
+                            var context = createConstraintValidationContext(group, elementId, elementConstraint);
+
+                            if(!constraintsToValidate.groupedContexts[group]) {
+                                constraintsToValidate.groupedContexts[group] = {
+                                    asyncContexts: [],
+                                    syncContexts: []
+                                };
+                            }
+
+                            if(context.async) {
+                                async = true;
+                                constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                            } else {
+                                constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+                            }
                         }
+                    } else {
+                        notFound.push(group);
+                        unboundElements.push(elementId);
                     }
-                } else {
-                    notFound.push(group);
                 }
             } else {
                 throw new ExceptionService.Exception.IllegalArgumentException("Undefined group in group list. " + ExceptionService.explodeParameters(options));
             }
 
             i++;
-            successful = (constraintViolations.length == 0) || (options.independent && constraintViolations.length != 0);
         }
 
         if (notFound.length > 0) {
-            throw new ExceptionService.Exception.IllegalArgumentException("No element with id " + options.elementId + " was found in the following group(s): )[" + ArrayUtils.explode(notFound, ",").replace(/,/g, ", ") + "]. " + ExceptionService.explodeParameters(options));
+            throw new ExceptionService.Exception.IllegalArgumentException("The following elements: " + ArrayUtils.explode(unboundElements) + " were not found in one or more of the following group(s): [" + ArrayUtils.explode(notFound, ",").replace(/,/g, ", ") + "]. " + ExceptionService.explodeParameters(options));
+        }
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
+
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
+    }
+
+    function validateGroupsElementsWithConstraint(options) {
+        var async = false;
+
+        //Because we have groups, here we key the constraints we have to validate by group so that we can take into account
+        //independent or dependent group-validation.
+        var constraintsToValidate = {
+            groupedContexts: {}
+        };
+
+        var i = 0;
+        while (i < options.groups.length) {
+            var group = options.groups[i];
+
+            for(var j = 0; j < options.elementIds.length; j++) {
+                var elementId = options.elementIds[j];
+
+                var context = createConstraintValidationContext(group, elementId, options.constraintType);
+
+                if(!constraintsToValidate.groupedContexts[group]) {
+                    constraintsToValidate.groupedContexts[group] = {
+                        asyncContexts: [],
+                        syncContexts: []
+                    };
+                }
+
+                if(context.async) {
+                    async = true;
+                    constraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+                } else {
+                    constraintsToValidate.groupedContexts[group].syncContexts.push(context);
+                }
+            }
+
+            i++;
+        }
+
+        var result = removeDuplicateGroupedContexts(constraintsToValidate);
+        options.groups = result.groups;
+        constraintsToValidate = result.uniqueConstraintsToValidate;
+
+        return processGroupedConstraintsToValidate(options, constraintsToValidate, async);
+    }
+
+    function hasConstraintBeenValidated(context) {
+        var validated = true;
+
+        if (!processedConstraints[context.elementId]) {
+            processedConstraints[context.elementId] = {};
+        }
+
+        var element = document.getElementById(context.elementId);
+        var name = element.name.replace(/\s/g, "");
+
+        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            if (!processedRadioGroups[name]) {
+                processedRadioGroups[name] = {};
+            }
+        } else {
+            processedRadioGroups[name] = {}; //we don't really care about this if what we're looking at is not a radio button
+        }
+
+        if (!processedConstraints[context.elementId][context.elementConstraint] && !processedRadioGroups[name][context.elementConstraint]) {
+            validated = false;
+
+            processedConstraints[context.elementId][context.elementConstraint] = true; //mark this element constraint as validated
+            if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+                processedRadioGroups[name][context.elementConstraint] = true; //mark this radio group as validated
+            }
+        }
+
+        return validated;
+    }
+
+    function removeDuplicateContexts(constraintsToValidate) {
+        var uniqueConstraintsToValidate = {
+            asyncContexts: [],
+            syncContexts: []
+        };
+
+        for(var i = 0; i < constraintsToValidate.syncContexts.length; i++) {
+            var context = constraintsToValidate.syncContexts[i];
+            if(!hasConstraintBeenValidated(context)) {
+                uniqueConstraintsToValidate.syncContexts.push(context);
+            }
+        }
+
+        for(var i = 0; i < constraintsToValidate.asyncContexts.length; i++) {
+            var context = constraintsToValidate.asyncContexts[i];
+            if(!hasConstraintBeenValidated(context)) {
+                uniqueConstraintsToValidate.asyncContexts.push(context);
+            }
+        }
+
+        return uniqueConstraintsToValidate;
+    }
+
+    function removeDuplicateGroupedContexts(constraintsToValidate) {
+
+        //We keep track of groups here because we need to tell the calling function which groups we encountered. This is
+        //because it is possible that some groups may end up being not validated at all because those elements and
+        //and constraints that are part of the group may have already shown up in a previous group. Hence, if we do not
+        //redefine the "groups" property in options, in the calling function, we will end up trying to validate groups
+        //that do not have any constraint contexts associated with them, and this will lead to errors (i.e., the
+        //syncContexts and asyncContexts will not exist and will be "undefined").
+
+        var groups = [];
+        var uniqueConstraintsToValidate = {
+            groupedContexts: {}
+        };
+
+        for(var group in constraintsToValidate.groupedContexts) if(constraintsToValidate.groupedContexts.hasOwnProperty(group)) {
+
+            for(var i = 0; i < constraintsToValidate.groupedContexts[group].syncContexts.length; i++) {
+                var context = constraintsToValidate.groupedContexts[group].syncContexts[i];
+                if(!hasConstraintBeenValidated(context)) {
+                    if(!uniqueConstraintsToValidate.groupedContexts[group]) {
+                        uniqueConstraintsToValidate.groupedContexts[group] = {
+                            asyncContexts: [],
+                            syncContexts: []
+                        };
+                    }
+
+                    uniqueConstraintsToValidate.groupedContexts[group].syncContexts.push(context);
+
+                    if(groups.indexOf(group) == -1) {
+                        groups.push(group);
+                    }
+                }
+            }
+
+            for(var i = 0; i < constraintsToValidate.groupedContexts[group].asyncContexts.length; i++) {
+                var context = constraintsToValidate.groupedContexts[group].asyncContexts[i];
+                if(!hasConstraintBeenValidated(context)) {
+                    if(!uniqueConstraintsToValidate.groupedContexts[group]) {
+                        uniqueConstraintsToValidate.groupedContexts[group] = {
+                            asyncContexts: [],
+                            syncContexts: []
+                        };
+                    }
+
+                    uniqueConstraintsToValidate.groupedContexts[group].asyncContexts.push(context);
+
+                    if(groups.indexOf(group) == -1) {
+                        groups.push(group);
+                    }
+                }
+            }
+        }
+
+        return {
+            groups: groups,
+            uniqueConstraintsToValidate: uniqueConstraintsToValidate
+        };
+    }
+
+    function processConstraintsToValidate(constraintsToValidate, options) {
+        var constraintViolations = [];
+
+        if (constraintsToValidate.syncContexts.length > 0) {
+            constraintViolations = validateConstraintContexts(constraintsToValidate);
+        }
+
+        if (constraintsToValidate.asyncContexts.length > 0) {
+            if (!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            asynchronouslyValidateConstraintContexts(constraintsToValidate, function (asynchronousConstraintViolations) {
+                if (constraintViolations.length > 0) {
+                    constraintViolations = constraintViolations.concat(asynchronousConstraintViolations);
+                } else {
+                    constraintViolations = asynchronousConstraintViolations;
+                }
+
+                options.callback(constraintViolations);
+            });
         }
 
         return constraintViolations;
     }
 
-    function validateGroupsElementWithConstraint(options) {
+    function processGroupedConstraintsToValidate(options, constraintsToValidate, async) {
+        var constraintViolations = validateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate);
+
+        if (async) {
+            if (!options.callback) {
+                throw new ExceptionService.Exception.IllegalArgumentException("One or more constraints to be validated are asynchronous, but a callback has not been provided.")
+            }
+
+            /**
+             * If the validation is dependent, it means that if one of the provided groups failed validation, then the
+             * other groups will not be validated. Since we have segmented our validation so that we validate synchronous
+             * constraints first, we can check to see what group (if any) failed. This means that we don't really need
+             * to validate any of the other groups asynchronously either; we only need to asynchronously validate the group
+             * that failed. To do this, we modify the "constraintsToValidate" structure so that it only contains those
+             * constraints that belong to the failed group.
+             */
+            if (!options.independent) {
+                if (constraintViolations.length > 0) {
+                    var failedGroup = constraintViolations[0].group;
+                    var failedGroupContexts = constraintsToValidate.groupedContexts[failedGroup];
+
+                    constraintsToValidate.groupedContexts = {};
+                    constraintsToValidate.groupedContexts[failedGroup] = failedGroupContexts;
+                }
+            }
+
+            asynchronouslyValidateGroupedConstraintContexts(options.groups, options.independent, constraintsToValidate, function (asynchronousConstraintViolations) {
+                if (constraintViolations.length > 0) {
+                    constraintViolations = constraintViolations.concat(asynchronousConstraintViolations);
+                } else {
+                    constraintViolations = asynchronousConstraintViolations;
+                }
+
+                options.callback(constraintViolations);
+            });
+        }
+
+        return constraintViolations;
+    }
+
+    function createConstraintValidationContext(group, elementId, elementConstraint) {
+        var groupElements = boundConstraints[group];
+        if(!groupElements) {
+            throw new ExceptionService.Exception.IllegalArgumentException("Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")");
+        }
+
+        var elementConstraints = groupElements[elementId];
+        if(!elementConstraints) {
+             throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been defined for the element with id: " + elementId + " in group " + group);
+        }
+
+        var params = elementConstraints[elementConstraint];
+        if(!params) {
+             throw new ExceptionService.Exception.IllegalArgumentException("Constraint " + elementConstraint + " in group " + group + " hasn't been bound to the element with id " + elementId);
+        }
+
+        return {
+            group: group,
+            elementId: elementId,
+            elementConstraint: elementConstraint,
+            params: params,
+            async: constraintDefinitions[elementConstraint].async
+        };
+    }
+
+    function validateConstraintContexts(constraintsToValidate) {
         var constraintViolations = [];
 
         var i = 0;
-        var successful = true;
-        while (i < options.groups.length && successful) {
-            var group = options.groups[i];
-            var constraintViolation = validateGroupElementConstraintCombination(group, options.elementId, options.constraintType);
+        while (i < constraintsToValidate.syncContexts.length) {
+            var context = constraintsToValidate.syncContexts[i];
+            var constraintViolation = validateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params);
 
             if (constraintViolation) {
                 constraintViolations.push(constraintViolation);
             }
 
             i++;
-            successful = (constraintViolations.length == 0) || (options.independent && constraintViolations.length != 0);
         }
 
         return constraintViolations;
     }
 
-    function validateGroupElementConstraintCombination(group, elementId, elementConstraint) {
-        //console.log(group, elementId, elementConstraint);
-        var constraintViolation;
-        var groupElements = boundConstraints[group];
+    //Need to account for async constraints in compound constraints as well. here's an idea: have the cycleExists function also return a flag that says
+    //whether any of the compounds are async. If so, the entire compound constraint is async. one way to validate async constraints mixed with sync constraints
+    //is to use the same strategy as validateContext below. However, check to see if the composing constraint is async or not. if it is sync, validate as usual
+    //and increment the counter. if not, use the callback.
 
-        if (!groupElements) {
-            throw new ExceptionService.Exception.IllegalArgumentException("Undefined group in group list (group: " + group + ", elementId: " + elementId + ", constraint: " + elementConstraint + ")");
+    function asynchronouslyValidateConstraintContexts(constraintsToValidate, callback) {
+        var constraintViolations = [];
+        var numContextsProcessed = 0;
+
+        for(var i = 0; i < constraintsToValidate.asyncContexts.length; i++) {
+            var context = constraintsToValidate.asyncContexts[i];
+            asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, validationHandler);
         }
 
-        var elementConstraints = groupElements[elementId];
+        function validationHandler(constraintViolation) {
+            numContextsProcessed++;
 
-        if (!validatedConstraints[elementId]) {
-            validatedConstraints[elementId] = {};
-        }
-
-        var element = document.getElementById(elementId);
-        var name = element.name.replace(/\s/g, "");
-
-        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-            if (!validatedRadioGroups[name]) {
-                validatedRadioGroups[name] = {};
+            if(constraintViolation) {
+                constraintViolations.push(constraintViolation);
             }
-        } else {
-            name = "__dontcare__";
-            validatedRadioGroups[name] = {}; //we really don't care about this if what we're looking at is not a radio button
+
+            if(numContextsProcessed === constraintsToValidate.asyncContexts.length) {
+                callback(constraintViolations);
+            }
+        }
+    }
+
+    function validateGroupedConstraintContexts(groups, independent, constraintsToValidate) {
+        var constraintViolations = [];
+        var i = 0;
+        var successful = true;
+
+        while (i < groups.length && successful) {
+
+            var group = groups[i];
+            var contexts = constraintsToValidate.groupedContexts[group].syncContexts;
+
+            for (var j = 0; j < contexts.length; j++) {
+                var context = contexts[j];
+                var constraintViolation = validateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params);
+
+                if (constraintViolation) {
+                    constraintViolations.push(constraintViolation);
+                }
+            }
+
+            i++;
+            successful = (constraintViolations.length == 0) || (independent && constraintViolations.length != 0);
         }
 
-        //Validate this constraint only if we haven't already validated it during this validation run
-        if (!validatedConstraints[elementId][elementConstraint] && !validatedRadioGroups[name][elementConstraint]) {
-            if (!elementConstraints) {
-                throw new ExceptionService.Exception.IllegalArgumentException("No constraints have been defined for the element with id: " + elementId + " in group " + group);
-            } else {
-                var params = elementConstraints[elementConstraint];
+        return constraintViolations;
+    }
 
-                if (!params) {
-                    throw new ExceptionService.Exception.IllegalArgumentException(elementConstraint + " in group " + group + " hasn't been bound to the element with id " + elementId);
-                } else {
-                    //console.log("Going to run validator for:", group, elementId, elementConstraint, params);
-                    var validationResult = runValidatorFor(group, elementId, elementConstraint, params);
+    function asynchronouslyValidateGroupedConstraintContexts(groups, independent, constraintsToValidate, callback) {
+        var constraintViolations = [];
+        var successful = true;
 
-                    var errorMessage = "";
-                    if (!validationResult.constraintPassed) {
-                        errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
+        (function validateGroupedContexts(i) {
+            if(i < groups.length && successful) {
+                var group = groups[i];
+                var contexts = constraintsToValidate.groupedContexts[group].asyncContexts;
+                var numContextsProcessed = 0;
 
-                        constraintViolation = {
-                            group: group,
-                            constraintName: elementConstraint,
-                            formSpecific: constraintDefinitions[elementConstraint].formSpecific,
-                            custom: constraintDefinitions[elementConstraint].custom,
-                            compound: constraintDefinitions[elementConstraint].compound,
-                            composingConstraintViolations: validationResult.composingConstraintViolations || [],
-                            constraintParameters: params,
-                            failingElements: validationResult.failingElements,
-                            message: errorMessage
-                        };
+                for(var j = 0; j < contexts.length; j++) {
+                    var context = contexts[j];
+                    asynchronouslyValidateGroupElementConstraintCombination(context.group, context.elementId, context.elementConstraint, context.params, validationHandler);
+                }
+
+                function validationHandler(constraintViolation) {
+                    numContextsProcessed++;
+
+                    if(constraintViolation) {
+                        constraintViolations.push(constraintViolation);
                     }
 
-                    if (config.enableHTML5Validation) {
-                        for (var i = 0; i < validationResult.failingElements.length; i++) {
-                            validationResult.failingElements[i].setCustomValidity("");
-                        }
+                    if(numContextsProcessed === contexts.length) {
+                        successful = (constraintViolations.length === 0) || (independent && constraintViolations.length != 0);
+                        validateGroupedContexts(++i);
                     }
                 }
+            } else {
+                callback(constraintViolations);
+            }
+        })(0);
+    }
+
+    function validateGroupElementConstraintCombination(group, elementId, elementConstraint, params) {
+        var constraintViolation;
+
+        var validationResult = runValidatorFor(group, elementId, elementConstraint, params);
+
+        var errorMessage = "";
+        if (!validationResult.constraintPassed) {
+            errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
+
+            constraintViolation = {
+                group: group,
+                constraintName: elementConstraint,
+                formSpecific: constraintDefinitions[elementConstraint].formSpecific,
+                custom: constraintDefinitions[elementConstraint].custom,
+                compound: constraintDefinitions[elementConstraint].compound,
+                async: constraintDefinitions[elementConstraint].async,
+                composingConstraintViolations: validationResult.composingConstraintViolations || [],
+                constraintParameters: params,
+                failingElements: validationResult.failingElements,
+                message: errorMessage
+            };
+        }
+
+        if (config.enableHTML5Validation) {
+            for (var i = 0; i < validationResult.failingElements.length; i++) {
+                validationResult.failingElements[i].setCustomValidity("");
             }
         }
 
         return constraintViolation;
+    }
+
+    function asynchronouslyValidateGroupElementConstraintCombination(group, elementId, elementConstraint, params, callback) {
+        var constraintViolation;
+
+        asynchronouslyRunValidatorFor(group, elementId, elementConstraint, params, function(validationResult) {
+            var errorMessage = "";
+            if (!validationResult.constraintPassed) {
+                errorMessage = interpolateConstraintDefaultMessage(elementId, elementConstraint, params);
+
+                constraintViolation = {
+                    group: group,
+                    constraintName: elementConstraint,
+                    formSpecific: constraintDefinitions[elementConstraint].formSpecific,
+                    custom: constraintDefinitions[elementConstraint].custom,
+                    compound: constraintDefinitions[elementConstraint].compound,
+                    async: constraintDefinitions[elementConstraint].async,
+                    composingConstraintViolations: validationResult.composingConstraintViolations || [],
+                    constraintParameters: params,
+                    failingElements: validationResult.failingElements,
+                    message: errorMessage
+                };
+            }
+
+            if (config.enableHTML5Validation) {
+                for (var i = 0; i < validationResult.failingElements.length; i++) {
+                    validationResult.failingElements[i].setCustomValidity("");
+                }
+            }
+
+            callback(constraintViolation);
+        });
     }
 
     function runValidatorFor(currentGroup, elementId, elementConstraint, params) {
@@ -885,8 +1379,7 @@
             failingElements = constraintDefinitions[elementConstraint].validator.call(element, params);
             constraintPassed = failingElements.length == 0;
         } else if (constraintDefinitions[elementConstraint].compound) {
-            //            console.log("is compound");
-            composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint]);
+            composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], null);
             constraintPassed = composingConstraintViolations.length == 0;
 
             if (!constraintPassed) {
@@ -900,15 +1393,13 @@
             }
         }
 
-        validatedConstraints[elementId][elementConstraint] = true; //mark this element constraint as validated
-
         var name = element.name.replace(/\s/g, "");
         if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
-            validatedRadioGroups[name][elementConstraint] = true; //mark this radio group as validated
             failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")); //let's set failing elements to all elements of the radio group
         }
 
         var validationResult = {
+            constraintName: elementConstraint,
             constraintPassed: constraintPassed,
             failingElements: failingElements
         };
@@ -918,6 +1409,56 @@
         }
 
         return validationResult;
+    }
+
+    function asynchronouslyRunValidatorFor(currentGroup, elementId, elementConstraint, params, callback) {
+        var element = document.getElementById(elementId);
+
+        if (constraintDefinitions[elementConstraint].formSpecific) {
+            constraintDefinitions[elementConstraint].validator.call(element, params, function(failingElements) {
+                processValidationResult(failingElements.length === 0, null, failingElements, callback);
+            });
+
+        } else if (constraintDefinitions[elementConstraint].compound) {
+            constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], function(composingConstraintViolations) {
+                var failingElements = [];
+                var constraintPassed = composingConstraintViolations.length === 0;
+                if(!constraintPassed) {
+                    failingElements.push(element);
+                }
+
+                processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback);
+            });
+
+        } else {
+            constraintDefinitions[elementConstraint].validator.call(element, params, function(constraintPassed) {
+                var failingElements = [];
+                if(!constraintPassed) {
+                    failingElements.push(element);
+                }
+
+                processValidationResult(constraintPassed, null, failingElements, callback);
+            });
+        }
+
+        function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
+            var name = element.name.replace(/\s/g, "");
+            if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+                failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
+            }
+
+            var validationResult = {
+                constraintName: elementConstraint,
+                constraintPassed: constraintPassed,
+                failingElements: failingElements
+            };
+
+            if (!constraintDefinitions[elementConstraint].reportAsSingleViolation) {
+                validationResult.composingConstraintViolations = composingConstraintViolations;
+            }
+
+            callback(validationResult);
+        }
     }
 
     function interpolateConstraintDefaultMessage(elementId, elementConstraint, params) {
