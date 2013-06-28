@@ -10243,7 +10243,9 @@ test('Test @Checked against checked radio-button group (failing, markup)', funct
     $radio3.attr("name", "AwesomeRadios");
 
     regula.bind();
-    equal(regula.validate().length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    var constraintViolations = regula.validate();
+    equal(constraintViolations.length, 1, "The @Checked constraint must fail against an unchecked radio-button group");
+    equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
 
     deleteElements();
 });
@@ -16275,19 +16277,19 @@ test('Test that multiple elements have been bound to the groups specified (progr
 
     var constraintViolations = regula.validate({groups: [regula.Group.First]});
 
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "First", "Constraint is expected to be bound to regula.Group.First");
     equal(constraintViolations[1].group, "First", "Constraint is expected to be bound to regula.Group.First");
     equal(constraintViolations[2].group, "First", "Constraint is expected to be bound to regula.Group.First");
 
     constraintViolations = regula.validate({groups: [regula.Group.Second]});
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
     equal(constraintViolations[1].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
     equal(constraintViolations[2].group, "Second", "Constraint is expected to be bound to regula.Group.Second");
 
     constraintViolations = regula.validate({groups: [regula.Group.Third]});
-    equal(constraintViolations.length, 3, "Three elements must have failed validation")
+    equal(constraintViolations.length, 3, "Three elements must have failed validation");
     equal(constraintViolations[0].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
     equal(constraintViolations[1].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
     equal(constraintViolations[2].group, "Third", "Constraint is expected to be bound to regula.Group.Third");
@@ -16677,7 +16679,7 @@ test('Test regula.unbind() with empty options parameter', function() {
 });
 
 test('Test regula.unbind() with invalid elements parameter', function() {
-    raises(function() {
+    throws(function() {
         regula.unbind({
             elements: "string"
         });
@@ -16744,10 +16746,10 @@ test('Test regula.unbind() with elements parameter', function() {
     });
 
     equal(regula.validate().length, 0, "All bound elements must have been unbound");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText0"})
     }, regula.Exception.IllegalArgumentException, "Calling regula.validate with an unbound element's id must result in an error");
-    raises(function() {
+    throws(function() {
         regula.validate({elementId: "myText1"})
     }, regula.Exception.IllegalArgumentException, "Calling regula.validate with an unbound element's id must result in an error");
 
@@ -18626,7 +18628,7 @@ test('Test calling regula.validate() with undefined group and elements', functio
             groups: [regula.Group.SecondGroup, regula.Group.FakeGroup],
             elements: [$text0.get(0), $text1.get(0)]
         });
-    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with undefined group and elements should error out");;
+    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with undefined group and elements should error out");
 
     deleteElements();
 });
@@ -19131,7 +19133,7 @@ test('Test binding HTML5 email to an invalid type', function() {
 
     throws(function() {
         regula.bind();
-    }, regula.Exception.BindException, "@HTML5Email must only be bound to an \"email\"-type input.")
+    }, regula.Exception.BindException, "@HTML5Email must only be bound to an \"email\"-type input.");
 
     deleteElements();
 });
@@ -19176,7 +19178,7 @@ test('Test binding HTML5 URL to an invalid type', function() {
 
     throws(function() {
         regula.bind();
-    }, regula.Exception.BindException, "@HTML5URL must only be bound to a \"url\"-type input.")
+    }, regula.Exception.BindException, "@HTML5URL must only be bound to a \"url\"-type input.");
 
     deleteElements();
 });
@@ -19215,7 +19217,7 @@ test('Test binding to HTML5 maxlength', function() {
     equal(regula.bind(), undefined, "Must be able to bind to HTML5 maxlength without errors");
 
     var maxlength = $maxlength0.attr("maxlength");
-    equal(maxlength, 10, "maxlength attribute must be equal to 10.")
+    equal(maxlength, 10, "maxlength attribute must be equal to 10.");
 
     deleteElements();
 });
@@ -19511,6 +19513,96 @@ asyncTest('Test creating and using a passing, custom, asynchronous constraint', 
     });
 });
 
+asyncTest('Test creating and using an asynchronous form-specific constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        formSpecific: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    var result = [];
+
+                    if(!data.pass) {
+                        result = [jQuery("#password0").get(0), jQuery("#password1").get(0)]
+                    }
+
+                    callback(result);
+                }
+            });
+        }
+    });
+
+    var $form = createFormElement("myForm", "@CustomConstraint" + randomSuffix);
+    var $password0 = createInputElement("password0", null, "password");
+    var $password1 = createInputElement("password1", null, "password");
+
+    $form.append($password0);
+    $form.append($password1);
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        var constraintViolation = constraintViolations[0];
+        equal(constraintViolations.length, 1, "There must be one constraint-violation");
+        equal(constraintViolation.constraintName, "CustomConstraint" + randomSuffix, "Constraint name does not match");
+        ok(constraintViolation.formSpecific, "This must be a form-specific constraint");
+        equal(constraintViolation.failingElements.length, 2, "There must be two failing elements");
+        equal(constraintViolation.failingElements[0].id, "password0", "The id does not match");
+        equal(constraintViolation.failingElements[1].id, "password1", "The id does not match");
+
+        deleteElements();
+        start();
+    })
+});
+
+asyncTest('Test failing asynchronous test for radio-button group', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $radio0 = createInputElement("radio0", "@CustomConstraint" + randomSuffix, "radio");
+    $radio0.attr("name", "AwesomeRadios");
+
+    var $radio1 = createInputElement("radio1", "@CustomConstraint" + randomSuffix, "radio");
+    $radio1.attr("name", "AwesomeRadios");
+
+    var $radio2 = createInputElement("radio2", "@CustomConstraint" + randomSuffix, "radio");
+    $radio2.attr("name", "AwesomeRadios");
+
+    var $radio3 = createInputElement("radio3", "@CustomConstraint" + randomSuffix, "radio");
+    $radio3.attr("name", "AwesomeRadios");
+
+    regula.bind();
+    regula.validate(function(constraintViolations) {
+        equal(constraintViolations.length, 1, "The @Checked constraint must return one violation per radio-button group");
+        equal(constraintViolations[0].failingElements.length, 4, "There must be four failing-elements");
+
+        deleteElements();
+        start();
+    });
+
+});
+
 asyncTest('Test creating and using multiple asynchronous constraints', function() {
     var results = [false, true, false, false, true];
     var suffixes = [];
@@ -19677,7 +19769,7 @@ asyncTest('Test creating and using a multiple asynchronous constraints, which ar
             constraintViolations[i].group === "FirstGroup" && groupCount++;
         }
 
-        equal(groupCount, 3, "All constraint violations must be from the \"FirstGroup\" group.")
+        equal(groupCount, 3, "All constraint violations must be from the \"FirstGroup\" group.");
 
         deleteElements();
         start();
@@ -20427,7 +20519,7 @@ test('Test that validating an asynchronous compound-constraint without a callbac
             {constraintType: regula.Constraint["AsyncConstraint2" + randomSuffix]},
             {constraintType: regula.Constraint["SyncConstraint0" + randomSuffix]},
             {constraintType: regula.Constraint["SyncConstraint1" + randomSuffix]},
-            {constraintType: regula.Constraint["SyncConstraint2" + randomSuffix]},
+            {constraintType: regula.Constraint["SyncConstraint2" + randomSuffix]}
         ]
     });
 

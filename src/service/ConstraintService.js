@@ -750,7 +750,7 @@
         while(i < options.constraints.length && !async) {
             var constraint = options.constraints[i];
             var constraintName = ReverseConstraint[constraint.constraintType];
-            async = async || constraintDefinitions[constraintName].async
+            async = async || constraintDefinitions[constraintName].async;
 
             i++;
         }
