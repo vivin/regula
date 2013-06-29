@@ -73,6 +73,9 @@
     //Make sure we initialize bound constraints
     BindingService.initializeBoundConstraints();
 
+    //Initialize public validators
+    ValidationService.initializePublicValidators(ConstraintService.constraintDefinitions);
+
     /**
      * Function that helps configure regula's behavior
      * @param options
@@ -264,6 +267,11 @@
                 defaultMessage: defaultMessage,
                 validator: validator
             });
+
+            //We only have to do this for custom constraints and only if they actually specify a validator
+            if(ConstraintService.constraintDefinitions[name].custom && typeof options.validator !== "undefined") {
+                ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
+            }
         }
     }
 
@@ -329,6 +337,8 @@
                 params: params,
                 defaultMessage: defaultMessage
             });
+
+            ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
         }
     }
 
@@ -377,6 +387,8 @@
             constraints: constraints,
             defaultMessage: defaultMessage
         });
+
+        ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
     }
 
     /**
@@ -451,6 +463,7 @@
         Constraint: ConstraintService.Constraint,
         Group: GroupService.Group,
         DateFormat: DateFormat,
-        Exception: ExceptionService.Exception
+        Exception: ExceptionService.Exception,
+        Validator: ValidationService.PublicValidator
     };
 }));

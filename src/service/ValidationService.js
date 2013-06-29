@@ -1,5 +1,7 @@
 /**
  * Encapsulates the logic that performs constraint validation.
+ * The init method needs to be called prior to invoking the validate method or the createPublicValidator method. It's...
+ * less than ideal, but I wanted to inject values instead of having cyclical dependencies on other modules.
  * @type {{Validator: {}, compoundValidator: Function, validate: Function, runValidatorFor: Function, interpolateConstraintDefaultMessage: Function}}
  */
 
@@ -36,6 +38,19 @@
 
     var processedConstraints = {}; //Keeps track of constraints that have already been processed into contexts for a validation run. Cleared out each time validation is run.
     var processedRadioGroups = {}; //Keeps track of constraints that have already been processed into contexts for a validation run, on radio groups. Cleared out each time validation is run.
+
+     /**
+     * Public-facing validators. Provides a convenient way for developers to directly call validator functions that
+     * belong to constraints. The actual validators are not exposed. Initially set to null, it will be initialized
+     * and populated in the initializePublicValidators method
+     * @type {{}}
+     */
+    var PublicValidator = {};
+    function initializePublicValidators(constraintDefinitions) {
+        for(var constraintName in constraintDefinitions) if(constraintDefinitions.hasOwnProperty(constraintName)) {
+            createPublicValidator(constraintName, constraintDefinitions);
+        }
+    }
 
     function init(options) {
         config = options.config;
@@ -343,6 +358,34 @@
             return !this.validity.stepMismatch;
         }
     };
+
+    /**
+     * Creates a public-facing validator for the specified constraint.
+     * @param constraintName
+     * @param constraintDefinitions
+     */
+    function createPublicValidator(constraintName, constraintDefinitions) {
+        var constraintDefinition = constraintDefinitions[constraintName];
+
+        var lowerCasedConstraintName = constraintName.replace(/(^[A-Z]+)/, function(group) {
+            return group.toLowerCase();
+        });
+
+
+        if (constraintDefinition.async) {
+            PublicValidator[lowerCasedConstraintName] = function (element, params, callback) {
+                if (typeof callback === "undefined") {
+                    throw new ExceptionService.Exception.IllegalArgumentException(constraintName + " is an asynchronous constraint, but you have not provided a callback.");
+                }
+
+                return constraintDefinition.validator.call(element, params, callback);
+            }
+        } else {
+            PublicValidator[lowerCasedConstraintName] = function (element, params) {
+                return constraintDefinition.validator.call(element, params);
+            }
+        }
+    }
 
     /**
      * This is a meta-validator that validates constraints inside a compound constraint.
@@ -1514,10 +1557,13 @@
 
     return {
         Validator: Validator,
+        PublicValidator: PublicValidator,
         init: init,
+        initializePublicValidators: initializePublicValidators,
         compoundValidator: compoundValidator,
         validate: validate,
         runValidatorFor: runValidatorFor,
-        interpolateConstraintDefaultMessage: interpolateConstraintDefaultMessage
+        interpolateConstraintDefaultMessage: interpolateConstraintDefaultMessage,
+        createPublicValidator: createPublicValidator
     };
 }));

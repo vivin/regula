@@ -20589,7 +20589,6 @@ asyncTest('Test validating asynchronous constraints by element (2)', function() 
     regula.bind();
 
     regula.validate({elements: [$text0.get(0), $text1.get(0)]}, function(constraintViolations) {
-        console.log(constraintViolations);
         equal(constraintViolations.length, 2, "There must be one constraint violation");
         equal(constraintViolations[0].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
         equal(constraintViolations[1].constraintName, "AsyncConstraint0" + randomSuffix, "Constraint name does not match");
