@@ -371,7 +371,6 @@
             return group.toLowerCase();
         });
 
-
         if (constraintDefinition.async) {
             PublicValidator[lowerCasedConstraintName] = function (element, params, callback) {
                 if (typeof callback === "undefined") {
