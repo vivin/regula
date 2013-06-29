@@ -2,7 +2,7 @@
 
 ### Why?
 
-You might be wondering: "_Another_ client-side validation-framework? Why?". After all, there are already different validation-frameworks like jQuery's Validation Plugin, Validator from jQuery tools, and so many  more. Furthermore, browsers are starting to implement HTML5 validation constraints, so what makes Regula so special?
+You might be wondering: "**Another** client-side validation-framework? Why?". After all, there are already different validation-frameworks like jQuery's Validation Plugin, Validator from jQuery tools, and so many  more. Furthermore, browsers are starting to implement HTML5 validation constraints, so what makes Regula so special?
 
 ###Small, Easy, and Powerful
 
