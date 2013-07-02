@@ -57,8 +57,6 @@ function deleteElements() {
 
 module('Constraint-definition parsing tests');
 
-
-
 test('Test empty definition', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "");
@@ -17531,7 +17529,7 @@ test('Test that creating a compound constraint with an asynchronous constraint m
     regula.custom({
         name: "AsyncConstraint0",
         async: true,
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             callback(false);
         }
     });
@@ -17552,7 +17550,7 @@ test('Test that creating a compound constraint that contains an asynchronous com
     regula.custom({
         name: "AsyncConstraint1",
         async: true,
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             callback(false);
         }
     });
@@ -17874,7 +17872,7 @@ test('Test that overriding a synchronous compound-constraint by adding an asynch
         name: "AsynchronousConstraint" + randomAsyncConstraintSuffix,
         async: true,
         defaultMessage: "The constraint failed",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             callback(true);
         }
     });
@@ -17937,7 +17935,7 @@ test('Test that overriding a synchronous constraint (used in compound constraint
     regula.override({
         constraintType: regula.Constraint["CustomConstraint" + randomSuffix],
         async: true,
-        validate: function(params, callback) {
+        validate: function(params, validator, callback) {
             callback(true);
         }
     });
@@ -17992,7 +17990,7 @@ test('Test that overriding a synchronous constraint (used in compound constraint
         name: "AsyncConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The constraint failed",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             callback(true);
         }
     });
@@ -18071,7 +18069,7 @@ test('Test that overriding a synchronous constraint (used in compound constraint
         name: "AsyncConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The constraint failed",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             callback(true);
         }
     });
@@ -18221,8 +18219,8 @@ test('Test that Validator gets updated when overriding validator on a custom con
     regula.custom({
         name: "CustomConstraint1" + randomSuffix,
         defaultMessage: "The custom constraint failed.",
-        validator: function(params, Validator) {
-            var validatorReturnValue = Validator["customConstraint0" + randomSuffix](this, params, Validator);
+        validator: function(params, validator) {
+            var validatorReturnValue = validator["customConstraint0" + randomSuffix](this, params, validator);
             ok(validatorReturnValue, "Validator must have been changed");
             return false;
         }
@@ -18828,8 +18826,8 @@ test('Test that validators are available in custom-constraint validator', functi
     regula.custom({
         name: "CustomConstraint0" + randomSuffix,
         defaultMessage: "The custom constraint failed.",
-        validator: function(params, Validator) {
-            ok(typeof Validator !== "undefined", "Validator must be defined");
+        validator: function(params, validator) {
+            ok(typeof validator !== "undefined", "Validator must be defined");
             return false;
         }
     });
@@ -18847,8 +18845,8 @@ test('Test that custom validator is available in Validator', function() {
     regula.custom({
         name: "CustomConstraint0" + randomSuffix,
         defaultMessage: "The custom constraint failed.",
-        validator: function(params, Validator) {
-            ok(typeof Validator["customConstraint0" + randomSuffix] !== "undefined", "Custom validator must be defined");
+        validator: function(params, validator) {
+            ok(typeof validator["customConstraint0" + randomSuffix] !== "undefined", "Custom validator must be defined");
             return false;
         }
     });
@@ -18874,8 +18872,8 @@ test('Test that compound validator is available in Validator', function() {
     regula.custom({
         name: "CustomConstraint0" + randomSuffix,
         defaultMessage: "The custom constraint failed.",
-        validator: function(params, Validator) {
-            ok(typeof Validator["compoundConstraint0" + randomSuffix] !== "undefined", "Compound validator must be defined");
+        validator: function(params, validator) {
+            ok(typeof validator["compoundConstraint0" + randomSuffix] !== "undefined", "Compound validator must be defined");
             return false;
         }
     });
@@ -19528,7 +19526,7 @@ asyncTest('Test creating and using a failing, custom, asynchronous constraint', 
         name: "CustomConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19566,7 +19564,7 @@ test('Test that validating an asynchronous constraint without supplying a callba
         name: "CustomConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19592,7 +19590,7 @@ asyncTest('Test creating and using a passing, custom, asynchronous constraint', 
         name: "CustomConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19621,7 +19619,7 @@ asyncTest('Test creating and using an asynchronous form-specific constraint', fu
         async: true,
         formSpecific: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19668,7 +19666,7 @@ asyncTest('Test failing asynchronous test for radio-button group', function() {
         name: "CustomConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19715,7 +19713,7 @@ asyncTest('Test creating and using multiple asynchronous constraints', function(
                 name: "CustomConstraint" + suffixes[i],
                 async: true,
                 defaultMessage: "The asynchronous constraint failed.",
-                validator: function(params, callback) {
+                validator: function(params, validator, callback) {
                     jQuery.ajax({
                         url: asyncTestServerURL,
                         dataType: "jsonp",
@@ -19753,7 +19751,7 @@ asyncTest('Test creating and using a mix of synchronous and asynchronous constra
                 return results[i];
             }
 
-            function asyncValidator(params, callback) {
+            function asyncValidator(params, validator, callback) {
                 jQuery.ajax({
                     url: asyncTestServerURL,
                     dataType: "jsonp",
@@ -19801,7 +19799,7 @@ asyncTest('Test creating and using a single asynchronous constraint, which is va
         name: "CustomConstraint" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -19844,7 +19842,7 @@ asyncTest('Test creating and using a multiple asynchronous constraints, which ar
                 name: "CustomConstraint" + suffixes[i],
                 async: true,
                 defaultMessage: "The asynchronous constraint failed.",
-                validator: function(params, callback) {
+                validator: function(params, validator, callback) {
                     jQuery.ajax({
                         url: asyncTestServerURL,
                         dataType: "jsonp",
@@ -19888,7 +19886,7 @@ test('Test that validating grouped constraints without providing a callback, res
                 name: "CustomConstraint" + suffixes[i],
                 async: true,
                 defaultMessage: "The asynchronous constraint failed.",
-                validator: function(params, callback) {
+                validator: function(params, validator, callback) {
                     jQuery.ajax({
                         url: asyncTestServerURL,
                         dataType: "jsonp",
@@ -19926,7 +19924,7 @@ asyncTest('Test creating and using a mix of grouped, multiple asynchronous and s
                 return results[i];
             }
 
-            function asyncValidator(params, callback) {
+            function asyncValidator(params, validator, callback) {
                 jQuery.ajax({
                     url: asyncTestServerURL,
                     dataType: "jsonp",
@@ -19981,7 +19979,7 @@ asyncTest('Test creating and using a mix of multiple asynchronous and synchronou
                 return results[i];
             }
 
-            function asyncValidator(params, callback) {
+            function asyncValidator(params, validator, callback) {
                 jQuery.ajax({
                     url: asyncTestServerURL,
                     dataType: "jsonp",
@@ -20045,7 +20043,7 @@ asyncTest('Test creating and using multiple asynchronous constraints that are gr
                     name: "CustomConstraint" + suffix,
                     async: true,
                     defaultMessage: "The asynchronous constraint failed.",
-                    validator: function(params, callback) {
+                    validator: function(params, validator, callback) {
                         jQuery.ajax({
                             url: asyncTestServerURL,
                             dataType: "jsonp",
@@ -20106,7 +20104,7 @@ asyncTest('Test creating and using multiple asynchronous constraints that are gr
                     name: "CustomConstraint" + suffix,
                     async: true,
                     defaultMessage: "The asynchronous constraint failed.",
-                    validator: function(params, callback) {
+                    validator: function(params, validator, callback) {
                         jQuery.ajax({
                             url: asyncTestServerURL,
                             dataType: "jsonp",
@@ -20160,7 +20158,7 @@ asyncTest('Test creating and using multiple asynchronous constraints that are gr
                     name: "CustomConstraint" + suffix,
                     async: true,
                     defaultMessage: "The asynchronous constraint failed.",
-                    validator: function(params, callback) {
+                    validator: function(params, validator, callback) {
                         jQuery.ajax({
                             url: asyncTestServerURL,
                             dataType: "jsonp",
@@ -20214,7 +20212,7 @@ asyncTest('Test creating and using a mix of synchronous and asynchronous constra
                     return results[group][i];
                 }
 
-                function asyncValidator(params, callback) {
+                function asyncValidator(params, validator, callback) {
                     jQuery.ajax({
                         url: asyncTestServerURL,
                         dataType: "jsonp",
@@ -20293,7 +20291,7 @@ asyncTest('Test creating and using a mix of synchronous and asynchronous constra
                     return results[group][i];
                 }
 
-                function asyncValidator(params, callback) {
+                function asyncValidator(params, validator, callback) {
                     jQuery.ajax({
                         url: asyncTestServerURL,
                         dataType: "jsonp",
@@ -20353,7 +20351,7 @@ asyncTest('Test validating a compound constraint that contains a mix of synchron
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20369,7 +20367,7 @@ asyncTest('Test validating a compound constraint that contains a mix of synchron
         name: "AsyncConstraint1" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20385,7 +20383,7 @@ asyncTest('Test validating a compound constraint that contains a mix of synchron
         name: "AsyncConstraint2" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20463,7 +20461,7 @@ asyncTest('Test validating a compound constraint that only contains asynchronous
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20479,7 +20477,7 @@ asyncTest('Test validating a compound constraint that only contains asynchronous
         name: "AsyncConstraint1" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20495,7 +20493,7 @@ asyncTest('Test validating a compound constraint that only contains asynchronous
         name: "AsyncConstraint2" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20543,7 +20541,7 @@ test('Test that validating an asynchronous compound-constraint without a callbac
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20559,7 +20557,7 @@ test('Test that validating an asynchronous compound-constraint without a callbac
         name: "AsyncConstraint1" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20575,7 +20573,7 @@ test('Test that validating an asynchronous compound-constraint without a callbac
         name: "AsyncConstraint2" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20638,7 +20636,7 @@ asyncTest('Test validating asynchronous constraints by element (1)', function() 
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20672,7 +20670,7 @@ asyncTest('Test validating asynchronous constraints by element (2)', function() 
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20707,7 +20705,7 @@ asyncTest('Test validating asynchronous constraint by element id', function() {
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20741,7 +20739,7 @@ asyncTest('Test validating asynchronous constraints by constraint (1)', function
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20775,7 +20773,7 @@ asyncTest('Test validating asynchronous constraints by constraint (2)', function
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20810,7 +20808,7 @@ asyncTest('Test validating asynchronous constraints by element and constraint (1
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20844,7 +20842,7 @@ asyncTest('Test validating asynchronous constraints by element and constraint (2
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20878,7 +20876,7 @@ asyncTest('Test validating asynchronous constraints by groups and element (1)', 
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20913,7 +20911,7 @@ asyncTest('Test validating asynchronous constraints by groups and element (2)', 
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20950,7 +20948,7 @@ asyncTest('Test validating asynchronous constraints by groups, element, and cons
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -20985,7 +20983,7 @@ asyncTest('Test validation asynchronous constraints by group and constraint (1)'
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -21020,7 +21018,7 @@ asyncTest('Test validation asynchronous constraints by group and constraint (2)'
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -21057,7 +21055,7 @@ asyncTest('Test validating asynchronous constraints by groups, element, and cons
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
@@ -21092,13 +21090,13 @@ asyncTest('Test that validators are available in validator for asynchronous cons
         name: "AsyncConstraint0" + randomSuffix,
         async: true,
         defaultMessage: "The asynchronous constraint failed.",
-        validator: function(params, callback, Validator) {
+        validator: function(params, validator, callback) {
             jQuery.ajax({
                 url: asyncTestServerURL,
                 dataType: "jsonp",
                 data: {pass: false},
                 success: function(data) {
-                    ok(typeof Validator !== "undefined", "Validator must not be undefined");
+                    ok(typeof validator !== "undefined", "Validator must not be undefined");
                     callback(data.pass)
                 }
             });

@@ -45,7 +45,7 @@
      * and populated in the initializePublicValidators method
      * @type {{}}
      */
-    var PublicValidator = {};
+    var publicValidator = {};
     function initializePublicValidators(constraintDefinitions) {
         for(var constraintName in constraintDefinitions) if(constraintDefinitions.hasOwnProperty(constraintName)) {
             createPublicValidator(constraintName, constraintDefinitions);
@@ -372,16 +372,16 @@
         });
 
         if (constraintDefinition.async) {
-            PublicValidator[lowerCasedConstraintName] = function (element, params, callback) {
+            publicValidator[lowerCasedConstraintName] = function (element, params, callback) {
                 if (typeof callback === "undefined") {
                     throw new ExceptionService.Exception.IllegalArgumentException(constraintName + " is an asynchronous constraint, but you have not provided a callback.");
                 }
 
-                return constraintDefinition.validator.call(element, params, callback, PublicValidator);
+                return constraintDefinition.validator.call(element, params, publicValidator, callback);
             }
         } else {
-            PublicValidator[lowerCasedConstraintName] = function (element, params) {
-                return constraintDefinition.validator.call(element, params, PublicValidator);
+            publicValidator[lowerCasedConstraintName] = function (element, params) {
+                return constraintDefinition.validator.call(element, params, publicValidator);
             }
         }
     }
@@ -1418,7 +1418,7 @@
         var composingConstraintViolations = [];
 
         if (constraintDefinitions[elementConstraint].formSpecific) {
-            failingElements = constraintDefinitions[elementConstraint].validator.call(element, params, PublicValidator);
+            failingElements = constraintDefinitions[elementConstraint].validator.call(element, params, publicValidator);
             constraintPassed = failingElements.length == 0;
         } else if (constraintDefinitions[elementConstraint].compound) {
             composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], null);
@@ -1428,7 +1428,7 @@
                 failingElements.push(element);
             }
         } else {
-            constraintPassed = constraintDefinitions[elementConstraint].validator.call(element, params, PublicValidator);
+            constraintPassed = constraintDefinitions[elementConstraint].validator.call(element, params, publicValidator);
 
             if (!constraintPassed) {
                 failingElements.push(element)
@@ -1457,9 +1457,9 @@
         var element = document.getElementById(elementId);
 
         if (constraintDefinitions[elementConstraint].formSpecific) {
-            constraintDefinitions[elementConstraint].validator.call(element, params, function(failingElements) {
+            constraintDefinitions[elementConstraint].validator.call(element, params, publicValidator, function(failingElements) {
                 processValidationResult(failingElements.length === 0, null, failingElements, callback);
-            }, PublicValidator);
+            });
 
         } else if (constraintDefinitions[elementConstraint].compound) {
             constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], function(composingConstraintViolations) {
@@ -1470,17 +1470,17 @@
                 }
 
                 processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback);
-            }, PublicValidator);
+            });
 
         } else {
-            constraintDefinitions[elementConstraint].validator.call(element, params, function(constraintPassed) {
+            constraintDefinitions[elementConstraint].validator.call(element, params, publicValidator, function(constraintPassed) {
                 var failingElements = [];
                 if(!constraintPassed) {
                     failingElements.push(element);
                 }
 
                 processValidationResult(constraintPassed, null, failingElements, callback);
-            }, PublicValidator);
+            });
         }
 
         function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
