@@ -377,11 +377,11 @@
                     throw new ExceptionService.Exception.IllegalArgumentException(constraintName + " is an asynchronous constraint, but you have not provided a callback.");
                 }
 
-                return constraintDefinition.validator.call(element, params, callback);
+                return constraintDefinition.validator.call(element, params, callback, PublicValidator);
             }
         } else {
             PublicValidator[lowerCasedConstraintName] = function (element, params) {
-                return constraintDefinition.validator.call(element, params);
+                return constraintDefinition.validator.call(element, params, PublicValidator);
             }
         }
     }
@@ -1418,7 +1418,7 @@
         var composingConstraintViolations = [];
 
         if (constraintDefinitions[elementConstraint].formSpecific) {
-            failingElements = constraintDefinitions[elementConstraint].validator.call(element, params);
+            failingElements = constraintDefinitions[elementConstraint].validator.call(element, params, PublicValidator);
             constraintPassed = failingElements.length == 0;
         } else if (constraintDefinitions[elementConstraint].compound) {
             composingConstraintViolations = constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], null);
@@ -1428,7 +1428,7 @@
                 failingElements.push(element);
             }
         } else {
-            constraintPassed = constraintDefinitions[elementConstraint].validator.call(element, params);
+            constraintPassed = constraintDefinitions[elementConstraint].validator.call(element, params, PublicValidator);
 
             if (!constraintPassed) {
                 failingElements.push(element)
@@ -1459,7 +1459,7 @@
         if (constraintDefinitions[elementConstraint].formSpecific) {
             constraintDefinitions[elementConstraint].validator.call(element, params, function(failingElements) {
                 processValidationResult(failingElements.length === 0, null, failingElements, callback);
-            });
+            }, PublicValidator);
 
         } else if (constraintDefinitions[elementConstraint].compound) {
             constraintDefinitions[elementConstraint].validator.call(element, params, currentGroup, constraintDefinitions[elementConstraint], function(composingConstraintViolations) {
@@ -1470,7 +1470,7 @@
                 }
 
                 processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback);
-            });
+            }, PublicValidator);
 
         } else {
             constraintDefinitions[elementConstraint].validator.call(element, params, function(constraintPassed) {
@@ -1480,7 +1480,7 @@
                 }
 
                 processValidationResult(constraintPassed, null, failingElements, callback);
-            });
+            }, PublicValidator);
         }
 
         function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
@@ -1556,7 +1556,6 @@
 
     return {
         Validator: Validator,
-        PublicValidator: PublicValidator,
         init: init,
         initializePublicValidators: initializePublicValidators,
         compoundValidator: compoundValidator,

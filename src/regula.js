@@ -463,7 +463,6 @@
         Constraint: ConstraintService.Constraint,
         Group: GroupService.Group,
         DateFormat: DateFormat,
-        Exception: ExceptionService.Exception,
-        Validator: ValidationService.PublicValidator
+        Exception: ExceptionService.Exception
     };
 }));

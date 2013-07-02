@@ -17577,7 +17577,7 @@ test('Test that creating a compound constraint that contains an asynchronous com
     ok(regula._modules.ConstraintService.constraintDefinitions.CompoundConstraint104.async, "A compound constraint with one or more asynchronous constraints must also be asynchronous.");
 });
 
-module('Test regula.override() to make sure that it returns proper error messages and creates compound constraints properly');
+module('Test regula.override() to make sure that it returns proper error messages and overrides constraints properly');
 
 test('Test calling regula.override() without any options', function() {
     throws(function() {
@@ -18185,7 +18185,7 @@ test('Test that you can override everything on a custom constraint', function() 
         defaultMessage: "c is {c} and d is {d}"
     });
 
-    var $form = createFormElement("myText", "@CustomConstraint" + randomSuffix + "(c=0, d=5)");
+    var $form = createFormElement("myForm", "@CustomConstraint" + randomSuffix + "(c=0, d=5)");
     regula.bind();
 
     var constraintViolations = regula.validate();
@@ -18196,6 +18196,41 @@ test('Test that you can override everything on a custom constraint', function() 
     equal(constraintViolation.constraintParameters.d, "5", "The d parameter must exist and it must be set to 5");
     equal(constraintViolation.formSpecific, true, "formSpecific must be true");
     equal(constraintViolation.message, "c is 0 and d is 5", "The default message must have changed");
+
+    deleteElements();
+});
+
+test('Test that Validator gets updated when overriding validator on a custom constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint0" + randomSuffix,
+        validator: function() {
+            return false;
+        },
+        defaultMessage: "Constraint failed"
+    });
+
+    regula.override({
+        constraintType: regula.Constraint["CustomConstraint0" + randomSuffix],
+        validator: function() {
+            return true;
+        }
+    });
+
+    regula.custom({
+        name: "CustomConstraint1" + randomSuffix,
+        defaultMessage: "The custom constraint failed.",
+        validator: function(params, Validator) {
+            var validatorReturnValue = Validator["customConstraint0" + randomSuffix](this, params, Validator);
+            ok(validatorReturnValue, "Validator must have been changed");
+            return false;
+        }
+    });
+
+    var $text0 = createInputElement("text0", '@CustomConstraint1' + randomSuffix, "text");
+    regula.bind();
+    regula.validate();
 
     deleteElements();
 });
@@ -18783,6 +18818,71 @@ test('Test label and message interpolation when calling regula.validate() (2)', 
     regula.bind();
     var constraintViolations = regula.validate();
     equal(constraintViolations[0].message, "monkey is awesome", "Interpolated message must match");
+
+    deleteElements();
+});
+
+test('Test that validators are available in custom-constraint validator', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint0" + randomSuffix,
+        defaultMessage: "The custom constraint failed.",
+        validator: function(params, Validator) {
+            ok(typeof Validator !== "undefined", "Validator must be defined");
+            return false;
+        }
+    });
+
+    var $text0 = createInputElement("text0", '@CustomConstraint0' + randomSuffix, "text");
+    regula.bind();
+    regula.validate();
+
+    deleteElements();
+});
+
+test('Test that custom validator is available in Validator', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint0" + randomSuffix,
+        defaultMessage: "The custom constraint failed.",
+        validator: function(params, Validator) {
+            ok(typeof Validator["customConstraint0" + randomSuffix] !== "undefined", "Custom validator must be defined");
+            return false;
+        }
+    });
+
+    var $text0 = createInputElement("text0", '@CustomConstraint0' + randomSuffix, "text");
+    regula.bind();
+    regula.validate();
+
+    deleteElements();
+});
+
+test('Test that compound validator is available in Validator', function() {
+    var randomSuffix = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint0" + randomSuffix,
+        constraints: [
+            {constraintType: regula.Constraint.NotBlank},
+            {constraintType: regula.Constraint.Email}
+        ]
+    });
+
+    regula.custom({
+        name: "CustomConstraint0" + randomSuffix,
+        defaultMessage: "The custom constraint failed.",
+        validator: function(params, Validator) {
+            ok(typeof Validator["compoundConstraint0" + randomSuffix] !== "undefined", "Compound validator must be defined");
+            return false;
+        }
+    });
+
+    var $text0 = createInputElement("text0", '@CustomConstraint0' + randomSuffix, "text");
+    regula.bind();
+    regula.validate();
 
     deleteElements();
 });
@@ -20983,4 +21083,33 @@ asyncTest('Test validating asynchronous constraints by groups, element, and cons
         deleteElements();
         start();
     })
+});
+
+asyncTest('Test that validators are available in validator for asynchronous constraint', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "AsyncConstraint0" + randomSuffix,
+        async: true,
+        defaultMessage: "The asynchronous constraint failed.",
+        validator: function(params, callback, Validator) {
+            jQuery.ajax({
+                url: asyncTestServerURL,
+                dataType: "jsonp",
+                data: {pass: false},
+                success: function(data) {
+                    ok(typeof Validator !== "undefined", "Validator must not be undefined");
+                    callback(data.pass)
+                }
+            });
+        }
+    });
+
+    var $text0 = createInputElement("text0", "@AsyncConstraint0" + randomSuffix, "text");
+    regula.bind();
+
+    regula.validate(function(constraintViolations) {
+        deleteElements();
+        start();
+    });
 });
