@@ -370,10 +370,11 @@
             async: false,
             html5: false,
             formSpecific: false,
+            validator: ValidationService.Validator.step,
             constraintType: Constraint.Step,
             custom: false,
             compound: false,
-            params: ["min", "value"],
+            params: ["min", "max", "value"],
             defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
         },
 
@@ -382,6 +383,7 @@
             async: false,
             html5: false,
             formSpecific: false,
+            validator: ValidationService.Validator.url,
             constraintType: Constraint.URL,
             custom: false,
             compound: false,

@@ -65,8 +65,8 @@
      *
      * @type {{checked: Function, selected: Function, max: Function, min: Function, range: Function, notBlank: Function, blank: Function, matches: Function, email: Function, alpha: Function,
      *         numeric: Function, integer: Function, real: Function, alphaNumeric: Function, completelyFilled: Function, passwordsMatch: Function, required: Function, length: Function,
-     *         digits: Function, past: Function, future: Function, html5Required: Function, html5Email: Function, html5URL: Function, html5Number: Function, html5DateTime: Function,
-     *         html5DateTimeLocal: Function, html5Date: Function, html5Month: Function, html5Time: Function, html5Week: Function, html5Range: Function, html5Tel: Function,
+     *         digits: Function, past: Function, future: Function, url: Function, step: Function, html5Required: Function, html5Email: Function, html5URL: Function, html5Number: Function,
+     *         html5DateTime: Function, html5DateTimeLocal: Function, html5Date: Function, html5Month: Function, html5Time: Function, html5Week: Function, html5Range: Function, html5Tel: Function,
      *         html5Color: Function, html5Pattern: Function, html5MaxLength: Function, html5Min: Function, html5Max: Function, html5Step: Function}}
      */
     var Validator = {
@@ -318,6 +318,31 @@
             if (shouldValidate(this, params)) {
                 var dates = parseDates.call(this, params);
                 result = (dates.dateToValidate > dates.dateToTestAgainst);
+            }
+
+            return result;
+        },
+
+        url: function (params) {
+            var result = true;
+
+            if (shouldValidate(this, params)) {
+                result = /^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!\$&'\(\)\*\+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(this.value);
+            }
+
+            return result;
+        },
+
+        step: function (params) {
+            var result = true;
+
+            if (shouldValidate(this, params)) {
+                var value = parseFloat(this.value);
+                var max = parseFloat(params["max"]);
+                var min = parseFloat(params["min"]);
+                var step = parseFloat(params["step"]);
+
+                result = (value <= max && value >= min) && (value % step === 0);
             }
 
             return result;
