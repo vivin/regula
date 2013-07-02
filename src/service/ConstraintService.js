@@ -375,7 +375,7 @@
             custom: false,
             compound: false,
             params: ["min", "max", "value"],
-            defaultMessage: "{label} must be equal to {min} or greater at increments of {value}."
+            defaultMessage: "{label} must be equal to {min} or greater, and equal to {max} or lesser, at increments of {value}."
         },
 
         URL: {
