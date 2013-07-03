@@ -1,6 +1,6 @@
-## Regula: An annotation-based form-validator for client-side validation
+[![Build Status](https://travis-ci.org/vivin/regula.png)](https://travis-ci.org/vivin/regula)
 
-### Build Status: [![Build Status](https://travis-ci.org/vivin/regula.png)](https://travis-ci.org/vivin/regula)
+## Regula: An annotation-based form-validator for client-side validation
 
 ### Why?
 
