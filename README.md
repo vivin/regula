@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/vivin/regula.png)](https://travis-ci.org/vivin/regula)
+<p align="right">
+   <img src="https://travis-ci.org/vivin/regula.png" alt="Regula Build Status" />
+</p>
 ## Regula: An annotation-based form-validator for client-side validation
 
 ### Why?
