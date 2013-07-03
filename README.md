@@ -123,7 +123,7 @@ There is a lot more I haven't gone over, but I hope that these simple examples s
 You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases) or on [SourceForge](http://sourceforge.net/projects/regula/?source=directory).
 
 ###I want to contribute!
-That's awesome! Take a look at devreadme.txt for some information on how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
+That's awesome! Take a look at **devreadme.txt** for some information on how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
 
 ###Going forward
 
