@@ -15,21 +15,30 @@ http.createServer(function(request, response) {
     var pass = false;
     var parameterMap = url.parse(request.url, true).query;
 
-    if(parameterMap.pass === "true") {
-        util.puts("Request received to fail.");
-        pass = true;
-    } else {
-        util.puts("Request received to pass.");
-    }
+    if(typeof parameterMap.shutdown === "undefined") {
+        if(parameterMap.pass === "true") {
+            util.puts("[async-test-server] Request received to fail.");
+            pass = true;
+        } else {
+            util.puts("[async-test-server] Request received to pass.");
+        }
 
-    var seconds = Math.floor(Math.random() * 3) + 1;
-    util.puts("Waiting for " + seconds + " seconds to elapse.");
-    setTimeout(function() {
-        util.puts("Done waiting.");
-        response.writeHeader(200, {"Content-Type": "application/javascript"})
-        response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
+        var seconds = Math.floor(Math.random() * 3) + 1;
+        util.puts("[async-test-server] Waiting for " + seconds + " seconds to elapse.");
+        setTimeout(function() {
+            util.puts("[async-test-server] Done waiting.");
+            response.writeHeader(200, {"Content-Type": "application/javascript"})
+            response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
+            response.end();
+        }, seconds * 1000)
+    } else {
+        util.puts("[async-test-server] Shutting down.");
+        response.writeHeader(200, {"Content-Type": "text/plain"})
+        response.write("Shutting down");
         response.end();
-    }, seconds * 1000)
+        request.connection.destroy();
+        process.exit();
+    }
 }).listen(8888);
 
-util.puts("Server running on port 8888.");
+util.puts("[async-test-server] Server running on port 8888.");

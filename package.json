@@ -1,0 +1,32 @@
+{
+  "name": "regula",
+  "version": "1.2.3-SNAPSHOT",
+  "description": "Annotation-based JavaScript Form Validator",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "~0.4.1"
+  },
+  "devDependencies": {
+    "grunt-shell": "~0.3.0",
+    "grunt-contrib-qunit": "~0.2.2",
+    "grunt": "~0.4.1",
+    "grunt-bg-shell": "~2.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vivin/regula.git"
+  },
+  "keywords": [
+    "validation",
+    "form-validation",
+    "validation-library",
+    "client-side-validation"
+  ],
+  "author": "Vivin Paliath",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "ea09b578e3f29b6fb5ffc44d2fde35941d2bd11a",
+  "bugs": {
+    "url": "https://github.com/vivin/regula/issues"
+  }
+}
