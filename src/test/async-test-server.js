@@ -9,7 +9,6 @@
 var util = require("util");
 var http = require("http");
 var url = require("url");
-var sleep = require("sleep");
 
 http.createServer(function(request, response) {
     var pass = false;
