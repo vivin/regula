@@ -3278,6 +3278,294 @@ test('Test binding @Future (with required parameter and optional date, separator
     deleteElements();
 });
 
+test('Test binding @Step through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@Step");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound to a form element");
+
+    deleteElements();
+});
+
+test('Test binding @Step (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(label=\"test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(message=\"this is a test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=5)");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=5, label=\"test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=5, message=\"this is a test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=5, groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(max=5)");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(max=5, label=\"test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(max=5, message=\"this is a test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(max=5, groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(max=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(value=5)");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(value=5, label=\"test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(value=5, message=\"this is a test\")");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(value=5, groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(value=5, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    throws(regula.bind, regula.Exception.BindException, "@Step cannot be bound without its required parameters");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2)");
+
+    equal(regula.bind(), undefined, "@Step(min=0, max=10, value=2) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, label=\"test\")");
+
+    equal(regula.bind(), undefined, "@Step(min=0, max=10, value=2, label=\"test\") must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, message=\"this is a test\")");
+
+    equal(regula.bind(), undefined, "@Step(min=0, max=10, value=2, message=\"this is a test\") must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, groups=[Test])");
+
+    equal(regula.bind(), undefined, "@Step(min=0, max=10, value=2, groups=[Test]) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equal(regula.bind(), undefined, "@Step(min=0, max=10, value=2, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId, "@URL");
+
+    throws(regula.bind, regula.Exception.BindException, "@URL cannot be bound to a form element");
+
+    deleteElements();
+});
+
+test('Test binding @URL (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL");
+
+    equal(regula.bind(), undefined, "@URL should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL(label=\"test\")");
+
+    equal(regula.bind(), undefined, "@URL(label=\"test\") should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL(message=\"this is a test\")");
+
+    equal(regula.bind(), undefined, "@URL(message=\"this is a test\") should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL(groups=[Test])");
+
+    equal(regula.bind(), undefined, "@URL(groups=[Test]) should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional label, message, and groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equal(regula.bind(), undefined, "@URL(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
+
+    deleteElements();
+});
+
 test('Test binding @CompletelyFilled to a non-form element through markup', function() {
     var inputElementId = "hiddenInput";
     var $input = createInputElement(inputElementId, "@CompletelyFilled");
@@ -9641,6 +9929,670 @@ test('Test binding @PasswordsMatch (with both required parameters and optional m
             }
         ]
     }), undefined, "@PasswordsMatch(field2=\"field2\", field1=\"field1\", label=\"test\", message=\"test message\", groups=[Test]) should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step through markup to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Step}
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound to a form element");
+
+    deleteElements();
+});
+
+test('Test binding @Step (without parameters) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.Step}
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        message: "This is a test."
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        min: 5
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        min: 5,
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        min: 5,
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        min: 5,
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        min: 5,
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        max: 5
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        max: 5,
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        max: 5,
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        max: 5,
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with max and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        max: 5,
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        value: 5,
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        value: 5,
+                        label: "test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        value: 5,
+                        message: "This is a test"
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        value: 5,
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with value and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $input.get(0),
+            constraints: [
+                {
+                    constraintType: regula.Constraint.Step,
+                    params: {
+                        value: 5,
+                        label: "test",
+                        message: "This is a test",
+                        groups: ["Test"]
+                    }
+                }
+            ]
+        });
+    }, regula.Exception.BindException, "@Step cannot be bound without its required parameter");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2)");
+
+    equal(regula.bind(), regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Step,
+                params: {
+                    min: 0,
+                    max: 10,
+                    value: 2
+                }
+            }
+        ]
+    }), "@Step(min=0, max=10, value=2) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional label parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, label=\"test\")");
+
+    equal(regula.bind(), regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Step,
+                params: {
+                    min: 0,
+                    max: 10,
+                    value: 2,
+                    label: "test"
+                }
+            }
+        ]
+    }), "@Step(min=0, max=10, value=2, label=\"test\") must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, message=\"this is a test\")");
+
+    equal(regula.bind(), regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Step,
+                params: {
+                    min: 0,
+                    max: 10,
+                    value: 2,
+                    message: "this is a test"
+                }
+            }
+        ]
+    }), "@Step(min=0, max=10, value=2, message=\"this is a test\") must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional groups parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, groups=[Test])");
+
+    equal(regula.bind(), regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Step,
+                params: {
+                    min: 0,
+                    max: 10,
+                    value: 2,
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), "@Step(min=0, max=10, value=2, groups=[Test]) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @Step (with min, max, and value and optional groups, label and message parameter) through markup', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@Step(min=0, max=10, value=2, label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equal(regula.bind(), regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Step,
+                params: {
+                    min: 0,
+                    max: 10,
+                    value: 2,
+                    label: "test",
+                    message: "this is a test",
+                    groups: ["Test"]
+                }
+            }
+        ]
+    }), "@Step(min=0, max=10, value=2, label=\"test\", message=\"this is a test\", groups=[Test]) must be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL through regula.bind to a form element', function() {
+    var formElementId = "hiddenForm";
+    var $form = createFormElement(formElementId);
+
+    throws(function() {
+        regula.bind({
+            element: $form.get(0),
+            constraints: [
+                {constraintType: regula.Constraint.URL}
+            ]
+        });
+    }, regula.Exception.BindException, "@URL cannot be bound to a form element");
+
+    deleteElements();
+});
+
+test('Test binding @URL (without parameters) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equal(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {constraintType: regula.Constraint.URL}
+        ]
+    }), undefined, "@URL should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional label parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equal(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.URL,
+                params: {
+                    label: "test"
+                }
+            }
+        ]
+    }), undefined, "@URL(label=\"test\") should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional message parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equal(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.URL,
+                message: "this is a test"
+            }
+        ]
+    }), undefined, "@URL(message=\"this is a test\") should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId);
+
+    equal(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.URL,
+                groups: ["Test"]
+            }
+        ]
+    }), undefined, "@URL(groups=[Test]) should be a valid definition");
+
+    deleteElements();
+});
+
+test('Test binding @URL (with optional label, message, and groups parameter) through regula.bind', function() {
+    var inputElementId = "hiddenInput";
+    var $input = createInputElement(inputElementId, "@URL(label=\"test\", message=\"this is a test\", groups=[Test])");
+
+    equal(regula.bind({
+        element: $input.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.URL,
+                label: "test",
+                message: "this is a test",
+                groups: ["Test"]
+            }
+        ]
+    }), undefined, "@URL(label=\"test\", message=\"this is a test\", groups=[Test]) should be a valid definition");
 
     deleteElements();
 });
