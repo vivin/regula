@@ -70,7 +70,7 @@
         if (!result) {
             var attributes = element.attributes;
 
-            for (var i = 0; i < attribute.length; i++) {
+            for (var i = 0; i < attributes.length; i++) {
                 if (attributes[i].nodeName === attribute) {
                     result = attributes[i].nodeValue;
                 }
