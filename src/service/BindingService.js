@@ -96,6 +96,39 @@
     }
 
     /**
+     * This function checks to see if an element can be bound. Only form elements can have constraints attached to them.
+     * @param element
+     */
+    function checkElementBindability(element) {
+        var result = {
+            successful: true,
+            message: "",
+            data: null
+        };
+
+        var tagName = null;
+        if(typeof element.tagName !== "undefined") {
+            tagName = element.tagName.toLowerCase();
+        }
+
+        if (tagName !== "form" && tagName !== "select" && tagName !== "textarea" && tagName !== "input") {
+            result = {
+                successful: false,
+                message: tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements.",
+                data: null
+            };
+        } else if(tagName === "input" && element.getAttribute("type") === null) {
+            result = {
+                successful: false,
+                message: tagName + "#" + element.id + " does not have a type attribute.",
+                data: null
+            };
+        }
+
+        return result;
+    }
+
+    /**
      * This function will attempt to bind constraints to an element by parsing its "data-constraints" attribute. If
      * the "element" attribute has not been provided, then this function will attempt to parse the "data-constraints"
      * attribute of any element that has it.
@@ -123,37 +156,28 @@
         var i = 0;
         while (i < elementsWithRegulaValidation.length && result.successful) {
             element = elementsWithRegulaValidation[i];
-            var tagName = element.tagName.toLowerCase();
 
-            if (tagName !== "form" && tagName !== "select" && tagName !== "textarea" && tagName !== "input") {
-                result = {
-                    successful: false,
-                    message: tagName + "#" + element.id + " is not an input, select, textarea, or form element! Validation constraints can only be attached to input, select, textarea, or form elements.",
-                    data: null
-                };
-            } else if(tagName === "input" && element.getAttribute("type") === null) {
-                result = {
-                    successful: false,
-                    message: tagName + "#" + element.id + " does not have a type attribute.",
-                    data: null
-                };
-            } else {
+            result = checkElementBindability(element);
+            if(result.successful) {
                 // automatically assign an id if the element does not have one
                 if (!element.id) {
                     element.id = DOMUtils.generateRandomId();
                 }
 
                 var dataConstraintsAttribute = element.getAttribute("data-constraints");
-                result = Parser.parse(element, dataConstraintsAttribute);
 
-                if (result.successful && result.data !== null) {
-                    var constraintsToAttach = result.data;
-                    var j = 0;
+                if(dataConstraintsAttribute !== null) {
+                    result = Parser.parse(element, dataConstraintsAttribute);
 
-                    while (result.successful && j < constraintsToAttach.length) {
-                        var constraintToAttach = constraintsToAttach[j];
-                        result = attachConstraintDefinitionToElement(constraintToAttach.element, constraintToAttach.constraintName, constraintToAttach.definedParameters);
-                        j++;
+                    if (result.successful && result.data !== null) {
+                        var constraintsToAttach = result.data;
+                        var j = 0;
+
+                        while (result.successful && j < constraintsToAttach.length) {
+                            var constraintToAttach = constraintsToAttach[j];
+                            result = attachConstraintDefinitionToElement(constraintToAttach.element, constraintToAttach.constraintName, constraintToAttach.definedParameters);
+                            j++;
+                        }
                     }
                 }
 
@@ -294,8 +318,8 @@
          */
         var typeToRegulaConstraint = {
             email: ConstraintService.Constraint.HTML5Email,
-            url: ConstraintService.Constraint.HTML5URL,
-            number: ConstraintService.Constraint.HTML5Number/*,
+            url: ConstraintService.Constraint.HTML5URL/*,
+            number: ConstraintService.Constraint.HTML5Number,
             datetime: ConstraintService.Constraint.HTML5DateTime,
             "datetime-local": ConstraintService.Constraint.HTML5DateTimeLocal,
             date: ConstraintService.Constraint.HTML5Date,
@@ -371,39 +395,43 @@
                 element.id = DOMUtils.generateRandomId();
             }
 
-            elementsWithHTML5Validation[element.id] = [];
+            result = checkElementBindability(element);
+            if(result.successful) {
 
-            for (var i = 0; i < html5Constraints.length; i++) {
-                var html5Constraint = html5Constraints[i];
+                elementsWithHTML5Validation[element.id] = [];
 
-                /**
-                 * If we don't care about the HTML5 validation attribute's value, then it means that we just have to see if
-                 * that specific attribute exists on the element. If it does, we can add it to our map. Otherwise it means
-                 * that we have a type-validation constraint and so we will need to look at the value of the attribute to
-                 * figure out the appropriate constraint.
-                 */
-                if (html5Constraint.value == null) {
-                    if (DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute) != null) {
-                        var constraintDefinition = {
-                            constraint: html5Constraint.constraint,
-                            params: {}
-                        };
+                for (var i = 0; i < html5Constraints.length; i++) {
+                    var html5Constraint = html5Constraints[i];
 
-                        constraintDefinition.params[html5Constraint.attribute] = DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute);
-                        elementsWithHTML5Validation[element.id].push(constraintDefinition);
-                    }
-                } else {
-                    var value = DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute);
+                    /**
+                     * If we don't care about the HTML5 validation attribute's value (i.e., not a constraint like min="5"
+                     * where "5" is the value of the HTML% validation attribute), then it means that we just have to see if
+                     * that specific attribute exists on the element. If it does, we can add it to our map. Otherwise it means
+                     * that we have a type-validation constraint and so we will need to look at the value of the attribute to
+                     * figure out the appropriate constraint.
+                     */
+                    if (html5Constraint.value === null) {
+                        if (DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute) != null) {
+                            var constraintDefinition = {
+                                constraint: html5Constraint.constraint,
+                                params: {}
+                            };
 
-                    if (value != null) {
-                        elementsWithHTML5Validation[element.id].push({
-                            constraint: typeToRegulaConstraint[value],
-                            params: {}
-                        });
+                            constraintDefinition.params[html5Constraint.attribute] = DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute);
+                            elementsWithHTML5Validation[element.id].push(constraintDefinition);
+                        }
+                    } else {
+                        var value = DOMUtils.getAttributeValueForElement(element, html5Constraint.attribute);
+
+                        if (value != null && typeof typeToRegulaConstraint[value] !== "undefined") {
+                            elementsWithHTML5Validation[element.id].push({
+                                constraint: typeToRegulaConstraint[value],
+                                params: {}
+                            });
+                        }
                     }
                 }
             }
-
         }
 
         MapUtils.iterateOverMap(elementsWithHTML5Validation, function (elementId, constraintDefinitions, index) {

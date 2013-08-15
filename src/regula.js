@@ -119,23 +119,41 @@
         } else {
             var elements = options.elements;
 
-            //If "elements" has not been provided, let's assume that "element" has been provided, and call "bindFromOptions"
             if (typeof elements === "undefined" || !elements) {
-                result = BindingService.bindFromOptions(options);
+
+                //Bind HTML5 validation constraints first iff they have specified an "element" attribute
+                if(config.enableHTML5Validation && DOMUtils.supportsHTML5Validation() && (typeof options.element !== "undefined" && options.element !== null)) {
+                    result = BindingService.bindHTML5ValidationConstraints({element: options.element})
+                }
+
+                if(result.successful) {
+                    //If "elements" has not been provided, let's assume that "element" has been provided, and call "bindFromOptions".
+                    //"bindFromOptions" will check to see if "element" has been provided.
+                    result = BindingService.bindFromOptions(options);
+                }
             } else {
-                //console.log("OHO we have elements!!!!!");
                 //If "elements" has been provided, let's iterate over it and call bindFromOptions with each of those elements
                 var i = 0;
                 while (result.successful && i < elements.length) {
 
                     options.element = elements[i];
-                    result = BindingService.bindFromOptions(options);
 
-                    if (!result.successful) {
-                        result.message = "regula.bind: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
+                    //Bind HTML5 validation constraints first
+                    if(config.enableHTML5Validation && DOMUtils.supportsHTML5Validation()) {
+                        result = BindingService.bindHTML5ValidationConstraints({element: options.element});
                     }
 
-                    i++;
+                    if(result.successful) {
+                        result = BindingService.bindFromOptions(options);
+
+                        if (!result.successful) {
+                            result.message = "regula.bind: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
+                        }
+                    } else {
+                        result.message = "regula.bind: Failed binding HTML5 validation constraints: Element " + (i + 1) + " of " + elements.length + " failed: " + result.message;
+                    }
+
+                   i++;
                 }
             }
         }
