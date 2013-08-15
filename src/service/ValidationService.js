@@ -340,7 +340,7 @@
                 var value = parseFloat(this.value);
                 var max = parseFloat(params["max"]);
                 var min = parseFloat(params["min"]);
-                var step = parseFloat(params["step"]);
+                var step = parseFloat(params["value"]);
 
                 result = (value <= max && value >= min) && (value % step === 0);
             }
