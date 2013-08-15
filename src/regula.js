@@ -93,8 +93,6 @@
      * @param options
      */
     function bind(options) {
-        //console.log("in bind");
-
         var result = {
             successful: true,
             message: "",
