@@ -137,7 +137,6 @@
      * @returns {{successful: boolean, message: string, data: null}}
      */
     function bindAfterParsing(options) {
-//            console.log("bAP:", options);
         var element = options.element;
         var elementsWithRegulaValidation;
 
@@ -459,8 +458,6 @@
      * @returns {{successful: boolean, message: string, data: null}}
      */
     function bindFromOptions(options) {
-        //console.log("bFO");
-
         var result = {
             successful: true,
             message: "",

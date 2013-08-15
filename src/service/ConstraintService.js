@@ -724,7 +724,6 @@
      * @param options
      */
     function custom(options) {
-        //console.log("custom got", options);
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
         constraintDefinitions[options.name] = {
@@ -737,7 +736,6 @@
             params: options.params,
             defaultMessage: options.defaultMessage
         };
-        //console.log(Constraint);
     }
 
     /**
@@ -865,8 +863,6 @@
                 missingParams.push(param);
             }
         }
-
-        //console.log("missing params", missingParams);
 
         if (missingParams.length > 0) {
             result = {
