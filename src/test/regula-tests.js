@@ -22212,3 +22212,5 @@ asyncTest('Test that validators are available in validator for asynchronous cons
         start();
     });
 });
+
+//TODO: tests checking to see if compound, overridden, and custom constraints honor validateEmptyFields and ignoreEmpty values.

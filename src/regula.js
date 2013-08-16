@@ -243,6 +243,8 @@
         if (typeof name === "undefined") {
             throw new ExceptionService.Exception.IllegalArgumentException("regula.override: I could not find the specified constraint. Perhaps it has not been defined? Function received: " + ExceptionService.explodeParameters(options));
         } else {
+            var validatorRedefined = false;
+
             /* for custom constraints, you can override anything. for built-in constraints however, you can only override the default message */
             var formSpecific = ConstraintService.constraintDefinitions[name].formSpecific;
             if (ConstraintService.constraintDefinitions[name].custom) {
@@ -250,11 +252,16 @@
             }
 
             var async = ConstraintService.constraintDefinitions[name].custom && typeof options.async !== "undefined" ? options.async : ConstraintService.constraintDefinitions[name].async;
-            var validator = ConstraintService.constraintDefinitions[name].custom && !ConstraintService.constraintDefinitions[name].compound ? options.validator || ConstraintService.constraintDefinitions[name].validator : ConstraintService.constraintDefinitions[name].validator;
             var params = ConstraintService.constraintDefinitions[name].custom ? options.params || ConstraintService.constraintDefinitions[name].params : ConstraintService.constraintDefinitions[name].params;
             var defaultMessage = options.defaultMessage || ConstraintService.constraintDefinitions[name].defaultMessage;
             var compound = ConstraintService.constraintDefinitions[name].compound;
             var composingConstraints = options.constraints || ConstraintService.constraintDefinitions[name].constraints;
+
+            var validator = ConstraintService.constraintDefinitions[name].validator
+            if(ConstraintService.constraintDefinitions[name].custom && !ConstraintService.constraintDefinitions[name].compound && typeof options.validator !== "undefined") {
+                validator = options.validator;
+                validatorRedefined = true;
+            }
 
             if (typeof formSpecific != "boolean") {
                 throw new ExceptionService.Exception.IllegalArgumentException("regula.override expects the formSpecific attribute in the options argument to be a boolean");
@@ -281,13 +288,10 @@
                 params: params,
                 composingConstraints: composingConstraints,
                 defaultMessage: defaultMessage,
-                validator: validator
+                validator: validator,
+                validatorRedefined: validatorRedefined
             });
 
-            //We only have to do this for custom constraints and only if they actually specify a validator
-            if(ConstraintService.constraintDefinitions[name].custom && typeof options.validator !== "undefined") {
-                ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
-            }
         }
     }
 
@@ -353,8 +357,6 @@
                 params: params,
                 defaultMessage: defaultMessage
             });
-
-            ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
         }
     }
 
@@ -403,8 +405,6 @@
             constraints: constraints,
             defaultMessage: defaultMessage
         });
-
-        ValidationService.createPublicValidator(name, ConstraintService.constraintDefinitions);
     }
 
     /**
