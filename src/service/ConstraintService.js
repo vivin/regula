@@ -641,6 +641,10 @@
      */
     function override(options) {
         var async = typeof options.async === "undefined" ? constraintDefinitions[options.name].async : options.async;
+        var validator = options.validator;
+        if(options.validatorRedefined && !options.formSpecific) {
+            validator = ValidationService.wrapValidatorWithEmptyCheck(validator);
+        }
 
         //Node representing the constraint in the composition graph
         var graphNode = CompositionGraph.getNodeByType(options.constraintType);
@@ -715,8 +719,13 @@
             params: options.params,
             composingConstraints: options.composingConstraints,
             defaultMessage: options.defaultMessage,
-            validator: options.validator
+            validator: validator
         };
+
+        //We only have to do this for custom constraints and only if they actually specify a validator
+        if(constraintDefinitions[options.name].custom && options.validatorRedefined) {
+            ValidationService.createPublicValidator(options.name, constraintDefinitions);
+        }
     }
 
     /**
@@ -726,16 +735,24 @@
     function custom(options) {
         Constraint[options.name] = firstCustomConstraintIndex;
         ReverseConstraint[firstCustomConstraintIndex++] = options.name;
+
+        var validator = options.validator;
+        if(!options.formSpecific) {
+            validator = ValidationService.wrapValidatorWithEmptyCheck(options.validator);
+        }
+
         constraintDefinitions[options.name] = {
             async: options.async,
             formSpecific: options.formSpecific,
-            validator: options.validator,
+            validator: validator,
             constraintType: Constraint[options.name],
             custom: true,
             compound: false,
             params: options.params,
             defaultMessage: options.defaultMessage
         };
+
+        ValidationService.createPublicValidator(options.name, constraintDefinitions);
     }
 
     /**
@@ -769,6 +786,8 @@
             defaultMessage: options.defaultMessage,
             validator: ValidationService.compoundValidator
         };
+
+        ValidationService.createPublicValidator(options.name, constraintDefinitions);
 
         /* now let's update our graph */
         updateCompositionGraph(options.name, options.constraints);

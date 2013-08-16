@@ -478,71 +478,75 @@
         var constraintViolations = null;
         var _this = this;
 
+        if(shouldValidate(this, params)) {
 
-        if(synchronousComposingConstraints.length > 0) {
-            constraintViolations = [];
-
-            for (var i = 0; i < synchronousComposingConstraints.length; i++) {
-                var composingConstraint = synchronousComposingConstraints[i];
-                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
-
-                /*
-                 Now we'll merge the parameters in the child constraints with the parameters from the parent
-                 constraint
-                 */
-                var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
-                var validationResult = runValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams);
-
-                if(!validationResult.constraintPassed) {
-                    var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
-
-                    if (config.enableHTML5Validation) {
-                        for (var j = 0; j < validationResult.failingElements.length; j++) {
-                            validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
-                        }
-                    }
-
-                    constraintViolations.push(constraintViolation);
-                }
-            }
-        }
-
-        if(asynchronousComposingConstraints.length > 0) {
-            if(constraintViolations === null) {
+            if(synchronousComposingConstraints.length > 0) {
                 constraintViolations = [];
-            }
 
-            var numberConstraintsValidated = 0;
+                for (var i = 0; i < synchronousComposingConstraints.length; i++) {
+                    var composingConstraint = synchronousComposingConstraints[i];
+                    var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
 
-            for(var i = 0; i < asynchronousComposingConstraints.length; i++) {
-                var composingConstraint = asynchronousComposingConstraints[i];
-                var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
-                var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+                    /*
+                     Now we'll merge the parameters in the child constraints with the parameters from the parent
+                     constraint
+                     */
+                    var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+                    var validationResult = runValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams);
 
-                asynchronouslyRunValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams, validationHandler);
-            }
+                    if(!validationResult.constraintPassed) {
+                        var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
 
-            function validationHandler(validationResult) {
-                if(!validationResult.constraintPassed) {
-
-                    //We need to know which constraint was validated.
-                    var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
-
-                    if (config.enableHTML5Validation) {
-                        for (var j = 0; j < validationResult.failingElements.length; j++) {
-                            validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                        if (config.enableHTML5Validation) {
+                            for (var j = 0; j < validationResult.failingElements.length; j++) {
+                                validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                            }
                         }
+
+                        constraintViolations.push(constraintViolation);
+                    }
+                }
+            }
+
+            if(asynchronousComposingConstraints.length > 0) {
+                if(constraintViolations === null) {
+                    constraintViolations = [];
+                }
+
+                var numberConstraintsValidated = 0;
+
+                for(var i = 0; i < asynchronousComposingConstraints.length; i++) {
+                    var composingConstraint = asynchronousComposingConstraints[i];
+                    var composingConstraintName = ReverseConstraint[composingConstraint.constraintType];
+                    var mergedParams = mergeParams(composingConstraint.params, compoundConstraint.params);
+
+                    asynchronouslyRunValidatorFor(currentGroup, _this.id, composingConstraintName, mergedParams, validationHandler);
+                }
+
+                function validationHandler(validationResult) {
+                    if(!validationResult.constraintPassed) {
+
+                        //We need to know which constraint was validated.
+                        var constraintViolation = processValidationResult(validationResult, _this.id, currentGroup, mergedParams);
+
+                        if (config.enableHTML5Validation) {
+                            for (var j = 0; j < validationResult.failingElements.length; j++) {
+                                validationResult.failingElements[j].setCustomValidity(constraintViolation.message);
+                            }
+                        }
+
+                        constraintViolations.push(constraintViolation);
                     }
 
-                    constraintViolations.push(constraintViolation);
-                }
+                    numberConstraintsValidated++;
 
-                numberConstraintsValidated++;
-
-                if(numberConstraintsValidated === asynchronousComposingConstraints.length) {
-                    callback(constraintViolations);
+                    if(numberConstraintsValidated === asynchronousComposingConstraints.length) {
+                        callback(constraintViolations);
+                    }
                 }
             }
+        } else {
+            constraintViolations = [];
         }
 
         return constraintViolations;
@@ -596,6 +600,24 @@
         return {
             dateToValidate: dateToValidate,
             dateToTestAgainst: dateToTestAgainst
+        };
+    }
+
+    /**
+     * This function wraps a supplied validator (a function) with an empty check. This makes custom validators have the same behavior
+     * as inbuilt constraints, with respect to the "ignoreEmpty" and "validateEmptyFields" properties.
+     * @param validatorFunction
+     * @returns {Function}
+     */
+    function wrapValidatorWithEmptyCheck(validatorFunction) {
+        return function(params, validator, callback) {
+            var result = true;
+
+            if (shouldValidate(this, params)) {
+                result = validatorFunction.call(this, params, validator, callback);
+            }
+
+            return result;
         };
     }
 
@@ -1582,6 +1604,7 @@
     return {
         Validator: Validator,
         init: init,
+        wrapValidatorWithEmptyCheck: wrapValidatorWithEmptyCheck,
         initializePublicValidators: initializePublicValidators,
         compoundValidator: compoundValidator,
         validate: validate,
