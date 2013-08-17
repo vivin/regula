@@ -11089,17 +11089,29 @@ test('Test that there is an error when not supplying enough parameters when bind
 
 module('Test validation with @Checked');
 
-function testConstraintViolationsForDefaultConstraints(constraintViolation, params) {
+function testConstraintViolationsForConstraints(constraintViolation, params) {
     var numFailingElements = 1;
     if(typeof params.numFailingElements !== "undefined") {
         numFailingElements = params.numFailingElements;
     }
 
-    equal(constraintViolation.composingConstraintViolations.length, 0, "There must not be any composing-constraint violations");
-    equal(constraintViolation.compound, false, "@" + params.constraintName + " is not a compound constraint");
+    if(typeof params.compound === "undefined") {
+        params.compound = false;
+    }
+
+    if(typeof params.custom === "undefined") {
+        params.custom = false;
+    }
+
+    if(typeof params.composingConstraintViolations === "undefined") {
+        params.composingConstraintViolations = 0;
+    }
+
+    equal(constraintViolation.composingConstraintViolations.length, params.composingConstraintViolations, "There must be " + params.composingConstraintViolations + " composing-constraint violations");
+    equal(constraintViolation.compound, params.compound, "@" + params.constraintName + " is " + (params.compound ? "" : "not") + " a compound constraint");
     equal(constraintViolation.constraintParameters.groups, params.groups, "Must belong to the following group(s): " + params.groups);
     equal(constraintViolation.constraintName, params.constraintName, "@" + params.constraintName + " must be the failing constraint");
-    equal(constraintViolation.custom, false, "@" + params.constraintName + " is not a custom constraint");
+    equal(constraintViolation.custom, params.custom, "@" + params.constraintName + " is " + (params.custom ? "" : "not") + " a custom constraint");
     equal(constraintViolation.failingElements.length, numFailingElements, "There must be one failing element");
     equal(constraintViolation.failingElements[0].id, params.elementId, params.elementId + " must be the id of the failing element");
 
@@ -11118,7 +11130,7 @@ test('Test @Checked against unchecked radio button (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Checked",
         groups: "Default",
         elementId: "myRadio",
@@ -11141,7 +11153,7 @@ test('Test @Checked against unchecked radio button (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Checked",
         groups: "Default",
         elementId: "myRadio",
@@ -11340,7 +11352,7 @@ test('Test @Checked against unchecked checkbox (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Checked",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11363,7 +11375,7 @@ test('Test @Checked against unchecked checkbox (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Checked",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11417,7 +11429,7 @@ test('Test @Selected against unselected dropdown (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Selected",
         groups: "Default",
         elementId: "mySelect",
@@ -11447,7 +11459,7 @@ test('Test @Selected against unselected dropdown (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Selected",
         groups: "Default",
         elementId: "mySelect",
@@ -11506,7 +11518,7 @@ test('Test @Required against unchecked radio button (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myRadio",
@@ -11529,7 +11541,7 @@ test('Test @Required against unchecked radio button (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myRadio",
@@ -11574,7 +11586,7 @@ test('Test @Required against unchecked checkbox (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11597,7 +11609,7 @@ test('Test @Required against unchecked checkbox (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11649,7 +11661,7 @@ test('Test @Required against unselected dropdown (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "mySelect",
@@ -11679,7 +11691,7 @@ test('Test @Required against unselected dropdown (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "mySelect",
@@ -11736,7 +11748,7 @@ test('Test @Required against an empty text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11759,7 +11771,7 @@ test('Test @Required against an empty text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myCheckbox",
@@ -11804,7 +11816,7 @@ test('Test @Required against an empty textarea (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myTextarea",
@@ -11827,7 +11839,7 @@ test('Test @Required against an empty textarea (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Required",
         groups: "Default",
         elementId: "myTextarea",
@@ -11875,7 +11887,7 @@ test('Test failing @Max against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Max",
         groups: "Default",
         elementId: "myText",
@@ -11904,7 +11916,7 @@ test('Test failing @Max against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Max",
         groups: "Default",
         elementId: "myText",
@@ -11958,7 +11970,7 @@ test('Test failing @Min against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Min",
         groups: "Default",
         elementId: "myText",
@@ -11987,7 +11999,7 @@ test('Test failing @Min against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Min",
         groups: "Default",
         elementId: "myText",
@@ -12041,7 +12053,7 @@ test('Test failing @Range against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Range",
         groups: "Default",
         elementId: "myText",
@@ -12071,7 +12083,7 @@ test('Test failing @Range against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Range",
         groups: "Default",
         elementId: "myText",
@@ -12148,7 +12160,7 @@ test('Test failing @NotBlank against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "NotBlank",
         groups: "Default",
         elementId: "myText",
@@ -12171,7 +12183,7 @@ test('Test failing @NotBlank against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "NotBlank",
         groups: "Default",
         elementId: "myText",
@@ -12219,7 +12231,7 @@ test('Test failing @Blank against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Blank",
         groups: "Default",
         elementId: "myText",
@@ -12243,7 +12255,7 @@ test('Test failing @Blank against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Blank",
         groups: "Default",
         elementId: "myText",
@@ -12289,7 +12301,7 @@ test('Test failing @Pattern against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12318,7 +12330,7 @@ test('Test failing @Pattern against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12337,7 +12349,7 @@ test('Test failing @Pattern against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12369,7 +12381,7 @@ test('Test failing @Pattern against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12389,7 +12401,7 @@ test('Test failing @Pattern against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12419,7 +12431,7 @@ test('Test failing @Pattern against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12438,7 +12450,7 @@ test('Test failing @Pattern against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12468,7 +12480,7 @@ test('Test failing @Pattern against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -12619,7 +12631,7 @@ test('Test failing @Email against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12644,7 +12656,7 @@ test('Test failing @Email against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12663,7 +12675,7 @@ test('Test failing @Email against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12689,7 +12701,7 @@ test('Test failing @Email against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12708,7 +12720,7 @@ test('Test failing @Email against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12734,7 +12746,7 @@ test('Test failing @Email against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -12783,7 +12795,7 @@ test('Test failing @Alpha against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Alpha",
         groups: "Default",
         elementId: "myText",
@@ -12808,7 +12820,7 @@ test('Test failing @Alpha against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Alpha",
         groups: "Default",
         elementId: "myText",
@@ -12827,7 +12839,7 @@ test('Test failing @Alpha against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Alpha",
         groups: "Default",
         elementId: "myText",
@@ -12853,7 +12865,7 @@ test('Test failing @Alpha against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Alpha",
         groups: "Default",
         elementId: "myText",
@@ -12902,7 +12914,7 @@ test('Test failing @Numeric against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Numeric",
         groups: "Default",
         elementId: "myText",
@@ -12927,7 +12939,7 @@ test('Test failing @Numeric against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Numeric",
         groups: "Default",
         elementId: "myText",
@@ -12946,7 +12958,7 @@ test('Test failing @Numeric against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Numeric",
         groups: "Default",
         elementId: "myText",
@@ -12972,7 +12984,7 @@ test('Test failing @Numeric against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Numeric",
         groups: "Default",
         elementId: "myText",
@@ -13021,7 +13033,7 @@ test('Test failing @AlphaNumeric against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "AlphaNumeric",
         groups: "Default",
         elementId: "myText",
@@ -13046,7 +13058,7 @@ test('Test failing @AlphaNumeric against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "AlphaNumeric",
         groups: "Default",
         elementId: "myText",
@@ -13065,7 +13077,7 @@ test('Test failing @AlphaNumeric against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "AlphaNumeric",
         groups: "Default",
         elementId: "myText",
@@ -13091,7 +13103,7 @@ test('Test failing @AlphaNumeric against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "AlphaNumeric",
         groups: "Default",
         elementId: "myText",
@@ -13140,7 +13152,7 @@ test('Test failing @Integer against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -13165,7 +13177,7 @@ test('Test failing @Integer against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -13184,7 +13196,7 @@ test('Test failing @Integer against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -13210,7 +13222,7 @@ test('Test failing @Integer against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -13236,7 +13248,7 @@ test('Test failing @Integer against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -13303,7 +13315,7 @@ test('Test failing @Real against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Real",
         groups: "Default",
         elementId: "myText",
@@ -13328,7 +13340,7 @@ test('Test failing @Real against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Real",
         groups: "Default",
         elementId: "myText",
@@ -13347,7 +13359,7 @@ test('Test failing @Real against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Real",
         groups: "Default",
         elementId: "myText",
@@ -13373,7 +13385,7 @@ test('Test failing @Real against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Real",
         groups: "Default",
         elementId: "myText",
@@ -13480,7 +13492,7 @@ test('Test failing @Length against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13509,7 +13521,7 @@ test('Test failing @Length against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13528,7 +13540,7 @@ test('Test failing @Length against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13558,7 +13570,7 @@ test('Test failing @Length against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13577,7 +13589,7 @@ test('Test failing @Length against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13607,7 +13619,7 @@ test('Test failing @Length against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -13726,7 +13738,7 @@ test('Test failing @Digits against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13756,7 +13768,7 @@ test('Test failing @Digits against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13775,7 +13787,7 @@ test('Test failing @Digits against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13805,7 +13817,7 @@ test('Test failing @Digits against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13824,7 +13836,7 @@ test('Test failing @Digits against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13854,7 +13866,7 @@ test('Test failing @Digits against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13873,7 +13885,7 @@ test('Test failing @Digits against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -13903,7 +13915,7 @@ test('Test failing @Digits against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -14433,7 +14445,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14461,7 +14473,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14480,7 +14492,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14509,7 +14521,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14528,7 +14540,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14557,7 +14569,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14576,7 +14588,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14605,7 +14617,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14624,7 +14636,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14653,7 +14665,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14672,7 +14684,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14701,7 +14713,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14720,7 +14732,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14749,7 +14761,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14768,7 +14780,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14797,7 +14809,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14816,7 +14828,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14845,7 +14857,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14864,7 +14876,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14894,7 +14906,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14913,7 +14925,7 @@ test('Test failing @Past against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -14943,7 +14955,7 @@ test('Test failing @Past against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -15306,7 +15318,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15334,7 +15346,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15353,7 +15365,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15382,7 +15394,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15401,7 +15413,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15430,7 +15442,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15449,7 +15461,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15478,7 +15490,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15497,7 +15509,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15526,7 +15538,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15545,7 +15557,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15574,7 +15586,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15593,7 +15605,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15622,7 +15634,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15641,7 +15653,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15670,7 +15682,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15689,7 +15701,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15718,7 +15730,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15737,7 +15749,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15767,7 +15779,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15786,7 +15798,7 @@ test('Test failing @Future against text field (markup)', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -15816,7 +15828,7 @@ test('Test failing @Future against text field (regula.bind)', function() {
     });
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -16187,7 +16199,7 @@ test('Test failing @Max against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Max",
         groups: "Default",
         elementId: "myText",
@@ -16241,7 +16253,7 @@ test('Test failing @Min against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Min",
         groups: "Default",
         elementId: "myText",
@@ -16293,7 +16305,7 @@ test('Test failing @Range against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Range",
         groups: "Default",
         elementId: "myText",
@@ -16347,7 +16359,7 @@ test('Test failing @Pattern against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Pattern",
         groups: "Default",
         elementId: "myText",
@@ -16401,7 +16413,7 @@ test('Test failing @Email against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Email",
         groups: "Default",
         elementId: "myText",
@@ -16455,7 +16467,7 @@ test('Test failing @Alpha against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Alpha",
         groups: "Default",
         elementId: "myText",
@@ -16509,7 +16521,7 @@ test('Test failing @Numeric against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Numeric",
         groups: "Default",
         elementId: "myText",
@@ -16563,7 +16575,7 @@ test('Test failing @AlphaNumeric against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "AlphaNumeric",
         groups: "Default",
         elementId: "myText",
@@ -16617,7 +16629,7 @@ test('Test failing @Integer against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Integer",
         groups: "Default",
         elementId: "myText",
@@ -16671,7 +16683,7 @@ test('Test failing @Real against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Real",
         groups: "Default",
         elementId: "myText",
@@ -16710,7 +16722,7 @@ test('Test failing @Length against empty field', function () {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Length",
         groups: "Default",
         elementId: "myText",
@@ -16780,7 +16792,7 @@ test('Test failing @Digits against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Digits",
         groups: "Default",
         elementId: "myText",
@@ -16834,7 +16846,7 @@ test('Test failing @Past against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Past",
         groups: "Default",
         elementId: "myText",
@@ -16888,7 +16900,7 @@ test('Test failing @Future against empty field', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "Future",
         groups: "Default",
         elementId: "myText",
@@ -16929,6 +16941,346 @@ test('Test passing @Future against empty field (validateEmptyFields set to true,
     deleteElements();
 });
 
+test('Test failing custom constraint against empty field', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix, "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForConstraints(constraintViolation, {
+        constraintName: "CustomConstraint" + randomSuffix,
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "Value must be 10",
+        custom: true
+    });
+
+    deleteElements();
+});
+
+test('Test passing custom constraint against empty field (validateEmptyFields set to false)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix, "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
+    deleteElements();
+});
+
+test('Test passing custom constraint against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        message: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix + "(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElements();
+});
+
+test('Test failing compound constraint against empty field', function() {
+    var randomSuffix1 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix1,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var randomSuffix2 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix2,
+        defaultMessage: "Value must be 20",
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    var randomSuffix3 = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint" + randomSuffix3,
+        constraints: [
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+        ],
+        defaultMessage: "Failed"
+    });
+
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CompoundConstraint" + randomSuffix3, "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForConstraints(constraintViolation, {
+        constraintName: "CompoundConstraint" + randomSuffix3,
+        composingConstraintViolations: 2,
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "Failed",
+        custom: true,
+        compound: true
+    });
+
+    deleteElements();
+});
+
+test('Test passing compound constraint against empty field (validateEmptyFields set to false)', function() {
+    var randomSuffix1 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix1,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var randomSuffix2 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix2,
+        defaultMessage: "Value must be 20",
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    var randomSuffix3 = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint" + randomSuffix3,
+        constraints: [
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+        ],
+        defaultMessage: "Failed"
+    });
+
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CompoundConstraint" + randomSuffix3, "text");
+    $text.val("");
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
+    deleteElements();
+});
+
+test('Test passing custom constraint against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var randomSuffix1 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix1,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var randomSuffix2 = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix2,
+        defaultMessage: "Value must be 20",
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    var randomSuffix3 = randomNumber();
+
+    regula.compound({
+        name: "CompoundConstraint" + randomSuffix3,
+        constraints: [
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+        ],
+        defaultMessage: "Failed"
+    });
+
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CompoundConstraint" + randomSuffix3 + "(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElements();
+});
+
+
+
+
+test('Test failing overridden custom constraint against empty field', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix, "text");
+    $text.val("");
+
+    regula.override({
+        constraintType: regula.Constraint["CustomConstraint" + randomSuffix],
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+    regula.bind();
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForConstraints(constraintViolation, {
+        constraintName: "CustomConstraint" + randomSuffix,
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "Value must be 10",
+        custom: true
+    });
+
+    deleteElements();
+});
+
+test('Test passing custom constraint against empty field (validateEmptyFields set to false)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix, "text");
+    $text.val("");
+
+    regula.override({
+        constraintType: regula.Constraint["CustomConstraint" + randomSuffix],
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    regula.configure({
+        validateEmptyFields: false
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to false");
+    deleteElements();
+});
+
+test('Test passing custom constraint against empty field (validateEmptyFields set to true, ignoreEmpty set to true)', function() {
+    var randomSuffix = randomNumber();
+
+    regula.custom({
+        name: "CustomConstraint" + randomSuffix,
+        defaultMessage: "Value must be 10",
+        validator: function() {
+            return this.value === 10;
+        }
+    });
+
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, "@CustomConstraint" + randomSuffix + "(ignoreEmpty=true)", "text");
+    $text.val("");
+
+    regula.override({
+        constraintType: regula.Constraint["CustomConstraint" + randomSuffix],
+        validator: function() {
+            return this.value === 20;
+        }
+    });
+
+    regula.configure({
+        validateEmptyFields: true
+    });
+
+    regula.bind();
+
+    equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
+    deleteElements();
+});
+
 module('Test validation with @PasswordsMatch');
 
 test('Test failing @PasswordsMatch', function() {
@@ -16943,7 +17295,7 @@ test('Test failing @PasswordsMatch', function() {
     regula.bind();
     var constraintViolation = regula.validate()[0];
 
-    testConstraintViolationsForDefaultConstraints(constraintViolation, {
+    testConstraintViolationsForConstraints(constraintViolation, {
         constraintName: "PasswordsMatch",
         groups: "Default",
         numFailingElements: 2,
@@ -22213,4 +22565,3 @@ asyncTest('Test that validators are available in validator for asynchronous cons
     });
 });
 
-//TODO: tests checking to see if compound, overridden, and custom constraints honor validateEmptyFields and ignoreEmpty values.
