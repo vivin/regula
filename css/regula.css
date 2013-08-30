@@ -23,3 +23,7 @@
     background: linear-gradient(to bottom, #a7c7dc 0%,#85b2d3 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7c7dc', endColorstr='#85b2d3',GradientType=0 ); /* IE6-9 */
 }
+
+.no-list-style {
+    list-style-type: none
+}

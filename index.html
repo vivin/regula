@@ -15,6 +15,8 @@
 
     <link href="css/regula.css" rel="stylesheet">
 
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="bootstrap/assets/js/html5shiv.js"></script>
@@ -76,7 +78,126 @@
               <h3 class="panel-title"><strong>Quick Examples</strong></h3>
           </div>
           <div class="panel-body">
-              Content!!!
+              <h4>Marking fields as "required"</h4>
+              <ul class="no-list-style">
+                 <li>
+                     <h5>Using <code>@Required</code>:</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text"
+         name="username" 
+         id="username" 
+         data-constraints="@Required" /&gt;
+                     </pre>
+                 </li>
+                 <li>
+                     <h5>Using <code>@Required</code> with custom messages and labels:</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text" 
+         name="firstName"
+         id="firstName"
+         data-constraints='@Required(label="First Name", message="{label} is required.")' /&gt;
+                     </pre>
+                 </li>
+                 <li>
+                     <h5>Using native HTML5 <code>required</code> constraint (Regula will recognize if provided natively or via an HTML5 shim):</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text" name="lastName" id="lastName" required="true" /&gt;
+                     </pre>
+                 </li>
+                 <li>
+                     <h5>Using Regula's "wrapped" HTML5 constraint, which let you provide custom messages and labels:</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text"
+         name="company"
+         id="company"
+         data-constraints='@HTML5Required(label="Company", message="{label} is required.")' /&gt;
+                     </pre>
+                 </li>
+             </ul>
+
+             <h4>Examples of other usage-scenarios and constraints</h4>
+             <ul class="no-list-style">
+                 <li>
+                     <h5>Using <code>@Max</code> and <code>@Min</code>:</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text"
+         name="powerLevel"
+         id="powerLevel"
+         data-constraints='@Max(value=9000, label="Power Level", message="{label} cannot be over {value}!")' /&gt;
+
+  &lt;input type="text"
+         name="age"
+         id="age"
+         data-constraints='@Min(value=21, message="You must be over {value} to buy beer!")' /&gt;
+                     </pre>
+                 </li>
+                 <li>
+                     <h5>Pattern matching using <code>@Pattern</code>:</h5>
+                     <pre class="prettyprint">
+  &lt;input type="text"
+         name="ssn"
+         id="ssn"
+         data-constraints='@Pattern(regex=/[0-9]{3}-[0-9]{2}-[0-9]{4}/, message="Must be a valid social-security number")' /&gt;
+                     </pre>
+                  </li>
+                  <li>
+                      <h5>Ensuring that passwords match:</h5>
+                      <pre class="prettyprint">
+  &lt;form id="myForm" name="myForm"
+        ...
+        data-constraints='@PasswordsMatch(field1="password", field2="confirmationPassword")'&gt;
+
+        Enter a password: &lt;input id="password" name="password" type="password" /&gt;
+        Confirm password: &lt;input id="confirmationPassword" name="confirmationPassword" type="password" /&gt;
+  &lt;/form&gt;
+                      </pre>
+                  </li>
+                  <li>
+                      <h5>Validation groups:</h5>
+                      <pre class="prettyprint">
+  &lt;input type="text" id="firstName" name="firstName"
+         data-constraints="@Required(groups=[Name, All])" /&gt;
+  &lt;input type="text" id="lastName" name="lastName"
+         data-constraints="@Required(groups=[Name, All])" /&gt;
+
+  &lt;input type="text" id="street1" name="street1"
+         data-constraints="@Required(groups=[Address, All])" /&gt;
+  &lt;input type="text" id="street2" name="street2"
+         data-constraints="@Required(groups=[Address, All])" /&gt;
+  &lt;input type="text" id="city" name="city"
+         data-constraints="@Required(groups=[Address, All])" /&gt;
+  &lt;input type="text" id="state" name="state"
+         data-constraints="@Required(groups=[Address, All])" /&gt;
+  &lt;input type="text" id="zip" name="zip"
+         data-constraints="@Required(groups=[Address, All])" /&gt;
+                      </pre>
+                  </li>
+              </ul>
+
+              <h4>Custom constraints</h4>
+              <ul class="no-list-style">
+                  <li>
+                      <h5>Defining and using a custom constraint:</h5>
+
+                      <h6>Javascript</h6>
+                      <pre class="prettyprint">
+  regula.custom({
+      name: "RegistryNumber",
+      formSpecific: false,
+      defaultMessage: "{label} is an invalid registry number.",
+      validator: function(params, validator, callback) {
+          return /(NCC|NX)-[0-9]+(-[A-Z])?/.test(this.value);
+      }
+  });
+                      </pre>
+
+                      <h6>HTML</h6>
+                      <pre class=prettyprint">
+  &lt;input type="text" id="registryNumber" name="firstName"
+         data-constraints="@RegistryNumber" /&gt;
+                      </pre>
+                  </li>
+              </ul>
           </div>
       </div>
 
