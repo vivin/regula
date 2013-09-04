@@ -252,6 +252,37 @@
                       </pre>
 
                   </li>
+                  <li>
+                      <h5>Defining and using a compound constraint:</h5>
+
+                      <h6>Javascript</h6>
+                      <pre class="prettyprint">
+  //A compound constraint that consists of @Range and @Digits. Ensures that a number is
+  //between max and min and also has two fractional digits.
+  regula.compound({
+      name: "RangedDecimalsAtTwoPlaces"
+      params: ["max", "min"],
+      constraints: [
+          {
+              constraintType: regula.Constraint.Range
+          }, 
+          {
+              constraintType: regula.Constraint.Digits,
+              params: {
+                  integer: 10,
+                  fraction: 2
+              }
+          }
+      ]
+  });
+                      </pre>
+
+                      <h6>HTML</h6>
+                      <pre class=prettyprint">
+  &lt;input type="text" id="price" name="price"
+         data-constraints='@RangedDecimalsAtTwoPlaces(label="The price", min=10, max=42)' /&gt;
+                      </pre>
+                  </li>
               </ul>
 
               <h4>Performing validation</h4>
@@ -269,6 +300,38 @@
           constraintViolation.failingElements[j].setCustomValidity(constraintViolation.message);
       }
   }
+                      </pre>
+                  </li>
+                  <li>
+                      <h5>Validating specific groups:</h5>
+                      <pre class="prettyprint">
+  var constraintViolations = regula.validate({
+      groups: [regula.Group.Address]
+  });
+                      </pre>
+                  </li>
+                  <li>
+                      <h5>Validating specific elements:</h5>
+                      <pre class="prettyprint">
+  var constraintViolations = regula.validate({
+      elements: [document.getElementById("element1"), docuent.getElementById("element2")]
+  });
+                      </pre>
+                  </li>
+                  <li>
+                      <h5>Validating asynchronous constraints:</h5>
+                      <pre class="prettyprint">
+  regula.validate(function(constraintViolations) {
+      for(var i = 0; i &lt; constraintViolations.length; i++) {
+          var constraintViolation = constraintViolations[i];
+
+          for(var j = 0; j &lt; constraintViolation.failingElements.length; j++) {
+              //Assuming the browser supports 'setCustomValidity'; otherwise you will have to render
+              //the errors in some other manner
+              constraintViolation.failingElements[j].setCustomValidity(constraintViolation.message);
+          }
+      }
+  });
                       </pre>
                   </li>
               </ul>
