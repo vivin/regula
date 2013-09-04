@@ -79,7 +79,7 @@
           </div>
           <div class="panel-body">
               <h4>Marking fields as "required"</h4>
-              <ul class="no-list-style">
+              <ul>
                  <li>
                      <h5>Using <code>@Required</code>:</h5>
                      <pre class="prettyprint">
@@ -116,7 +116,7 @@
              </ul>
 
              <h4>Examples of other usage-scenarios and constraints</h4>
-             <ul class="no-list-style">
+             <ul>
                  <li>
                      <h5>Using <code>@Max</code> and <code>@Min</code>:</h5>
                      <pre class="prettyprint">
@@ -175,7 +175,7 @@
               </ul>
 
               <h4>Custom constraints</h4>
-              <ul class="no-list-style">
+              <ul>
                   <li>
                       <h5>Defining and using a custom constraint:</h5>
 
@@ -195,6 +195,80 @@
                       <pre class=prettyprint">
   &lt;input type="text" id="registryNumber" name="firstName"
          data-constraints="@RegistryNumber" /&gt;
+                      </pre>
+                  </li>
+                  <li>
+                      <h5>Defining and using a custom constraint with a parameter:</h5>
+
+                      <h6>Javascript</h6>
+                      <pre class="prettyprint">
+  regula.custom({
+      name: "DivisibleBy",
+      formSpecific: false,
+      params: ["divisor"],
+      defaultMessage: "{label} must be divisible by {divisor}.",
+      validator: function(params, validator, callback) {
+          var divisor = parseInt(params.divisor, 10);
+          var value = parseInt(this.value, 10);
+
+          return (value % divisor) === 0;
+      }
+  });
+                      </pre>
+
+                      <h6>HTML</h6>
+                      <pre class=prettyprint">
+  &lt;input type="text" id="number" name="number"
+         data-constraints='@DivisibleBy(divisor="3", label="The number")' /&gt;
+                      </pre>
+
+                  </li>
+                  <li>
+                      <h5>Conditional validation through a custom constraint:</h5>
+
+                      <h6>Javascript</h6>
+                      <pre class="prettyprint">
+  regula.custom({
+      name: "ConditionalRequired",
+      formSpecific: false,
+      defaultMessage: "{label} is required.",
+      validator: function(params, validator, callback) {
+          var valid = true;
+
+          if(document.getElementById("myCheckbox").checked) {
+              validator = validator.required(this, params);
+          }
+
+          return valid;
+      }
+  });
+                      </pre>
+
+                      <h6>HTML</h6>
+                      <pre class=prettyprint">
+  &lt;input type="checkbox" id="over21", name="over21" /&gt; I am over 21!
+  &lt;input type="text" id="nickname" name="nickname"
+         data-constraints='@ConditionalRequired(label="The nickname")' /&gt;
+                      </pre>
+
+                  </li>
+              </ul>
+
+              <h4>Performing validation</h4>
+              <ul>
+                  <li>
+                      <h5>Validating everything and displaying any errors:</h5>
+                      <pre class="prettyprint">
+  var constraintViolations = regula.validate();
+  for(var i = 0; i &lt; constraintViolations.length; i++) {
+      var constraintViolation = constraintViolations[i];
+
+      for(var j = 0; j &lt; constraintViolation.failingElements.length; j++) {
+          //Assuming the browser supports 'setCustomValidity'; otherwise you will have to render
+          //the errors in some other manner
+          constraintViolation.failingElements[j].setCustomValidity(constraintViolation.message);
+      }
+  }
                       </pre>
                   </li>
               </ul>
