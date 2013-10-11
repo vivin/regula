@@ -12757,6 +12757,32 @@ test('Test failing @Email against text field (regula.bind)', function() {
     deleteElements();
 });
 
+test('Test failing @Email with special character at the end', function() {
+    var inputElementId = "myText";
+    var $text = createInputElement(inputElementId, undefined, "text");
+    $text.val("abc@example.com'");
+
+    regula.bind({
+        element: $text.get(0),
+        constraints: [
+            {
+                constraintType: regula.Constraint.Email
+            }
+        ]
+    });
+    var constraintViolation = regula.validate()[0];
+
+    testConstraintViolationsForConstraints(constraintViolation, {
+        constraintName: "Email",
+        groups: "Default",
+        elementId: "myText",
+        validatedGroups: "Default",
+        errorMessage: "The text field is not a valid email."
+    });
+
+    deleteElements();
+});
+
 test('Test passing @Email against text field (markup)', function() {
     var inputElementId = "myText";
     var $text = createInputElement(inputElementId, "@Email", "text");
