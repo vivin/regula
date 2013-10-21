@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="ico/regula_favicon.png">
+
+    <title>Regula: A better way to validate forms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <link href="css/regula.css" rel="stylesheet">
+
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="bootstrap/assets/js/html5shiv.js"></script>
+      <script src="bootstrap/assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><strong>Regula</strong></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="./index.html">Home</a></li>
+            <li class="active"><a href="#">Getting Started</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Examples</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Download</a></li>
+            <li><a href="#">Source</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+      <div class="panel regula-panel-primary">
+          <div class="panel-heading">
+              <h3 class="panel-title"><strong>Download Regula</strong></h3>
+          </div>
+          <div class="panel-body">
+              The first thing you need to do is to download the latest release of Regula from <a href="https://github.com/vivin/regula/releases">here</a>; everything you need is inside the <code>dist</code> directory. You will notice that there are two versions: an uncompressed version, and a minified version. The minified version is probably the one that you want. Once you have this file, simply move it to your JavaScript directory and then include it from your HTML file. If you're using RequireJS, you simply need to provide a reference to the file from the RequireJS config file, since Regula is AMD-compliant. 
+          </div>
+      </div>
+
+      <div class="panel regula-panel-primary">
+          <div class="panel-heading">
+              <h3 class="panel-title"><strong>Understanding Regula</strong></h3>
+          </div>
+          <div class="panel-body">
+              <h4>What are Constraints?</h4>
+
+              Now that you have downloaded Regula and added it to your codebase, you can use it. The first step is to understand what Regula is, and how it works. The main concept in Regula is the <strong>constraint</strong>. A constraint describes certain validation rules that will be applied to the element that the constraint is attached to. To understand this, let us look at a very simple example:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="username" 
+         id="username" 
+         data-constraints="@Required" /&gt;
+              </pre>
+
+              Here, you have an input element that has been annotated with the <code>@Required</code> constraint. What this means, is that Regula is now able to recognize that this <code>input</code> element <i>requires</i> a value. If one is not provided, then the constraint has not been satisfied, and validation will fail.
+
+              <h4>What are Constraint parameters?</h4>
+
+              Constraints can also accept parameters, which will control their validation-behavior. Here's an example:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="age" 
+         id="age" 
+         data-constraints="@Range(min=18, max=65)" /&gt;
+              </pre>
+
+              The <code>@Range</code> constraint enforces the requirement that the value (of the associated element) must be between a minimum and a maximum value (both inclusive). Here, we have an instance of the <code>@Range</code> constraint that says that the value must be between <code>18</code> and <code>65</code>.
+
+              You can also attach multiple constraints to an element like so:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="age" 
+         id="age" 
+         data-constraints="@Numeric @Range(min=18, max=65)" /&gt;
+              </pre>
+
+              In this example, you're saying that the <code>input</code> element can only accept numeric values, and that those values must be between <code>18</code> and <code>65</code>.
+
+              Constraint parameters come in two flavors: optional and required. The documentation for each constraint will let you know which parameters are optional, and which are required. All constraints also share a few optional-parameters. These parameters are <code>label</code>, <code>message</code>, and <code>ignoreEmpty</code>. The <code>label</code> parameter simply gives a friendly name to the associated input-element in the validation-failure message. For example:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="username" 
+         id="username" 
+         data-constraints='@Required(label="username")' /&gt;
+              </pre>
+
+              Would give the failure message <code>"The username is required."</code> if you didn't enter a value for it.
+
+              The <code>message</code> parameter lets you specify a custom validation-failure message. For example:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="username" 
+         id="username" 
+         data-constraints='@Required(message="You need to enter a username!")' /&gt;
+              </pre>
+
+              Messages have another useful property as well. You can reference other parameters, and their values will be interpolated inside the string. For example:<br /><br />
+
+              <pre class="prettyprint">
+  &lt;input type="text"
+         name="age" 
+         id="age" 
+         data-constraints='@Range(min=18, max=65, label="age", message="The {label} must be between {min} and {max}")' /&gt;
+              </pre>
+
+              If this constraint fails validation, the error message will say <code>"The age must be between 18 and 65"</code>.
+
+              The last optional-parameter, <code>ignoreEmpty</code> controls the behavior of the constraint in the presence of empty values. If set to <code>true</code>, it basically says <i>"Don't validate this input element if it is empty."</i>, which is desirable in some cases.
+
+              <h4>How do I actually validate?</h4>
+
+              So now you know how to attach constraints to elements through HTML. But how do you actually validate the constraints? You do that through JavaScript like so:<br /><br />
+
+              <pre class="prettyprint">
+  var constraintViolations = regula.validate();
+  for(var i = 0; i &lt; constraintViolations.length; i++) {
+      var constraintViolation = constraintViolations[i];
+
+      for(var j = 0; j &lt; constraintViolation.failingElements.length; j++) {
+          //Assuming the browser supports 'setCustomValidity'; otherwise you will have to render
+          //the errors in some other manner
+          constraintViolation.failingElements[j].setCustomValidity(constraintViolation.message);
+      }
+  }
+              </pre>
+
+              Calling <code>regula.validate()</code> gives you an array of <!--TODO link this to documentation--><code>ConstraintViolation</code><!--TODO--!> objects, which contains (among other things), the error message that explains why the constraint failed.
+
+              <h4>Where do I go from here?</h4>
+
+              What you've seen here so far covers the very basics of Regula. There are other features as well, but this should be enough to get you started. If you are interested in a more-thorough walkthrough of Regula, take a look at the <a href="./documentation.html">documentation</a>.
+          </div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/assets/js/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
