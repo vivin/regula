@@ -24,6 +24,26 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7c7dc', endColorstr='#85b2d3',GradientType=0 ); /* IE6-9 */
 }
 
-.no-list-style {
+li.no-list-style {
     list-style-type: none
 }
+
+li.toc-item {
+    font-weight: bold;
+}
+
+ol.toc {
+    font-size: medium;
+    -webkit-padding-start: 0px;
+    -moz-padding-start: 0px;
+    margin-left: 10px;
+}
+
+ol.toc ol.toc {
+    font-size: small;
+    margin-left: 20px;
+}
+
+ol.toc { counter-reset: item }
+li.toc-item { display: block }
+li.toc-item:before { content: counters(item, ".") ". "; counter-increment: item }

@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="ico/regula_favicon.png">
+
+    <title>Regula: A better way to validate forms</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <link href="css/regula.css" rel="stylesheet">
+
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="bootstrap/assets/js/html5shiv.js"></script>
+      <script src="bootstrap/assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><strong>Regula</strong></a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./getting-started">Getting Started</a></li>
+            <li class="active"><a href="#">Documentation</a></li>
+            <li><a href="#">Examples</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Download</a></li>
+            <li><a href="#">Source</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+      <div class="row">
+          <div class="col-md-4">
+              <div class="panel regula-panel-primary">
+                  <ol class="toc">
+                      <li class="toc-item">Overview</li>
+                      <li class="toc-item">Configuring Regula</li>
+                      <li class="toc-item">Primary concepts
+                          <ol class="toc">
+                              <li class="toc-item">Constraints
+                                  <ol class="toc">
+                                      <li class="toc-item">Element constraints</li>
+                                      <li class="toc-item">Form-specific constraints</li>
+                                      <li class="toc-item">HTML5 constraints</li>
+                                      <li class="toc-item">Parameters</li>
+                                      <li class="toc-item">Optional, common parameters</li>
+                                      <li class="toc-item">Validation groups</li>
+                                      <li class="toc-item">Custom constraints</li>
+                                      <li class="toc-item">Overriding constraints</li>
+                                      <li class="toc-item">Asynchronous constraints</li>
+                                      <li class="toc-item">Compound constraints</li>
+                                      <li class="toc-item">Validators</li>
+                                  </ol>
+                                  <li class="toc-item">Binding
+                                      <ol class="toc">
+                                          <li class="toc-item">Inline</li>
+                                          <li class="toc-item">Validation</li>
+                                      </ol>
+                                  </li>
+                                  <li class="toc-item">Validation
+                                      <ol class="toc">
+                                          <li class="toc-item">Synchronous</li>
+                                          <li class="toc-item">Asynchronous</li>
+                                          <li class="toc-item">Delegated</li>
+                                      </ol>
+                                  </li>
+                              </li>
+                          </ol>
+                      </li>
+                      <li class="toc-item">Built-in Constraints
+                          <ol class="toc">
+                              <li class="toc-item"><code>@Required</code></li>
+                              <li class="toc-item"><code>@Checked</code></li>
+                              <li class="toc-item"><code>@Selected</code></li>
+                              <li class="toc-item"><code>@NotBlank</code></li>
+                              <li class="toc-item"><code>@Blank</code></li>
+                              <li class="toc-item"><code>@Max</code></li>
+                              <li class="toc-item"><code>@Min</code></li>
+                              <li class="toc-item"><code>@Range</code></li>
+                              <li class="toc-item"><code>@Integer</code></li>
+                              <li class="toc-item"><code>@Real</code></li>
+                              <li class="toc-item"><code>@Alpha</code></li>
+                              <li class="toc-item"><code>@Numeric</code></li>
+                              <li class="toc-item"><code>@AlphaNumeric</code></li>
+                              <li class="toc-item"><code>@Digits</code></li>
+                              <li class="toc-item"><code>@Step</code></li>
+                              <li class="toc-item"><code>@Length</code></li>
+                              <li class="toc-item"><code>@Pattern</code></li>
+                              <li class="toc-item"><code>@Email</code></li>
+                              <li class="toc-item"><code>@URL</code></li>
+                              <li class="toc-item"><code>@Past</code></li>
+                              <li class="toc-item"><code>@Future</code></li>
+                              <li class="toc-item"><code>@CompletelyFilled</code></li>
+                              <li class="toc-item"><code>@PasswordsMatch</code></li>
+                          </ol>
+                      </li>
+                      <li class="toc-item">HTML5 Constraints
+                          <ol class="toc">
+                              <li class="toc-item"><code>@HTML5Required</code></li>
+                              <li class="toc-item"><code>@HTML5Email</code></li>
+                              <li class="toc-item"><code>@HTML5URL</code></li>
+                              <li class="toc-item"><code>@HTML5MaxLength</code></li>
+                              <li class="toc-item"><code>@HTML5Pattern</code></li>
+                              <li class="toc-item"><code>@HTML5Max</code></li>
+                              <li class="toc-item"><code>@HTML5Min</code></li>
+                              <li class="toc-item"><code>@HTML5Step</code></li>
+                          </ol>
+                      </li>
+                      <li class="toc-item">Functions
+                          <ol class="toc">
+                              <li class="toc-item"><code>regula.configure</code></li>
+                              <li class="toc-item"><code>regula.bind</code></li>
+                              <li class="toc-item"><code>regula.unbind</code></li>
+                              <li class="toc-item"><code>regula.isBound</code></li>
+                              <li class="toc-item"><code>regula.custom</code></li>
+                              <li class="toc-item"><code>regula.override</code></li>
+                              <li class="toc-item"><code>regula.compound</code></li>
+                              <li class="toc-item"><code>regula.validate</code></li>
+                          </ol>
+                      </li>
+                      <li class="toc-item">Objects
+                          <ol class="toc">
+                              <li class="toc-item"><code>Constraint</code></li>
+                              <li class="toc-item"><code>Group</code></li>
+                              <li class="toc-item"><code>DateFormat</code></li>
+                              <li class="toc-item"><code>Exception</code></li>
+                              <li class="toc-item"><code>ConstraintViolation</code></li>
+                              <li class="toc-item"><code>validator</code></li>
+                          </ol>
+                      </li>
+                  </ol>
+              </div>
+          </div>
+          <div class="col-md-8">.col-md-4</div>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="bootstrap/assets/js/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
