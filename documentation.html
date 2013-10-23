@@ -16,6 +16,8 @@
     <link href="css/regula.css" rel="stylesheet">
 
     <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script src="js/jquery-2.0.3.min.js"></script>
+    <script src="js/documentation.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -56,107 +58,201 @@
 
       <div class="row">
           <div class="col-md-4">
-              <div class="panel regula-panel-primary">
+              <div id="toc" class="panel regula-panel-primary">
                   <ol class="toc">
-                      <li class="toc-item">Overview</li>
-                      <li class="toc-item">Configuring Regula</li>
-                      <li class="toc-item">Primary concepts
+                      <li class="toc-item" data-content-id="overview">Overview</li>
+                      <li class="toc-item" data-content-id="configuration">Configuring Regula</li>
+                      <li class="toc-item" data-content-id="primary">Primary concepts
                           <ol class="toc">
-                              <li class="toc-item">Constraints
+                              <li class="toc-item" data-content-id="constraints">Constraints
                                   <ol class="toc">
-                                      <li class="toc-item">Element constraints</li>
-                                      <li class="toc-item">Form-specific constraints</li>
-                                      <li class="toc-item">HTML5 constraints</li>
-                                      <li class="toc-item">Parameters</li>
-                                      <li class="toc-item">Optional, common parameters</li>
-                                      <li class="toc-item">Validation groups</li>
-                                      <li class="toc-item">Custom constraints</li>
-                                      <li class="toc-item">Overriding constraints</li>
-                                      <li class="toc-item">Asynchronous constraints</li>
-                                      <li class="toc-item">Compound constraints</li>
-                                      <li class="toc-item">Validators</li>
+                                      <li class="toc-item" data-content-id="element">Element constraints</li>
+                                      <li class="toc-item" data-content-id="formSpecific">Form-specific constraints</li>
+                                      <li class="toc-item" data-content-id="html5">HTML5 constraints</li>
+                                      <li class="toc-item" data-content-id="parameters">Parameters</li>
+                                      <li class="toc-item" data-content-id="optional">Optional, common parameters</li>
+                                      <li class="toc-item" data-content-id="groups">Validation groups</li>
+                                      <li class="toc-item" data-content-id="custom">Custom constraints</li>
+                                      <li class="toc-item" data-content-id="overriding">Overriding constraints</li>
+                                      <li class="toc-item" data-content-id="asynchronous">Asynchronous constraints</li>
+                                      <li class="toc-item" data-content-id="compound">Compound constraints</li>
+                                      <li class="toc-item" data-content-id="validators">Validators</li>
                                   </ol>
                                   <li class="toc-item">Binding
                                       <ol class="toc">
-                                          <li class="toc-item">Inline</li>
-                                          <li class="toc-item">Validation</li>
+                                          <li class="toc-item" data-content-id="inline">Inline</li>
+                                          <li class="toc-item" data-content-id="programmatic">Programmatic</li>
                                       </ol>
                                   </li>
-                                  <li class="toc-item">Validation
+                                  <li class="toc-item" data-content-id="validation">Validation
                                       <ol class="toc">
-                                          <li class="toc-item">Synchronous</li>
-                                          <li class="toc-item">Asynchronous</li>
-                                          <li class="toc-item">Delegated</li>
+                                          <li class="toc-item" data-content-id="syncValidation">Synchronous</li>
+                                          <li class="toc-item" data-content-id="asyncValidation">Asynchronous</li>
+                                          <li class="toc-item" data-content-id="delegatedValidation">Delegated</li>
                                       </ol>
                                   </li>
                               </li>
                           </ol>
                       </li>
-                      <li class="toc-item">Built-in Constraints
+                      <li class="toc-item" data-content-id="builtIn">Built-in Constraints
                           <ol class="toc">
-                              <li class="toc-item"><code>@Required</code></li>
-                              <li class="toc-item"><code>@Checked</code></li>
-                              <li class="toc-item"><code>@Selected</code></li>
-                              <li class="toc-item"><code>@NotBlank</code></li>
-                              <li class="toc-item"><code>@Blank</code></li>
-                              <li class="toc-item"><code>@Max</code></li>
-                              <li class="toc-item"><code>@Min</code></li>
-                              <li class="toc-item"><code>@Range</code></li>
-                              <li class="toc-item"><code>@Integer</code></li>
-                              <li class="toc-item"><code>@Real</code></li>
-                              <li class="toc-item"><code>@Alpha</code></li>
-                              <li class="toc-item"><code>@Numeric</code></li>
-                              <li class="toc-item"><code>@AlphaNumeric</code></li>
-                              <li class="toc-item"><code>@Digits</code></li>
-                              <li class="toc-item"><code>@Step</code></li>
-                              <li class="toc-item"><code>@Length</code></li>
-                              <li class="toc-item"><code>@Pattern</code></li>
-                              <li class="toc-item"><code>@Email</code></li>
-                              <li class="toc-item"><code>@URL</code></li>
-                              <li class="toc-item"><code>@Past</code></li>
-                              <li class="toc-item"><code>@Future</code></li>
-                              <li class="toc-item"><code>@CompletelyFilled</code></li>
-                              <li class="toc-item"><code>@PasswordsMatch</code></li>
+                              <li class="toc-item" data-content-id="required"><code>@Required</code></li>
+                              <li class="toc-item" data-content-id="checked"><code>@Checked</code></li>
+                              <li class="toc-item" data-content-id="selected"><code>@Selected</code></li>
+                              <li class="toc-item" data-content-id="notblank"><code>@NotBlank</code></li>
+                              <li class="toc-item" data-content-id="blank"><code>@Blank</code></li>
+                              <li class="toc-item" data-content-id="max"><code>@Max</code></li>
+                              <li class="toc-item" data-content-id="min"><code>@Min</code></li>
+                              <li class="toc-item" data-content-id="range"><code>@Range</code></li>
+                              <li class="toc-item" data-content-id="integer"><code>@Integer</code></li>
+                              <li class="toc-item" data-content-id="real"><code>@Real</code></li>
+                              <li class="toc-item" data-content-id="alpha"><code>@Alpha</code></li>
+                              <li class="toc-item" data-content-id="numeric"><code>@Numeric</code></li>
+                              <li class="toc-item" data-content-id="alphaNumeric"><code>@AlphaNumeric</code></li>
+                              <li class="toc-item" data-content-id="digits"><code>@Digits</code></li>
+                              <li class="toc-item" data-content-id="step"><code>@Step</code></li>
+                              <li class="toc-item" data-content-id="length"><code>@Length</code></li>
+                              <li class="toc-item" data-content-id="pattern"><code>@Pattern</code></li>
+                              <li class="toc-item" data-content-id="email"><code>@Email</code></li>
+                              <li class="toc-item" data-content-id="url"><code>@URL</code></li>
+                              <li class="toc-item" data-content-id="past"><code>@Past</code></li>
+                              <li class="toc-item" data-content-id="future"><code>@Future</code></li>
+                              <li class="toc-item" data-content-id="completelyFilled"><code>@CompletelyFilled</code></li>
+                              <li class="toc-item" data-content-id="passwordMatch"><code>@PasswordsMatch</code></li>
                           </ol>
                       </li>
-                      <li class="toc-item">HTML5 Constraints
+                      <li class="toc-item" data-content-id="html5Constraints">HTML5 Constraints
                           <ol class="toc">
-                              <li class="toc-item"><code>@HTML5Required</code></li>
-                              <li class="toc-item"><code>@HTML5Email</code></li>
-                              <li class="toc-item"><code>@HTML5URL</code></li>
-                              <li class="toc-item"><code>@HTML5MaxLength</code></li>
-                              <li class="toc-item"><code>@HTML5Pattern</code></li>
-                              <li class="toc-item"><code>@HTML5Max</code></li>
-                              <li class="toc-item"><code>@HTML5Min</code></li>
-                              <li class="toc-item"><code>@HTML5Step</code></li>
+                              <li class="toc-item" data-content-id="html5Required"><code>@HTML5Required</code></li>
+                              <li class="toc-item" data-content-id="html5Email"><code>@HTML5Email</code></li>
+                              <li class="toc-item" data-content-id="html5URL"><code>@HTML5URL</code></li>
+                              <li class="toc-item" data-content-id="html5MaxLength"><code>@HTML5MaxLength</code></li>
+                              <li class="toc-item" data-content-id="html5Pattern"><code>@HTML5Pattern</code></li>
+                              <li class="toc-item" data-content-id="html5Max"><code>@HTML5Max</code></li>
+                              <li class="toc-item" data-content-id="html5Min"><code>@HTML5Min</code></li>
+                              <li class="toc-item" data-content-id="html5Step"><code>@HTML5Step</code></li>
                           </ol>
                       </li>
-                      <li class="toc-item">Functions
+                      <li class="toc-item" data-content-id="functions">Functions
                           <ol class="toc">
-                              <li class="toc-item"><code>regula.configure</code></li>
-                              <li class="toc-item"><code>regula.bind</code></li>
-                              <li class="toc-item"><code>regula.unbind</code></li>
-                              <li class="toc-item"><code>regula.isBound</code></li>
-                              <li class="toc-item"><code>regula.custom</code></li>
-                              <li class="toc-item"><code>regula.override</code></li>
-                              <li class="toc-item"><code>regula.compound</code></li>
-                              <li class="toc-item"><code>regula.validate</code></li>
+                              <li class="toc-item" data-content-id="configure"><code>regula.configure</code></li>
+                              <li class="toc-item" data-content-id="bind"><code>regula.bind</code></li>
+                              <li class="toc-item" data-content-id="unbind"><code>regula.unbind</code></li>
+                              <li class="toc-item" data-content-id="isBound"><code>regula.isBound</code></li>
+                              <li class="toc-item" data-content-id="custom"><code>regula.custom</code></li>
+                              <li class="toc-item" data-content-id="override"><code>regula.override</code></li>
+                              <li class="toc-item" data-content-id="compound"><code>regula.compound</code></li>
+                              <li class="toc-item" data-content-id="validate"><code>regula.validate</code></li>
                           </ol>
                       </li>
-                      <li class="toc-item">Objects
+                      <li class="toc-item" data-content-id="objects">Objects
                           <ol class="toc">
-                              <li class="toc-item"><code>Constraint</code></li>
-                              <li class="toc-item"><code>Group</code></li>
-                              <li class="toc-item"><code>DateFormat</code></li>
-                              <li class="toc-item"><code>Exception</code></li>
-                              <li class="toc-item"><code>ConstraintViolation</code></li>
-                              <li class="toc-item"><code>validator</code></li>
+                              <li class="toc-item" data-content-id="constraint"><code>Constraint</code></li>
+                              <li class="toc-item" data-content-id="group"><code>Group</code></li>
+                              <li class="toc-item" data-content-id="dateFormat"><code>DateFormat</code></li>
+                              <li class="toc-item" data-content-id="exception"><code>Exception</code></li>
+                              <li class="toc-item" data-content-id="constriantViolation"><code>ConstraintViolation</code></li>
+                              <li class="toc-item" data-content-id="validator"><code>validator</code></li>
                           </ol>
-                      </li>
+                      </li> 
                   </ol>
               </div>
           </div>
-          <div class="col-md-8">.col-md-4</div>
+          <div class="col-md-8">
+              <div id="documentation" class="panel regula-panel-primary documentation">
+                  <div id="overview" class="documentation-element">
+                      <h2>1. Overview</h2>
+
+                      <p><strong>Regula</strong> is a powerful client-side validation library, where validation constraints can be attached <em>directly</em> to <code>input</code> elements. This is similar to how validation can currently be attached to elements using <a href="http://diveintohtml5.info/forms.html">HTML5 validation constraints</a>. However, Regula supports many-more advanced validation-features than can be provided by HTML5. Furthermore, the semantics of validation is directly conveyed via markup, instead of being bound programmatically through JavaScript (i.e., the way many existing validation-libraries work).</p>
+
+                      <p>Some of the advanced features supported by Regula include:
+
+                      <ul>
+                          <li>Custom constraints</li>
+                          <li>Compound constraints</li>
+                          <li>Validation groups</li>
+                          <li>Asynchronous validation</li>
+                      </ul>
+
+                      Furthermore, all of these advanced capabilities can be encapsulated within custom constraints and used directly in markup.
+                      </p>
+                  </div>
+                  <div id="configuration" class="documentation-element">
+                      <h2>2. Configuring Regula</h2>
+
+                      <p><strong>Regula</strong> pretty much works as you would expect out of the box. The only configuration option that Regula currently supports is the <code>validateEmptyFields</code> option. This option controls Regula's validation behavior in the context of empty <code>input</code>-fields. Sometimes, it is desirable to validate <code>input</code> only if they are not empty. Setting <code>validateEmptyFields</code> to <code>false</code> will make Regula validate non-empty fields only. This can be done as follows:
+
+                      <pre class="prettyprint">
+  regula.configure({
+      validateEmptyFields: false
+  });
+                      </pre>
+
+                      <strong>Note:</strong> The default value of this flag is <code>true</code>, which means that empty fields always validated. This behavior can be controlled on a per-constraint basis by using the <code>ignoreEmpty</code> optional parameter. For more information, see <a href="./documentation.html#optional">&#167;3.1.5</a>.
+                      </p>
+
+                  </div>
+                  <div id="primary" class="documentation-element">
+                      <h2>3. Primary Concepts</h2>
+
+                      <p><strong>Regula</strong> is centered around a few primary concepts, and understanding these concepts will help you use Regula effectively. Subsequent sub-sections will go over each of these concepts.</p>
+                  </div>
+                  <div id="constraints" class="documentation-element">
+                      <h3>3.1 Constraints</h3>
+
+                      <p><strong>Constraints</strong> form the central part of Regula. A constraint describes a set of rules that the value of an <code>input</code> element must conform to. It can also mandate that the element must be in a certain state (for example, it must be <em>checked</em> in the case of a checkbox). Regula comes with a set of predefined constraints that are sufficient for most validation needs. However, you are able to create your own constraints (custom constraints) for any custom-validation needs. These custom constraints that you have created, can be referenced in markup as well. Subsequent sections will go into more detail about the different aspects of constraints in Regula.
+
+                      When used in markup, constraints start with <code>@</code>. For example, the following <code>input</code> element has the <code>@Required</code> and <code>@Range</code> constraints:
+
+                      <pre class="prettyprint">
+  &lt;input type="text" data-constraints="@Required @Range(min=5, max=10) /&gt;
+                      </pre>
+                  </div>
+                  <div id="element" class="documentation-element">
+                      <h4>3.1.1 Element constraints</h4>
+
+                      <p><strong>Element constraints</strong> are the most-common form of constraint. These are constraints that apply to a single <code>input</code>, or <code>select</code> element. What this means is that the <a href="./documentation.html#validators">validator</a> for that constraint performs a validation check only against the element that the constraint is bound to. Also, in the <a href="./documentation.html#validators">validator</a> for a custom element-constraint, <code>this</code> will refer to the element that is bound to the constraint.</p>
+                      
+                      <p>When validation fails for an element constraint, the <code>ConstraintViolation</code> object's <code>failingElements</code> property will only contain a single element, i.e., the element that failed validation.</p>
+                     
+                      <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
+                      </p>
+                  </div>
+                  <div id="formSpecific" class="documentation-element">
+                      <h4>3.1.2 Form-specific constraints</h4>
+
+                      <p><strong>Form-specific constraints</strong> are a form of constraint that apply to an entire <code>form</code> element. These are typically used when it makes sense to validate the state of the form as a whole. In the <a href="./documentation.html#validators">validator</a> for a custom form-specific constraint, <code>this</code> will refer to the <code>form</code> element that is bound to the constraint.</p>
+
+                      <p>When validation fails for a form-specific constraint, the <code>ConstraintViolation</code> object's <code>failingElements</code> property will contain all elements that failed validation.</p>
+
+                      <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
+                  </div>
+                  <div id="html5" class="documentation-element">
+                      <h4>3.1.3 HTML5 constraints</h4>
+
+                      <p><strong>HTML5 constraints</strong> allow you to use native HTML5 validation-constraints in Regula. Keep in mind, however, that <strong>Regula is not an HTML5 shim</strong>. Regula <em>recognizes</em> native HTML5 constraints and incorporates them into its validation lifecycle <em>if the browser supports them natively, or via a shim</em>. The reasoning behind this design decision is that HTML5 validation isn't limited to input validation; it includes specific view-elements as well (such as a calendar for <code>date</code> types). Emulating these elements is out of the scope of what Regula is trying to accomplish.</p>
+
+                      <p>HTML5 constraints in Regula can be used in two forms. One form is the standard form (i.e., how HTML5 constraints are regularly used) and looks like this:</p>
+
+                      <pre class="prettyprint">
+  &lt;input type="text" required="true" /&gt;
+                      </pre>
+
+                      <p>Internally, Regula converts the <code>required</code> attribute into the <code>@HTML5Required</code> constraint. Instead of using the standard form, you can use the "wrapped" versions of the HTML5 constraints as well. This form is desirable since it allows you to easily use other features of Regula like <a href="./documentation.html#groups">validation groups</a>, <a href="./documentation.html#optional">labels</a>, and <a href="./documentation.html#optional">custom messages</a>:</p>
+
+                      <pre class="prettyprint">
+  &lt;input type="text"
+      data-constraints='@HTML5Required(
+          label="username", 
+          message="The {label} is required!", 
+          groups=[MyGroup, OtherGroup]
+      )' 
+  /&gt;
+                      </pre>
+                  </div>
+
+              </div>
+          </div>
       </div>
 
     </div> <!-- /container -->
