@@ -9,7 +9,7 @@ You might be wondering why the world needs **another** client-side validation-fr
 
 ###Small, Easy, and Powerful
 
-Regula is small. It's around 82Kb un-compressed, and 34Kb minified. Regula also doesn't depend on any other external libraries, so you don't have any other dependencies.
+Regula is small. It's around 220Kb un-compressed, and 64Kb minified. Regula also doesn't depend on any other external libraries, so you don't have any other dependencies.
 
 As far as ease-of-use goes, I would say that Regula is the easiest Javascript client-side validation-framework to use; on par with using HTML5 constraint-validation. Why is that? Well, let's take a look at how you'd mark an element for validation in Regula:
 
@@ -79,14 +79,58 @@ And usage:
 <input id = "number" 
        name = "number" 
        value = ""
-       data-constraints = "@DivisibleBy(divisor=3, label='The Number')" />
+       data-constraints = '@DivisibleBy(divisor=3, label="The Number")' />
 ```
+
+Earlier I mentioned HTML5 constraints. Regula will detect and incorporate HTML5 validation constraints into its validation cycle. This way, you can still use HTML5 validation constraints with Regula. Regula also offers "wrapped" versions of HTML5 constraints (for example `@HTML5Required` for `required`), which means that you are able to take advantage of other features of Regula like custom failure-messages, labels, validation groups, and compound constraints. Here are some examples for HTML5 constraints:
+
+```html
+<input id = "number"
+       name = "number"
+       value = ""
+       required="true"
+       max="10"
+       min="5" />
+```
+
+In the above example, you can see that it isn't any different from using regular HTML5 constraints. The advantage you have is that you can use Regula to validate these constraints now. You can also use the "wrapped" versions:
+
+```html
+<input id = "number"
+       name = "number"
+       value = ""
+       data-constraints = '@HTML5Required(message = "Number is required!") @HTML5Max(value=10, groups=[MyGroup]) @HTML5Min(value=5, groups=[MyOtherGroup])' />
+```
+
+Asynchronous constraints are another feature that is supported by Regula. You can define and use custom, asynchronous constraints alongside regular constraints. Here is an example of a custom, asynchronous constraint:
+
+```js
+regula.custom({
+    name: "MyAsyncContraint",
+    async: true,
+    defaultMessage: "The asynchronous constraint failed.",
+    validator: function(params, validator, callback) {
+        //Using jQuery as an example
+        jQuery.ajax({
+            url: myUrl,
+            dataType: "jsonp",
+            success: function(data) {
+                //Use the callback to pass the result of validation back to
+                //regula.
+                callback(data.success)
+            }
+        });
+    }
+});
+```
+
+Asynchronous constraints can be used inside compound constraints to. There is no explicit syntax to make a compound-constraint asynchronous. Any compound constraint that contains at least one asynchronous constraint, is implicitly asynchronous.
 
 But that's not all! Regula supports other features in addition to custom constraints:
 
  - Validation groups (i.e., selective validation of specific elements).
  - Compound constraints (constraints that contain one or more other constraints).
- - Form-specific constraints (i.e., constraints that apply to the form as a whole)
+ - Form-specific constraints (i.e., constraints that apply to the form as a whole).
  - A simple, yet powerful API.
 
 That's all well and good. But how exactly do you enforce these constraints prior to submitting your form? That part is easy as well. Here's a simple example (using jQuery):
@@ -117,20 +161,38 @@ jQuery(document).ready(function() {
 
 In the above example, we first call `regula.bind()` to bind all our constraints to the elements they have been defined on. Then, we call `regula.validate()` that performs all the validation. This function returns an array of constraint violations, that you can then examine to see which elements failed validation. That's all there is to it!
 
-There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.2.3 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
+ To validate using asynchronous constraints, you need to use a callback with `regula.validate()`:
+
+```js
+regula.validate(function(constraintViolations) {
+    ...
+});
+```
+
+You can still supply options to `regula.validate` while supplying a callback:
+
+```js
+regula.validate(options, function(constraintViolations) {
+    ...
+});
+```
+
+There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.3.0 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
+
+###Documentation
+Documentation is available [here](http://vivin.github.io/regula/). It is still a work in progress since I am migrating stuff over from the old wiki into the new GitHub page.
 
 ###Ok, where can I get it?
-You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases) or on [SourceForge](http://sourceforge.net/projects/regula/?source=directory).
+You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases) or on [SourceForge](http://sourceforge.net/projects/regula/?source=directory). The latest release is **1.3.0**.
 
 ###I want to contribute!
 That's awesome! Take a look at **devreadme.txt** for some information on how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
 
 ###Going forward
 
-I'm not done with Regula yet! Going forward, expect Regula to support the following features:
-
- - Support for HTML5 validation constraints
- - Asynchronous validation
+I'm not done with Regula yet! Going forward, I'm considering the following features:
+ - Global parameter definitions (specify a parameter to be used by all constraints).
+ - Constraint expression (combine constraints into logical expressions).
 
 This is by no means an exhaustive list. I honestly believe that Regula is a good alternative to existing client-side validation-frameworks and I will be constantly improving and enhancing Regula. I take the quality of my code seriously and will do my best to release bug-free code. Currently JSCoverage reports 97% coverage (effective coverage is pretty much 100%) established through over 2,300 assertions.
 
