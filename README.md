@@ -192,7 +192,7 @@ That's awesome! Take a look at **devreadme.txt** for some information on how to 
 
 I'm not done with Regula yet! Going forward, I'm considering the following features:
  - Global parameter definitions (specify a parameter to be used by all constraints).
- - Constraint expression (combine constraints into logical expressions).
+ - Constraint expressions (combine constraints into logical expressions).
 
 This is by no means an exhaustive list. I honestly believe that Regula is a good alternative to existing client-side validation-frameworks and I will be constantly improving and enhancing Regula. I take the quality of my code seriously and will do my best to release bug-free code. Currently JSCoverage reports 97% coverage (effective coverage is pretty much 100%) established through over 2,300 assertions.
 
