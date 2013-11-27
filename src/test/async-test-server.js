@@ -16,22 +16,22 @@ http.createServer(function(request, response) {
 
     if(typeof parameterMap.shutdown === "undefined") {
         if(parameterMap.pass === "true") {
-            util.puts("[async-test-server] Request received to fail.");
+            console.log("[async-test-server] Request received to fail.");
             pass = true;
         } else {
-            util.puts("[async-test-server] Request received to pass.");
+            console.log("[async-test-server] Request received to pass.");
         }
 
         var seconds = Math.floor(Math.random() * 3) + 1;
-        util.puts("[async-test-server] Waiting for " + seconds + " seconds to elapse.");
+        console.log("[async-test-server] Waiting for " + seconds + " seconds to elapse.");
         setTimeout(function() {
-            util.puts("[async-test-server] Done waiting.");
+            console.log("[async-test-server] Done waiting.");
             response.writeHeader(200, {"Content-Type": "application/javascript"})
             response.write(parameterMap.callback + "(" + JSON.stringify({pass: pass}) + ");");
             response.end();
         }, seconds * 1000)
     } else {
-        util.puts("[async-test-server] Shutting down.");
+        console.log("[async-test-server] Shutting down.");
         response.writeHeader(200, {"Content-Type": "text/plain"})
         response.write("Shutting down");
         response.end();
@@ -40,4 +40,4 @@ http.createServer(function(request, response) {
     }
 }).listen(8888);
 
-util.puts("[async-test-server] Server running on port 8888.");
+console.log("[async-test-server] Server running on port 8888.");
