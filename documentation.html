@@ -250,6 +250,52 @@
   /&gt;
                       </pre>
                   </div>
+                  <div id="parameters" class="documentation-element">
+                      <h4>3.1.4 Parameters</h4>
+
+                      <p><strong>Parameters</strong> allow you to pass information into a constraint and/or modify its behavior. Some constraints have optional parameters, whereas others will have required parameters. For example, the <code>@Range</code> constraint expects a <code>max</code> and a <code>min</code> parameter. If required constraints are not provided to a constraint, Regula will throw an error during binding.</p> Parameters are not explictly typed, but in general are similar to JavaScript types. Parameters can also be used inside the constraint's failure-message through interpolation. This gives you the ability to provide custom messages that change dynamically based on the parameter values supplied to the constraint (for more information, look at <code>message</code> in <a href="./documentation.html#optional">&#167;3.1.5</a>).</p> When defining your own custom constraint, you can specify the parameters that the constraint accepts. For more information, see <a href="./documentation.html#custom">&#167;3.1.7</a>.
+
+                      <p><strong>Note:</strong> Regular-expression parameters are currently not typed as JavaScript <code>RegExp</code> objects; this is an oversight and will be fixed in a future release. Currently it is required that the value be converted into a <code>RegExp</code> object by using the <code>RegExp</code> object's constructor.
+
+                  </div>
+                  <div id="optional" class="documentation-element">
+                      <h4>3.1.5 Optional, common parameters</h4>
+
+                      <p><strong>Optional, common parameters</strong> are parameters that are recognized by all constraints (including custom and compound constraints). They are not necessary, but can be included if you want to customize certain aspects of your constraint, or use other features. Currently-supported optional parameters are:</p>
+
+                      <p>
+                          <ul>
+                              <li><code>label</code>: A friendly name for the input element that is undergoing validation. This value has a default value that matches up with the element that the constraint is attached to, and is used in the validation failure-message. You can override the default value by providing one that is more semantically-appropriate (i.e., actually describing what the input element is used for).</li>
+                              <li><code>message</code>: The failure message when a constraint has failed validation. This is the message that you would display to the user if a particular input element does not satisfy the constraints attached to it. You can use parameter interpolation inside this failure message as well. For example, for the <code>@Range</code> constraint, which has the <code>max</code> and <code>min</code> parameters, you can provide a failure message like so <code>"{labe} should be between {max} and {min}."</code>. If the constraint fails validation, <code>{label}</code>, <code>{max}</code>, and <code>{min}</code> will be replaced with the actual values that were supplied to those parameters.</li>
+                              <li><code>groups</code>: Used to specify validation groups, which helps you segment validation by targetting specific subsets of input elements. For more information, see <a href="./documentation.html#groups">&#167;3.1.6</a> which deals with this topic).
+                          </ul>
+                      </p>
+                  </div>
+                  <div id="groups" class="documentation-element">
+                      <h4>3.1.6 Validation groups</h4>
+
+                      <p><strong>Validation groups</strong> give you the ability to segment validation and are specified using the <code>groups</code> parameter. Using groups, you can assign certain constraints to one or more groups and target those subsets individually during validation. For example, consider an order form where you have the user's name, address, and payment information. You can assign the constraints related to the customer's name and address to one group, and the payment information to another. Then you will be able to validate each group individually. Another use case is if you have multiple forms on one page; you can assign the input elements to a group that reflects the fact that they belong to a particular form.</p>
+                     
+                      <p>Groups do not need to be pre-defined anywhere and can be used in an ad-hoc manner when attaching a constraint to an element. By default, all constraints belong to the <code>Default</code> group; this is the only built-in group in Regula. When you specify groups while binding, they are reified and will be available for use in <code>regula.Group</code>. For example, if you specified a group called <code>Address</code>, it would be available under <code>regula.Group.Address</code> and can be used with Regula's JavaScript API. Examples that involve the usage of groups are shown below.</p>
+
+                      <strong>Specifying groups in HTML</strong>
+                      <pre class="prettyprint">
+  &lt;input type="text"
+      data-constraints='@HTML5Required(
+          label="username", 
+          message="The {label} is required!", 
+          groups=[MyGroup, OtherGroup]
+      )' 
+  /&gt;
+                      </pre>
+
+                      <strong>Using groups in JavaScript</strong>
+                      <pre class="prettyprint">
+ //only validate those constraints in MyGroup
+ regula.validate({groups: [regula.Group.MyGroup]});               
+                      </pre>
+
+                  </div>
 
               </div>
           </div>
