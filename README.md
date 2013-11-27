@@ -188,7 +188,7 @@ Documentation is available [here](http://vivin.github.io/regula/). It is still a
 You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases). The latest release is **1.3.0**.
 
 ###I want to contribute!
-That's awesome! Take a look at **devreadme.txt** for information regarding contribution (I only accept changes into specific branches and not directly into master since I want master to reflect production-ready code ([see here](http://nvie.com/posts/a-successful-git-branching-model/) for more information) and how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
+That's awesome! Take a look at **devreadme.txt** for information regarding contribution (I only accept changes into specific branches and not directly into master since I want master to reflect production-ready code; [see here](http://nvie.com/posts/a-successful-git-branching-model/) for more information) and how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
 
 ###Going forward
 
