@@ -99,7 +99,9 @@ In the above example, you can see that it isn't any different from using regular
 <input id = "number"
        name = "number"
        value = ""
-       data-constraints = '@HTML5Required(message = "Number is required!") @HTML5Max(value=10, groups=[MyGroup]) @HTML5Min(value=5, groups=[MyOtherGroup])' />
+       data-constraints = '@HTML5Required(message = "Number is required!") 
+                           @HTML5Max(value=10, groups=[MyGroup]) 
+                           @HTML5Min(value=5, groups=[MyOtherGroup])' />
 ```
 
 Asynchronous constraints are another feature that is supported by Regula. You can define and use custom, asynchronous constraints alongside regular constraints. Here is an example of a custom, asynchronous constraint:
