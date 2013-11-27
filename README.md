@@ -183,7 +183,7 @@ There is a lot more I haven't gone over, but I hope that these simple examples s
 Documentation is available [here](http://vivin.github.io/regula/). It is still a work in progress since I am migrating stuff over from the old wiki into the new GitHub page.
 
 ###Ok, where can I get it?
-You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases) or on [SourceForge](http://sourceforge.net/projects/regula/?source=directory). The latest release is **1.3.0**.
+You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases). The latest release is **1.3.0**.
 
 ###I want to contribute!
 That's awesome! Take a look at **devreadme.txt** for some information on how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
