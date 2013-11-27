@@ -1,7 +1,7 @@
 /**
  * @preserve
  * Regula: An annotation-based form-validation framework in Javascript
- * Version 1.3.1
+ * Version 1.3.2-SNAPSHOT
  *
  * Written By Vivin Paliath (http://vivin.net)
  * License: BSD License
