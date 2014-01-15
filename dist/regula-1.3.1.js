@@ -5099,7 +5099,7 @@
 /**
  * @preserve
  * Regula: An annotation-based form-validation framework in Javascript
- * Version 1.3.1-SNAPSHOT
+ * Version 1.3.1
  *
  * Written By Vivin Paliath (http://vivin.net)
  * License: BSD License
