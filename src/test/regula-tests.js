@@ -18155,6 +18155,20 @@ test('Test regula.unbind() with elements parameter', function() {
     deleteElements();
 });
 
+test('Test regula.unbind() with elements that have been bound to groups', function() {
+    var $text0 = createInputElement("myText0", "@NotBlank(groups=[groupA, groupB])", "text");
+    var $text1 = createInputElement("myText1", "@NotBlank(groups=[groupA])" , "text");
+
+    regula.bind();
+    regula.unbind({elementId: "myText1"});
+
+    var violations = regula.validate();
+    equal(violations.length, 1, "There must be one constraint violation");
+    equal(violations[0].failingElements[0].id, "myText0", "Element id does not match");
+
+    deleteElements();
+});
+
 test('Test regula.unbind() with id and constraints parameter (1)', function() {
     var $text = createInputElement("myText", "@NotBlank @Max(value=5) @Min(value=10)", "text");
 
