@@ -934,6 +934,8 @@
      * @param options
      */
     function unbind(options) {
+        var removed = false;
+
         for (var i = 0; i < options.elements.length; i++) {
             var id = options.elements[i].id;
 
@@ -948,10 +950,9 @@
                         if (group !== "Default") {
                             removeElementAndGroupFromBoundConstraintsIfEmpty(id, group);
                         }
-                    } else {
-                        throw new ExceptionService.Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + ExceptionService.explodeParameters(options));
-                    }
 
+                        removed = true;
+                    }
                 }
             } else {
                 for (var j = 0; j < constraints.length; j++) {
@@ -966,12 +967,15 @@
                                 removeElementAndGroupFromBoundConstraintsIfEmpty(id, group);
                             }
 
-                        } else {
-                            throw new ExceptionService.Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + ExceptionService.explodeParameters(options));
+                            removed = true;
                         }
                     }
                 }
             }
+        }
+
+        if(options.elements.length > 0 && !removed) {
+            throw new ExceptionService.Exception.IllegalArgumentException("Element with id " + id + " does not have any constraints bound to it. " + ExceptionService.explodeParameters(options));
         }
     }
 
