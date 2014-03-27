@@ -1,5 +1,6 @@
 <p align="right">
-   <img src="https://travis-ci.org/vivin/regula.png" alt="Regula Build Status" />
+   <img src="https://travis-ci.org/vivin/regula.png" alt="Regula Build Status" /> 
+   <a href='https://coveralls.io/r/vivin/regula'><img src='https://coveralls.io/repos/vivin/regula/badge.png' alt='Coverage Status' /></a>
 </p>
 ## Regula: An annotation-based form-validator for client-side validation
 
