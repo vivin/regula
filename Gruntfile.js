@@ -4,6 +4,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-qunit-junit');
     grunt.loadNpmTasks('grunt-bg-shell');
     grunt.loadNpmTasks('grunt-qunit-istanbul');
+    grunt.loadNpmTasks('grunt-coveralls');
 
     // Project configuration.
     grunt.initConfig({
@@ -16,6 +17,7 @@ module.exports = function (grunt) {
                     src: ['dist/regula-built-test.js'],
                     instrumentedFiles: 'temp/',
                     htmlReport: 'report/coverage',
+                    lcovReport: 'report/lcov',
                     coberturaReport: 'report/',
                     linesThresholdPct: 85
                 }
@@ -26,6 +28,13 @@ module.exports = function (grunt) {
         qunit_junit: {
             options: {
                 dest: 'dist/test-reports'
+            }
+        },
+
+        coveralls: {
+            options: {
+                src: 'report/lcov/lcov.info',
+                force: false
             }
         },
 
@@ -64,5 +73,5 @@ module.exports = function (grunt) {
     grunt.registerTask('test', ['bgShell:buildTestDistribution', 'bgShell:startAsyncTestServer', 'qunit_junit', 'qunit', 'bgShell:stopAsyncTestServer']);
     grunt.registerTask('build', ['bgShell:build']);
     grunt.registerTask('release', ['bgShell:buildRelease']);
-    grunt.registerTask('travis', ['test']);
+    grunt.registerTask('travis', ['test', 'coveralls']);
 };
