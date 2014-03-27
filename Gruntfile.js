@@ -33,8 +33,10 @@ module.exports = function (grunt) {
 
         coveralls: {
             options: {
-                src: 'report/lcov/lcov.info',
                 force: false
+            },
+            main_target: {
+                src: 'report/lcov/lcov.info'
             }
         },
 
