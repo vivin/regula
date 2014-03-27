@@ -4,7 +4,9 @@
   "description": "Annotation-based JavaScript Form Validator",
   "main": "Gruntfile.js",
   "dependencies": {
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.4",
+    "grunt-qunit-istanbul": "~0.4.0",
+    "coveralls": "~2.10.0"
   },
   "devDependencies": {
     "grunt-contrib-qunit": "~0.2.2",
@@ -18,7 +20,7 @@
     "url": "git://github.com/vivin/regula.git"
   },
   "scripts": {
-      "test": "grunt travis"
+    "test": "grunt travis"
   },
   "keywords": [
     "validation",

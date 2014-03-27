@@ -3,13 +3,24 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-qunit-junit');
     grunt.loadNpmTasks('grunt-bg-shell');
+    grunt.loadNpmTasks('grunt-qunit-istanbul');
 
     // Project configuration.
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
         qunit: {
-            src: ['scaffold/test/regula-test.html']
+            options: {
+                '--web-security': 'no',
+                coverage: {
+                    src: ['dist/regula-built-test.js'],
+                    instrumentedFiles: 'temp/',
+                    htmlReport: 'report/coverage',
+                    coberturaReport: 'report/',
+                    linesThresholdPct: 85
+                }
+            },
+            all: ['scaffold/test/regula-test.html']
         },
 
         qunit_junit: {
@@ -50,7 +61,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('test', ['bgShell:buildTestDistribution', 'bgShell:startAsyncTestServer', 'qunit_junit', 'qunit:src', 'bgShell:stopAsyncTestServer']);
+    grunt.registerTask('test', ['bgShell:buildTestDistribution', 'bgShell:startAsyncTestServer', 'qunit_junit', 'qunit', 'bgShell:stopAsyncTestServer']);
     grunt.registerTask('build', ['bgShell:build']);
     grunt.registerTask('release', ['bgShell:buildRelease']);
     grunt.registerTask('travis', ['test']);
