@@ -4,5 +4,6 @@ node_js:
   - "0.10"
 before_script:
   - npm install -g grunt-cli
+  - grunt travis
 script:
   - grunt coveralls
