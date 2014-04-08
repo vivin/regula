@@ -19998,6 +19998,27 @@ test('Test calling regula.validate() with elements and constraint', function() {
     deleteElements();
 });
 
+asyncTest('Test calling regula.validate() with elements and constraint using callback syntax', function() {
+    var $text0 = createInputElement("text0", "@Numeric @Email", "text");
+    var $text1 = createInputElement("text1", "@Numeric", "text");
+    var $text2 = createInputElement("text2", "@AlphaNumeric", "text");
+
+    regula.bind();
+    regula.validate({
+        elements: [$text0.get(0), $text1.get(0)],
+        constraintType: regula.Constraint.Numeric
+    }, function(constraintViolations) {
+        equal(constraintViolations.length, 2, "There should only be two constraint-violations");
+        equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the first constraint");
+        equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+        equal(constraintViolations[1].constraintName, "Numeric", "@Numeric should be the second constraint");
+        equal(constraintViolations[1].failingElements[0].id, "text1", "The id of the failing element does not match");
+
+        deleteElements();
+        start();
+    });
+});
+
 test('Test calling regula.validate() with elements and unbound constraint', function() {
     var $text0 = createInputElement("text0", "@Numeric @Email", "text");
     var $text1 = createInputElement("text1", "@Numeric", "text");
@@ -20238,6 +20259,33 @@ test('Test calling regula.validate() with elements, groups, and constraint', fun
     equal(constraintViolations[2].group, "SecondGroup", "The group of the failing constraint does not match");
 
     deleteElements();
+});
+
+asyncTest('Test calling regula.validate() with elements, groups, and constraint using callback syntax', function() {
+    var $text0 = createInputElement("text0", "@Numeric(groups=[FirstGroup]) @Email(groups=[FirstGroup, SecondGroup])", "text");
+    var $text1 = createInputElement("text1", "@Email(groups=[FirstGroup, SecondGroup])", "text");
+    var $text2 = createInputElement("text2", "@Email(groups=[FirstGroup, SecondGroup])", "text");
+
+    regula.bind();
+    regula.validate({
+        elements: [$text0.get(0), $text2.get(0), $text1.get(0)],
+        constraintType: regula.Constraint.Email,
+        groups: [regula.Group.SecondGroup, regula.Group.FirstGroup]
+    }, function(constraintViolations) {
+        equal(constraintViolations.length, 3, "There should only be three constraint-violations");
+        equal(constraintViolations[0].constraintName, "Email", "@Email should be the failing constraint");
+        equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+        equal(constraintViolations[0].group, "SecondGroup", "The group of the failing constraint does not match");
+        equal(constraintViolations[1].constraintName, "Email", "@Email should be the failing constraint");
+        equal(constraintViolations[1].failingElements[0].id, "text2", "The id of the failing element does not match");
+        equal(constraintViolations[1].group, "SecondGroup", "The group of the failing constraint does not match");
+        equal(constraintViolations[2].constraintName, "Email", "@Email should be the failing constraint");
+        equal(constraintViolations[2].failingElements[0].id, "text1", "The id of the failing element does not match");
+        equal(constraintViolations[2].group, "SecondGroup", "The group of the failing constraint does not match");
+
+        deleteElements();
+        start();
+    });
 });
 
 test('Test calling regula.validate() with elements not bound to constraint, groups, and constraint', function() {
