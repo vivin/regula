@@ -1222,6 +1222,12 @@
 
                 options.callback(constraintViolations);
             });
+        } else if (options.callback) {
+            //We're going to call the callback even in the case of synchronous constraints. This is in place mainly to take
+            //into account cases where the user may not know if they have an asynchronous constraint in the set of constraints
+            //to be validated. If they are unsure, they cannot know which form of invocation to use (with or without callback).
+            //So we will always call the callback (if one is supplied) in addition to returning the constraint violations.
+            options.callback(constraintViolations);
         }
 
         return constraintViolations;
@@ -1262,6 +1268,12 @@
 
                 options.callback(constraintViolations);
             });
+        } else if (options.callback) {
+            //We're going to call the callback even in the case of synchronous constraints. This is in place mainly to take
+            //into account cases where the user may not know if they have an asynchronous constraint in the set of constraints
+            //to be validated. If they are unsure, they cannot know which form of invocation to use (with or without callback).
+            //So we will always call the callback (if one is supplied) in addition to returning the constraint violations.
+            options.callback(constraintViolations);
         }
 
         return constraintViolations;
