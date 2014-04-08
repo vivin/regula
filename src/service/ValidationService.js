@@ -1094,7 +1094,9 @@
             processedConstraints[context.elementId] = {};
         }
 
-        var element = document.getElementById(context.elementId);
+        //We clone the element because input elements in a form can sometimes have the same name as a native
+        //form property, which overrides that property.
+        var element = document.getElementById(context.elementId).cloneNode(false);
         var name = element.name.replace(/\s/g, "");
 
         if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
@@ -1461,6 +1463,9 @@
     function runValidatorFor(currentGroup, elementId, elementConstraint, params) {
         var constraintPassed = false;
         var failingElements = [];
+
+        //Element is cloned here because forms can have input elements that have the same name as a native
+        //form property, which overrides that property
         var element = document.getElementById(elementId);
         var composingConstraintViolations = [];
 
@@ -1482,8 +1487,9 @@
             }
         }
 
-        var name = element.name.replace(/\s/g, "");
-        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+        var name = element.cloneNode(false).name.replace(/\s/g, "");
+        var type = element.cloneNode(false).type;
+        if (typeof type !== "undefined" && type.toLowerCase() === "radio" && name !== "") {
             failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")); //let's set failing elements to all elements of the radio group
         }
 
@@ -1501,6 +1507,8 @@
     }
 
     function asynchronouslyRunValidatorFor(currentGroup, elementId, elementConstraint, params, callback) {
+        //Element is cloned here because forms can have input elements that have the same name as a native
+        //form property, which overrides that property
         var element = document.getElementById(elementId);
 
         if (constraintDefinitions[elementConstraint].formSpecific) {
@@ -1531,8 +1539,9 @@
         }
 
         function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
-            var name = element.name.replace(/\s/g, "");
-            if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            var name = element.cloneNode(false).name.replace(/\s/g, "");
+            var type = element.cloneNode(false).type;
+            if (typeof type !== "undefined" && type.toLowerCase() === "radio" && name !== "") {
                 failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
             }
 
@@ -1581,10 +1590,10 @@
         }
 
         if (/{label}/.test(errorMessage)) {
-            var friendlyInputName = DOMUtils.friendlyInputNames[element.tagName.toLowerCase()];
+            var friendlyInputName = DOMUtils.friendlyInputNames[element.cloneNode(false).tagName.toLowerCase()];
 
             if (!friendlyInputName) {
-                friendlyInputName = DOMUtils.friendlyInputNames[element.type.toLowerCase()];
+                friendlyInputName = DOMUtils.friendlyInputNames[element.cloneNode(false).type.toLowerCase()];
             }
 
             errorMessage = errorMessage.replace(/{label}/, friendlyInputName);

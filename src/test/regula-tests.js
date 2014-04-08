@@ -17077,7 +17077,7 @@ test('Test failing compound constraint against empty field', function() {
         name: "CompoundConstraint" + randomSuffix3,
         constraints: [
             {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
-            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]}
         ],
         defaultMessage: "Failed"
     });
@@ -17134,7 +17134,7 @@ test('Test passing compound constraint against empty field (validateEmptyFields 
         name: "CompoundConstraint" + randomSuffix3,
         constraints: [
             {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
-            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]}
         ],
         defaultMessage: "Failed"
     });
@@ -17180,7 +17180,7 @@ test('Test passing custom constraint against empty field (validateEmptyFields se
         name: "CompoundConstraint" + randomSuffix3,
         constraints: [
             {constraintType: regula.Constraint["CustomConstraint" + randomSuffix1]},
-            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]},
+            {constraintType: regula.Constraint["CustomConstraint" + randomSuffix2]}
         ],
         defaultMessage: "Failed"
     });
@@ -17199,9 +17199,6 @@ test('Test passing custom constraint against empty field (validateEmptyFields se
     equal(regula.validate().length, 0, "@Max must not fail against empty field when validateEmptyFields is set to true and ignoreEmpty is set to true");
     deleteElements();
 });
-
-
-
 
 test('Test failing overridden custom constraint against empty field', function() {
     var randomSuffix = randomNumber();
@@ -17414,7 +17411,30 @@ test('Test passing @CompletelyFilled', function() {
     $form.append($select);
 
     regula.bind();
-    equal(regula.validate().length, 0, "@CompleteleFilled must not fail when all elements are filled");
+    equal(regula.validate().length, 0, "@completelefilled must not fail when all elements are filled");
+
+    deleteElements();
+});
+
+test('Test passing @CompletelyFilled with input elements that have names that shadow native form properties', function() {
+    var $form = createFormElement("myForm", "@CompletelyFilled");
+
+    var $text = createInputElement("myText", null, "text");
+    $text.attr("name", "name").val("text");
+
+    var $checkbox = createInputElement("myCheckbox", null, "checkbox");
+    $checkbox.attr("name", "tagName").attr("checked", "checked");
+
+    var $radio = createInputElement("myRadio", null, "radio");
+    $checkbox.attr("name", "nodeName").attr("checked", "checked");
+
+    var $textarea = createInputElement("myTextarea", null, "textarea");
+    $textarea.attr("name", "type").val("test");
+
+    $form.append($text).append($checkbox).append($radio).append($textarea);
+
+    regula.bind();
+    equal(regula.bind(), undefined, "Must be able to bind to form even if input elements have names that shadow native form properties.");
 
     deleteElements();
 });
@@ -17541,6 +17561,28 @@ test('Test calling regula.bind() with valid input element and an HTMLElement of 
 
     deleteElements();
 });
+
+test('Test calling regula.bind() with form that has input elements whose names shadow native form properties does not error out', function() {
+    var $form = createFormElement("myForm", "@CompletelyFilled");
+
+    var $text = createInputElement("myText", null, "text");
+    $text.attr("name", "name");
+
+    var $checkbox = createInputElement("myCheckbox", null, "checkbox");
+    $checkbox.attr("name", "tagName");
+
+    var $radio = createInputElement("myRadio", null, "radio");
+    $checkbox.attr("name", "nodeName");
+
+    var $textarea = createInputElement("myTextarea", null, "textarea");
+    $textarea.attr("name", "type");
+
+    $form.append($text).append($checkbox).append($radio).append($textarea);
+
+    equal(regula.bind(), undefined, "Must be able to bind to form even if input elements have names that shadow native form properties.");
+
+    deleteElements();
+ });
 
 test('Test calling regula.bind() with input element that does not have a type', function() {
     var input = jQuery("<input />").get(0);
