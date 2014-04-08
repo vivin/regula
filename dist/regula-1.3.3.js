@@ -1445,7 +1445,9 @@
             processedConstraints[context.elementId] = {};
         }
 
-        var element = document.getElementById(context.elementId);
+        //We clone the element because input elements in a form can sometimes have the same name as a native
+        //form property, which overrides that property.
+        var element = document.getElementById(context.elementId).cloneNode(false);
         var name = element.name.replace(/\s/g, "");
 
         if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
@@ -1571,6 +1573,12 @@
 
                 options.callback(constraintViolations);
             });
+        } else if (options.callback) {
+            //We're going to call the callback even in the case of synchronous constraints. This is in place mainly to take
+            //into account cases where the user may not know if they have an asynchronous constraint in the set of constraints
+            //to be validated. If they are unsure, they cannot know which form of invocation to use (with or without callback).
+            //So we will always call the callback (if one is supplied) in addition to returning the constraint violations.
+            options.callback(constraintViolations);
         }
 
         return constraintViolations;
@@ -1611,6 +1619,12 @@
 
                 options.callback(constraintViolations);
             });
+        } else if (options.callback) {
+            //We're going to call the callback even in the case of synchronous constraints. This is in place mainly to take
+            //into account cases where the user may not know if they have an asynchronous constraint in the set of constraints
+            //to be validated. If they are unsure, they cannot know which form of invocation to use (with or without callback).
+            //So we will always call the callback (if one is supplied) in addition to returning the constraint violations.
+            options.callback(constraintViolations);
         }
 
         return constraintViolations;
@@ -1812,6 +1826,9 @@
     function runValidatorFor(currentGroup, elementId, elementConstraint, params) {
         var constraintPassed = false;
         var failingElements = [];
+
+        //Element is cloned here because forms can have input elements that have the same name as a native
+        //form property, which overrides that property
         var element = document.getElementById(elementId);
         var composingConstraintViolations = [];
 
@@ -1833,8 +1850,9 @@
             }
         }
 
-        var name = element.name.replace(/\s/g, "");
-        if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+        var name = element.cloneNode(false).name.replace(/\s/g, "");
+        var type = element.cloneNode(false).type;
+        if (typeof type !== "undefined" && type.toLowerCase() === "radio" && name !== "") {
             failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")); //let's set failing elements to all elements of the radio group
         }
 
@@ -1852,6 +1870,8 @@
     }
 
     function asynchronouslyRunValidatorFor(currentGroup, elementId, elementConstraint, params, callback) {
+        //Element is cloned here because forms can have input elements that have the same name as a native
+        //form property, which overrides that property
         var element = document.getElementById(elementId);
 
         if (constraintDefinitions[elementConstraint].formSpecific) {
@@ -1882,8 +1902,9 @@
         }
 
         function processValidationResult(constraintPassed, composingConstraintViolations, failingElements, callback) {
-            var name = element.name.replace(/\s/g, "");
-            if (typeof element.type !== "undefined" && element.type.toLowerCase() === "radio" && name !== "") {
+            var name = element.cloneNode(false).name.replace(/\s/g, "");
+            var type = element.cloneNode(false).type;
+            if (typeof type !== "undefined" && type.toLowerCase() === "radio" && name !== "") {
                 failingElements = DOMUtils.getElementsByAttribute(document.body, "input", "name", name); //let's set failing elements to all elements of the radio group
             }
 
@@ -1932,10 +1953,10 @@
         }
 
         if (/{label}/.test(errorMessage)) {
-            var friendlyInputName = DOMUtils.friendlyInputNames[element.tagName.toLowerCase()];
+            var friendlyInputName = DOMUtils.friendlyInputNames[element.cloneNode(false).tagName.toLowerCase()];
 
             if (!friendlyInputName) {
-                friendlyInputName = DOMUtils.friendlyInputNames[element.type.toLowerCase()];
+                friendlyInputName = DOMUtils.friendlyInputNames[element.cloneNode(false).type.toLowerCase()];
             }
 
             errorMessage = errorMessage.replace(/{label}/, friendlyInputName);
@@ -2496,7 +2517,6 @@
         },
 
         Step: {
-            /* TODO:  implement */
             async: false,
             html5: false,
             formSpecific: false,
@@ -2509,7 +2529,6 @@
         },
 
         URL: {
-            /* TODO: implement */
             async: false,
             html5: false,
             formSpecific: false,
@@ -2941,25 +2960,29 @@
             data: null
         };
 
-        if (element.tagName.toLowerCase() == "form" && !constraintDefinitions[constraintName].formSpecific) {
+        //We clone here because a form element can have an input element named "tagName", which overrides the native
+        //tagName property
+        var clonedElement = element.cloneNode(false);
+
+        if (clonedElement.tagName.toLowerCase() == "form" && !constraintDefinitions[constraintName].formSpecific) {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
                 data: null
             };
-        } else if (element.tagName.toLowerCase() != "form" && constraintDefinitions[constraintName].formSpecific) {
+        } else if (clonedElement.tagName.toLowerCase() != "form" && constraintDefinitions[constraintName].formSpecific) {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
                 data: null
             };
-        } else if ((typeof element.type === "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
+        } else if ((typeof clonedElement.type === "undefined" || (clonedElement.type.toLowerCase() != "checkbox" && clonedElement.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
                 data: null
             };
-        } else if (element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
+        } else if (clonedElement.tagName.toLowerCase() != "select" && constraintName == "Selected") {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
@@ -4166,7 +4189,7 @@
     }
 
     /**
-     * This function checks to see if an element can be bound. Only form elements can have constraints attached to them.
+     * This function checks to see if an element can be bound. Only input elements can have constraints attached to them.
      * @param element
      */
     function checkElementBindability(element) {
@@ -4176,9 +4199,13 @@
             data: null
         };
 
+        //We clone here because a form element can have an input element named "tagName", which overrides the native
+        //tagName property
+        var clonedElement = typeof element.cloneNode !== "undefined" ? element.cloneNode(false) : element;
         var tagName = null;
-        if(typeof element.tagName !== "undefined") {
-            tagName = element.tagName.toLowerCase();
+
+        if(typeof clonedElement.tagName !== "undefined") {
+            tagName = clonedElement.tagName.toLowerCase();
         }
 
         if (tagName !== "form" && tagName !== "select" && tagName !== "textarea" && tagName !== "input") {
@@ -5103,7 +5130,7 @@
 /**
  * @preserve
  * Regula: An annotation-based form-validation framework in Javascript
- * Version 1.3.2-SNAPSHOT
+ * Version 1.3.3-SNAPSHOT
  *
  * Written By Vivin Paliath (http://vivin.net)
  * License: BSD License
