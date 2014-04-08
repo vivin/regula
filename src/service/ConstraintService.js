@@ -366,7 +366,6 @@
         },
 
         Step: {
-            /* TODO:  implement */
             async: false,
             html5: false,
             formSpecific: false,
@@ -379,7 +378,6 @@
         },
 
         URL: {
-            /* TODO: implement */
             async: false,
             html5: false,
             formSpecific: false,
@@ -811,25 +809,29 @@
             data: null
         };
 
-        if (element.tagName.toLowerCase() == "form" && !constraintDefinitions[constraintName].formSpecific) {
+        //We clone here because a form element can have an input element named "tagName", which overrides the native
+        //tagName property
+        var clonedElement = element.cloneNode(false);
+
+        if (clonedElement.tagName.toLowerCase() == "form" && !constraintDefinitions[constraintName].formSpecific) {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is not a form constraint, but you are trying to bind it to a form"),
                 data: null
             };
-        } else if (element.tagName.toLowerCase() != "form" && constraintDefinitions[constraintName].formSpecific) {
+        } else if (clonedElement.tagName.toLowerCase() != "form" && constraintDefinitions[constraintName].formSpecific) {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is a form constraint, but you are trying to bind it to a non-form element"),
                 data: null
             };
-        } else if ((typeof element.type === "undefined" || (element.type.toLowerCase() != "checkbox" && element.type.toLowerCase() != "radio")) && constraintName == "Checked") {
+        } else if ((typeof clonedElement.type === "undefined" || (clonedElement.type.toLowerCase() != "checkbox" && clonedElement.type.toLowerCase() != "radio")) && constraintName == "Checked") {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to checkboxes and radio buttons. You are trying to bind it to an input element that is neither a checkbox nor a radio button."),
                 data: null
             };
-        } else if (element.tagName.toLowerCase() != "select" && constraintName == "Selected") {
+        } else if (clonedElement.tagName.toLowerCase() != "select" && constraintName == "Selected") {
             result = {
                 successful: false,
                 message: ExceptionService.generateExceptionMessage(element, constraintName, "@" + constraintName + " is only applicable to select boxes. You are trying to bind it to an input element that is not a select box."),
