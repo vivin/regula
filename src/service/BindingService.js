@@ -96,7 +96,7 @@
     }
 
     /**
-     * This function checks to see if an element can be bound. Only form elements can have constraints attached to them.
+     * This function checks to see if an element can be bound. Only input elements can have constraints attached to them.
      * @param element
      */
     function checkElementBindability(element) {
@@ -106,9 +106,13 @@
             data: null
         };
 
+        //We clone here because a form element can have an input element named "tagName", which overrides the native
+        //tagName property
+        var clonedElement = typeof element.cloneNode !== "undefined" ? element.cloneNode(false) : element;
         var tagName = null;
-        if(typeof element.tagName !== "undefined") {
-            tagName = element.tagName.toLowerCase();
+
+        if(typeof clonedElement.tagName !== "undefined") {
+            tagName = clonedElement.tagName.toLowerCase();
         }
 
         if (tagName !== "form" && tagName !== "select" && tagName !== "textarea" && tagName !== "input") {
