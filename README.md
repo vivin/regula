@@ -127,7 +127,9 @@ regula.custom({
 });
 ```
 
-Asynchronous constraints can be used inside compound constraints to. There is no explicit syntax to make a compound-constraint asynchronous. Any compound constraint that contains at least one asynchronous constraint, is implicitly asynchronous.
+Asynchronous constraints can be used inside compound constraints too. There is no explicit syntax to make a compound-constraint asynchronous. Any compound constraint that contains at least one asynchronous constraint, is implicitly asynchronous.
+
+**Note:** As of version 1.3.3, the callback syntax isn't limited to asynchronous constraints. While normally you simply look at the return value from `regula.validate()` when dealing with synchronous constraints, you can also use the callback syntax even if all you have are synchronous constraints. The reason this feature was added is that in some cases you cannot know if the set of constraints you are validating are synchronous or asynchronous. Previously, Regula would only call the callback if there was at least one asynchronous constraint.
 
 But that's not all! Regula supports other features in addition to custom constraints:
 
@@ -180,13 +182,13 @@ regula.validate(options, function(constraintViolations) {
 });
 ```
 
-There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.3.2 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
+There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.3.3 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
 
 ###Documentation
 Documentation is available [here](http://vivin.github.io/regula/). It is still a work in progress since I am migrating stuff over from the old wiki into the new GitHub page.
 
 ###Ok, where can I get it?
-You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases). The latest release is **1.3.2**.
+You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases). The latest release is **1.3.3**.
 
 ###I want to contribute!
 That's awesome! Take a look at **devreadme.txt** for information regarding contribution (I only accept changes into specific branches and not directly into master since I want master to reflect production-ready code; [see here](http://nvie.com/posts/a-successful-git-branching-model/) for more information) and how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
