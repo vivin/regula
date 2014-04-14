@@ -16,7 +16,9 @@ grunt release - Builds a complete, optimized distribution of thr project for rel
 Shell Scripts:
 
 build.sh will build a complete, optimized distribution of the project.
-build-release.sh will build a complete, optimized distribution of the project for release.
+build-release.sh will build a complete, optimized distribution of the project for release. This has the effect of rolling over the version number. YOU SHOULD NEVER HAVE TO RUN THIS. This will only be run when a release is ready.
 test-build.sh will build a complete distribution that has NOT been optimized, which makes debugging easier during tests.
 start-test-env.sh will start up a running test-environment. 
 trace-coverage-start-test-env.sh starts up a running test-environment with tracing (tracegl) and coverage (JSCoverage) enabled.
+
+TODO: Maybe pull out all these shell scripts and do everything in grunt maybe. I'm still new to node and grunt, so if anyone would like to take this up, I'd appreciate the help! :)
