@@ -377,7 +377,7 @@
     }
  });</pre>
 
-                      To use it in HTML, all you have to do is:
+                      <p>To use it in HTML, all you have to do is:</p>
 
                       <pre class="prettyprint">
  &lt;input id = "theAnswerToLifeTheUniverseAndEverything"
@@ -398,9 +398,9 @@
     }
  });</pre>
 
-                      Here we have defined a custom constraint called <code>@DivisibleBy</code> which accepts one parameter called <code>divisor</code>. Notice that the <code>message</code>
+                      <p>Here we have defined a custom constraint called <code>@DivisibleBy</code> which accepts one parameter called <code>divisor</code>. Notice that the <code>message</code>
                       parameter includes strings like <code>{label}</code> and <code>{divisor}</code> This means that when the constraint fails, those strings are replaced by the actual values
-                      with which the constraint was attached. Here's an example of the constraint in use:
+                      with which the constraint was attached. Here's an example of the constraint in use:</p>
 
                       <pre class="prettyprint">
  &lt;input id = "number"
@@ -408,7 +408,7 @@
         value = ""
         data-constraints = '@DivisibleBy(divisor=3, label="The Number")' /&gt;</pre>
 
-                      As mentioned before, you can also define an asynchronous constraint. This is useful if you want to perform server-side validation of data:
+                      <p>As mentioned before, you can also define an asynchronous constraint. This is useful if you want to perform server-side validation of data:</p>
 
                       <pre class="prettyprint">
  regula.custom({
@@ -429,10 +429,115 @@
      }
  });</pre>
 
-                      For more information on custom constraints, take a look at the documentation for <code>regula.custom</code> in <a href="./documentation.html#regulaCustom">&#167;6.5</a>,
-                      and for more information on asynchronous constraints, take a look at <a href="./documentation.html#asynchronous">&#167;3.1.9</a>
+                      <p>For more information on custom constraints, take a look at the documentation for <code>regula.custom</code> in <a href="./documentation.html#regulaCustom">&#167;6.5</a>,
+                      and for more information on asynchronous constraints, take a look at <a href="./documentation.html#asynchronous">&#167;3.1.9</a></p>
 
+                  </div>
+                  <div id="overriding" class="documentation-element">
+                      <h4>3.1.8 Overriding constraints</h4>
 
+                      <p>Regula allows you to <strong>override</strong> constraints. This means that you can redefine the behavior of an already-existing constraint. For built-in constraints,
+                      overriding is limited to the <code>defaultMessage</code> property. However, you can override any attribute of a custom constraint.</p>
+
+                      <p>Here's an example where we override the <code>defaultMessage</code> of the <code>@PasswordsMatch</code> constraint:</p>
+
+                      <pre class="prettyprint">
+ regula.override({
+     name: "PasswordsMatch",
+     defaultMessage: "Your passwords do not match."
+ });</pre>
+
+                      <p>Here's another example where we override the <code>validator</code> of the <code>@DivisibleBy</code> custom constraint described in
+                         <a href="./documentation.html#custom">&#167;3.1.7</a>:</p>
+
+                      <pre class="prettyprint">
+ regula.override({
+     name: "DivisibleBy",
+     validator: function(params) {
+        var divisor = params["divisor"];
+        var inputElement = this;
+        return (inputElement.value % divisor) == 0;
+     }
+ });</pre>
+                      For more information, take a look at documentation for <code>regula.override</code> in <a href="./documentation.html#regulaOverride">&#167;6.6</a></p>
+                  </div>
+                  <div id="asynchronous" class="documentation-element">
+                      <h4>3.1.9 Asynchronous constraints</h4>
+
+                      <p><strong>Asynchronous constraints</strong> allow you to perform validation asynchronously. Typically this is done if you want to perform server-side validation from the
+                         client side, or if you do not know when the validation operation will complete; only that it happens at some time in the future. Using asynchronous constraints you can
+                         perform whatever asynchronous validation you need, and then report the result back to Regula using a callback. Defining an asynchronous constraint is pretty simple:</p>
+
+                       <pre class="prettyprint">
+ regula.custom({
+     name: "MyAsyncConstraint",
+     async: true,
+     defaultMessage: "The asynchronous constraint failed.",
+     validator: function(params, validator, callback) {
+         //Using jQuery as an example
+         jQuery.ajax({
+             url: myUrl,
+             dataType: "jsonp",
+             success: function(data) {
+                 //Use the callback to pass the result of validation back to
+                 //regula.
+                 callback(data.success)
+             }
+         });
+     }
+ });</pre>
+                      <p>You can then use this constraint in HTML just like any other constraint.</p>
+                  </div>
+                  <div id="compound" class="documentation-element">
+                      <h4>3.1.10 Compound constraints</h4>
+
+                      <p><strong>Compound constraints</strong> are constraints that are composed of other constraints (which may include other compound constraints). If you see yourself using
+                         the same set of constraints over and over again, it might be helpful to combine them into a compound constraint, and simply use that instead. Here's an example of a
+                         simple compound-constraint:</p>
+
+                      <pre class="prettyprint">
+ regula.compound({
+     name: "SimpleCompoundConstraint",
+     constraints: [
+         {constraintType: regula.Constraint.Numeric},
+         {constraintType: regula.Constraint.NotEmpty}
+    ]
+ });</pre>
+
+                      <p>If any of the composing constraints require parameters, you can specify them when you create the compound constraint (in which case those parameters will remain the same
+                         for each use of the constraint) or you can specify them when you actually use the constraint (in which case you can use different values on a per-instance basis).</p>
+
+                      <strong>Here, the <code>min</code> and <code>max</code> parameters are hardcoded to <code>2</code> and <code>15</code> for each invocation.</strong>
+                      <pre class="prettyprint">
+ regula.compound({
+     name: "AnotherCompoundConstraint",
+     constraints: [
+        {constraintType: regula.Constraint.NotEmpty},
+        {constraintType: regula.Constraint.Range,
+         params: {min: 2, max: 15}
+        }
+    ]
+ });</pre>
+
+                      <strong>Here, the <code>min</code> and <code>max</code> parameters are specified as actual parameters to the compound constraint. So it is not necessary to hardcode them
+                      since you can specify them in HTML</strong>
+                      <pre class="prettyprint">
+ regula.compound({
+     name: "OneMoreCompoundConstraint",
+     params: ["max", "min"],
+     constraints: [
+         {constraintType: regula.Constraint.NotEmpty},
+         {constraintType: regula.Constraint.Range} //Notice that we don't need to
+                                                   //specify max and min because
+                                                   //the parent constraint already
+                                                   //accepts them as parameters
+      ]
+});</pre>
+                      <pre class="prettyprint">
+ &lt;input id = "myTextField"
+        name = "myTextField"
+        value = ""
+        data-constraints = "@OneMoreCompoundConstraint(min=5, max=10)" /&gt;</pre>
                   </div>
 
               </div>
