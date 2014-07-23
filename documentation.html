@@ -78,7 +78,7 @@
                                       <li class="toc-item" data-content-id="compound">Compound constraints</li>
                                       <li class="toc-item" data-content-id="validators">Validators</li>
                                   </ol>
-                                  <li class="toc-item">Binding
+                                  <li class="toc-item" data-content-id="binding">Binding
                                       <ol class="toc">
                                           <li class="toc-item" data-content-id="inline">Inline</li>
                                           <li class="toc-item" data-content-id="programmatic">Programmatic</li>
@@ -151,7 +151,7 @@
                               <li class="toc-item" data-content-id="group"><code>Group</code></li>
                               <li class="toc-item" data-content-id="dateFormat"><code>DateFormat</code></li>
                               <li class="toc-item" data-content-id="exception"><code>Exception</code></li>
-                              <li class="toc-item" data-content-id="constriantViolation"><code>ConstraintViolation</code></li>
+                              <li class="toc-item" data-content-id="constraintViolation"><code>ConstraintViolation</code></li>
                               <li class="toc-item" data-content-id="validator"><code>validator</code></li>
                           </ol>
                       </li> 
@@ -540,6 +540,103 @@
         data-constraints = "@OneMoreCompoundConstraint(min=5, max=10)" /&gt;</pre>
                   </div>
 
+                  <div id="validators" class="documentation-element">
+                      <h4>3.1.11 Validators</h4>
+
+                      <p><strong>Validators</strong> are validation functions that you can have access to from within a validator. They are the functional counterparts to constraints. Using validators,
+                         you can directly invoke a validation function that corresponds to a particular constraint (but only within the context of a validator). A good use-case is in the event you need
+                         to perform some sort of conditional validation. Prior to Regula 1.3, conditional validation required duplication of built-in validation. Using validators, this is no-longer the
+                         case.</p>
+
+                      <p>Let's look at some examples:</p>
+
+                      <strong>Here, we're creating a new custom-constraint that performs conditional validation based on the status of a checkbox:</strong>
+                      <pre class="prettyprint">
+ regula.custom({
+     name: "ConditionalRequired",
+     params: ["checkBoxId"]
+     defaultMessage: "This is required.",
+     validator: function(params, validator) {
+         var valid = true;
+         //Using jQuery as an example
+         if(jQuery("#" + params["checkBoxId"]).is(":checked")) {
+             //must pass in 'this' to the validator so that it knows
+             //which element it has to validate
+             return validator.required(this, params, validator);
+         }
+
+         return valid;
+     }
+ });</pre>
+ <pre class="prettyprint">
+ &lt;input id = "age"
+     name = "age"
+     value = ""
+     data-constraints = "@Numeric @ConditionalRequired(checkBoxId='iWantToDrinkAlcohol')" /&gt;</pre>
+
+                      <p>Custom validators are automatically added to the <code>validators</code> object. If, for example, you had a custom constraint called <code>@MyCustomConstraint</code>, then the
+                         corresponding validator can be invoked via <code>validators.myCustomConstraint</code>.</p>
+
+                  </div>
+                  <div id="binding" class="documentation-element">
+                      <h3>3.2 Binding</h3>
+
+                      <p><strong>Binding</strong> attaches validation constraints to input elements. There are two forms of binding: <b>inline</b> and <b>programmatic</b>.
+                  </div>
+                  <div id="inline" class="documentation-element">
+                      <h4>3.2.1 Inline Binding</h4>
+
+                      <p><strong>Inline</strong> binding is performed through HTML. That is, constraints are attached to the element directly using the <code>data-constraints</code> attribute. This is the
+                      preferred way of binding since validation constraints are immediately apparent from viewing the HTML code. This is very similar to HTML5 validation constraints.</p>
+                  </div>
+                  <div id="programmatic" class="documentation-element">
+                      <h4>3.2.2 Programmatic Binding</h4>
+
+                      <p><strong>Programmatic</strong> binding is performed through JavaScript using the Regula API. Using the API, you can dynamically-bind constraints to elements. Programmatic binding
+                      does give you a finer degree of control (especially when overwriting existing-bindings) but since the binding code exists in JavaScript, validation constraints for HTML elements aren't
+                      immediately apparent. For more information, see <a href="./documentation.html#regulaBind">&#167;6.2</a>.</p>
+                  </div>
+                  <div id="validation" class="documentation-element">
+                      <h3>3.3 Validation</h3>
+
+                      <p><strong>Validation</strong> is the process through which Regula applies validation-constraints to input elements. There are three forms of validation: <strong>synchronous</strong>,
+                      <strong>asynchronous</strong>, and <strong>delegated</strong>.</p>
+                  </div>
+                  <div id="syncValidation" class="documentation-element">
+                      <h4>3.3.1 Synchronous validation</h4>
+
+                      <p><strong>Synchronous validation</strong> is the most-common form of validation. In this form of validation, all input elements are validated against constraints synchronously. This
+                      means that when you call <code>regula.validate()</code>, the function will perform validation and return constraint-violations. In synchronous validation, the validator performs its
+                      validation synchronously, meaning it does not need to <em>wait</em> for something to happen before it report the result of validation. Getting the result of a synchronous validation
+                      is as simple as calling the <code>regula.validate()</code> function:</p>
+<pre class="prettyprint">
+  var constraintViolations = regula.validate();
+</pre>
+                      <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
+                  </div>
+                  <div id="asyncValidation" class="documentation-element">
+                      <h4>3.3.2 Asynchronous validation</h4>
+
+                      <p><strong>Asynchronous validation</strong> is a form of validation where validation happens after the fact; i.e., it is not synchronous. When validation is initiated, control will
+                      return, but validation will still be happening in the background. This form of validation is usually required when some sort of asynchronous operation needs to be performed by the
+                      validator, before the validation can report its result. The most-common example is if the validator is internally performing an AJAX request. In this situation, we must wait for the
+                      response to return before we can report the result of the validation. To deal with asynchronous validation, you will have to pass a callback to the <code>regula.validate()</code>
+                      function:</p>
+
+<pre class="prettyprint">
+  regula.validate(function(constraintViolations) {
+      ...
+  });
+</pre>
+                      <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
+                  </div>
+                  <div id="delegatedValidation" class="documentation-element">
+                      <h4>3.3.3 Delegated validation</h4>
+
+                      <p><strong>Delegated validation</strong> is where the validation is delegated to another validator (from the <code>validator</code> object). This is typically seen in
+                      conditional validation where within the validator, validation is conditionally delegated to some other validator. See <a href="./documentation.html#validators">&#167;3.1.11</a>
+                      for an example.</p>
+                  </div>
               </div>
           </div>
       </div>
