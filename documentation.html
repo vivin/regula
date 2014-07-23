@@ -610,8 +610,8 @@
                       validation synchronously, meaning it does not need to <em>wait</em> for something to happen before it report the result of validation. Getting the result of a synchronous validation
                       is as simple as calling the <code>regula.validate()</code> function:</p>
 <pre class="prettyprint">
-  var constraintViolations = regula.validate();
-</pre>
+ var constraintViolations = regula.validate();</pre>
+
                       <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
                   </div>
                   <div id="asyncValidation" class="documentation-element">
@@ -624,10 +624,10 @@
                       function:</p>
 
 <pre class="prettyprint">
-  regula.validate(function(constraintViolations) {
-      ...
-  });
-</pre>
+ regula.validate(function(constraintViolations) {
+     ...
+ });</pre>
+
                       <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
                   </div>
                   <div id="delegatedValidation" class="documentation-element">
@@ -636,6 +636,410 @@
                       <p><strong>Delegated validation</strong> is where the validation is delegated to another validator (from the <code>validator</code> object). This is typically seen in
                       conditional validation where within the validator, validation is conditionally delegated to some other validator. See <a href="./documentation.html#validators">&#167;3.1.11</a>
                       for an example.</p>
+                  </div>
+
+                  <div id="builtIn" class="documentation-element">
+                      <h2>4. Built-in Constraints</h2>
+
+                      <p>Regula comes with twenty-three built-in constraints, out of which two are form-specific constraints. Following sub-sections will go over each built-in constraint in detail.</p>
+                  </div>
+
+                  <div id="required" class="documentation-element">
+                      <h3>4.1 @Required</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Required</code> enforces the constraint that a form field is required. This constraint can apply to a text-box, dropdown, checkbox, radiobutton, or a textarea.
+                         <code>@Required</code> is functionally equivalent to explicitly specifying <code>@Checked</code>, <code>@Selected</code> or <code>@NotEmpty</code> on appropriate form elements.
+                         It is suggested to use <code>@Required</code> in place of <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code> if you’re making sure that the form element
+                         has been filled (i.e., use <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code> only when semantically appropriate).</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Required</code> is:</p>
+<pre class="prettyprint">
+ @Required(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{label}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "myRadio"
+        name = "myRadio"
+        type = "radio"
+        data-constraints = '@Required' /&gt;</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "myTextbox"
+        name = "myTextbox"
+        type = "text"
+        data-constraints = '@Required(label="The fantastic textbox",
+                                     message="{label} needs to be checked",
+                                     groups=[FirstGroup, SecondGroup, ThirdGroup])' /&gt;</pre>
+
+                  </div>
+
+                  <div id="checked" class="documentation-element">
+                      <h3>4.2 @Checked</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Checked</code> enforces the constraint that a radio button, radio-button group, or a checkbox must be checked. If the element in question is not checked,
+                      the constraint will fail.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Checked</code> is:</p>
+
+<pre class="prettyprint">
+ @Checked(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails
+                                  to validate, the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>,
+                                  the value of this parameter will be substituted in the place of <code>{label}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used
+                                  by the constraint . For example: <code>{label} needs to be {param1}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "myCheckbox"
+        name = "myCheckbox"
+        type = "checkbox"
+        data-constraints = '@Checked' /&gt;</pre>
+
+                      <strong>Basic usage with radio-button group:</strong>
+<pre class="prettyprint">
+ &lt;input id = "myRadio0"
+        name = "myRadioGroup"
+        type = "radio"
+        data-constraints = '@Checked' /&gt; One
+ &lt;input id = "myRadio01
+        name = "myRadioGroup"
+        type = "radio"
+        data-constraints = '@Checked' /&gt; Two
+ &lt;input id = "myRadio2"
+        name = "myRadioGroup"
+        type = "radio"
+        data-constraints = '@Checked' /&gt; Three</pre>
+
+                      <p><strong>Note:</strong> Strictly speaking, it is not necessary to bind <code>@Checked</code> to each radio-button in a radio-button group; you can just bind it to one. If validation
+                      fails, you will get back one constraint-violation and the <code>failingElements</code> attribute of that constraint violation will contain all radio-button elements of the radio-button
+                      group.</p>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "myCheckbox"
+        name = "myCheckbox"
+        type = "checkbox"
+        data-constraints = '@Checked(label="The fantastic checkbox",
+                                     message="{label} needs to be checked",
+                                     groups=[FirstGroup, SecondGroup, ThirdGroup]' /&gt;</pre>
+                  </div>
+
+                  <div id="selected" class="documentation-element">
+                      <h3>4.3 @Selected</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Selected</code> enforces the constraint that a select box must be selected. The constraint validates somewhat by convention; if the <code>selectedIndex</code> property of the
+                         select box is <code>0</code>, then the select box is assumed to be unselected because in most cases the “unselected” value is usually the very first option in the select box.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Selected</code> is:</p>
+
+<pre class="prettyprint">
+ @Selected(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>
+                                  An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;select id = "mySelect"
+         name = "mySelect"
+         data-constraints = '@Selected'&gt;
+     &lt;option value = "0"&gt;Please select a fruit&lt;/option&gt;
+     &lt;option value = "1"&gt;Strawberry&lt;/option&gt;
+     &lt;option value = "2"&gt;Orange&lt;/option&gt;
+     &lt;option value = "3"&gt;Banana&lt;/option&gt;
+ &lt;/select&gt;</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;select id = "mySelect"
+         name = "mySelect"
+         data-constraints = '@Selected(label="fruit",
+                                      message="You need to select a {label}",
+                                      groups=[FirstGroup, SecondGroup, ThirdGroup]'&gt;
+     &lt;option value = "0"&gt;Please select a fruit&lt;/option&gt;
+     &lt;option value = "1"&gt;Strawberry&lt;/option&gt;
+     &lt;option value = "2"&gt;Orange&lt;/option&gt;
+     &lt;option value = "3"&gt;Banana&lt;/option&gt;
+ &lt;/select&gt;
+</pre>
+                  </div>
+
+                  <div id="notblank" class="documentation-element">
+                      <h3>4.3 NotBlank</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p><code>@NotBlank</code> (or its alias <code>@NotEmpty</code>) enforces the constraint that an input element cannot have an empty value. An empty value is defined as an empty string,
+                          or a string that only consists of spaces or tabs.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@NotBlank</code> is:</p>
+
+<pre class="prettyprint">
+ @NotBlank(
+    [label=label-text],
+    [message=message-text],
+    [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this parameter
+                                  will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "name"
+        name = "name"
+        type = "text"
+        data-constraints = '@NotBlank' /&gt;</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "name"
+        name = "name"
+        type = "text"
+        data-constraints = '@NotEmpty(label="Your name",
+                                     message="{label} cannot be blank"
+                                     groups=[FirstGroup, SecondGroup, ThirdGroup]' /&gt;</pre>
+                  </div>
+                  <div id="blank" class="documentation-element">
+                      <h3>4.3 @Blank</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Blank</code> (or its alias <code>@Empty</code>) enforces the constraint that an input element must have an empty value. An empty value is defined as an empty string, or a
+                          string that only consists of spaces or tabs.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Constraint</code> is:</p>
+
+<pre class="prettyprint">
+ @Blank(
+    [label=label-text],
+    [message=message-text],
+    [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "nothing"
+        name = "nothing"
+        type = "text"
+        data-constraints = '@Blank' /&gt;</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "nothing"
+        name = "nothing"
+        type = "text"
+        data-constraints = '@Blank(label="nothing",
+                                   message="Don\'t write anything in {label}!"
+                                   groups=[FirstGroup, SecondGroup, ThirdGroup]' /&gt;
+</pre>
+
                   </div>
               </div>
           </div>
@@ -650,3 +1054,32 @@
     <script src="bootstrap/js/bootstrap.min.js"></script>
   </body>
 </html>
+
+<!--
+template
+
+                  <div id="constraint" class="documentation-element">
+                      <h3>4.3 @Constraint</h3><br />
+
+                      <h4>Overview</h4>
+
+                      <p>overview</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Constraint</code> is:</p>
+
+<pre class="prettyprint">
+syntax</pre>
+
+                      <h4>Parameters</h4>
+
+                      //put table here
+
+                      <h4>Examples</h4>
+
+                      <strong>Usage:</strong>
+<pre class="prettyprint">
+example</pre>
+
+                  </div>
