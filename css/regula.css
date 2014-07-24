@@ -11,6 +11,7 @@
 
 .regula-panel-primary {
     border-color: #a7c7dc;
+    padding: 10px;
 }
 
 .regula-panel-primary > .panel-heading {

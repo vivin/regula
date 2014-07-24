@@ -57,109 +57,114 @@
       </div>
 
       <div class="row">
-          <div class="col-md-4">
-              <div id="toc" class="panel regula-panel-primary">
+          <div class="col-md-12">
+              <div id="documentation" class="panel regula-panel-primary documentation">
+
+                  <hr />
+                  <h1>Regula Documentation</h1>
+                  <h3>Table of Contents</h3>
+                  <h4>1.3</h4>
+                  <hr />
+
                   <ol class="toc">
-                      <li class="toc-item" data-content-id="overview">Overview</li>
-                      <li class="toc-item" data-content-id="configuration">Configuring Regula</li>
-                      <li class="toc-item" data-content-id="primary">Primary concepts
+                      <li class="toc-item"><a href = "./documentation.html#overview">Overview</a></li>
+                      <li class="toc-item"><a href = "./documentation.html#configuration">Configuring Regula</a></li>
+                      <li class="toc-item"><a href = "./documentation.html#primary">Primary concepts</a>
                           <ol class="toc">
-                              <li class="toc-item" data-content-id="constraints">Constraints
+                              <li class="toc-item"><a href = "./documentation.html#constraints">Constraints</a>
                                   <ol class="toc">
-                                      <li class="toc-item" data-content-id="element">Element constraints</li>
-                                      <li class="toc-item" data-content-id="formSpecific">Form-specific constraints</li>
-                                      <li class="toc-item" data-content-id="html5">HTML5 constraints</li>
-                                      <li class="toc-item" data-content-id="parameters">Parameters</li>
-                                      <li class="toc-item" data-content-id="optional">Optional, common parameters</li>
-                                      <li class="toc-item" data-content-id="groups">Validation groups</li>
-                                      <li class="toc-item" data-content-id="custom">Custom constraints</li>
-                                      <li class="toc-item" data-content-id="overriding">Overriding constraints</li>
-                                      <li class="toc-item" data-content-id="asynchronous">Asynchronous constraints</li>
-                                      <li class="toc-item" data-content-id="compound">Compound constraints</li>
-                                      <li class="toc-item" data-content-id="validators">Validators</li>
+                                      <li class="toc-item"><a href = "./documentation.html#element">Element constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#formSpecific">Form-specific constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#html5">HTML5 constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#parameters">Parameters</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#optional">Optional, common parameters</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#groups">Validation groups</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#custom">Custom constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#overriding">Overriding constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#asynchronous">Asynchronous constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#compound">Compound constraints</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#validators">Validators</a></li>
                                   </ol>
-                                  <li class="toc-item" data-content-id="binding">Binding
-                                      <ol class="toc">
-                                          <li class="toc-item" data-content-id="inline">Inline</li>
-                                          <li class="toc-item" data-content-id="programmatic">Programmatic</li>
-                                      </ol>
-                                  </li>
-                                  <li class="toc-item" data-content-id="validation">Validation
-                                      <ol class="toc">
-                                          <li class="toc-item" data-content-id="syncValidation">Synchronous</li>
-                                          <li class="toc-item" data-content-id="asyncValidation">Asynchronous</li>
-                                          <li class="toc-item" data-content-id="delegatedValidation">Delegated</li>
-                                      </ol>
-                                  </li>
+                              </li>
+                              <li class="toc-item"><a href = "./documentation.html#binding">Binding</a>
+                                  <ol class="toc">
+                                      <li class="toc-item"><a href = "./documentation.html#inline">Inline</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#programmatic">Programmatic</a></li>
+                                  </ol>
+                              </li>
+                              <li class="toc-item"><a href = "./documentation.html#validation">Validation</a>
+                                  <ol class="toc">
+                                      <li class="toc-item"><a href = "./documentation.html#syncValidation">Synchronous</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#asyncValidation">Asynchronous</a></li>
+                                      <li class="toc-item"><a href = "./documentation.html#delegatedValidation">Delegated</a></li>
+                                  </ol>
                               </li>
                           </ol>
                       </li>
-                      <li class="toc-item" data-content-id="builtIn">Built-in Constraints
+                      <li class="toc-item"><a href = "./documentation.html#builtIn">Built-in Constraints</a>
                           <ol class="toc">
-                              <li class="toc-item" data-content-id="required"><code>@Required</code></li>
-                              <li class="toc-item" data-content-id="checked"><code>@Checked</code></li>
-                              <li class="toc-item" data-content-id="selected"><code>@Selected</code></li>
-                              <li class="toc-item" data-content-id="notblank"><code>@NotBlank</code></li>
-                              <li class="toc-item" data-content-id="blank"><code>@Blank</code></li>
-                              <li class="toc-item" data-content-id="max"><code>@Max</code></li>
-                              <li class="toc-item" data-content-id="min"><code>@Min</code></li>
-                              <li class="toc-item" data-content-id="range"><code>@Range</code></li>
-                              <li class="toc-item" data-content-id="integer"><code>@Integer</code></li>
-                              <li class="toc-item" data-content-id="real"><code>@Real</code></li>
-                              <li class="toc-item" data-content-id="alpha"><code>@Alpha</code></li>
-                              <li class="toc-item" data-content-id="numeric"><code>@Numeric</code></li>
-                              <li class="toc-item" data-content-id="alphaNumeric"><code>@AlphaNumeric</code></li>
-                              <li class="toc-item" data-content-id="digits"><code>@Digits</code></li>
-                              <li class="toc-item" data-content-id="step"><code>@Step</code></li>
-                              <li class="toc-item" data-content-id="length"><code>@Length</code></li>
-                              <li class="toc-item" data-content-id="pattern"><code>@Pattern</code></li>
-                              <li class="toc-item" data-content-id="email"><code>@Email</code></li>
-                              <li class="toc-item" data-content-id="url"><code>@URL</code></li>
-                              <li class="toc-item" data-content-id="past"><code>@Past</code></li>
-                              <li class="toc-item" data-content-id="future"><code>@Future</code></li>
-                              <li class="toc-item" data-content-id="completelyFilled"><code>@CompletelyFilled</code></li>
-                              <li class="toc-item" data-content-id="passwordMatch"><code>@PasswordsMatch</code></li>
+                              <li class="toc-item"><a href = "./documentation.html#required"><code>@Required</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#checked"><code>@Checked</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#selected"><code>@Selected</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#notblank"><code>@NotBlank</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#blank"><code>@Blank</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#max"><code>@Max</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#min"><code>@Min</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#range"><code>@Range</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#integer"><code>@Integer</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#real"><code>@Real</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#alpha"><code>@Alpha</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#numeric"><code>@Numeric</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#alphaNumeric"><code>@AlphaNumeric</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#digits"><code>@Digits</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#step"><code>@Step</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#length"><code>@Length</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#pattern"><code>@Pattern</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#email"><code>@Email</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#url"><code>@URL</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#past"><code>@Past</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#future"><code>@Future</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#completelyFilled"><code>@CompletelyFilled</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#passwordMatch"><code>@PasswordsMatch</code></a></li>
                           </ol>
                       </li>
                       <li class="toc-item" data-content-id="html5Constraints">HTML5 Constraints
                           <ol class="toc">
-                              <li class="toc-item" data-content-id="html5Required"><code>@HTML5Required</code></li>
-                              <li class="toc-item" data-content-id="html5Email"><code>@HTML5Email</code></li>
-                              <li class="toc-item" data-content-id="html5URL"><code>@HTML5URL</code></li>
-                              <li class="toc-item" data-content-id="html5MaxLength"><code>@HTML5MaxLength</code></li>
-                              <li class="toc-item" data-content-id="html5Pattern"><code>@HTML5Pattern</code></li>
-                              <li class="toc-item" data-content-id="html5Max"><code>@HTML5Max</code></li>
-                              <li class="toc-item" data-content-id="html5Min"><code>@HTML5Min</code></li>
-                              <li class="toc-item" data-content-id="html5Step"><code>@HTML5Step</code></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Required"><code>@HTML5Required</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Email"><code>@HTML5Email</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5URL"><code>@HTML5URL</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5MaxLength"><code>@HTML5MaxLength</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Pattern"><code>@HTML5Pattern</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Max"><code>@HTML5Max</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Min"><code>@HTML5Min</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#html5Step"><code>@HTML5Step</code></a></li>
                           </ol>
                       </li>
                       <li class="toc-item" data-content-id="functions">Functions
                           <ol class="toc">
-                              <li class="toc-item" data-content-id="regulaConfigure"><code>regula.configure</code></li>
-                              <li class="toc-item" data-content-id="regulaBind"><code>regula.bind</code></li>
-                              <li class="toc-item" data-content-id="regulaUnbind"><code>regula.unbind</code></li>
-                              <li class="toc-item" data-content-id="regulaIsBound"><code>regula.isBound</code></li>
-                              <li class="toc-item" data-content-id="regulaCustom"><code>regula.custom</code></li>
-                              <li class="toc-item" data-content-id="regulaOverride"><code>regula.override</code></li>
-                              <li class="toc-item" data-content-id="regulaCompound"><code>regula.compound</code></li>
-                              <li class="toc-item" data-content-id="regulaValidate"><code>regula.validate</code></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaConfigure"><code>regula.configure</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaBind"><code>regula.bind</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaUnbind"><code>regula.unbind</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaIsBound"><code>regula.isBound</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaCustom"><code>regula.custom</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaOverride"><code>regula.override</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaCompound"><code>regula.compound</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#regulaValidate"><code>regula.validate</code></a></li>
                           </ol>
                       </li>
                       <li class="toc-item" data-content-id="objects">Objects
                           <ol class="toc">
-                              <li class="toc-item" data-content-id="constraint"><code>Constraint</code></li>
-                              <li class="toc-item" data-content-id="group"><code>Group</code></li>
-                              <li class="toc-item" data-content-id="dateFormat"><code>DateFormat</code></li>
-                              <li class="toc-item" data-content-id="exception"><code>Exception</code></li>
-                              <li class="toc-item" data-content-id="constraintViolation"><code>ConstraintViolation</code></li>
-                              <li class="toc-item" data-content-id="validator"><code>validator</code></li>
+                              <li class="toc-item"><a href = "./documentation.html#constraint"><code>Constraint</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#group"><code>Group</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#dateFormat"><code>DateFormat</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#exception"><code>Exception</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#constraintViolation"><code>ConstraintViolation</code></a></li>
+                              <li class="toc-item"><a href = "./documentation.html#validator"><code>validator</code></a></li>
                           </ol>
-                      </li> 
+                      </li>
                   </ol>
-              </div>
-          </div>
-          <div class="col-md-8">
-              <div id="documentation" class="panel regula-panel-primary documentation">
+
+                  <hr />
                   <div id="overview" class="documentation-element">
                       <h2>1. Overview</h2>
 
@@ -180,38 +185,34 @@
                       Furthermore, all of these advanced capabilities can be encapsulated within custom constraints and used directly in markup.
                       </p>
                   </div>
+                  <hr />
                   <div id="configuration" class="documentation-element">
                       <h2>2. Configuring Regula</h2>
 
-                      <p>
+                      <p><strong>Regula</strong> pretty much works as you would expect out of the box. The only configuration options currently supported are the
+                         <code>validateEmptyFields</code> and <code>enableHTML5Validation</code> option.</p>
 
-                          <strong>Regula</strong> pretty much works as you would expect out of the box. The only configuration options currently supported are the
-                          <code>validateEmptyFields</code> and <code>enableHTML5Validation</code> option.<br />
-
-                          The <code>validateEmptyFields</code> option controls Regula's validation behavior in the context of empty <code>input</code>-fields. Sometimes, it is
-                          desirable to validate <code>input</code> only if they are not empty. Setting <code>validateEmptyFields</code> to <code>false</code> will make Regula
-                          validate non-empty fields only. This can be done as follows:
+                      <p>The <code>validateEmptyFields</code> option controls Regula's validation behavior in the context of empty <code>input</code>-fields. Sometimes, it is
+                         desirable to validate <code>input</code> only if they are not empty. Setting <code>validateEmptyFields</code> to <code>false</code> will make Regula
+                         validate non-empty fields only. This can be done as follows:</p>
 
                           <pre class="prettyprint">
   regula.configure({
       validateEmptyFields: false
   });</pre>
 
-                          <strong>Note:</strong> The default value of this flag is <code>true</code>, which means that empty fields always validated. This behavior can be
-                          controlled on a per-constraint basis by using the <code>ignoreEmpty</code> optional parameter. For more information, see <a href="./documentation.html#optional">&#167;3.1.5</a>.
+                       <p><strong>Note:</strong> The default value of this flag is <code>true</code>, which means that empty fields always validated. This behavior can be
+                          controlled on a per-constraint basis by using the <code>ignoreEmpty</code> optional parameter. For more information, see <a href="./documentation.html#optional">&#167;3.1.5</a>.</p>
 
-                          The <code>enableHTML5Validation</code> option controls whether Regula will recognize HTML5 validation attributes like <code>required</code>. The default
-                          value for this option is <code>true</code>, but it can be turned off like so:
+                       <p>The <code>enableHTML5Validation</code> option controls whether Regula will recognize HTML5 validation attributes like <code>required</code>. The default
+                          value for this option is <code>true</code>, but it can be turned off like so:</p>
 
                           <pre class="prettyprint">
   regula.configure({
       enableHTML5Validation: false
   });</pre>
-
-
-                      </p>
-
                   </div>
+                  <hr />
                   <div id="primary" class="documentation-element">
                       <h2>3. Primary Concepts</h2>
 
@@ -637,7 +638,7 @@
                       conditional validation where within the validator, validation is conditionally delegated to some other validator. See <a href="./documentation.html#validators">&#167;3.1.11</a>
                       for an example.</p>
                   </div>
-
+                  <hr />
                   <div id="builtIn" class="documentation-element">
                       <h2>4. Built-in Constraints</h2>
 
