@@ -17,7 +17,6 @@
 
     <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
     <script src="js/jquery-2.0.3.min.js"></script>
-    <script src="js/documentation.js"></script>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -165,7 +164,7 @@
                   </ol>
 
                   <hr />
-                  <div id="overview" class="documentation-element">
+                  <div id="overview" >
                       <h2>1. Overview</h2>
 
                       <p><strong>Regula</strong> is a powerful client-side validation library, where validation constraints can be attached <em>directly</em> to <code>input</code>
@@ -186,7 +185,7 @@
                       </p>
                   </div>
                   <hr />
-                  <div id="configuration" class="documentation-element">
+                  <div id="configuration" >
                       <h2>2. Configuring Regula</h2>
 
                       <p><strong>Regula</strong> pretty much works as you would expect out of the box. The only configuration options currently supported are the
@@ -213,13 +212,13 @@
   });</pre>
                   </div>
                   <hr />
-                  <div id="primary" class="documentation-element">
+                  <div id="primary" >
                       <h2>3. Primary Concepts</h2>
 
                       <p><strong>Regula</strong> is centered around a few primary concepts, and understanding these concepts will help you use Regula effectively. Subsequent
                           sub-sections will go over each of these concepts.</p>
                   </div>
-                  <div id="constraints" class="documentation-element">
+                  <div id="constraints" >
                       <h3>3.1 Constraints</h3>
 
                       <p><strong>Constraints</strong> form the central part of Regula. A constraint describes a set of rules that the value of an <code>input</code> element must
@@ -235,7 +234,7 @@
   &lt;input type="text" data-constraints="@Required @Range(min=5, max=10) /&gt;</pre>
 
                   </div>
-                  <div id="element" class="documentation-element">
+                  <div id="element" >
                       <h4>3.1.1 Element constraints</h4>
 
                       <p><strong>Element constraints</strong> are the most-common form of constraint. These are constraints that apply to a single <code>input</code>, or
@@ -249,7 +248,7 @@
                       <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
                       </p>
                   </div>
-                  <div id="formSpecific" class="documentation-element">
+                  <div id="formSpecific" >
                       <h4>3.1.2 Form-specific constraints</h4>
 
                       <p><strong>Form-specific constraints</strong> are a form of constraint that apply to an entire <code>form</code> element. These are typically used when it makes
@@ -261,7 +260,7 @@
 
                       <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
                   </div>
-                  <div id="html5" class="documentation-element">
+                  <div id="html5" >
                       <h4>3.1.3 HTML5 constraints</h4>
 
                       <p><strong>HTML5 constraints</strong> allow you to use native HTML5 validation-constraints in Regula. Keep in mind, however, that <strong>Regula is not an HTML5
@@ -289,7 +288,7 @@
   /&gt;</pre>
 
                   </div>
-                  <div id="parameters" class="documentation-element">
+                  <div id="parameters" >
                       <h4>3.1.4 Parameters</h4>
 
                       <p><strong>Parameters</strong> allow you to pass information into a constraint and/or modify its behavior. Some constraints have optional parameters, whereas
@@ -305,7 +304,7 @@
                          constructor.
 
                   </div>
-                  <div id="optional" class="documentation-element">
+                  <div id="optional" >
                       <h4>3.1.5 Optional, common parameters</h4>
 
                       <p><strong>Optional, common parameters</strong> are parameters that are recognized by all constraints (including custom and compound constraints). They are not
@@ -327,7 +326,7 @@
                           </ul>
                       </p>
                   </div>
-                  <div id="groups" class="documentation-element">
+                  <div id="groups" >
                       <h4>3.1.6 Validation groups</h4>
 
                       <p><strong>Validation groups</strong> give you the ability to segment validation and are specified using the <code>groups</code> parameter. Using groups, you can
@@ -359,7 +358,7 @@
 
 
                   </div>
-                  <div id="custom" class="documentation-element">
+                  <div id="custom" >
                       <h4>3.1.7 Custom constraints</h4>
 
                       <p><strong>Custom constraints</strong> let you specify custom validation rules. Once you have defined a custom constraint, you can use it just like one of Regula's
@@ -434,7 +433,7 @@
                       and for more information on asynchronous constraints, take a look at <a href="./documentation.html#asynchronous">&#167;3.1.9</a></p>
 
                   </div>
-                  <div id="overriding" class="documentation-element">
+                  <div id="overriding" >
                       <h4>3.1.8 Overriding constraints</h4>
 
                       <p>Regula allows you to <strong>override</strong> constraints. This means that you can redefine the behavior of an already-existing constraint. For built-in constraints,
@@ -462,7 +461,7 @@
  });</pre>
                       For more information, take a look at documentation for <code>regula.override</code> in <a href="./documentation.html#regulaOverride">&#167;6.6</a></p>
                   </div>
-                  <div id="asynchronous" class="documentation-element">
+                  <div id="asynchronous" >
                       <h4>3.1.9 Asynchronous constraints</h4>
 
                       <p><strong>Asynchronous constraints</strong> allow you to perform validation asynchronously. Typically this is done if you want to perform server-side validation from the
@@ -489,7 +488,7 @@
  });</pre>
                       <p>You can then use this constraint in HTML just like any other constraint.</p>
                   </div>
-                  <div id="compound" class="documentation-element">
+                  <div id="compound" >
                       <h4>3.1.10 Compound constraints</h4>
 
                       <p><strong>Compound constraints</strong> are constraints that are composed of other constraints (which may include other compound constraints). If you see yourself using
@@ -541,7 +540,7 @@
         data-constraints = "@OneMoreCompoundConstraint(min=5, max=10)" /&gt;</pre>
                   </div>
 
-                  <div id="validators" class="documentation-element">
+                  <div id="validators" >
                       <h4>3.1.11 Validators</h4>
 
                       <p><strong>Validators</strong> are validation functions that you can have access to from within a validator. They are the functional counterparts to constraints. Using validators,
@@ -579,31 +578,31 @@
                          corresponding validator can be invoked via <code>validators.myCustomConstraint</code>.</p>
 
                   </div>
-                  <div id="binding" class="documentation-element">
+                  <div id="binding" >
                       <h3>3.2 Binding</h3>
 
                       <p><strong>Binding</strong> attaches validation constraints to input elements. There are two forms of binding: <b>inline</b> and <b>programmatic</b>.
                   </div>
-                  <div id="inline" class="documentation-element">
+                  <div id="inline" >
                       <h4>3.2.1 Inline Binding</h4>
 
                       <p><strong>Inline</strong> binding is performed through HTML. That is, constraints are attached to the element directly using the <code>data-constraints</code> attribute. This is the
                       preferred way of binding since validation constraints are immediately apparent from viewing the HTML code. This is very similar to HTML5 validation constraints.</p>
                   </div>
-                  <div id="programmatic" class="documentation-element">
+                  <div id="programmatic" >
                       <h4>3.2.2 Programmatic Binding</h4>
 
                       <p><strong>Programmatic</strong> binding is performed through JavaScript using the Regula API. Using the API, you can dynamically-bind constraints to elements. Programmatic binding
                       does give you a finer degree of control (especially when overwriting existing-bindings) but since the binding code exists in JavaScript, validation constraints for HTML elements aren't
                       immediately apparent. For more information, see <a href="./documentation.html#regulaBind">&#167;6.2</a>.</p>
                   </div>
-                  <div id="validation" class="documentation-element">
+                  <div id="validation" >
                       <h3>3.3 Validation</h3>
 
                       <p><strong>Validation</strong> is the process through which Regula applies validation-constraints to input elements. There are three forms of validation: <strong>synchronous</strong>,
                       <strong>asynchronous</strong>, and <strong>delegated</strong>.</p>
                   </div>
-                  <div id="syncValidation" class="documentation-element">
+                  <div id="syncValidation" >
                       <h4>3.3.1 Synchronous validation</h4>
 
                       <p><strong>Synchronous validation</strong> is the most-common form of validation. In this form of validation, all input elements are validated against constraints synchronously. This
@@ -615,7 +614,7 @@
 
                       <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
                   </div>
-                  <div id="asyncValidation" class="documentation-element">
+                  <div id="asyncValidation" >
                       <h4>3.3.2 Asynchronous validation</h4>
 
                       <p><strong>Asynchronous validation</strong> is a form of validation where validation happens after the fact; i.e., it is not synchronous. When validation is initiated, control will
@@ -631,7 +630,7 @@
 
                       <p>For more details, see <a href="./documentation.html#regulaValidate">&#167;6.8</a>.</p>
                   </div>
-                  <div id="delegatedValidation" class="documentation-element">
+                  <div id="delegatedValidation" >
                       <h4>3.3.3 Delegated validation</h4>
 
                       <p><strong>Delegated validation</strong> is where the validation is delegated to another validator (from the <code>validator</code> object). This is typically seen in
@@ -639,14 +638,14 @@
                       for an example.</p>
                   </div>
                   <hr />
-                  <div id="builtIn" class="documentation-element">
+                  <div id="builtIn" >
                       <h2>4. Built-in Constraints</h2>
 
                       <p>Regula comes with twenty-three built-in constraints, out of which two are form-specific constraints. Following sub-sections will go over each built-in constraint in detail.</p>
                   </div>
 
-                  <div id="required" class="documentation-element">
-                      <h3>4.1 @Required</h3><br />
+                  <div id="required" >
+                      <h3>4.1 @Required</h3>
 
                       <h4>Overview</h4>
 
@@ -722,8 +721,8 @@
 
                   </div>
 
-                  <div id="checked" class="documentation-element">
-                      <h3>4.2 @Checked</h3><br />
+                  <div id="checked" >
+                      <h3>4.2 @Checked</h3>
 
                       <h4>Overview</h4>
 
@@ -816,8 +815,8 @@
                                      groups=[FirstGroup, SecondGroup, ThirdGroup]' /&gt;</pre>
                   </div>
 
-                  <div id="selected" class="documentation-element">
-                      <h3>4.3 @Selected</h3><br />
+                  <div id="selected" >
+                      <h3>4.3 @Selected</h3>
 
                       <h4>Overview</h4>
 
@@ -900,8 +899,8 @@
 </pre>
                   </div>
 
-                  <div id="notblank" class="documentation-element">
-                      <h3>4.3 NotBlank</h3><br />
+                  <div id="notblank" >
+                      <h3>4.4 @NotBlank</h3>
 
                       <h4>Overview</h4>
 
@@ -914,9 +913,9 @@
 
 <pre class="prettyprint">
  @NotBlank(
-    [label=label-text],
-    [message=message-text],
-    [groups=array-of-group-names]
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -970,8 +969,8 @@
                                      message="{label} cannot be blank"
                                      groups=[FirstGroup, SecondGroup, ThirdGroup]' /&gt;</pre>
                   </div>
-                  <div id="blank" class="documentation-element">
-                      <h3>4.3 @Blank</h3><br />
+                  <div id="blank" >
+                      <h3>4.5 @Blank</h3>
 
                       <h4>Overview</h4>
 
@@ -984,9 +983,9 @@
 
 <pre class="prettyprint">
  @Blank(
-    [label=label-text],
-    [message=message-text],
-    [groups=array-of-group-names]
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -1042,6 +1041,85 @@
 </pre>
 
                   </div>
+                  <div id="max" >
+                      <h3>4.6 @Max</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Max</code> enforces the constraint that the value of the input element must be lesser than or equal to a specified value</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Max</code> is:</p>
+
+<pre class="prettyprint">
+ @Max(
+   value=max-value,
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names]
+ )</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>value</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the maximum acceptable value of the field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate, the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the constraint . For example: <code>{label} needs to be less than or equal to {value}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+  &lt;input id = "age"
+         name = "age"
+         type = "text"
+         data-constraints = '@Max(value=17)' /&gt;</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "age"
+        name = "age"
+        type = "text"
+        data-constraints = '
+          @Max(
+            value=17,
+            label="age",
+            message="Your {label} needs to be lesser than or equal to {max}",
+            groups=[FirstGroup, SecondGroup, ThirdGroup]
+          )' /&gt;
+</pre>
+
+                  </div>
               </div>
           </div>
       </div>
@@ -1059,8 +1137,8 @@
 <!--
 template
 
-                  <div id="constraint" class="documentation-element">
-                      <h3>4.3 @Constraint</h3><br />
+                  <div id="constraint" >
+                      <h3>4.x @Constraint</h3>
 
                       <h4>Overview</h4>
 
@@ -1079,7 +1157,7 @@ syntax</pre>
 
                       <h4>Examples</h4>
 
-                      <strong>Usage:</strong>
+                      <strong>Basic usage:</strong>
 <pre class="prettyprint">
 example</pre>
 
