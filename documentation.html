@@ -167,7 +167,7 @@
                   <div id="overview" >
                       <h2>1. Overview</h2>
 
-                      <p><strong>Regula</strong> is a powerful client-side validation library, where validation constraints can be attached <em>directly</em> to <code>input</code>
+                      <p><strong>Regula</strong>is a powerful client-side validation library, where validation constraints can be attached <em>directly</em>to <code>input</code>
                          elements. This is similar to how validation can currently be attached to elements using <a href="http://diveintohtml5.info/forms.html">HTML5 validation
                          constraints</a>. However, Regula supports many-more advanced validation-features than can be provided by HTML5. Furthermore, the semantics of validation
                          is directly conveyed via markup, instead of being bound programmatically through JavaScript (i.e., the way many existing validation-libraries work).</p>
@@ -188,11 +188,11 @@
                   <div id="configuration" >
                       <h2>2. Configuring Regula</h2>
 
-                      <p><strong>Regula</strong> pretty much works as you would expect out of the box. The only configuration options currently supported are the
-                         <code>validateEmptyFields</code> and <code>enableHTML5Validation</code> option.</p>
+                      <p><strong>Regula</strong>pretty much works as you would expect out of the box. The only configuration options currently supported are the
+                         <code>validateEmptyFields</code>and <code>enableHTML5Validation</code>option.</p>
 
-                      <p>The <code>validateEmptyFields</code> option controls Regula's validation behavior in the context of empty <code>input</code>-fields. Sometimes, it is
-                         desirable to validate <code>input</code> only if they are not empty. Setting <code>validateEmptyFields</code> to <code>false</code> will make Regula
+                      <p>The <code>validateEmptyFields</code>option controls Regula's validation behavior in the context of empty <code>input</code>-fields. Sometimes, it is
+                         desirable to validate <code>input</code>only if they are not empty. Setting <code>validateEmptyFields</code>to <code>false</code> will make Regula
                          validate non-empty fields only. This can be done as follows:</p>
 
                           <pre class="prettyprint">
@@ -200,10 +200,10 @@
       validateEmptyFields: false
   });</pre>
 
-                       <p><strong>Note:</strong> The default value of this flag is <code>true</code>, which means that empty fields always validated. This behavior can be
-                          controlled on a per-constraint basis by using the <code>ignoreEmpty</code> optional parameter. For more information, see <a href="./documentation.html#optional">&#167;3.1.5</a>.</p>
+                       <p><strong>Note:</strong>The default value of this flag is <code>true</code>, which means that empty fields always validated. This behavior can be
+                          controlled on a per-constraint basis by using the <code>ignoreEmpty</code>optional parameter. For more information, see <a href="./documentation.html#optional">&#167;3.1.5</a>.</p>
 
-                       <p>The <code>enableHTML5Validation</code> option controls whether Regula will recognize HTML5 validation attributes like <code>required</code>. The default
+                       <p>The <code>enableHTML5Validation</code>option controls whether Regula will recognize HTML5 validation attributes like <code>required</code>. The default
                           value for this option is <code>true</code>, but it can be turned off like so:</p>
 
                           <pre class="prettyprint">
@@ -215,20 +215,20 @@
                   <div id="primary" >
                       <h2>3. Primary Concepts</h2>
 
-                      <p><strong>Regula</strong> is centered around a few primary concepts, and understanding these concepts will help you use Regula effectively. Subsequent
+                      <p><strong>Regula</strong>is centered around a few primary concepts, and understanding these concepts will help you use Regula effectively. Subsequent
                           sub-sections will go over each of these concepts.</p>
                   </div>
                   <div id="constraints" >
                       <h3>3.1 Constraints</h3>
 
-                      <p><strong>Constraints</strong> form the central part of Regula. A constraint describes a set of rules that the value of an <code>input</code> element must
-                          conform to. It can also mandate that the element must be in a certain state (for example, it must be <em>checked</em> in the case of a checkbox). Regula
+                      <p><strong>Constraints</strong>form the central part of Regula. A constraint describes a set of rules that the value of an <code>input</code>element must
+                          conform to. It can also mandate that the element must be in a certain state (for example, it must be <em>checked</em>in the case of a checkbox). Regula
                           comes with a set of predefined constraints that are sufficient for most validation needs. However, you are able to create your own constraints (custom
                           constraints) for any custom-validation needs. These custom constraints that you have created, can be referenced in markup as well. Subsequent sections
                           will go into more detail about the different aspects of constraints in Regula.
 
-                          When used in markup, constraints start with <code>@</code>. For example, the following <code>input</code> element has the <code>@Required</code> and
-                          <code>@Range</code> constraints:
+                          When used in markup, constraints start with <code>@</code>. For example, the following <code>input</code>element has the <code>@Required</code>and
+                          <code>@Range</code>constraints:
 
                       <pre class="prettyprint">
   &lt;input type="text" data-constraints="@Required @Range(min=5, max=10) /&gt;</pre>
@@ -237,36 +237,36 @@
                   <div id="element" >
                       <h4>3.1.1 Element constraints</h4>
 
-                      <p><strong>Element constraints</strong> are the most-common form of constraint. These are constraints that apply to a single <code>input</code>, or
-                          <code>select</code> element. What this means is that the <a href="./documentation.html#validators">validator</a> for that constraint performs a validation
-                          check only against the element that the constraint is bound to. Also, in the <a href="./documentation.html#validators">validator</a> for a custom
-                          element-constraint, <code>this</code> will refer to the element that is bound to the constraint.</p>
+                      <p><strong>Element constraints</strong>are the most-common form of constraint. These are constraints that apply to a single <code>input</code>, or
+                          <code>select</code>element. What this means is that the <a href="./documentation.html#validators">validator</a>for that constraint performs a validation
+                          check only against the element that the constraint is bound to. Also, in the <a href="./documentation.html#validators">validator</a>for a custom
+                          element-constraint, <code>this</code>will refer to the element that is bound to the constraint.</p>
                       
-                      <p>When validation fails for an element constraint, the <code>ConstraintViolation</code> object's <code>failingElements</code> property will only contain a
+                      <p>When validation fails for an element constraint, the <code>ConstraintViolation</code>object's <code>failingElements</code>property will only contain a
                          single element, i.e., the element that failed validation.</p>
                      
-                      <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
+                      <strong>Note:</strong>For more information regarding the <code>ConstraintViolation</code>object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
                       </p>
                   </div>
                   <div id="formSpecific" >
                       <h4>3.1.2 Form-specific constraints</h4>
 
-                      <p><strong>Form-specific constraints</strong> are a form of constraint that apply to an entire <code>form</code> element. These are typically used when it makes
-                         sense to validate the state of the form as a whole. In the <a href="./documentation.html#validators">validator</a> for a custom form-specific constraint,
-                         <code>this</code> will refer to the <code>form</code> element that is bound to the constraint.</p>
+                      <p><strong>Form-specific constraints</strong>are a form of constraint that apply to an entire <code>form</code>element. These are typically used when it makes
+                         sense to validate the state of the form as a whole. In the <a href="./documentation.html#validators">validator</a>for a custom form-specific constraint,
+                         <code>this</code>will refer to the <code>form</code>element that is bound to the constraint.</p>
 
-                      <p>When validation fails for a form-specific constraint, the <code>ConstraintViolation</code> object's <code>failingElements</code> property will contain all
+                      <p>When validation fails for a form-specific constraint, the <code>ConstraintViolation</code>object's <code>failingElements</code>property will contain all
                          elements that failed validation.</p>
 
-                      <strong>Note:</strong> For more information regarding the <code>ConstraintViolation</code> object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
+                      <strong>Note:</strong>For more information regarding the <code>ConstraintViolation</code>object, see <a href="./documentation.html#constraintViolation">&#167;7.5</a>.
                   </div>
                   <div id="html5" >
                       <h4>3.1.3 HTML5 constraints</h4>
 
-                      <p><strong>HTML5 constraints</strong> allow you to use native HTML5 validation-constraints in Regula. Keep in mind, however, that <strong>Regula is not an HTML5
-                         shim</strong>. Regula <em>recognizes</em> native HTML5 constraints and incorporates them into its validation lifecycle <em>if the browser supports them natively,
+                      <p><strong>HTML5 constraints</strong>allow you to use native HTML5 validation-constraints in Regula. Keep in mind, however, that <strong>Regula is not an HTML5
+                         shim</strong>. Regula <em>recognizes</em>native HTML5 constraints and incorporates them into its validation lifecycle <em>if the browser supports them natively,
                          or via a shim</em>. The reasoning behind this design decision is that HTML5 validation isn't limited to input validation; it includes specific view-elements as
-                         well (such as a calendar for <code>date</code> types). Emulating these elements is out of the scope of what Regula is trying to accomplish.</p>
+                         well (such as a calendar for <code>date</code>types). Emulating these elements is out of the scope of what Regula is trying to accomplish.</p>
 
                       <p>HTML5 constraints in Regula can be used in two forms. One form is the standard form (i.e., how HTML5 constraints are regularly used) and looks like this:</p>
 
@@ -274,7 +274,7 @@
   &lt;input type="text" required="true" /&gt;</pre>
 
 
-                      <p>Internally, Regula converts the <code>required</code> attribute into the <code>@HTML5Required</code> constraint. Instead of using the standard form, you can
+                      <p>Internally, Regula converts the <code>required</code>attribute into the <code>@HTML5Required</code>constraint. Instead of using the standard form, you can
                          use the "wrapped" versions of the HTML5 constraints as well. This form is desirable since it allows you to easily use other features of Regula like
                          <a href="./documentation.html#groups">validation groups</a>, <a href="./documentation.html#optional">labels</a>, and <a href="./documentation.html#optional">custom messages</a>:</p>
 
@@ -291,23 +291,23 @@
                   <div id="parameters" >
                       <h4>3.1.4 Parameters</h4>
 
-                      <p><strong>Parameters</strong> allow you to pass information into a constraint and/or modify its behavior. Some constraints have optional parameters, whereas
-                         others will have required parameters. For example, the <code>@Range</code> constraint expects a <code>max</code> and a <code>min</code> parameter. If required
-                         constraints are not provided to a constraint, Regula will throw an error during binding.</p> Parameters are not explictly typed, but in general are similar to
+                      <p><strong>Parameters</strong>allow you to pass information into a constraint and/or modify its behavior. Some constraints have optional parameters, whereas
+                         others will have required parameters. For example, the <code>@Range</code>constraint expects a <code>max</code>and a <code>min</code> parameter. If required
+                         constraints are not provided to a constraint, Regula will throw an error during binding.</p>Parameters are not explictly typed, but in general are similar to
                          JavaScript types. Parameters can also be used inside the constraint's failure-message through interpolation. This gives you the ability to provide custom
-                         messages that change dynamically based on the parameter values supplied to the constraint (for more information, look at <code>message</code> in
-                         <a href="./documentation.html#optional">&#167;3.1.5</a>).</p> When defining your own custom constraint, you can specify the parameters that the constraint
+                         messages that change dynamically based on the parameter values supplied to the constraint (for more information, look at <code>message</code>in
+                         <a href="./documentation.html#optional">&#167;3.1.5</a>).</p>When defining your own custom constraint, you can specify the parameters that the constraint
                          accepts. For more information, see <a href="./documentation.html#custom">&#167;3.1.7</a>.
 
-                      <p><strong>Note:</strong> Regular-expression parameters are currently not typed as JavaScript <code>RegExp</code> objects; this is an oversight and will be fixed
-                         in a future release. Currently it is required that the value be converted into a <code>RegExp</code> object by using the <code>RegExp</code> object's
+                      <p><strong>Note:</strong>Regular-expression parameters are currently not typed as JavaScript <code>RegExp</code>objects; this is an oversight and will be fixed
+                         in a future release. Currently it is required that the value be converted into a <code>RegExp</code>object by using the <code>RegExp</code>object's
                          constructor.
 
                   </div>
                   <div id="optional" >
                       <h4>3.1.5 Optional, common parameters</h4>
 
-                      <p><strong>Optional, common parameters</strong> are parameters that are recognized by all constraints (including custom and compound constraints). They are not
+                      <p><strong>Optional, common parameters</strong>are parameters that are recognized by all constraints (including custom and compound constraints). They are not
                          necessary, but can be included if you want to customize certain aspects of your constraint, or use other features. Currently-supported optional parameters
                          are:</p>
 
@@ -318,25 +318,27 @@
                                   is more semantically-appropriate (i.e., actually describing what the input element is used for).</li>
                               <li><code>message</code>: The failure message when a constraint has failed validation. This is the message that you would display to the user if a
                                   particular input element does not satisfy the constraints attached to it. You can use parameter interpolation inside this failure message as well.
-                                  For example, for the <code>@Range</code> constraint, which has the <code>max</code> and <code>min</code> parameters, you can provide a failure
+                                  For example, for the <code>@Range</code>constraint, which has the <code>max</code>and <code>min</code> parameters, you can provide a failure
                                   message like so <code>"{label} should be between {max} and {min}."</code>. If the constraint fails validation, <code>{label}</code>, <code>{max}</code>,
-                                  and <code>{min}</code> will be replaced with the actual values that were supplied to those parameters.</li>
+                                  and <code>{min}</code>will be replaced with the actual values that were supplied to those parameters.</li>
                               <li><code>groups</code>: Used to specify validation groups, which helps you segment validation by targeting specific subsets of input elements. For more
-                                  information, see <a href="./documentation.html#groups">&#167;3.1.6</a> which deals with this topic).
+                                  information, see <a href="./documentation.html#groups">&#167;3.1.6</a>which deals with this topic).</li>
+                              <li><code>ignoreEmpty</code>: Used to specify whether this constraint should be validated if the value of the input element is empty. If <code>ignoreEmpty</code>
+                                  is set to <code>true</code>, this constraint will not be validated if the input element that it is attached to, has an empty value.</li>
                           </ul>
                       </p>
                   </div>
                   <div id="groups" >
                       <h4>3.1.6 Validation groups</h4>
 
-                      <p><strong>Validation groups</strong> give you the ability to segment validation and are specified using the <code>groups</code> parameter. Using groups, you can
+                      <p><strong>Validation groups</strong>give you the ability to segment validation and are specified using the <code>groups</code>parameter. Using groups, you can
                          assign certain constraints to one or more groups and target those subsets individually during validation. For example, consider an order form where you have
                          the user's name, address, and payment information. You can assign the constraints related to the customer's name and address to one group, and the payment
                          information to another. Then you will be able to validate each group individually. Another use case is if you have multiple forms on one page; you can assign
                          the input elements to a group that reflects the fact that they belong to a particular form.</p>
                      
                       <p>Groups do not need to be pre-defined anywhere and can be used in an ad-hoc manner when attaching a constraint to an element. By default, all constraints belong
-                         to the <code>Default</code> group; this is the only built-in group in Regula. When you specify groups while binding, they are reified and will be available for
+                         to the <code>Default</code>group; this is the only built-in group in Regula. When you specify groups while binding, they are reified and will be available for
                          use in <code>regula.Group</code>. For example, if you specified a group called <code>Address</code>, it would be available under <code>regula.Group.Address</code>
                          and can be used with Regula's JavaScript API. Examples that involve the usage of groups are shown below.</p>
 
@@ -361,7 +363,7 @@
                   <div id="custom" >
                       <h4>3.1.7 Custom constraints</h4>
 
-                      <p><strong>Custom constraints</strong> let you specify custom validation rules. Once you have defined a custom constraint, you can use it just like one of Regula's
+                      <p><strong>Custom constraints</strong>let you specify custom validation rules. Once you have defined a custom constraint, you can use it just like one of Regula's
                       built-in constraints. Using custom constraints you can specify your own validation rules, and even perform things like conditional or server-side validation (via an
                       asynchronous custom-constraint). Regula's custom constraints are quite flexible; you can even define the kind of parameters that you want your custom constraint to
                       accept. Regula promotes reuse and encapsulation with its implementation of custom constraints. Once you define your custom constraint, you can use it on any input
@@ -398,8 +400,8 @@
     }
  });</pre>
 
-                      <p>Here we have defined a custom constraint called <code>@DivisibleBy</code> which accepts one parameter called <code>divisor</code>. Notice that the <code>message</code>
-                      parameter includes strings like <code>{label}</code> and <code>{divisor}</code> This means that when the constraint fails, those strings are replaced by the actual values
+                      <p>Here we have defined a custom constraint called <code>@DivisibleBy</code>which accepts one parameter called <code>divisor</code>. Notice that the <code>message</code>
+                      parameter includes strings like <code>{label}</code>and <code>{divisor}</code>This means that when the constraint fails, those strings are replaced by the actual values
                       with which the constraint was attached. Here's an example of the constraint in use:</p>
 
                       <pre class="prettyprint">
@@ -429,17 +431,17 @@
      }
  });</pre>
 
-                      <p>For more information on custom constraints, take a look at the documentation for <code>regula.custom</code> in <a href="./documentation.html#regulaCustom">&#167;6.5</a>,
+                      <p>For more information on custom constraints, take a look at the documentation for <code>regula.custom</code>in <a href="./documentation.html#regulaCustom">&#167;6.5</a>,
                       and for more information on asynchronous constraints, take a look at <a href="./documentation.html#asynchronous">&#167;3.1.9</a></p>
 
                   </div>
                   <div id="overriding" >
                       <h4>3.1.8 Overriding constraints</h4>
 
-                      <p>Regula allows you to <strong>override</strong> constraints. This means that you can redefine the behavior of an already-existing constraint. For built-in constraints,
-                      overriding is limited to the <code>defaultMessage</code> property. However, you can override any attribute of a custom constraint.</p>
+                      <p>Regula allows you to <strong>override</strong>constraints. This means that you can redefine the behavior of an already-existing constraint. For built-in constraints,
+                      overriding is limited to the <code>defaultMessage</code>property. However, you can override any attribute of a custom constraint.</p>
 
-                      <p>Here's an example where we override the <code>defaultMessage</code> of the <code>@PasswordsMatch</code> constraint:</p>
+                      <p>Here's an example where we override the <code>defaultMessage</code>of the <code>@PasswordsMatch</code>constraint:</p>
 
                       <pre class="prettyprint">
  regula.override({
@@ -447,7 +449,7 @@
      defaultMessage: "Your passwords do not match."
  });</pre>
 
-                      <p>Here's another example where we override the <code>validator</code> of the <code>@DivisibleBy</code> custom constraint described in
+                      <p>Here's another example where we override the <code>validator</code>of the <code>@DivisibleBy</code>custom constraint described in
                          <a href="./documentation.html#custom">&#167;3.1.7</a>:</p>
 
                       <pre class="prettyprint">
@@ -459,12 +461,12 @@
         return (inputElement.value % divisor) == 0;
      }
  });</pre>
-                      For more information, take a look at documentation for <code>regula.override</code> in <a href="./documentation.html#regulaOverride">&#167;6.6</a></p>
+                      For more information, take a look at documentation for <code>regula.override</code>in <a href="./documentation.html#regulaOverride">&#167;6.6</a></p>
                   </div>
                   <div id="asynchronous" >
                       <h4>3.1.9 Asynchronous constraints</h4>
 
-                      <p><strong>Asynchronous constraints</strong> allow you to perform validation asynchronously. Typically this is done if you want to perform server-side validation from the
+                      <p><strong>Asynchronous constraints</strong>allow you to perform validation asynchronously. Typically this is done if you want to perform server-side validation from the
                          client side, or if you do not know when the validation operation will complete; only that it happens at some time in the future. Using asynchronous constraints you can
                          perform whatever asynchronous validation you need, and then report the result back to Regula using a callback. Defining an asynchronous constraint is pretty simple:</p>
 
@@ -491,7 +493,7 @@
                   <div id="compound" >
                       <h4>3.1.10 Compound constraints</h4>
 
-                      <p><strong>Compound constraints</strong> are constraints that are composed of other constraints (which may include other compound constraints). If you see yourself using
+                      <p><strong>Compound constraints</strong>are constraints that are composed of other constraints (which may include other compound constraints). If you see yourself using
                          the same set of constraints over and over again, it might be helpful to combine them into a compound constraint, and simply use that instead. Here's an example of a
                          simple compound-constraint:</p>
 
@@ -507,7 +509,7 @@
                       <p>If any of the composing constraints require parameters, you can specify them when you create the compound constraint (in which case those parameters will remain the same
                          for each use of the constraint) or you can specify them when you actually use the constraint (in which case you can use different values on a per-instance basis).</p>
 
-                      <strong>Here, the <code>min</code> and <code>max</code> parameters are hardcoded to <code>2</code> and <code>15</code> for each invocation.</strong>
+                      <strong>Here, the <code>min</code>and <code>max</code>parameters are hardcoded to <code>2</code> and <code>15</code> for each invocation.</strong>
                       <pre class="prettyprint">
  regula.compound({
      name: "AnotherCompoundConstraint",
@@ -519,7 +521,7 @@
     ]
  });</pre>
 
-                      <strong>Here, the <code>min</code> and <code>max</code> parameters are specified as actual parameters to the compound constraint. So it is not necessary to hardcode them
+                      <strong>Here, the <code>min</code>and <code>max</code>parameters are specified as actual parameters to the compound constraint. So it is not necessary to hardcode them
                       since you can specify them in HTML</strong>
                       <pre class="prettyprint">
  regula.compound({
@@ -543,7 +545,7 @@
                   <div id="validators" >
                       <h4>3.1.11 Validators</h4>
 
-                      <p><strong>Validators</strong> are validation functions that you can have access to from within a validator. They are the functional counterparts to constraints. Using validators,
+                      <p><strong>Validators</strong>are validation functions that you can have access to from within a validator. They are the functional counterparts to constraints. Using validators,
                          you can directly invoke a validation function that corresponds to a particular constraint (but only within the context of a validator). A good use-case is in the event you need
                          to perform some sort of conditional validation. Prior to Regula 1.3, conditional validation required duplication of built-in validation. Using validators, this is no-longer the
                          case.</p>
@@ -574,41 +576,41 @@
      value = ""
      data-constraints = "@Numeric @ConditionalRequired(checkBoxId='iWantToDrinkAlcohol')" /&gt;</pre>
 
-                      <p>Custom validators are automatically added to the <code>validators</code> object. If, for example, you had a custom constraint called <code>@MyCustomConstraint</code>, then the
+                      <p>Custom validators are automatically added to the <code>validators</code>object. If, for example, you had a custom constraint called <code>@MyCustomConstraint</code>, then the
                          corresponding validator can be invoked via <code>validators.myCustomConstraint</code>.</p>
 
                   </div>
                   <div id="binding" >
                       <h3>3.2 Binding</h3>
 
-                      <p><strong>Binding</strong> attaches validation constraints to input elements. There are two forms of binding: <b>inline</b> and <b>programmatic</b>.
+                      <p><strong>Binding</strong>attaches validation constraints to input elements. There are two forms of binding: <b>inline</b>and <b>programmatic</b>.
                   </div>
                   <div id="inline" >
                       <h4>3.2.1 Inline Binding</h4>
 
-                      <p><strong>Inline</strong> binding is performed through HTML. That is, constraints are attached to the element directly using the <code>data-constraints</code> attribute. This is the
+                      <p><strong>Inline</strong>binding is performed through HTML. That is, constraints are attached to the element directly using the <code>data-constraints</code>attribute. This is the
                       preferred way of binding since validation constraints are immediately apparent from viewing the HTML code. This is very similar to HTML5 validation constraints.</p>
                   </div>
                   <div id="programmatic" >
                       <h4>3.2.2 Programmatic Binding</h4>
 
-                      <p><strong>Programmatic</strong> binding is performed through JavaScript using the Regula API. Using the API, you can dynamically-bind constraints to elements. Programmatic binding
+                      <p><strong>Programmatic</strong>binding is performed through JavaScript using the Regula API. Using the API, you can dynamically-bind constraints to elements. Programmatic binding
                       does give you a finer degree of control (especially when overwriting existing-bindings) but since the binding code exists in JavaScript, validation constraints for HTML elements aren't
                       immediately apparent. For more information, see <a href="./documentation.html#regulaBind">&#167;6.2</a>.</p>
                   </div>
                   <div id="validation" >
                       <h3>3.3 Validation</h3>
 
-                      <p><strong>Validation</strong> is the process through which Regula applies validation-constraints to input elements. There are three forms of validation: <strong>synchronous</strong>,
+                      <p><strong>Validation</strong>is the process through which Regula applies validation-constraints to input elements. There are three forms of validation: <strong>synchronous</strong>,
                       <strong>asynchronous</strong>, and <strong>delegated</strong>.</p>
                   </div>
                   <div id="syncValidation" >
                       <h4>3.3.1 Synchronous validation</h4>
 
-                      <p><strong>Synchronous validation</strong> is the most-common form of validation. In this form of validation, all input elements are validated against constraints synchronously. This
+                      <p><strong>Synchronous validation</strong>is the most-common form of validation. In this form of validation, all input elements are validated against constraints synchronously. This
                       means that when you call <code>regula.validate()</code>, the function will perform validation and return constraint-violations. In synchronous validation, the validator performs its
-                      validation synchronously, meaning it does not need to <em>wait</em> for something to happen before it report the result of validation. Getting the result of a synchronous validation
-                      is as simple as calling the <code>regula.validate()</code> function:</p>
+                      validation synchronously, meaning it does not need to <em>wait</em>for something to happen before it report the result of validation. Getting the result of a synchronous validation
+                      is as simple as calling the <code>regula.validate()</code>function:</p>
 <pre class="prettyprint">
  var constraintViolations = regula.validate();</pre>
 
@@ -617,7 +619,7 @@
                   <div id="asyncValidation" >
                       <h4>3.3.2 Asynchronous validation</h4>
 
-                      <p><strong>Asynchronous validation</strong> is a form of validation where validation happens after the fact; i.e., it is not synchronous. When validation is initiated, control will
+                      <p><strong>Asynchronous validation</strong>is a form of validation where validation happens after the fact; i.e., it is not synchronous. When validation is initiated, control will
                       return, but validation will still be happening in the background. This form of validation is usually required when some sort of asynchronous operation needs to be performed by the
                       validator, before the validation can report its result. The most-common example is if the validator is internally performing an AJAX request. In this situation, we must wait for the
                       response to return before we can report the result of the validation. To deal with asynchronous validation, you will have to pass a callback to the <code>regula.validate()</code>
@@ -633,7 +635,7 @@
                   <div id="delegatedValidation" >
                       <h4>3.3.3 Delegated validation</h4>
 
-                      <p><strong>Delegated validation</strong> is where the validation is delegated to another validator (from the <code>validator</code> object). This is typically seen in
+                      <p><strong>Delegated validation</strong>is where the validation is delegated to another validator (from the <code>validator</code>object). This is typically seen in
                       conditional validation where within the validator, validation is conditionally delegated to some other validator. See <a href="./documentation.html#validators">&#167;3.1.11</a>
                       for an example.</p>
                   </div>
@@ -649,14 +651,14 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@Required</code> enforces the constraint that a form field is required. This constraint can apply to a text-box, dropdown, checkbox, radiobutton, or a textarea.
-                         <code>@Required</code> is functionally equivalent to explicitly specifying <code>@Checked</code>, <code>@Selected</code> or <code>@NotEmpty</code> on appropriate form elements.
-                         It is suggested to use <code>@Required</code> in place of <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code> if you’re making sure that the form element
-                         has been filled (i.e., use <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code> only when semantically appropriate).</p>
+                      <p><code>@Required</code>enforces the constraint that a form field is required. This constraint can apply to a text-box, dropdown, checkbox, radiobutton, or a textarea.
+                         <code>@Required</code>is functionally equivalent to explicitly specifying <code>@Checked</code>, <code>@Selected</code>or <code>@NotEmpty</code> on appropriate form elements.
+                         It is suggested to use <code>@Required</code>in place of <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code>if you’re making sure that the form element
+                         has been filled (i.e., use <code>@Checked</code>, <code>@Selected</code>, or <code>@NotEmpty</code>only when semantically appropriate).</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Required</code> is:</p>
+                      <p>Syntax for <code>@Required</code>is:</p>
 <pre class="prettyprint">
  @Required(
    [label=label-text],
@@ -698,6 +700,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -726,12 +734,12 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@Checked</code> enforces the constraint that a radio button, radio-button group, or a checkbox must be checked. If the element in question is not checked,
+                      <p><code>@Checked</code>enforces the constraint that a radio button, radio-button group, or a checkbox must be checked. If the element in question is not checked,
                       the constraint will fail.</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Checked</code> is:</p>
+                      <p>Syntax for <code>@Checked</code>is:</p>
 
 <pre class="prettyprint">
  @Checked(
@@ -774,6 +782,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -801,8 +815,8 @@
         type = "radio"
         data-constraints = '@Checked' /&gt; Three</pre>
 
-                      <p><strong>Note:</strong> Strictly speaking, it is not necessary to bind <code>@Checked</code> to each radio-button in a radio-button group; you can just bind it to one. If validation
-                      fails, you will get back one constraint-violation and the <code>failingElements</code> attribute of that constraint violation will contain all radio-button elements of the radio-button
+                      <p><strong>Note:</strong>Strictly speaking, it is not necessary to bind <code>@Checked</code>to each radio-button in a radio-button group; you can just bind it to one. If validation
+                      fails, you will get back one constraint-violation and the <code>failingElements</code>attribute of that constraint violation will contain all radio-button elements of the radio-button
                       group.</p>
 
                       <strong>Usage with optional parameters:</strong>
@@ -820,12 +834,12 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@Selected</code> enforces the constraint that a select box must be selected. The constraint validates somewhat by convention; if the <code>selectedIndex</code> property of the
+                      <p><code>@Selected</code>enforces the constraint that a select box must be selected. The constraint validates somewhat by convention; if the <code>selectedIndex</code>property of the
                          select box is <code>0</code>, then the select box is assumed to be unselected because in most cases the “unselected” value is usually the very first option in the select box.</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Selected</code> is:</p>
+                      <p>Syntax for <code>@Selected</code>is:</p>
 
 <pre class="prettyprint">
  @Selected(
@@ -868,6 +882,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -904,12 +924,12 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@NotBlank</code> (or its alias <code>@NotEmpty</code>) enforces the constraint that an input element cannot have an empty value. An empty value is defined as an empty string,
+                      <p><code>@NotBlank</code>(or its alias <code>@NotEmpty</code>) enforces the constraint that an input element cannot have an empty value. An empty value is defined as an empty string,
                           or a string that only consists of spaces or tabs.</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@NotBlank</code> is:</p>
+                      <p>Syntax for <code>@NotBlank</code>is:</p>
 
 <pre class="prettyprint">
  @NotBlank(
@@ -948,6 +968,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -974,12 +1000,12 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@Blank</code> (or its alias <code>@Empty</code>) enforces the constraint that an input element must have an empty value. An empty value is defined as an empty string, or a
+                      <p><code>@Blank</code>(or its alias <code>@Empty</code>) enforces the constraint that an input element must have an empty value. An empty value is defined as an empty string, or a
                           string that only consists of spaces or tabs.</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Constraint</code> is:</p>
+                      <p>Syntax for <code>@Constraint</code>is:</p>
 
 <pre class="prettyprint">
  @Blank(
@@ -1018,6 +1044,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -1046,11 +1078,11 @@
 
                       <h4>Overview</h4>
 
-                      <p><code>@Max</code> enforces the constraint that the value of the input element must be lesser than or equal to a specified value</p>
+                      <p><code>@Max</code>enforces the constraint that the value of the input element must be lesser than or equal to a specified value</p>
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Max</code> is:</p>
+                      <p>Syntax for <code>@Max</code>is:</p>
 
 <pre class="prettyprint">
  @Max(
@@ -1093,6 +1125,12 @@
                               <td><em>no</em></td>
                               <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
                           </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
                           </tbody>
                       </table>
 
@@ -1124,7 +1162,7 @@
           </div>
       </div>
 
-    </div> <!-- /container -->
+    </div><!-- /container -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -1146,7 +1184,7 @@ template
 
                       <h4>Syntax</h4>
 
-                      <p>Syntax for <code>@Constraint</code> is:</p>
+                      <p>Syntax for <code>@Constraint</code>is:</p>
 
 <pre class="prettyprint">
 syntax</pre>
