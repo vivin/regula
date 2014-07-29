@@ -57,7 +57,7 @@
 
       <div class="row">
           <div class="col-md-12">
-              <div id="documentation" class="panel regula-panel-primary documentation">
+              <div id="documentation" class="panel regula-panel-primary">
 
                   <hr />
                   <h1>Regula Documentation</h1>
@@ -663,7 +663,8 @@
  @Required(
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -745,7 +746,8 @@
  @Checked(
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -845,7 +847,8 @@
  @Selected(
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -935,7 +938,8 @@
  @NotBlank(
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -1011,7 +1015,8 @@
  @Blank(
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -1089,7 +1094,8 @@
    value=max-value,
    [label=label-text],
    [message=message-text],
-   [groups=array-of-group-names]
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
  )</pre>
 
                       <h4>Parameters</h4>
@@ -1111,13 +1117,16 @@
                               <td><code>label</code></td>
                               <td><strong>String</strong></td>
                               <td><em>no</em></td>
-                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate, the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this parameter will be substituted in the place of <code>{label}</code>.</td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
                           </tr>
                           <tr>
                               <td><code>message</code></td>
                               <td><strong>String</strong></td>
                               <td><em>no</em></td>
-                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the constraint . For example: <code>{label} needs to be less than or equal to {value}</code>.</td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be less than or equal to {value}</code>.</td>
                           </tr>
                           <tr>
                               <td><code>groups</code></td>
@@ -1158,6 +1167,813 @@
 </pre>
 
                   </div>
+                  <div id="min">
+                      <h3>4.7 @Min</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Min</code> enforces the constraint that the value of the input element must be greater than or equal to the specified value.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Min</code>is:</p>
+
+<pre class="prettyprint">
+ @Min(
+   value=min-value,
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>value</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the minimum acceptable value of the field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be greater than or equal to {value}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "age"
+        name = "age"
+        type = "text"
+        data-constraints = '@Min(value=21)' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "age"
+        name = "age"
+        type = "text"
+        data-constraints = '
+          @Min(
+            value=21,
+            label="age",
+            message="You need to be {value} or over"
+            groups=[FirstGroup, SecondGroup, ThirdGroup]'
+          )'/&gt;
+</pre>
+
+                  </div>
+                  <div id="range" >
+                      <h3>4.8 @Range</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Range</code> (or its alias <code>@Between</code>) enforces the constraint that the value of the input element must be greater than or equal to one specified value and
+                         lesser than equal to another specified value. Meaning, the value of the input element must lie between a certain range of values (both values inclusive).</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Range</code>is:</p>
+
+<pre class="prettyprint">
+ @Range(
+   min=min-value,
+   max=max-value,
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>min</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the minimum-acceptable value of the field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>max</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the maximum-acceptable value of the field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be between {min} and {max}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "age"
+        name = "age"
+        type = "text"
+        data-constraints = '@Range(min=5, max=10)' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "age"
+        name = "age"
+        type = "text"
+        data-constraints = '
+          @Between(
+            min=5,
+            max=10,
+            label="age",
+            message="This game is only suitable for children between the ages of {min} and {max},
+            groups=[FirstGroup, SecondGroup, ThirdGroup]
+          )"' /&gt;
+</pre>
+
+                  </div>
+                  <div id="integer" >
+                      <h3>4.9 @Integer</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Integer</code> enforces the constraint that the value of an input field can only contain integers (negative integers included).</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Integer</code>is:</p>
+
+<pre class="prettyprint">
+ @Integer(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "score"
+        name = "score"
+        type = "text"
+        data-constraints = '@Integer' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "score"
+        name = "score"
+        type = "text"
+        data-constraints = '@Integer(
+          label="Score",
+          message="{label} needs to be a number!"
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="real" >
+                      <h3>4.10 @Real</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Real</code> enforces the constraint that the value of an input field can only contain real numbers (negative numbers included).</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Real</code>is:</p>
+
+<pre class="prettyprint">
+ @Real(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+  &lt;input id = "percent"
+        name = "percent"
+        type = "text"
+        data-constraints = '@Real' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "percent"
+        name = "percent"
+        type = "text"
+        data-constraints = '@Real(
+          label="Percent",
+          message="{label} needs to be a real number!"
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="alpha" >
+                      <h3>4.11 @Alpha</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Alpha</code> enforces the constraint that the value of an input field can only contain uppercase or lowercase letters.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Constraint</code>is:</p>
+
+<pre class="prettyprint">
+ @Alpha(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "name"
+        name = "name"
+        type = "text"
+        data-constraints = '@Alpha' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "name"
+        name = "name"
+        type = "text"
+        data-constraints = '
+        @Alpha(
+          label="name",
+          message="{label} can only contain letters",
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="numeric">
+                      <h3>4.12 @Numeric</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Numeric</code> enforces the constraint that the value of an input field can only contain numbers.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Numeric</code>is:</p>
+
+<pre class="prettyprint">
+ @Numeric(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "score"
+        name = "score"
+        type = "text"
+        data-constraints = '@Numeric' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "score"
+        name = "score"
+        type = "text"
+        data-constraints = '@Numeric(
+          label="Score",
+          message="{label} needs to be a number!"
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="alphaNumeric">
+                      <h3>4.13 @AlphaNumeric</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@AlphaNumeric</code> enforces the constraint that the value of an input field can only contain letters and/or numbers.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@AlphaNumeric</code>is:</p>
+
+<pre class="prettyprint">
+ @AlphaNumeric(
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{labe}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be {param1}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "trackingNumber"
+        name = "trackingNumber"
+        type = "text"
+        data-constraints = '@AlphaNumeric' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "trackingNumber"
+        name = "trackingNumber"
+        type = "text"
+        data-constraints = '@AlphaNumeric(
+          label="Tracking Number",
+          message="{label} can only contain letters and/or numbers!",
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="digits">
+                      <h3>4.14 @Digits</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Digits</code> enforces the constraint that the integer portion of the value of the input element must have up to a certain number of specified digits, and the fractional portion
+                         of the value of the input element must have up to another number of specified digits.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Digits</code>is:</p>
+
+<pre class="prettyprint">
+ @Digits(
+   integer=integer-value,
+   fraction=fraction-value,
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>integer</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the maximum-acceptable number of digits in the integer portion of the value of the input field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>fraction</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the maximum-acceptable number of digits in the fractional portion of the value of the input field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{label}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be between {min} and {max}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "price"
+        name = "price"
+        type = "text"
+        data-constraints = '@Digits(integer=3, fraction=2)' /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+ &lt;input id = "price"
+        name = "price"
+        type = "text"
+        data-constraints = '@Digits(
+          integer=3,
+          fraction=2,
+          label="age",
+          message="The price can have only up to {integer} digits in the integer portion and {fraction} digits in the fractional portion.",
+          groups=[FirstGroup, SecondGroup, ThirdGroup]
+        )' /&gt;
+</pre>
+
+                  </div>
+                  <div id="step">
+                      <h3>4.15 @Step</h3>
+
+                      <h4>Overview</h4>
+
+                      <p><code>@Step</code> enforces the constraint that the value of an input element must be between a specified maximum and minimum value, and a multiple of the specified step value.</p>
+
+                      <h4>Syntax</h4>
+
+                      <p>Syntax for <code>@Step</code>is:</p>
+
+<pre class="prettyprint">
+ @Step(
+   max=max-value,
+   min=min-value,
+   value=step-value,
+   [label=label-text],
+   [message=message-text],
+   [groups=array-of-group-names],
+   [ignoreEmpty=boolean]
+ )
+</pre>
+
+                      <h4>Parameters</h4>
+
+                      <table class="table table-bordered table-striped">
+                          <tbody><tr>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Required</th>
+                              <th>Description</th>
+                          </tr>
+                          <tr>
+                              <td><code>max</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the maximum-acceptable value (inclusive) of the input field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>min</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the minimum-acceptable value (inclusive) of the input field.</td>
+                          </tr>
+                          <tr>
+                              <td><code>step</code></td>
+                              <td><strong>Integer</strong></td>
+                              <td><em>yes</em></td>
+                              <td>A required parameter that specifies the step value. The value of the input element must be a multiple of this value.</td>
+                          </tr>
+                          <tr>
+                              <td><code>label</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the label for this input element. Labels are a way to provide friendly names to input elements. If the constraint fails to validate,
+                                  the value in this field will be used in the default error message. If the constraint has a custom error message which contains <code>{label}</code>, the value of this
+                                  parameter will be substituted in the place of <code>{label}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>message</code></td>
+                              <td><strong>String</strong></td>
+                              <td><em>no</em></td>
+                              <td>An optional parameter that specifies the error message to use when this constraint fails. The value for this field can contain interpolations of parameters used by the
+                                  constraint . For example: <code>{label} needs to be between {min} and {max}</code>.</td>
+                          </tr>
+                          <tr>
+                              <td><code>groups</code></td>
+                              <td><strong>Array</strong></td>
+                              <td><em>no</em></td>
+                              <td>An array of group names that specifies the validation groups that this constraint belongs to.</td>
+                          </tr>
+                          <tr>
+                              <td><code>ignoreEmpty</code></td>
+                              <td><strong>Boolean</strong></td>
+                              <td><em>no</em></td>
+                              <td>A boolean value that specifies whether this constraint should be validated, if the input-element that it is attached to has an empty value.</td>
+                          </tr>
+                          </tbody>
+                      </table>
+
+                      <h4>Examples</h4>
+
+                      <strong>Basic usage:</strong>
+<pre class="prettyprint">
+ &lt;input id = "evenNumbers"
+           name = "evenNumbers"
+           type = "text"
+           data-constraints = "@Step(min = 0, max = 100, step = 2)" /&gt;
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+  &lt;input id = "evenNumbers"
+           name = "evenNumbers"
+           type = "text"
+           data-constraints = '@Step(
+             min = 0,
+             max = 100,
+             step = 2,
+             label = "number",
+             message = "{label} must be an even number between {min} and {max}.",
+             groups = [FirstGroup, SecondGroup, ThirdGroup]
+           )' /&gt;
+</pre>
+
+                  </div>
               </div>
           </div>
       </div>
@@ -1187,7 +2003,7 @@ template
                       <p>Syntax for <code>@Constraint</code>is:</p>
 
 <pre class="prettyprint">
-syntax</pre>
+</pre>
 
                       <h4>Parameters</h4>
 
@@ -1197,6 +2013,10 @@ syntax</pre>
 
                       <strong>Basic usage:</strong>
 <pre class="prettyprint">
-example</pre>
+</pre>
+
+                      <strong>Usage with optional parameters:</strong>
+<pre class="prettyprint">
+</pre>
 
                   </div>
