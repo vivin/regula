@@ -1,23 +1,3 @@
-/**
- * @preserve
- * Regula: An annotation-based form-validation framework in Javascript
- * Version 1.4.0-SNAPSHOT
- *
- * Written By Vivin Paliath (http://vivin.net)
- * License: BSD License
- * Copyright (C) 2010-2013
- *
- * Other licenses:
- *
- * DOMUtils#getElementsByAttribute
- * Author: Robert Nyman
- * Copyright Robert Nyman, http://www.robertnyman.com
- * Free to use if this text is included
- */
-
-// TODO: Add step validation to regula (like html5 step validation)
-// TODO: Add URL validation to regula (like html5 url validation)
-
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -482,3 +462,4 @@
         Exception: ExceptionService.Exception
     };
 }));
+
