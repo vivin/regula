@@ -780,7 +780,7 @@
     }
 
     function validateElements(options) {
-        var unboundElements = [];
+        var elementGroupCount = {};
 
         var constraintsToValidate = {
             asyncContexts: [],
@@ -794,9 +794,14 @@
             for(var i = 0; i < options.elementIds.length; i++) {
 
                 var elementId = options.elementIds[i];
-                var elementConstraints = groupElements[elementId];
+                if(typeof elementGroupCount[elementId] === "undefined") {
+                    elementGroupCount[elementId] = 0;
+                }
 
+                var elementConstraints = groupElements[elementId];
                 if (typeof elementConstraints !== "undefined") {
+
+                    elementGroupCount[elementId]++;
 
                     for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
                         var context = createConstraintValidationContext(group, elementId, elementConstraint);
@@ -807,9 +812,14 @@
                             constraintsToValidate.syncContexts.push(context);
                         }
                     }
-                } else {
-                    unboundElements.push(elementId);
                 }
+            }
+        }
+
+        var unboundElements = [];
+        for(var elementId in elementGroupCount) if(elementGroupCount.hasOwnProperty(elementId)) {
+            if(elementGroupCount[elementId] === 0) {
+                unboundElements.push(elementId);
             }
         }
 
