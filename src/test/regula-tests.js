@@ -19852,7 +19852,7 @@ test('Test calling regula.validate() with non-array elements attribute', functio
 test('Test calling regula.validate() with empty elements attribute', function() {
     throws(function() {
         regula.validate({elements: []});
-    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with ane mpty elements attribute should error out");
+    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with an empty elements attribute should error out");
 });
 
 test('Test calling regula.validate() with array of elements (constraints passing)', function() {
@@ -19942,6 +19942,35 @@ test('Test calling requla.validate() with elementId', function() {
     equal(constraintViolations.length, 1, "There should only be one constraint-violation");
     equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
     equal(constraintViolations[0].constraintName, "Numeric", "@Numeric should be the failing constraint");
+
+    deleteElements();
+});
+
+test('Test calling regula.validte() with element not bound to any constraint', function() {
+    var $text0 = createInputElement("text0", "", "text");
+
+    regula.bind();
+    throws(function() {
+        regula.validate({
+            elements: [document.getElementById("text0")]
+        });
+    }, regula.Exception.IllegalArgumentException, "Calling regula.validate() with an element that is not bound to any constraint should error out.");
+
+    deleteElements();
+});
+
+test('Test calling regula.validate() with single element bound to one constraint with another element present', function() {
+    var $text0 = createInputElement("text0", "@Required(groups=[Group1])", "text");
+    var $text1 = createInputElement("text1", "@Required(groups=[Group2])", "text");
+
+    regula.bind();
+    var constraintViolations = regula.validate({
+        elements: [document.getElementById("text0")]
+    });
+
+    equal(constraintViolations.length, 1, "There should only be one constraint-violation");
+    equal(constraintViolations[0].failingElements[0].id, "text0", "The id of the failing element does not match");
+    equal(constraintViolations[0].constraintName, "Required", "@Required should be the failing constraint");
 
     deleteElements();
 });

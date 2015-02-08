@@ -22,7 +22,7 @@ http.createServer(function(request, response) {
             console.log("[async-test-server] Request received to pass.");
         }
 
-        var seconds = Math.floor(Math.random() * 3) + 1;
+        var seconds = Math.floor(Math.random() * 2) + 1;
         console.log("[async-test-server] Waiting for " + seconds + " seconds to elapse.");
         setTimeout(function() {
             console.log("[async-test-server] Done waiting.");
