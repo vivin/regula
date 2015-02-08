@@ -1,4 +1,19 @@
-
+/**
+ * @preserve
+ * Regula: An annotation-based form-validation framework in Javascript
+ * Version 1.3.4
+ *
+ * Written By Vivin Paliath (http://vivin.net)
+ * License: BSD License
+ * Copyright (C) 2010-2014
+ *
+ * Other licenses:
+ *
+ * DOMUtils#getElementsByAttribute
+ * Author: Robert Nyman
+ * Copyright Robert Nyman, http://www.robertnyman.com
+ * Free to use if this text is included
+ */
 /**
  * MapUtils contains some convenience functions related to Maps.
  * @type {{iterateOverMap: Function, exists: Function, put: Function, isEmpty: Function}}
@@ -61,7 +76,6 @@
         }
     };
 }));
-
 /**
  * DOMUtils contains some convenience functions to look up information in the DOM.
  * @type {{friendlyInputNames: {}, getElementsByAttribute: Function, getAttributeValueForElement: Function, supportsHTML5Validation: Function}}
@@ -170,7 +184,6 @@
     };
 
 }));
-
 /**
  * Encapsulates logic related to groups.
  * @type {{Group: {}, ReverseGroup: {}, deletedGroupIndices: Array, firstCustomGroupIndex: number}}
@@ -224,7 +237,6 @@
         firstCustomGroupIndex: firstCustomGroupIndex
     };
 }));
-
 /**
  * ArrayUtils contains some convenience functions related to arrays.
  * @type {{explode: Function}}
@@ -257,7 +269,6 @@
         explode: explode
     };
 }));
-
 /**
  * Defines exceptions that regula throws. Also contains a utility method that makes it easy to generate exception messages.
  * @type {{Exception: {}, generateExceptionMessage: Function, explodeParameters: Function}}
@@ -348,7 +359,6 @@
         explodeParameters: explodeParameters
     }
 }));
-
 /**
  * Encapsulates the logic that performs constraint validation.
  * The init method needs to be called prior to invoking the validate method or the createPublicValidator method. It's...
@@ -1131,7 +1141,7 @@
     }
 
     function validateElements(options) {
-        var unboundElements = [];
+        var elementGroupCount = {};
 
         var constraintsToValidate = {
             asyncContexts: [],
@@ -1145,9 +1155,14 @@
             for(var i = 0; i < options.elementIds.length; i++) {
 
                 var elementId = options.elementIds[i];
-                var elementConstraints = groupElements[elementId];
+                if(typeof elementGroupCount[elementId] === "undefined") {
+                    elementGroupCount[elementId] = 0;
+                }
 
+                var elementConstraints = groupElements[elementId];
                 if (typeof elementConstraints !== "undefined") {
+
+                    elementGroupCount[elementId]++;
 
                     for (var elementConstraint in elementConstraints) if (elementConstraints.hasOwnProperty(elementConstraint)) {
                         var context = createConstraintValidationContext(group, elementId, elementConstraint);
@@ -1158,9 +1173,14 @@
                             constraintsToValidate.syncContexts.push(context);
                         }
                     }
-                } else {
-                    unboundElements.push(elementId);
                 }
+            }
+        }
+
+        var unboundElements = [];
+        for(var elementId in elementGroupCount) if(elementGroupCount.hasOwnProperty(elementId)) {
+            if(elementGroupCount[elementId] === 0) {
+                unboundElements.push(elementId);
             }
         }
 
@@ -2148,7 +2168,6 @@
         initializeFromClone: initializeFromClone
     };
 }));
-
 /**
  * Defines the actual constraints that regula supports, and also maintains reverse-mapping between numeric constraint-values
  * and their String equivalents (for example, Checked can be mapped to 0, and 0 is reverse-mapped to Checked).
@@ -3161,7 +3180,6 @@
         verifyParameterCountMatches: verifyParameterCountMatches
     };
 }));
-
 /**
  * Contains the logic for the recursive-descent parser that parses constraint-definition strings
  * @type {{parse: Function}}
@@ -4090,7 +4108,6 @@
         parse: parse
     };
 }));
-
 /**
  * Contains logic that deals with binding constraints to elements
  * @type {{initializeBoundConstraints: Function, resetBoundConstraints: Function, getBoundConstraints: Function,
@@ -5126,27 +5143,6 @@
         isBound: isBound
     };
 }));
-
-/**
- * @preserve
- * Regula: An annotation-based form-validation framework in Javascript
- * Version 1.3.3-SNAPSHOT
- *
- * Written By Vivin Paliath (http://vivin.net)
- * License: BSD License
- * Copyright (C) 2010-2013
- *
- * Other licenses:
- *
- * DOMUtils#getElementsByAttribute
- * Author: Robert Nyman
- * Copyright Robert Nyman, http://www.robertnyman.com
- * Free to use if this text is included
- */
-
-// TODO: Add step validation to regula (like html5 step validation)
-// TODO: Add URL validation to regula (like html5 url validation)
-
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -5611,3 +5607,4 @@
         Exception: ExceptionService.Exception
     };
 }));
+

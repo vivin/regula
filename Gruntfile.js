@@ -124,6 +124,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', ['requirejs:test', 'bgShell:startAsyncTestServer', 'qunit_junit', 'qunit', 'bgShell:stopAsyncTestServer']);
     grunt.registerTask('build', ['requirejs:compile', 'requirejs:unoptimized']);
-    grunt.registerTask('release', ['test', 'build', 'bump']);
+    grunt.registerTask('release', ['bump', 'test', 'build']);
     grunt.registerTask('travis', ['test']);
 };
