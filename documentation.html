@@ -445,7 +445,7 @@
 
                       <pre class="prettyprint">
  regula.override({
-     name: "PasswordsMatch",
+     constraintType: regula.Constraint.PasswordsMatch,
      defaultMessage: "Your passwords do not match."
  });</pre>
 
@@ -454,7 +454,7 @@
 
                       <pre class="prettyprint">
  regula.override({
-     name: "DivisibleBy",
+     constraintType: regula.Constraint.DivisibleBy,
      validator: function(params) {
         var divisor = params["divisor"];
         var inputElement = this;
