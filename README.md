@@ -8,7 +8,7 @@
 
 You might be wondering why the world needs **another** client-side validation-framework. After all, there are already different validation-frameworks like jQuery's Validation Plugin, Validator from jQuery tools, and so many  more. Furthermore, browsers are starting to implement HTML5 validation constraints, so what makes Regula so special?
 
-###Small, Easy, and Powerful
+### Small, Easy, and Powerful
 
 Regula is small. It's around 220Kb un-compressed, and 64Kb minified. Regula also doesn't depend on any other external libraries, so you don't have any other dependencies.
 
@@ -29,7 +29,7 @@ Not that different, right? Now how about other frameworks? While also useful, bi
 Since Regula's constraints are directly attached to the element, you can easily tell what restrictions apply to that element. Also, it's remarkably trivial to add more constraints:
 
 ```html
-<input type="text" id="age" name="age" 
+<input type="text" id="age" name="age"
        data-constraints='@Required @Numeric @Min(value=21)' />
 ```
 
@@ -54,8 +54,8 @@ regula.custom({
 And its use:
 
 ```html
-<input id = "theAnswerToLifeTheUniverseAndEverything" 
-       name = "theAnswerToLifeTheUniverseAndEverything" 
+<input id = "theAnswerToLifeTheUniverseAndEverything"
+       name = "theAnswerToLifeTheUniverseAndEverything"
        value = ""
        data-constraints = "@MustBe42" />
 ```
@@ -77,8 +77,8 @@ regula.custom({
 And usage:
 
 ```html
-<input id = "number" 
-       name = "number" 
+<input id = "number"
+       name = "number"
        value = ""
        data-constraints = '@DivisibleBy(divisor=3, label="The Number")' />
 ```
@@ -100,8 +100,8 @@ In the above example, you can see that it isn't any different from using regular
 <input id = "number"
        name = "number"
        value = ""
-       data-constraints = '@HTML5Required(message = "Number is required!") 
-                           @HTML5Max(value=10, groups=[MyGroup]) 
+       data-constraints = '@HTML5Required(message = "Number is required!")
+                           @HTML5Max(value=10, groups=[MyGroup])
                            @HTML5Min(value=5, groups=[MyOtherGroup])' />
 ```
 
@@ -147,7 +147,7 @@ jQuery(document).ready(function() {
     // attribute called "data-constraints" and binds the defined
     // constraints to the elements
 
-    regula.bind(); 
+    regula.bind();
 
     jQuery("#myForm").submit(function() {
         // this function performs the actual validation and returns an array
@@ -184,16 +184,16 @@ regula.validate(options, function(constraintViolations) {
 
 There is a lot more I haven't gone over, but I hope that these simple examples show you how powerful Regula is, and also how easy it is to use. I hope you give it a chance and [try it out](https://github.com/vivin/regula/downloads); 1.3.3 is the latest version. Suggestions and comments are always welcome! For more information, you can take a look at the [wiki](https://github.com/vivin/regula/wiki).
 
-###Documentation
+### Documentation
 Documentation is available [here](http://vivin.github.io/regula/). It is still a work in progress since I am migrating stuff over from the old wiki into the new GitHub page.
 
-###Ok, where can I get it?
+### Ok, where can I get it?
 You can download the latest version of Regula on the [releases page](https://github.com/vivin/regula/releases). The latest release is **1.3.3**.
 
-###I want to contribute!
+### I want to contribute!
 That's awesome! Take a look at **devreadme.txt** for information regarding contribution (I only accept changes into specific branches and not directly into master since I want master to reflect production-ready code; [see here](http://nvie.com/posts/a-successful-git-branching-model/) for more information) and how to set up your development environment. I'm still fleshing it out, but if you have any questions, don't hesitate to ask. Once you're done making your changes, send me a pull-request and we can go from there!
 
-###Going forward
+### Going forward
 
 I'm not done with Regula yet! Going forward, I'm considering the following features:
  - Global parameter definitions (specify a parameter to be used by all constraints).
@@ -201,10 +201,10 @@ I'm not done with Regula yet! Going forward, I'm considering the following featu
 
 This is by no means an exhaustive list. I honestly believe that Regula is a good alternative to existing client-side validation-frameworks and I will be constantly improving and enhancing Regula. I take the quality of my code seriously and will do my best to release bug-free code. Currently JSCoverage reports 97% coverage (effective coverage is pretty much 100%) established through over 2,300 assertions.
 
-###Questions?
+### Questions?
 
 [Check out the mailing list!](https://groups.google.com/d/forum/regula-validation?fromplusone=1)
 
-###Licensing
+### Licensing
 
 Regula is licensed under the BSD License.
